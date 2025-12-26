@@ -9,6 +9,7 @@ use App\Models\ListData;
 use App\Models\ListStatus;
 use App\Models\ListDropdown;
 use App\Models\ListSalary;
+use App\Models\ListDeduction;
 use App\Models\ListPosition;
 use App\Models\LocationRegion;
 use App\Models\LocationProvince;
@@ -130,6 +131,21 @@ class DropdownClass
                 'salary_id' => $item->salary_id,
                 'year' => $item->salary->year,
                 'is_regular' => $item->is_regular
+            ];
+        });
+        return $data;
+    }
+
+    public function deductions(){
+        $data = ListDeduction::get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => ($item->subtype != 'n/a') ? $item->name.' ('.$item->subtype.')' : $item->name,
+                'subtype' => $item->subtype,
+                'is_regular' => $item->is_regular,
+                'is_contribution' => $item->is_contribution,
+                'is_loan' => $item->is_loan,
+                'is_enrollable' => $item->is_enrollable
             ];
         });
         return $data;

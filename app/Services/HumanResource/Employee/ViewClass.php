@@ -2,10 +2,12 @@
 
 namespace App\Services\HumanResource\Employee;
 
+use Hashids\Hashids;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\ListData;
 use App\Models\UserOrganization;
+use App\Http\Resources\HumanResource\Employee\ViewResource;
 use App\Http\Resources\HumanResource\Employee\IndexResource;
 
 class ViewClass
@@ -54,6 +56,25 @@ class ViewClass
         });
         $query->orderBy(UserProfile::select('lastname')->whereColumn('user_profiles.user_id', 'users.id'),'ASC');
         $data = IndexResource::collection($query->paginate($request->count));
+        return $data;
+    }
+
+    public function view($code){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($code);
+
+        $data = new ViewResource(
+            User::query()
+            ->with('profile.religion','profile.blood','profile.marital','profile.sex','profile.suffix')
+            ->with('organization.division','organization.position','organization.unit','organization.station','organization.type','organization.status','organization.salary')
+            ->with('academics.school','academics.course','academics.level')
+            ->with('credentials.name','credentials.type')
+            ->with('contracts.division','contracts.position','contracts.unit','contracts.station','contracts.type','contracts.status','contracts.salary')
+            ->with('deductions.deduction')
+            // ->with('contracts.division','contracts.position','contracts.unit','contracts.station','contracts.type','contracts.status')
+            // ->with('information','academics.level','credentials.type','credentials.name')
+            ->where('id',$id)->first()
+        );
         return $data;
     }
 }

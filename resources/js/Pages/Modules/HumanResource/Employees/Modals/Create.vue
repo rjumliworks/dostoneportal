@@ -30,7 +30,7 @@
                         </BCol>
                         <BCol lg="3" class="mt-0">
                             <InputLabel for="name" value="Username" :color="'white'" :message="form.errors.email"/>
-                            <TextInput id="name" v-model="form.username" type="text" class="form-control" placeholder="Please enter username" @input="handleInput('email')" :light="true"/>
+                            <TextInput id="name" v-model="form.username" type="text" class="form-control" placeholder="Please enter username" @input="handleInput('email')" :light="true" readonly/>
                         </BCol>
                         <BCol lg="3" class="mt-0">
                             <InputLabel for="name" value="Email Address" :color="'white'" :message="form.errors.email"/>
@@ -99,7 +99,7 @@
                         <Multiselect :options="units" :searchable="true" label="name" v-model="form.unit_id" placeholder="Select Unit" @input="handleInput('unit_id')"/>
                     </BCol>
                     <BCol lg="6" class="mt-1">
-                        <InputLabel for="name" value="Position" :message="form.errors.position_id"/> {{ form.position_id }}
+                        <InputLabel for="name" value="Position" :message="form.errors.position_id"/>
                         <Multiselect :options="filteredPositions" :searchable="true" label="name" v-model="form.position_id" placeholder="Select Position" @input="handleInput('position_id')"/>
                     </BCol>
                     <BCol lg="3" class="mt-1">
@@ -167,6 +167,10 @@ export default {
         };
     },
     watch: {
+        "form.firstname": "generateUsername",
+        "form.middlename": "generateUsername",
+        "form.lastname": "generateUsername",
+        "form.birthdate": "generateUsername",
         "form.division_id"(newVal){
             if(!newVal){
                 this.units = [];
@@ -279,6 +283,32 @@ export default {
                 });
             }
         },
+        generateUsername() {
+           
+    // Do NOT auto-generate when editing
+    if (this.editable) return;
+
+    const { firstname, middlename, lastname, birthdate } = this.form;
+
+    if (!firstname || !lastname || !birthdate) {
+        this.form.username = null;
+        return;
+    }
+
+    // first letters
+    const f = firstname.charAt(0).toLowerCase();
+    const m = middlename ? middlename.charAt(0).toLowerCase() : '';
+    const l = lastname.charAt(0).toLowerCase();
+
+    // extract MMDD
+    const date = new Date(birthdate);
+    if (isNaN(date)) return;
+
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    this.form.username = `${f}${m}${l}-${month}${day}`;
+},
         fetchUnits(code){
             axios.get('/search',{
                 params: {

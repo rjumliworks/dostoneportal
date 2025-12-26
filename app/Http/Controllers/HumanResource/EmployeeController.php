@@ -106,5 +106,22 @@ class EmployeeController extends Controller
             'status' => $result['status'],
         ]);
     }
-    
+
+    public function show($code){
+        return inertia('Modules/HumanResource/Employees/View',[
+            'employee_data' => $this->view->view($code),
+            'dropdowns' => [
+                'eligibilities' => $this->dropdown->datas('Eligibility'),
+                'licenses' => $this->dropdown->datas('License'),
+                'levels' => $this->dropdown->datas('Level'),
+                'types' => $this->dropdown->datas('Type'),
+                'divisions' => $this->dropdown->dropdowns('Division'),
+                'stations' => $this->dropdown->stations(),
+                'positions' => $this->dropdown->positions(),
+                'salaries' => $this->dropdown->salaries(),
+                'deductions' => $this->dropdown->deductions(),
+                'employment_statuses' => $this->dropdown->datas('Employment Status')
+            ],
+        ]);
+    }
 }
