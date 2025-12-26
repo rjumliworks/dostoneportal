@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\DropdownClass;
 use App\Services\Executive\Users\SaveClass;
 use App\Services\Executive\Users\ViewClass;
+use App\Services\Executive\Users\RekognitionClass;
 use App\Http\Requests\Executive\UserRequest;
 
 class UserController extends Controller
@@ -17,11 +18,13 @@ class UserController extends Controller
     protected ViewClass $view;
     protected SaveClass $save;
     protected DropdownClass $dropdown;
+    protected RekognitionClass $rekognition;
 
-     public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view){
+    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, RekognitionClass $rekognition){
         $this->dropdown = $dropdown;
         $this->view = $view;
         $this->save = $save;
+        $this->rekognition = $rekognition;
     }
 
     public function index(Request $request){
@@ -38,6 +41,9 @@ class UserController extends Controller
             case 'list':
                 return $this->view->list($request);
             break;
+            case 'files':
+                return $this->rekognition->fetch($request);
+            break;
             default:
             return inertia('Executive/Users/Index',[
                 'dropdowns' => [
@@ -52,6 +58,12 @@ class UserController extends Controller
             switch($request->option){
                 case 'user':
                     return $this->save->store($request);
+                break;
+                case 'file':
+                    return $this->rekognition->store($request);
+                break;
+                case 'delete':
+                    return $this->rekognition->delete($request);
                 break;
             }
         });
