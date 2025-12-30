@@ -24,6 +24,8 @@ return new class extends Migration
             $table->boolean('must_change')->default(0);
             $table->text('two_factor_secret') ->nullable();
             $table->text('two_factor_recovery_codes')->nullable();
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('password_changed_at')->nullable();

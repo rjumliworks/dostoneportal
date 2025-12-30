@@ -61,20 +61,46 @@
                                         <Checkbox v-model:checked="form.remember" name="remember" class="form-check-input" id="auth-remember-check" />
                                         <label class="form-check-label" for="auth-remember-check">Remember me</label>
                                     </div>
-                                    <div class="mt-3 mb-">
+                                    <div class="mt-3">
                                         <BButton variant="primary" class="w-100" type="submit" :class="['some-class', form.processing && 'opacity-25']" :disabled="form.processing">Sign In</BButton>
                                     </div>
-                                    <!-- <div class="mt-3 text-center">
+                                    <!-- <div class="mt-0 row g-2">
+                                        <div class="col-6">
+                                            <BButton
+                                                variant="outline-danger"
+                                                class="btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+                                                type="button"
+                                                @click="loginWithGoogle"
+                                            >
+                                                <i class="ri-google-fill fs-16"></i>
+                                                Google
+                                            </BButton>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <BButton
+                                                variant="outline-primary"
+                                                class="btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+                                                type="button"
+                                                @click="loginWithFacebook"
+                                            >
+                                                <i class="ri-facebook-fill fs-16"></i>
+                                                Facebook
+                                            </BButton>
+                                        </div>
+                                    </div> -->
+
+                                    <div class="mt-2 text-center">
                                         <div class="signin-other-title">
                                             <h5 class="fs-10 mb-4 title text-muted">Sign In with</h5>
                                         </div>
                                         <div class="mt-n2">
-                                            <button type="button" class="btn btn-light btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></button>
-                                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light"><i class="ri-google-fill fs-16"></i></button>
-                                            <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
-                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button>
+                                            <button type="button" class="btn btn-sm btn-light btn-icon waves-effect waves-light me-1"><i class="ri-facebook-fill fs-14"></i></button>
+                                            <button type="button" @click="loginWithGoogle" class="btn btn-sm btn-danger btn-icon waves-effect waves-light me-1"><i class="ri-google-fill fs-14"></i></button>
+                                            <button type="button" class="btn btn-sm  btn-dark btn-icon waves-effect waves-light me-1"><i class="bx bx-mobile fs-14"></i></button>
+                                            <button type="button" class="btn btn-sm  btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-14"></i></button>
                                         </div>
-                                    </div> -->
+                                    </div>
                                 </form>
                             </div>
                             <div class="card-footer bg-light-subtle">
@@ -134,6 +160,9 @@ export default {
         handleInput(field) {
             this.form.errors[field] = false;
         },
+        loginWithGoogle() {
+            window.location.href = '/auth/google';
+        }
     }
 }
 </script>
