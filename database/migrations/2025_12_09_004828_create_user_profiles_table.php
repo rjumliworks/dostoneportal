@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('firstname');
             $table->text('middlename');
             $table->text('mobile');
+            $table->string('mobile_hash', 64)->unique()->index();
             $table->text('birthdate');    
             $table->tinyInteger('birthmonth')->index();
             $table->string('avatar', 200)->default('noavatar.jpg');

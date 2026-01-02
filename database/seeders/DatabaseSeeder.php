@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             'firstname' => 'Ra-ouf',
             'middlename' => 'Indanan',
             'mobile' => '09171531652',
+            'mobile_hash' => hash('sha256','09171531652'),
             'birthdate' => '1994-03-11',
             'birthmonth' => 3,
             'sex_id' => 1,

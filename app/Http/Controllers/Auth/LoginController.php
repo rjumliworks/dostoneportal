@@ -45,7 +45,7 @@ class LoginController extends Controller
                 $user->update(['code' => $code]);
 
                 
-                 Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+                Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
                
                 return redirect()->intended(route('activation', absolute: false));
             }

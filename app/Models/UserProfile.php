@@ -17,6 +17,7 @@ class UserProfile extends Model
         'firstname',
         'middlename',
         'mobile',
+        'mobile_hash',
         'avatar',
         'signature',
         'birthdate',
@@ -28,12 +29,15 @@ class UserProfile extends Model
         'religion_id',
         'user_id', 
     ];
-    protected $appends = ['name','fullname'];
+    protected $appends = ['name','fullname','mob'];
     protected $encryptable = [
         'firstname',
         'middlename',
-        'mobile',
         'birthdate',
+        'mobile'
+    ];
+    protected $hidden = [
+        'mobile_hash'
     ];
 
     public function user()     { return $this->belongsTo(User::class); }
@@ -60,9 +64,10 @@ class UserProfile extends Model
         return implode(' ', array_filter($parts));
     }
 
+
     public function setAttribute($key, $value)
     {
-        if (in_array($key, ['firstname', 'middlename', 'lastname']) && !is_null($value)) {
+        if (in_array($key, ['firstname', 'middlename', 'lastname','mobile']) && !is_null($value)) {
             $value = ucfirst(strtolower($value));
         }
 
@@ -86,6 +91,17 @@ class UserProfile extends Model
         return $value;
     }
 
+    protected static function booted()
+    {
+        static::saving(function ($model) {
+            if (! empty($model->mobile)) {
+                $plainMobile = $model->mobile;
+                $normalized = preg_replace('/\D+/', '', $plainMobile);
+                $model->mobile_hash = hash('sha256', $normalized);
+            }
+        });
+    }
+
     protected static $recordEvents = ['updated'];
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
@@ -98,6 +114,7 @@ class UserProfile extends Model
             'birthdate',
             'birthmonth',
             'mobile',
+            'mobile_hash',
             'signature',
             'avatar'
         ])

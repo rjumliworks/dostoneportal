@@ -4,6 +4,7 @@ namespace App\Http\Resources\Executive;
 
 use Hashids\Hashids;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
