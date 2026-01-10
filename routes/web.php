@@ -33,6 +33,13 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);
     Route::get('/rekognition/create', [App\Http\Controllers\Executive\RekognitionController::class, 'create']);
     Route::get('/rekognition/search', [App\Http\Controllers\Executive\RekognitionController::class, 'search']);
+    Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
+    Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
+    Route::get('/rekognition/collection/{id}/face/{faceId}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
 });
+
+Route::get('/attendance', [App\Http\Controllers\Public\AttendanceController::class, 'index']);
+Route::post('/attendance', [App\Http\Controllers\Public\AttendanceController::class, 'store']);
+Route::post('/recognize', [App\Http\Controllers\Public\AttendanceController::class, 'recognize']);
 
 require __DIR__.'/auth.php';

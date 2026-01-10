@@ -124,7 +124,7 @@
                                             <h5 class="fs-10 mb-4 title text-muted">Sign In with</h5>
                                         </div>
                                         <div class="mt-n2">
-                                            <button type="button" class="btn btn-sm btn-light btn-icon waves-effect waves-light me-1"><i class="ri-facebook-fill fs-14"></i></button>
+                                            <!-- <button type="button" class="btn btn-sm btn-light btn-icon waves-effect waves-light me-1"><i class="ri-facebook-fill fs-14"></i></button> -->
                                             <button type="button" @click="loginWithGoogle" class="btn btn-sm btn-danger btn-icon waves-effect waves-light me-1"><i class="ri-google-fill fs-14"></i></button>
                                             <button type="button" @click="type = 'OTP'" class="btn btn-sm  btn-dark btn-icon waves-effect waves-light me-1"><i class="bx bx-mobile fs-14"></i></button>
                                             <button type="button" @click="type = 'Login'" class="btn btn-sm  btn-info btn-icon waves-effect waves-light"><i class="ri-mac-line fs-14"></i></button>

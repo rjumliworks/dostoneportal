@@ -111,17 +111,22 @@ class RekognitionClass
                 'secret' => config('services.rekognition.secret'),
             ],
         ]);
-        $file = UserFolderFile::where('id',$request->id)->first();
+        $file = UserFolderFile::where('id',$request->file_id)->first();
 
-        $faces = UserFace::where('file_id', $request->id)->get();
-        foreach ($faces as $face) {
-            $rekognition->deleteFaces([
-                'CollectionId' => config('services.rekognition.collection_id'),
-                'FaceIds' => [$face->face_id],
-            ]);
+      
+        if (Storage::disk('s3')->exists($file->path)) {
+            Storage::disk('s3')->delete($file->path);
+            $faces = UserFace::where('file_id', $request->file_id)->get();
+            foreach ($faces as $face) {
+                $rekognition->deleteFaces([
+                    'CollectionId' => config('services.rekognition.collection_id'),
+                    'FaceIds' => [$face->face_id],
+                ]);
+            }
+            $file->forceDelete();
+        } else {
+            dd('File not found in S3', $file->path);
         }
-        Storage::disk('s3')->delete($file->path);
-        UserFolderFile::where('id',$file->id)->delete();
 
         return [
             'data' => [],

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Executive;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Aws\Rekognition\RekognitionClient;
+use Illuminate\Http\JsonResponse;
 
 class RekognitionController extends Controller
 {   
@@ -134,5 +135,106 @@ class RekognitionController extends Controller
         ]);
 
         return $result;
+    }
+
+    public function deleteCollection(string $collectionId): JsonResponse
+    {
+        $rekognition = new RekognitionClient([
+            'region'  => 'ap-southeast-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key' => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        try {
+            $result = $rekognition->deleteCollection([
+                'CollectionId' => $collectionId,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rekognition collection deleted successfully',
+                'status'  => $result['StatusCode'],
+            ]);
+        } catch (\Aws\Exception\AwsException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getAwsErrorMessage(),
+            ], 500);
+        }
+    }
+
+    public function listFaces(string $collectionId): JsonResponse
+    {
+        $rekognition = new RekognitionClient([
+            'region'  => 'ap-southeast-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        try {
+            $faces = [];
+            $nextToken = null;
+
+            do {
+                $result = $rekognition->listFaces([
+                    'CollectionId' => $collectionId,
+                    'NextToken'    => $nextToken,
+                    'MaxResults'   => 100, // AWS limit
+                ]);
+
+                foreach ($result['Faces'] as $face) {
+                    $faces[] = [
+                        'face_id'    => $face['FaceId'],
+                        'image_id'   => $face['ImageId'] ?? null,
+                        'confidence' => $face['Confidence'] ?? null,
+                        'created_at' => $face['CreatedTimestamp'] ?? null,
+                    ];
+                }
+
+                $nextToken = $result['NextToken'] ?? null;
+
+            } while ($nextToken);
+
+            return response()->json([
+                'success' => true,
+                'count'   => count($faces),
+                'faces'   => $faces,
+            ]);
+
+        } catch (\Aws\Exception\AwsException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getAwsErrorMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteFace(string $collectionId,string $faceId)
+    {
+        $rekognition = new RekognitionClient([
+            'region'  => 'ap-southeast-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        $result = $rekognition->deleteFaces([
+            'CollectionId' => $collectionId,
+            'FaceIds'      => [$faceId], // 👈 single face
+        ]);
+
+        return [
+            'data' => $result,
+            'message' => 'Face successfully deleted!',
+            'info' => "Your file has been deleted and is now available."
+        ];
     }
 }

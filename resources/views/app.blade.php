@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title inertia>LIMS</title>
+        <title inertia>DOST-IX</title>
         <meta name="description" content="Laboratory Information Management System">
         <meta name="keywords" content="DOST, LIMS, ONELAB">
         <meta name="author" content="Krad">
