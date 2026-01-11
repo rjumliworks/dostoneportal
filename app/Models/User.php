@@ -47,6 +47,16 @@ class User extends Authenticatable  implements MustVerifyEmail
         ];
     }
 
+    public function dtrs()
+    {
+        return $this->hasMany('App\Models\Dtr', 'user_id');
+    }
+
+    public function payrolls()
+    {
+        return $this->hasMany('App\Models\Payroll', 'user_id');
+    }
+
     public function profile()
     {
         return $this->hasOne('App\Models\UserProfile', 'user_id');

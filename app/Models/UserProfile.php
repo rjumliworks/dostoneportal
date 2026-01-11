@@ -29,7 +29,7 @@ class UserProfile extends Model
         'religion_id',
         'user_id', 
     ];
-    protected $appends = ['name','fullname','mob'];
+    protected $appends = ['name','fullname'];
     protected $encryptable = [
         'firstname',
         'middlename',

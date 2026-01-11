@@ -88,5 +88,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        $this->call(OrgChartsTableSeeder::class);
+        $this->call(OrgSignatoriesTableSeeder::class);
     }
 }

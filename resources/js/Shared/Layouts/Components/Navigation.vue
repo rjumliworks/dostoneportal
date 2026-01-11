@@ -54,15 +54,15 @@
                         <div class="p-2">
                             <BRow class="g-0">
                                 <BCol>
-                                    <BLink class="dropdown-icon-item" href="#!">
-                                        <img src="@assets/images/brands/github.png" alt="Github" />
-                                        <span>GitHub</span>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/key-officials')">
+                                        <img src="@assets/images/apps/customer.png" alt="invent" />
+                                        <span>Key Officials</span>
                                     </BLink>
                                 </BCol>
                                 <BCol>
-                                    <BLink class="dropdown-icon-item" href="#!">
-                                        <img src="@assets/images/brands/bitbucket.png" alt="bitbucket" />
-                                        <span>Bitbucket</span>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/schedules')">
+                                        <img src="@assets/images/apps/calendar.png" alt="chatbox" />
+                                        <span>Calendar</span>
                                     </BLink>
                                 </BCol>
                                 <BCol>
@@ -73,7 +73,7 @@
                                 </BCol>
                             </BRow>
 
-                            <BRow class="g-0">
+                            <!-- <BRow class="g-0">
                                 <BCol>
                                     <BLink class="dropdown-icon-item" href="#!">
                                         <img src="@assets/images/brands/dropbox.png" alt="dropbox" />
@@ -92,7 +92,7 @@
                                         <span>Slack</span>
                                     </BLink>
                                 </BCol>
-                            </BRow>
+                            </BRow> -->
                         </div>
                     </BDropdown>
 
@@ -282,6 +282,9 @@ export default {
         },
         setDefaultImage(event) {
         event.target.src = '/images/avatars/avatar.jpg';
+        },
+        openInNewTab(url) {
+            window.open(url, '_blank');
         },
     }
 }

@@ -6,8 +6,9 @@ use Illuminate\Database\Seeder;
 
 class ListDropdownsTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seeder file.
+     * Auto generated seed file
      *
      * @return void
      */
@@ -448,8 +449,48 @@ class ListDropdownsTableSeeder extends Seeder
                 'others' => 'ARD',
                 'is_active' => 1,
             ),
+            43 => 
+            array (
+                'id' => 45,
+                'name' => 'Provincial Director',
+                'classification' => 'Designation',
+                'type' => 'n/a',
+                'color' => 'n/a',
+                'others' => 'PD',
+                'is_active' => 1,
+            ),
+            44 => 
+            array (
+                'id' => 46,
+                'name' => 'City Director',
+                'classification' => 'Designation',
+                'type' => 'n/a',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            45 => 
+            array (
+                'id' => 47,
+                'name' => 'Supervisor',
+                'classification' => 'Designation',
+                'type' => 'n/a',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            46 => 
+            array (
+                'id' => 48,
+                'name' => 'HRMO',
+                'classification' => 'Designation',
+                'type' => 'n/a',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
         ));
-
+        
         
     }
 }

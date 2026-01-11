@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\UserRole;
+use App\Models\User;
 use App\Models\ListRole;
 use App\Models\ListUnit;
 use App\Models\ListData;
@@ -86,7 +86,7 @@ class DropdownClass
     }
 
     public function events(){
-        $data = ListDropdown::where('classification','Events')->get()->map(function ($item) {
+        $data = ListDropdown::where('classification','Calendar')->get()->map(function ($item) {
             return [
                 'value' => $item->id,
                 'name' => $item->name,
@@ -218,6 +218,36 @@ class DropdownClass
             return [
                 'value' => $item->code,
                 'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
+    public function users($keyword,$is_regular = null){
+        $data =  User::with('profile')
+        ->with('organization.position','organization.division')
+        ->when(!is_null($is_regular) && $is_regular == 1, function ($query) {
+            $query->whereHas('organization', function ($query) {
+                $query->where('type_id', 15);
+            });
+        })
+        ->when($keyword, function ($query) use ($keyword){
+            $query->whereHas('profile', function ($q) use ($keyword) {
+                $q->where('lastname', 'like', '%' . $keyword . '%');
+            });
+        })
+        ->limit(5)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'signatory' => $item->signatory,
+                'name' => $item->profile->lastname . ', ' . $item->profile->firstname . ' ' . $item->profile->middlename[0] . '.',
+                'position' => optional($item->organization->position)->name,
+                'division' => optional($item->organization->division)->name,
+                'division_id' => optional($item->organization->division)->id,
+                'type' => $item->organization->type->name,
+                 'avatar' => ($item->profile && $item->profile->avatar && $item->profile->avatar !== 'noavatar.jpg')
+                ? asset('storage/' . $item->profile->avatar) 
+                : asset('images/avatars/avatar.jpg'), 
             ];
         });
         return $data;

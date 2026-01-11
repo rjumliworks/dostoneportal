@@ -13,14 +13,20 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::middleware(['auth','verified'])->group(function () {
-    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-});
 
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
+Route::get('/attendance', [App\Http\Controllers\Public\AttendanceController::class, 'index']);
+Route::post('/attendance', [App\Http\Controllers\Public\AttendanceController::class, 'store']);
+Route::post('/recognize', [App\Http\Controllers\Public\AttendanceController::class, 'recognize']);
+
+Route::middleware(['auth','verified'])->group(function () {
+    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('/dtr', App\Http\Controllers\Portal\DtrController::class);
+});
 
 Route::middleware(['role:Human Resource Officer'])->group(function () {
     Route::resource('/employees', App\Http\Controllers\HumanResource\EmployeeController::class);
+    Route::resource('/calendar', App\Http\Controllers\HumanResource\CalendarController::class);
 });
 
 Route::middleware(['role:Administrator'])->group(function () {
@@ -38,8 +44,6 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::get('/rekognition/collection/{id}/face/{faceId}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
 });
 
-Route::get('/attendance', [App\Http\Controllers\Public\AttendanceController::class, 'index']);
-Route::post('/attendance', [App\Http\Controllers\Public\AttendanceController::class, 'store']);
-Route::post('/recognize', [App\Http\Controllers\Public\AttendanceController::class, 'recognize']);
+Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
 
 require __DIR__.'/auth.php';
