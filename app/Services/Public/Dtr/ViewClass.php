@@ -32,7 +32,7 @@ class ViewClass
                 if (!$raw) return null;
                 $subtype = str_contains(strtolower($typeLabel), 'out') ? 'out' : 'in';
                 return [
-                    'avatar' => ($dtr->user->profile && $dtr->user->profile->avatar && $dtr->user->avatar !== 'noavatar.jpg')
+                    'avatar' => ($dtr->user->profile && $dtr->user->profile->avatar && $dtr->user->profile->avatar !== 'noavatar.jpg')
                         ? asset('storage/' . $dtr->user->profile->avatar)
                         : asset('images/avatars/avatar.jpg'),
                     'name' => $dtr->user->profile->fullname ?? 'No Name',
