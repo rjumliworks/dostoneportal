@@ -194,7 +194,7 @@ class SaveClass
                 'username' => $user->username,
                 'name' => $name,
                 'division' => $user->organization->division->name,
-                'avatar' => ($user->profile->avatar === 'avatar.jpg') ? '/images/avatars/'.$user->profile->avatar : '/storage/'.$user->profile->avatar,
+                'avatar' => ($user->profile->avatar === 'noavatar.jpg') ? '/images/avatars/'.$user->profile->avatar : '/storage/'.$user->profile->avatar,
                 'time' => \Carbon\Carbon::parse($time)->format('g:i A'),
                 'type' => $type,
                 'status' => $status,
