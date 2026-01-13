@@ -16,7 +16,7 @@
                                     </div>
                                     <div class="flex-grow-1">
                                         <h5 class="mb-0 mt-2 fs-14"><span class="text-white fw-semibold text-uppercase fs-13">Department Of Science and Technology</span></h5>
-                                        <p class="text-white fs-11">Laboratory Information Management System</p>
+                                        <p class="text-white fs-11">Unified Information Management System</p>
                                     </div>
                                 </div>
                             </div>
