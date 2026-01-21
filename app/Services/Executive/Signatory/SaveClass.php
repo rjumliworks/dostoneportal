@@ -41,14 +41,17 @@ class SaveClass
             $data->update(['user_id' => $request->user_id]);
 
             if($data){
-                $signatory = $data->designationable()->update(['user_id' => $userId]);
-                $signatory->schedules()->create([
-                    'start_at' => $request->start_at,
-                    'end_at' => $request->end_at,
-                    'user_id' => $userId,
-                    'is_designated' => 1,
-                    'is_ongoing' => 1,
-                ]); 
+                $signatory = $data->designationable;
+                $signatory->update([
+                    'user_id' => $userId
+                ]);
+                // $signatory->schedules()->create([
+                //     'start_at' => $request->start_at,
+                //     'end_at' => $request->end_at,
+                //     'user_id' => $userId,
+                //     'is_designated' => 1,
+                //     'is_ongoing' => 1,
+                // ]); 
             }
         }
         // if($request->is_oic){

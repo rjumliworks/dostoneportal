@@ -16,6 +16,26 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Daily Time Record</span>
                 </Link>
             </li>
+            <tempalte v-if="$page.props.roles.includes('Document Management Officer')">
+                <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Document Management</span>
+                </li>
+                <li class="nav-item">
+                    <Link href="/humanresource" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/HumanResource/Dashboard') }">
+                    <i class="ri-apps-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/events" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Trace/Events') }">
+                    <i class="ri-calendar-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Events</span>
+                    </Link>
+                </li>
+            </tempalte>
             <template v-if="$page.props.roles.includes('Human Resource Officer')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
@@ -33,6 +53,49 @@
                     :class="{'active': $page.component.startsWith('Modules/HumanResource/Employees') }">
                     <i class="ri-team-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Employees</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/dtrs" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/HumanResource/Dtr') }">
+                    <i class="ri-alarm-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Daily Time Record</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                   <BLink class="nav-link menu-link" href="#payroll"
+                   :class="{'active': $page.url.startsWith('Modules/HumanResource/Payroll') }"
+                    data-bs-toggle="collapse" role="button" :aria-expanded="$page.url.startsWith('/payroll')" aria-controls="payroll">
+                        <i class="ri-hand-coin-fill"></i>
+                        <span data-key="t-dashboards">Payroll</span>
+                    </BLink>
+                    <div class="collapse menu-dropdown" id="payroll">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <Link href="/payroll/regular" :class="{'active': $page.component.startsWith('Modules/HumanResource/Payroll/Regular') }" class="nav-link" data-key="t-basic">
+                                    Regular
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link href="/payroll/contractual" :class="{'active': $page.component.startsWith('Modules/HumanResource/Payroll/Contractual') }" class="nav-link" data-key="t-basic">
+                                    Contractual
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <Link href="/credits" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/HumanResource/Credits') }">
+                    <i class="ri-file-list-line"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Leave Credits</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/surveys" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/HumanResource/Surveys') }">
+                    <i class="ri-article-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Morale Surveys</span>
                     </Link>
                 </li>
                 <li class="nav-item">

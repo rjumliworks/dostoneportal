@@ -76,7 +76,7 @@
                 </div>
             </div>
         </BRow>
-        <Create @message="fetch()" ref="create"/>
+        <Create :stations="dropdowns.stations" @message="fetch()" ref="create"/>
         <View @message="fetch()" ref="view"/>
     </template>
     <script>

@@ -39,6 +39,14 @@ class SaveClass
             'user_id' => \Auth::user()->id
         ]);
 
+        if($data){
+            foreach($request->stations as $station){
+                $data->stations()->create([
+                    'station_id' => $station
+                ]);
+            }
+        }
+
         return [
             'data' => $data,
             'message' => 'Schedule creation was successful!', 

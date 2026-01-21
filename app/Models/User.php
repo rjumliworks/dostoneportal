@@ -47,6 +47,12 @@ class User extends Authenticatable  implements MustVerifyEmail
         ];
     }
 
+    public function tags()
+    {
+        return $this->hasMany('App\Models\RequestTag', 'user_id');
+    }
+
+
     public function dtrs()
     {
         return $this->hasMany('App\Models\Dtr', 'user_id');

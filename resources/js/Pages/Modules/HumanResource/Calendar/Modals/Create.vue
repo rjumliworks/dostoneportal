@@ -74,6 +74,10 @@
                         </div>
                     </div>
                 </BCol>
+                <BCol lg="12" class="mt-1">
+                    <InputLabel for="name" value="Station" :message="form.errors.stations"/>
+                    <Multiselect :options="stations" mode="tags"  label="name" v-model="form.stations" placeholder="Select Station" @input="handleInput('stations')"/>
+                </BCol>
             </BRow>
         </form>
         <template v-slot:footer>
@@ -92,6 +96,7 @@ import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
     components: { InputLabel, TextInput, Multiselect, flatPickr },
+    props: ['stations'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -105,6 +110,7 @@ export default {
                 description: null,
                 venue: null,
                 is_allday: null,
+                stations: [],
                 type: null
             }),
             timeConfig: {

@@ -15,6 +15,7 @@ class ViewClass
             ->orderBy('created_at', 'desc')
             ->get();
 
+
         // Map each DTR into multiple rows (AM/PM IN/OUT)
         $rows = $dtrs->flatMap(function($dtr) {
 

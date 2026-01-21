@@ -24,15 +24,23 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('/dtr', App\Http\Controllers\Portal\DtrController::class);
 });
 
+Route::middleware(['role:Document Management Officer'])->group(function () {
+    Route::resource('/events', App\Http\Controllers\Trace\EventController::class);
+});
+
 Route::middleware(['role:Human Resource Officer'])->group(function () {
     Route::resource('/employees', App\Http\Controllers\HumanResource\EmployeeController::class);
+    Route::resource('/dtrs', App\Http\Controllers\HumanResource\DtrController::class);
     Route::resource('/calendar', App\Http\Controllers\HumanResource\CalendarController::class);
+    Route::resource('/payroll', App\Http\Controllers\HumanResource\PayrollController::class);
+    Route::get('/payroll/{type}/{code}', [App\Http\Controllers\HumanResource\PayrollController::class, 'view']);
+    Route::resource('/credits', App\Http\Controllers\HumanResource\CreditController::class);
 });
+Route::resource('/surveys', App\Http\Controllers\HumanResource\SurveyController::class);
 
 Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
-    Route::resource('/signatories', App\Http\Controllers\Executive\SignatoryController::class);
 
     Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
     Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);

@@ -1,6 +1,6 @@
 <template>
     <Head title="Date Time Record"/>
-    <div id="layout-wrapper" class="auth-page-wrapper pt-5 d-flex justify-content-center align-items-center min-vh-100">
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
         <div class="auth-page-content">
             <BContainer style="max-width: 1250px;">
 
@@ -27,7 +27,12 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="row g-3">
+                                <div class="row g-3 mb-n3">
+                                    <!-- <div class="col-md-12">
+                                        <h1 class="fw-bold text-primary text-center" style="font-size: 100px;">
+                                            {{ currentTime }}
+                                        </h1>
+                                    </div> -->
                                     <div class="col-md-5" ref="leftCol"> 
 
                                         <div class="video-wrapper position-relative">
@@ -86,6 +91,9 @@
                                     </div>
 
                                     <div class="col-md-7"> 
+                                         <h1 class="fw-bold text-primary text-center mt-n3 mb-n1" style="font-size: 110px;">
+                                            {{ currentTime }}
+                                        </h1>
                                         <div v-if="status == 'New'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-success-subtle">
                                                 <div class="d-flex mb-n3">
@@ -95,11 +103,30 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h5 class="mb-0 fs-14"><span class="text-body">{{employee.name}}</span></h5>
-                                                        <p class="text-muted text-truncate-two-lines fs-12">{{employee.division}}</p>
+                                                        <h5 class="mb-0 fs-18 text-uppercase fw-semibold"><span class="text-body">{{employee.name}}</span></h5>
+                                                        <p class="text-muted mb-n2 text-truncate-two-lines fs-12">{{employee.division}}</p>
                                                     </div>
-                                                    <div class="flex-0">
-                                                        <h5 class="mb-0 fs-14"><span class="text-body">{{employee.time}}</span></h5>
+                                                    <div class="flex-0 mb-n2">
+                                                        <h5 class="mb-0 fs-18"><span class="text-body">{{employee.time}}</span></h5>
+                                                        <p class="text-muted text-truncate-two-lines float-end fs-12">{{employee.type}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                          <div v-else-if="status == 'Success'" class="d-flex w-100 justify-content-center align-items-center mb-2">
+                                            <div class="p-4 w-100 border rounded bg-danger-subtle">
+                                                <div class="d-flex mb-n3">
+                                                    <div class="flex-shrink-0 me-3">
+                                                        <div style="height:2.5rem;width:2.5rem;">
+                                                            <img :src="employee.avatar" alt="user-img" class="avatar-sm rounded-circle mt-n2">
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h5 class="mb-0 fs-18 text-uppercase fw-semibold"><span class="text-body">{{employee.name}}</span></h5>
+                                                        <p class="text-muted mb-n2 text-truncate-two-lines fs-12">{{employee.division}}</p>
+                                                    </div>
+                                                    <div class="flex-0 mb-n2">
+                                                        <h5 class="mb-0 fs-18"><span class="text-body">{{employee.time}}</span></h5>
                                                         <p class="text-muted text-truncate-two-lines float-end fs-12">{{employee.type}}</p>
                                                     </div>
                                                 </div>
@@ -107,7 +134,7 @@
                                         </div>
                                         <div v-else-if="status == 'Duplicate'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-warning-subtle text-center">
-                                                <p class="mb-0 text-dark fs-12">Duplicate attendance detected for <b v-if="employee" class="text-danger">{{ employee.name }}</b>.</p>
+                                                <p class="mb-0 text-dark fs-12">Duplicate attendance detected for <b v-if="employee" class="text-danger text-uppercase">{{ employee.name }}</b>.</p>
                                                 <p class="mb-0 text-muted fs-11">The system has already logged this employee's time-in/time-out. No additional entry is needed.</p>
                                             </div>
                                         </div>
@@ -119,7 +146,7 @@
                                         </div>
                                         <div v-else-if="status == 'Disabled Overlap'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-danger-subtle text-center">
-                                                <p class="mb-0 text-dark fs-12">Attendance action is restricted for <b v-if="employee" class="text-danger">{{ employee.name }}</b>.</p>
+                                                <p class="mb-0 text-dark fs-12">Attendance action is restricted for <b v-if="employee" class="text-danger text-uppercase">{{ employee.name }}</b>.</p>
                                                 <p class="mb-0 text-muted fs-11">You cannot time in because you have already timed out for this period.</p>
                                             </div>
                                         </div>
@@ -134,15 +161,15 @@
                                             <div class="card-header bg-light-subtle">
                                                 <div class="d-flex mb-n3">
                                                     <div class="flex-shrink-0 me-3">
-                                                        <div style="height:2.5rem; width:2.5rem;">
+                                                        <div style="height:2rem; width:2rem;">
                                                             <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                                                <i class="ri-file-list-3-line text-primary fs-24"></i>
+                                                                <i class="ri-file-list-3-line text-primary fs-16"></i>
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h5 class="mb-0 fs-14"><span class="text-body">List of Employees</span></h5>
-                                                        <p class="text-muted fs-12">
+                                                        <h5 class="mb-0 fs-11" style="margin-top: -2px;"><span class="text-body">List of Employees</span></h5>
+                                                        <p class="text-muted fs-10">
                                                             Shows participants who have successfully scanned the QR code.
                                                         </p>
                                                     </div>
@@ -152,7 +179,7 @@
                                                 <div class="table-responsive table-card" ref="scrollabletable" style="overflow-y:auto; overflow-x:hidden;">
                                                     <table class="table table-nowrap align-middle mb-0">
                                                         <thead class="bg-light thead-fixed">
-                                                            <tr class="fs-11">
+                                                            <tr class="fs-10">
                                                                 <th style="width: 7%;" class="text-center">#</th>
                                                                 <th>Name</th>
                                                                 <th style="width: 18%;" class="text-center">Type</th>
@@ -162,11 +189,11 @@
                                                         <tbody v-if="lists.length">
                                                             <tr v-for="(list,index) in lists"
                                                                 :key="index"
-                                                                :class="['fs-12',{ 'bg-success-subtle': list.subtype === 'in',
+                                                                :class="['fs-10',{ 'bg-success-subtle': list.subtype === 'in',
                                                                     'bg-danger-subtle': list.subtype === 'out'
                                                                     }]">
                                                                 <td class="text-center">
-                                                                    <img :src="list.avatar" alt="user-img" class="avatar-xs rounded-circle">
+                                                                    <img :src="list.avatar" alt="user-img" class="avatar-xxs rounded-circle">
                                                                 </td>
                                                                 <td>{{ list.name }}</td>
                                                                 <td class="text-center">{{ list.type }}</td>
@@ -254,7 +281,6 @@ export default {
     created(){
         this.fetch();
     },
-   
     methods: {
         resetStatusTimer() {
             // Clear previous timer if exists
@@ -267,7 +293,7 @@ export default {
                 this.status = null;
                 this.employee = null;
                 this.statusTimeout = null;
-            }, 5000);
+            }, 10000);
         },
         syncTableHeight(force = false) {
             this.$nextTick(() => {
@@ -277,7 +303,7 @@ export default {
 
                 if (this.tableHeightLocked && !force) return
 
-                const offset = 40
+                const offset = 70
                 table.style.height = `${left.offsetHeight - offset}px`
 
                 this.tableHeightLocked = true
@@ -340,7 +366,7 @@ export default {
 
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
             const formData = new FormData();
-            formData.append('image', blob); 
+            formData.append('image', blob, 'capture.jpg');
             formData.append('type', type); 
             formData.append('option', 'dtr'); 
 

@@ -133,7 +133,7 @@ class SaveClass
                             $status = 'Duplicate';
                             break;
                         }
-                        $status = 'Success';
+                        $status = 'New';
                         $dtr->tardiness += $minutes;
                         $dtr->am_in_at = json_encode($info);
                         $dtr->save();
@@ -157,7 +157,7 @@ class SaveClass
                         }else if($dtr->pm_in_at){
                             $status = 'Duplicate';
                         }else{
-                            $status = 'Success';
+                            $status = 'New';
                             $dtr->tardiness += $minutes;
                             $dtr->pm_in_at = json_encode($info);
                             $dtr->save();
@@ -190,6 +190,7 @@ class SaveClass
             }
 
             $name = $user->profile->firstname.' '.$user->profile->lastname;
+            $subtype = str_contains(strtolower($type), 'out') ? 'out' : 'in';
             $data = [
                 'username' => $user->username,
                 'name' => $name,
@@ -197,6 +198,7 @@ class SaveClass
                 'avatar' => ($user->profile->avatar === 'noavatar.jpg') ? '/images/avatars/avatar.jpg' : '/storage/'.$user->profile->avatar,
                 'time' => \Carbon\Carbon::parse($time)->format('g:i A'),
                 'type' => $type,
+                'subtype' => $subtype,
                 'status' => $status,
             ];
             return [
@@ -213,33 +215,52 @@ class SaveClass
         }
     }
 
+    // public function image($request)
+    // {
+    //     $image = $request->input('image'); // base64 string
+
+    //     // Validate format
+    //     if (!preg_match('/^data:image\/(\w+);base64,/', $image, $matches)) {
+    //         return response()->json(['error' => 'Invalid image format.'], 422);
+    //     }
+
+    //     $type = strtolower($matches[1]); // png, jpg, jpeg, gif
+    //     if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
+    //         return response()->json(['error' => 'Invalid image type.'], 422);
+    //     }
+
+    //     // Remove header and decode
+    //     $image = substr($image, strpos($image, ',') + 1);
+    //     $image = str_replace(' ', '+', $image);
+    //     $imageData = base64_decode($image);
+
+    //     if ($imageData === false) {
+    //         return response()->json(['error' => 'Base64 decode failed.'], 422);
+    //     }
+
+    //     // Save to storage/app/public/images/attendance
+    //     $filename = Str::random(10) . '.' . $type;
+    //     $path = 'images/attendance/'.$request->username.'/'. $filename;
+    //     Storage::disk('public')->put($path, $imageData);
+
+    //     return $path;
+    // }
     public function image($request)
     {
-        $image = $request->input('image'); // base64 string
-
-        // Validate format
-        if (!preg_match('/^data:image\/(\w+);base64,/', $image, $matches)) {
-            return response()->json(['error' => 'Invalid image format.'], 422);
+        if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
+            return response()->json(['error' => 'Invalid image upload.'], 422);
         }
 
-        $type = strtolower($matches[1]); // png, jpg, jpeg, gif
-        if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
+    
+        if (!in_array(strtolower($extension), ['jpg','jpeg','png'])) {
             return response()->json(['error' => 'Invalid image type.'], 422);
         }
 
-        // Remove header and decode
-        $image = substr($image, strpos($image, ',') + 1);
-        $image = str_replace(' ', '+', $image);
-        $imageData = base64_decode($image);
-
-        if ($imageData === false) {
-            return response()->json(['error' => 'Base64 decode failed.'], 422);
-        }
-
-        // Save to storage/app/public/images/attendance
-        $filename = Str::random(10) . '.' . $type;
-        $path = 'images/attendance/'.$request->username.'/'. $filename;
-        Storage::disk('public')->put($path, $imageData);
+        $filename = Str::random(10).'.'.$extension;
+        $path = 'images/attendance/'.$request->username.'/'.$filename;
+        Storage::disk('public')->putFileAs('images/attendance/'.$request->username, $file, $filename);
 
         return $path;
     }

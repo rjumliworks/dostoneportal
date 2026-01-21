@@ -30,7 +30,8 @@ class CalendarController extends Controller
             default :
             return inertia('Modules/HumanResource/Calendar/Index',[
                 'dropdowns' => [
-                    'events' => $this->dropdown->events()
+                    'events' => $this->dropdown->events(),
+                    'stations' => $this->dropdown->stations()
                 ]
             ]);
         }

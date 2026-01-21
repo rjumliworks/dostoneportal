@@ -43,6 +43,7 @@ class ScheduleResource extends JsonResource
             'ee_date' => date("M d, Y",strtotime($this->end)),
             'datee' => $date,
             'venue' => $this->venue,
+            'stations' => $this->stations,
             'description' => $this->description,
             'is_allday' => $this->is_allday,
             'event' => $this->event,
