@@ -24,7 +24,14 @@ class ViewClass
                     $q->where('role_id', $role);
                 });
             });
-        })->paginate($request->count);
+        })
+        ->when($request->keyword, function ($query, $keyword) {
+            $query->whereHas('profile', function ($sub) use ($keyword) {
+                $sub->whereRaw('LOWER(lastname) LIKE ?', ['%' . strtolower($keyword) . '%']);
+            })
+            ->orWhere('username', 'like', "%{$keyword}%");
+        })
+        ->paginate($request->count);
         return UserResource::collection($data);
     }
 
