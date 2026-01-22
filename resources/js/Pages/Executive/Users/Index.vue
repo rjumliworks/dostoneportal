@@ -200,6 +200,9 @@ export default {
        this.fetch();
     },
     watch: {
+         "filter.keyword"(newVal){
+            this.checkSearchStr(newVal)
+        },
         "filter.division"(newVal){
             if(!newVal){
                 this.units = [];
