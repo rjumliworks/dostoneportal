@@ -28,14 +28,17 @@
                         <BListGroupItem :active="activeTab === 2" href="#" class="list-group-item-action" @click="show(2)">
                             <i class="ri-profile-fill align-middle me-2"></i>Personal Information
                         </BListGroupItem>
-                        <BListGroupItem :active="activeTab === 3" href="#" class="list-group-item-action" @click="show(3)">
-                            <i class="ri-shield-check-line align-middle me-2"></i>Password & Security
+                         <BListGroupItem :active="activeTab === 3" href="#" class="list-group-item-action" @click="show(3)">
+                            <i class="ri-map-pin-fill align-middle me-2"></i>Address Details
                         </BListGroupItem>
                         <BListGroupItem :active="activeTab === 4" href="#" class="list-group-item-action" @click="show(4)">
-                            <i class="ri-shield-keyhole-fill align-middle me-2"></i>Authentication Logs
+                            <i class="ri-shield-check-line align-middle me-2"></i>Password & Security
                         </BListGroupItem>
                         <BListGroupItem :active="activeTab === 5" href="#" class="list-group-item-action" @click="show(5)">
-                            <i class="ri-history-line align-middle me-2"></i>Activity Logs
+                            <i class="ri-shield-keyhole-fill align-middle me-2"></i>Authentication History
+                        </BListGroupItem>
+                        <BListGroupItem :active="activeTab === 6" href="#" class="list-group-item-action" @click="show(6)">
+                            <i class="ri-history-line align-middle me-2"></i>Activity History
                         </BListGroupItem>
                     </b-list-group>
                 </div>
@@ -44,9 +47,10 @@
         <div class="col-md-9" style="margin-top: 6px;">
             <Overview v-if="activeTab === 1"/>
             <Edit v-if="activeTab === 2"/>
-            <Security v-if="activeTab === 3"/>
-            <AuthenticationLog v-if="activeTab === 4"/>
-            <ActivityLog v-if="activeTab === 5"/>
+            <Address v-if="activeTab === 3"/>
+            <Security v-if="activeTab === 4"/>
+            <AuthenticationLog v-if="activeTab === 5"/>
+            <ActivityLog v-if="activeTab === 6"/>
         </div>
     </div>
 </template>
@@ -54,12 +58,13 @@
 import { useForm } from "@inertiajs/vue3"
 import Overview from "./Pages/Overview.vue";
 import Edit from "./Pages/Edit.vue";
+import Address from './Pages/Address.vue';
 import Security from './Pages/Security.vue';
 import ActivityLog from './Pages/ActivityLog.vue';
 import AuthenticationLog from "./Pages/AuthenticationLog.vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security },
+    components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security, Address },
     data() {
         return {
             currentUrl: window.location.origin,

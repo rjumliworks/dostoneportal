@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('longitude')->nullable();
             $table->string('latitude')->nullable();
+            $table->boolean('is_permanent');
             $table->string('barangay_code')->nullable()->constrained();
             $table->foreign('barangay_code')->references('code')->on('location_barangays')->onDelete('cascade');
             $table->string('municipality_code')->nullable()->constrained();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['is_permanent', 'user_id']);
         });
     }
 

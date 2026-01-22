@@ -34,7 +34,7 @@ return new class extends Migration
             $table->foreign('religion_id')->references('id')->on('list_data')->restrictOnDelete();
             $table->unsignedSmallInteger('blood_id')->nullable();
             $table->foreign('blood_id')->references('id')->on('list_data')->restrictOnDelete();
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->unique();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

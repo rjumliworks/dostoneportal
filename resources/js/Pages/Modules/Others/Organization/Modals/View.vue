@@ -51,14 +51,14 @@
                 </div>
                 <hr class="text-muted"/>
             </div>
-            <!-- <BCol lg="12" v-else-if="selected.signatory.schedules.length == 0">
+            <BCol lg="12" v-if="selected.signatory.schedules.length == 0">
                 <div @click="openSignatory()" style="cursor: pointer;" class="alert alert-light alert-dismissible bg-light text-body alert-label-icon fade show material-shadow" role="alert">
                     <i class="ri-mark-pen-fill label-icon"></i>No signatory assigned (using default)
                 </div>
             </BCol>  
-            <BCol v-else lg="12" class="mb-4">
-                <div class="table-responsive" style="max-height: calc(100vh - 465px); overflow: auto;">
-                    <table class="table align-middle table-striped table-centered mb-0">
+            <BCol v-else lg="12" style="margin-bottom: -100px;">
+                <div class="table-responsive">
+                    <table class="table align-middle table-striped table-centered mb-n5">
                         <thead class="table-light thead-fixed">
                             <tr class="fs-11">
                                 <th style="width: 3%;"></th>
@@ -89,7 +89,7 @@
                         </tbody>
                     </table>
                 </div>
-            </BCol>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               -->
+            </BCol>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
         </BRow>
     </b-modal>
     <Signatory @success="showModal = false" ref="signatory"/>

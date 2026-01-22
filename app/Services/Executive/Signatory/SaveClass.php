@@ -35,7 +35,24 @@ class SaveClass
     {
         $userId = $request->user_id;
         if($request->is_oic){
-
+            $data = OrgChart::find($request->signatory_id);
+            $data->update(['oic_id' => $request->user_id, 'is_oic' => 1]);
+            if($data){
+                $signatory = $data->designationable;
+                $signatory->update([
+                    'user_id' => $userId
+                ]);
+                $signatory->schedules()->update([
+                    'is_ongoing' => 0
+                ]); 
+                $signatory->schedules()->create([
+                    'start_at' => $request->start_at,
+                    'end_at' => $request->end_at,
+                    'user_id' => $userId,
+                    'is_designated' => 1,
+                    'is_ongoing' => 1,
+                ]); 
+            }
         }else{
             $data = OrgChart::find($request->signatory_id);
             $data->update(['user_id' => $request->user_id]);
@@ -45,44 +62,14 @@ class SaveClass
                 $signatory->update([
                     'user_id' => $userId
                 ]);
-                // $signatory->schedules()->create([
-                //     'start_at' => $request->start_at,
-                //     'end_at' => $request->end_at,
-                //     'user_id' => $userId,
-                //     'is_designated' => 1,
-                //     'is_ongoing' => 1,
-                // ]); 
+                $signatory->schedules()->create([
+                    'start_at' => now(),
+                    'user_id' => $userId,
+                    'is_designated' => 1,
+                    'is_ongoing' => 1,
+                ]); 
             }
         }
-        // if($request->is_oic){
-        //     if(now()->greaterThanOrEqualTo($request->start_at)){
-        //         $data = OrgSignatorySchedule::create($request->all());
-        //         OrgSignatorySchedule::where('signatory_id', $request->signatory_id)
-        //         ->where('id', '!=', $data->id)
-        //         ->update(['is_ongoing' => 0]);
-        //         $chart = OrgChart::find($request->signatory_id);
-        //         $chart->update([
-        //             'oic_id' => $request->user_id,
-        //             'is_oic' => 1,
-        //         ]);
-        //         if($chart){
-        //             $signatory = OrgSignatory::find($request->signatory_id);
-        //             $signatory->update([
-        //                 'oic_id' => $request->user_id,
-        //                 'is_oic' => 1,
-        //             ]);
-        //         }
-        //         $data->update(['is_ongoing' => 0]);
-        //     }else{
-        //         $data = OrgSignatorySchedule::create(
-        //             array_merge($request->all(), ['is_ongoing' => 0])
-        //         );
-        //     }
-        // }else{
-        //     $data = OrgChart::find($request->signatory_id);
-        //     $data->update(['user_id' => $request->user_id]);
-        // }
-
         return [
             'data' => $data,
             'message' => 'Employee created successfully',

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');   
             $table->date('start_at');
-            $table->date('end_at');  
+            $table->date('end_at')->nullable();  
             $table->unsignedInteger('signatory_id');
             $table->foreign('signatory_id')->references('id')->on('org_signatories')->onDelete('cascade');        
             $table->unsignedInteger('user_id');

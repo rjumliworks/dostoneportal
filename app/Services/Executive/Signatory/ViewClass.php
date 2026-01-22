@@ -14,7 +14,7 @@ class ViewClass
             // 'designationable.schedules.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
             'designationable.schedules' => function ($q) {
                 $q->where('is_completed', 0)
-                  ->whereIn('is_ongoing', [0, 1])
+                  ->where('is_ongoing',1)
                   ->where('is_designated', 0)
                   ->whereDate('end_at', '>=', now()->toDateString())
                   ->with([

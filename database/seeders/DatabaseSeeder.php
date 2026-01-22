@@ -89,7 +89,15 @@ class DatabaseSeeder extends Seeder
         //     'created_at' => now(),
         //     'updated_at' => now(),
         // ]);
+
         $this->call(OrgChartsTableSeeder::class);
         $this->call(OrgSignatoriesTableSeeder::class);
+        // $this->call(UsersTableSeeder::class);
+        // $this->call(UserFoldersTableSeeder::class);
+        // $this->call(UserFolderFilesTableSeeder::class);
+        // $this->call(UserOrganizationsTableSeeder::class);
+        // $this->call(UserProfilesTableSeeder::class);
+        // $this->call(UserRolesTableSeeder::class);
+        // $this->call(UserFacesTableSeeder::class);
     }
 }

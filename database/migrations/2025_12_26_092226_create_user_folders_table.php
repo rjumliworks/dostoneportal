@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_folders', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('description')->nullable();
             $table->boolean('is_public')->default(false);
             $table->boolean('is_protected')->default(false);

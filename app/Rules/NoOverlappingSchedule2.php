@@ -32,7 +32,7 @@ class NoOverlappingSchedule2 implements ValidationRule
             })
             // Optional: ignore completed schedules
             ->where('is_completed', 0)
-            ->where('is_designated', 1)
+            ->where('is_designated', 0)
             ->exists();
 
         if ($hasOverlap) {
@@ -40,7 +40,8 @@ class NoOverlappingSchedule2 implements ValidationRule
         }
 
         $hasNonDesignated = OrgSignatorySchedule::where('signatory_id', $this->signatory_id)
-            ->where('is_designated', 0)
+            ->where('is_ongoing',1)
+            ->where('is_designated',0)
             ->where('is_completed', 0)
             ->exists();
 

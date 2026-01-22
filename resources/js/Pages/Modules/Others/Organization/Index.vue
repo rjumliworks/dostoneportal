@@ -94,7 +94,7 @@
                             </div>
                             <div class="col-md-3" style="cursor: pointer;" @click="openView(designations.data[4])">
                                 <div class="card-body border rounded-4 text-center">
-                                    <div class="mb-3 mx-auto">
+                                    <div class="mb-2 mx-auto">
                                         <img :src="(designations.data[4].is_oic) ? designations.data[4].oic_avatar : designations.data[4].avatar" alt="" id="candidate-img" class="avatar-sm img-thumbnail rounded-circle shadow-none">
                                     </div>
                     

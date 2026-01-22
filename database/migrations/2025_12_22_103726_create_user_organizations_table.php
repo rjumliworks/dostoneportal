@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreign('unit_id')->references('id')->on('list_units')->onDelete('cascade');
             $table->unsignedTinyInteger('station_id');
             $table->foreign('station_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->unique();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
