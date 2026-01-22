@@ -114,7 +114,7 @@
                                 <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
                                 <span class="text-start ms-xl-2">
                                     <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $page.props.user.data.name }}</span>
-                                    <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Founder</span>
+                                    <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ $page.props.user.data.position }}</span>
                                 </span>
                             </span>
                         </template>

@@ -48,7 +48,12 @@ class UserController extends Controller
             return inertia('Executive/Users/Index',[
                 'dropdowns' => [
                     'roles' => $this->dropdown->roles(),
-                ]
+                    'divisions' => $this->dropdown->dropdowns('Division'),
+                    'stations' => $this->dropdown->stations(),
+                    'statuses' => $this->dropdown->statuses('Status'),
+                    'employment_statuses' => $this->dropdown->datas('Employment Status')
+                ],
+                'counts' => $this->view->counts()
             ]); 
         }   
     }

@@ -54,6 +54,13 @@
                                     <i class="ri-apps-2-line me-1 align-bottom"></i> All Users
                                     </BLink>
                                 </li>
+                                <li class="nav-item" v-for="(list,index) in counts" v-bind:key="index">
+                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                        <i :class="list.icon" class="me-1 align-bottom"></i>
+                                        {{ list.name }} 
+                                        <BBadge v-if="list.count > 0" :class="(this.index == index) ? 'bg-primary text-white' : 'text-dark bg-primary-subtle'" class="align-middle ms-1">{{list.count}}</BBadge>
+                                    </BLink>
+                                </li>
                             </ul>
                         </div>
                         <div class="flex-shrink-0">
@@ -170,7 +177,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, Activation, Update, Role, Create },
-    props: ['dropdowns'],
+    props: ['dropdowns','counts'],
     data(){
         return {
             lists: [],
@@ -178,13 +185,14 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                agency: null,
-                laboratory: null,
-                facility: null,
-                role: null
+                type: null,
+                status: null,
+                division: null,
+                station: null,
+                unit: null
             },
             index: null,
-            facilities: [],
+            units: [],
             selectedRow: null,
         }
     },
@@ -192,26 +200,23 @@ export default {
        this.fetch();
     },
     watch: {
-        "filter.keyword"(newVal){
-            this.checkSearchStr(newVal)
-        },
-        "filter.agency"(newVal){
-            this.filter.facility = null;
-            if(newVal){
-                this.facilities = newVal.facilities;
+        "filter.division"(newVal){
+            if(!newVal){
+                this.units = [];
+                this.filter.unit = null;
+                this.fetch();
+            }else{
+                this.fetchUnits(newVal);
+                this.fetch();
             }
+        },
+        "filter.station"(newVal){
             this.fetch();
         },
-        "filter.laboratory"(newVal){
-            if(newVal){
-                this.filter.laboratory = newVal;
-            }
+        "filter.unit"(newVal){
             this.fetch();
         },
-        "filter.role"(newVal){
-            if(newVal){
-                this.filter.role = newVal;
-            }
+        "filter.status"(newVal){
             this.fetch();
         }
     },
@@ -224,10 +229,11 @@ export default {
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
-                    agency: this.filter.agency?.value,
-                    facility: this.filter.facility,
-                    laboratory: this.filter.laboratory,
-                    role: this.filter.role?.value,
+                    status: this.filter.status,
+                    type: this.filter.type,
+                    division: this.filter.division,
+                    unit: this.filter.unit,
+                    station: this.filter.station,
                     count: 10, 
                     option: 'list'
                 }
@@ -240,6 +246,23 @@ export default {
                 }
             })
             .catch(err => console.log(err));
+        },
+         fetchUnits(code){
+            axios.get('/search',{
+                params: {
+                    option: 'units',
+                    code: code
+                }
+            })
+            .then(response => {
+                this.units = response.data;
+            })
+            .catch(err => console.log(err));
+        },
+         viewStatus(index,type){
+            this.index = index;
+            this.filter.type = type;
+            this.fetch();
         },
         openActivation(type,data,index){
             this.index = index;

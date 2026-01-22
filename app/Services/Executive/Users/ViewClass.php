@@ -6,6 +6,8 @@ use Hashids\Hashids;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\AuthenticationLog;
+use App\Models\ListData;
+use App\Models\UserOrganization;
 use Spatie\Activitylog\Models\Activity;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\AuthenticationResource;
@@ -15,9 +17,22 @@ use App\Http\Resources\Executive\RoleResource;
 
 class ViewClass
 {
+    public function counts(){
+        $statuses = ListData::where('is_active',1)->where('type','Employment Status')->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'count' => UserOrganization::where('type_id',$item->id)->count()
+            ];
+        });
+        return $statuses;
+    }
+
     public function list($request){
         $data = User::with('profile:user_id,firstname,middlename,lastname,suffix_id,avatar,mobile','profile.suffix')
-        ->with('myroles:role_id,id,user_id,added_by,removed_by,removed_at,created_at,is_active','myroles.role:id,name','myroles.added:id','myroles.added.profile:user_id,firstname,middlename,lastname,suffix_id','myroles.removed:id','myroles.removed.profile:user_id,firstname,middlename,lastname,suffix_id')
+        ->with('myroles:role_id,id,user_id,added_by,removed_by,removed_at,created_at,is_active',
+               'myroles.role:id,name','myroles.added:id','myroles.added.profile:user_id,firstname,middlename,lastname,suffix_id',
+               'myroles.removed:id','myroles.removed.profile:user_id,firstname,middlename,lastname,suffix_id')
         ->when($request->role, function ($query) use ($request) {
             $query->whereHas('myroles', function ($q) use ($request) {
                 $q->when($request->role, function ($q, $role) {
@@ -30,6 +45,13 @@ class ViewClass
                 $sub->whereRaw('LOWER(lastname) LIKE ?', ['%' . strtolower($keyword) . '%']);
             })
             ->orWhere('username', 'like', "%{$keyword}%");
+        })
+        ->whereHas('organization', function ($org) use ($request) {
+            $org->when($request->status, fn($q) => $q->where('status_id', $request->status))
+                ->when($request->type, fn($q) => $q->where('type_id', $request->type))
+                ->when($request->unit, fn($q) => $q->where('unit_id', $request->unit))
+                ->when($request->division, fn($q) => $q->where('division_id', $request->division))
+                ->when($request->station, fn($q) => $q->where('station_id', $request->station));
         })
         ->paginate($request->count);
         return UserResource::collection($data);

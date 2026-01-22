@@ -20,7 +20,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'user' => (\Auth::check()) ? new UserResource(User::with('profile')->where('id',\Auth::user()->id)->first()) : null,
+            'user' => (\Auth::check()) ? new UserResource(User::with('profile','organization.position')->where('id',\Auth::user()->id)->first()) : null,
             'roles' => (\Auth::check()) ? \Auth::user()->roles()->where('user_roles.is_active', 1)->pluck('name') : null,
             'flash' => [
                 'data'    => session('data') ?? null,
