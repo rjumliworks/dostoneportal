@@ -6,8 +6,9 @@ use Illuminate\Database\Seeder;
 
 class ListSalariesTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seeder file.
+     * Auto generated seed file
      *
      * @return void
      */
@@ -321,40 +322,40 @@ class ListSalariesTableSeeder extends Seeder
             30 => 
             array (
                 'id' => 31,
-                'grade' => '18',
-                'amount' => '67688.00',
+                'grade' => '19',
+                'amount' => '70984.00',
                 'is_regular' => 0,
-                'year' => '2025',
+                'year' => '2026',
                 'created_at' => '2024-08-17 12:03:41',
                 'updated_at' => '2024-08-17 12:03:41',
             ),
             31 => 
             array (
                 'id' => 32,
-                'grade' => '15',
-                'amount' => '52272.00',
+                'grade' => '18',
+                'amount' => '64582.00',
                 'is_regular' => 0,
-                'year' => '2025',
+                'year' => '2026',
                 'created_at' => '2024-08-17 12:03:41',
                 'updated_at' => '2024-08-17 12:03:41',
             ),
             32 => 
             array (
                 'id' => 33,
-                'grade' => '14',
-                'amount' => '27811.00',
+                'grade' => '17',
+                'amount' => '59474.00',
                 'is_regular' => 0,
-                'year' => '2025',
+                'year' => '2026',
                 'created_at' => '2024-08-17 12:03:41',
                 'updated_at' => '2024-08-17 12:03:41',
             ),
             33 => 
             array (
                 'id' => 34,
-                'grade' => '14',
-                'amount' => '15600.00',
+                'grade' => '16',
+                'amount' => '54833.00',
                 'is_regular' => 0,
-                'year' => '2025',
+                'year' => '2026',
                 'created_at' => '2024-08-17 12:03:41',
                 'updated_at' => '2024-08-17 12:03:41',
             ),
@@ -362,24 +363,154 @@ class ListSalariesTableSeeder extends Seeder
             array (
                 'id' => 35,
                 'grade' => '15',
-                'amount' => '37584.00',
+                'amount' => '50614.00',
                 'is_regular' => 0,
-                'year' => '2025',
+                'year' => '2026',
                 'created_at' => '2024-08-17 12:03:41',
                 'updated_at' => '2024-08-17 12:03:41',
             ),
             35 => 
             array (
                 'id' => 36,
-                'grade' => '16',
-                'amount' => '41305.00',
+                'grade' => '14',
+                'amount' => '46517.00',
                 'is_regular' => 0,
-                'year' => '2025',
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            36 => 
+            array (
+                'id' => 37,
+                'grade' => '13',
+                'amount' => '43350.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            37 => 
+            array (
+                'id' => 38,
+                'grade' => '12',
+                'amount' => '40736.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            38 => 
+            array (
+                'id' => 39,
+                'grade' => '11',
+                'amount' => '38046.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            39 => 
+            array (
+                'id' => 40,
+                'grade' => '10',
+                'amount' => '32300.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            40 => 
+            array (
+                'id' => 41,
+                'grade' => '9',
+                'amount' => '29195.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            41 => 
+            array (
+                'id' => 42,
+                'grade' => '8',
+                'amount' => '26908.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            42 => 
+            array (
+                'id' => 43,
+                'grade' => '7',
+                'amount' => '25097.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            43 => 
+            array (
+                'id' => 44,
+                'grade' => '6',
+                'amount' => '23659.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            44 => 
+            array (
+                'id' => 45,
+                'grade' => '5',
+                'amount' => '22297.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            45 => 
+            array (
+                'id' => 46,
+                'grade' => '4',
+                'amount' => '21007.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            46 => 
+            array (
+                'id' => 47,
+                'grade' => '3',
+                'amount' => '19783.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            47 => 
+            array (
+                'id' => 48,
+                'grade' => '2',
+                'amount' => '18626.00',
+                'is_regular' => 0,
+                'year' => '2026',
+                'created_at' => '2024-08-17 12:03:41',
+                'updated_at' => '2024-08-17 12:03:41',
+            ),
+            48 => 
+            array (
+                'id' => 49,
+                'grade' => '1',
+                'amount' => '17561.00',
+                'is_regular' => 0,
+                'year' => '2026',
                 'created_at' => '2024-08-17 12:03:41',
                 'updated_at' => '2024-08-17 12:03:41',
             ),
         ));
-
+        
         
     }
 }

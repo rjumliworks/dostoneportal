@@ -21,7 +21,9 @@ Route::post('/recognize', [App\Http\Controllers\Public\AttendanceController::cla
 
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    
     Route::resource('/dtr', App\Http\Controllers\Portal\DtrController::class);
+    Route::resource('/requests', App\Http\Controllers\Portal\RequestController::class);
 });
 
 Route::middleware(['role:Document Management Officer'])->group(function () {

@@ -13,7 +13,6 @@ class SaveClass
         $data->tags()->create([
             'user_id' => $request->user_id,
             'division_id' => $request->division_id,
-            'signatory_id' => 1,
             'status_id' => 36,
         ]);
         return [

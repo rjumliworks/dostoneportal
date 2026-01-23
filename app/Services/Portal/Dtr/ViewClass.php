@@ -5,7 +5,7 @@ namespace App\Services\Portal\Dtr;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Schedule;
-// use App\Models\Request;
+use App\Models\Request;
 use App\Http\Resources\Portal\Dtr\TimeResource;
 
 class ViewClass
@@ -83,58 +83,58 @@ class ViewClass
          *  OFFICIAL TRAVEL
          * =========================
          */
-        // $officialTravel = [];
-        // $travels = Request::where('type_id', 156)
-        //     ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-        //     ->whereHas('dates', function ($q) use ($start, $end) {
-        //         $q->whereBetween('start', [$start, $end])
-        //             ->orWhereBetween('end', [$start, $end])
-        //             ->orWhere(function ($q2) use ($start, $end) {
-        //                 $q2->where('start', '<', $start)
-        //                     ->where('end', '>', $end);
-        //             });
-        //     })
-        //     ->with('dates', 'detail', 'location', 'location.municipality')
-        //     ->get();
+        $officialTravel = [];
+        $travels = Request::where('type_id', 156)
+            ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
+            ->whereHas('dates', function ($q) use ($start, $end) {
+                $q->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function ($q2) use ($start, $end) {
+                        $q2->where('start', '<', $start)
+                            ->where('end', '>', $end);
+                    });
+            })
+            ->with('dates', 'detail', 'location', 'location.municipality')
+            ->get();
 
-        // foreach ($travels as $travel) {
-        //     foreach ($travel->dates as $travelDate) {
-        //         $period2 = \Carbon\CarbonPeriod::create($travelDate->start, $travelDate->end ?? $travelDate->start);
-        //         foreach ($period2 as $day) {
-        //             $officialTravel[$day->format('Y-m-d')] =
-        //                 ($travel->location->address . ', ' . $travel->location->municipality->name)
-        //                 ?? 'Official Travel';
-        //         }
-        //     }
-        // }
+        foreach ($travels as $travel) {
+            foreach ($travel->dates as $travelDate) {
+                $period2 = \Carbon\CarbonPeriod::create($travelDate->start, $travelDate->end ?? $travelDate->start);
+                foreach ($period2 as $day) {
+                    $officialTravel[$day->format('Y-m-d')] =
+                        ($travel->location->address . ', ' . $travel->location->municipality->name)
+                        ?? 'Official Travel';
+                }
+            }
+        }
 
         /**
          * =========================
          *  OFFICIAL BUSINESS
          * =========================
          */
-        // $officialBusiness = [];
-        // $obs = Request::where('type_id', 192)
-        //     ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-        //     ->whereHas('dates', function ($q) use ($start, $end) {
-        //         $q->whereBetween('start', [$start, $end])
-        //             ->orWhereBetween('end', [$start, $end])
-        //             ->orWhere(function ($q2) use ($start, $end) {
-        //                 $q2->where('start', '<', $start)
-        //                     ->where('end', '>', $end);
-        //             });
-        //     })
-        //     ->with('dates', 'event')
-        //     ->get();
+        $officialBusiness = [];
+        $obs = Request::where('type_id', 192)
+            ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
+            ->whereHas('dates', function ($q) use ($start, $end) {
+                $q->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function ($q2) use ($start, $end) {
+                        $q2->where('start', '<', $start)
+                            ->where('end', '>', $end);
+                    });
+            })
+            ->with('dates', 'event')
+            ->get();
 
-        // foreach ($obs as $ob) {
-        //     foreach ($ob->dates as $obDate) {
-        //         $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
-        //         foreach ($period3 as $day) {
-        //             $officialBusiness[$day->format('Y-m-d')] = $ob->event->title ?? 'Official Business';
-        //         }
-        //     }
-        // }
+        foreach ($obs as $ob) {
+            foreach ($ob->dates as $obDate) {
+                $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
+                foreach ($period3 as $day) {
+                    $officialBusiness[$day->format('Y-m-d')] = $ob->event->title ?? 'Official Business';
+                }
+            }
+        }
 
         /**
          * =========================
@@ -162,13 +162,13 @@ class ViewClass
                 $status = 'Holiday';
                 $title = $holidays[$dateStr];
             } 
-            // elseif (isset($officialTravel[$dateStr])) {
-            //     $status = 'Official Travel';
-            //     $title = $officialTravel[$dateStr];
-            // } elseif (isset($officialBusiness[$dateStr])) {
-            //     $status = 'Official Business';
-            //     $title = $officialBusiness[$dateStr];
-            // }
+            elseif (isset($officialTravel[$dateStr])) {
+                $status = 'Official Travel';
+                $title = $officialTravel[$dateStr];
+            } elseif (isset($officialBusiness[$dateStr])) {
+                $status = 'Official Business';
+                $title = $officialBusiness[$dateStr];
+            }
 
             $dtr = $item->dtrs->firstWhere('date', $dateStr);
             $forceCompleted = in_array($status, ['Official Travel', 'Official Business']);

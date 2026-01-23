@@ -163,7 +163,6 @@ export default {
                 dateFormat: 'Y-m-d',
                 altInput: true,
                 altFormat: 'F j, Y',
-                minDate: new Date().setDate(new Date().getDate() + 1),
                 disable: [
                     function(date) {
                         return (date.getDay() === 0 || date.getDay() === 6);

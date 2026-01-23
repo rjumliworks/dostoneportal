@@ -10,6 +10,13 @@
                 </Link>
             </li>
             <li class="nav-item">
+                <Link href="/requests" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Portal/Requests') }">
+                <i class="ri-list-check-2"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">My Requests</span>
+                </Link>
+            </li>
+            <li class="nav-item">
                 <Link href="/dtr" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Portal/Dtr') }">
                 <i class="ri-alarm-fill"></i>

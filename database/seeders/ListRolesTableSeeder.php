@@ -6,8 +6,9 @@ use Illuminate\Database\Seeder;
 
 class ListRolesTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seeder file.
+     * Auto generated seed file
      *
      * @return void
      */
@@ -58,8 +59,18 @@ class ListRolesTableSeeder extends Seeder
                 'created_at' => '2025-10-11 14:15:07',
                 'updated_at' => '2025-10-11 14:15:07',
             ),
+            4 => 
+            array (
+                'id' => 5,
+                'name' => 'Document Management Officer',
+                'type' => 'Staff',
+                'is_active' => 1,
+                'definition' => 'Assists in processing HR-related tasks, maintaining employee records, and supporting HR officers.',
+                'created_at' => '2026-01-23 10:32:43',
+                'updated_at' => '2026-01-23 10:32:43',
+            ),
         ));
-
+        
         
     }
 }
