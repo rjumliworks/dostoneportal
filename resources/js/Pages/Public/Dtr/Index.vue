@@ -96,7 +96,7 @@
                                         </h1>
                                         <div v-if="status == 'New'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-success-subtle">
-                                                <div class="d-flex mb-n3">
+                                                <div class="d-flex" style="margin-bottom: -12px;">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div style="height:2.5rem;width:2.5rem;">
                                                             <img :src="employee.avatar" alt="user-img" class="avatar-sm rounded-circle mt-n2">
@@ -115,7 +115,7 @@
                                         </div>
                                           <div v-else-if="status == 'Success'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-danger-subtle">
-                                                <div class="d-flex mb-n3">
+                                                <div class="d-flex" style="margin-bottom: -12px;">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div style="height:2.5rem;width:2.5rem;">
                                                             <img :src="employee.avatar" alt="user-img" class="avatar-sm rounded-circle mt-n2">
@@ -289,11 +289,11 @@ export default {
             }
 
             // Start a new 5-second timer
-            this.statusTimeout = setTimeout(() => {
-                this.status = null;
-                this.employee = null;
-                this.statusTimeout = null;
-            }, 10000);
+            // this.statusTimeout = setTimeout(() => {
+            //     this.status = null;
+            //     this.employee = null;
+            //     this.statusTimeout = null;
+            // }, 10000);
         },
         syncTableHeight(force = false) {
             this.$nextTick(() => {
