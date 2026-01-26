@@ -82,15 +82,37 @@ export default {
             var fileInput = document.querySelector(".profile-img-file-input");
             var preview = document.querySelector(".user-profile-image");
             var file = fileInput.files[0];
+
+            if (!file) return;
+
+             // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Only JPEG or PNG images are allowed.");
+                fileInput.value = '';
+                return;
+            }
+
+            // Validate file size (2MB max)
+            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+            if (file.size > maxSize) {
+                alert("The image must be less than 2MB.");
+                fileInput.value = '';
+                return;
+            }
+
+
             this.form.image = file;
             var reader = new FileReader();
 
             reader.addEventListener("load", () => { 
                 preview.src = reader.result;
-                this.form.post('/profile', {
-                    errorBag: 'updateProfileInformation',
+                this.form.post('/photo', {
                     preserveScroll: true,
-                    onSuccess: () => '',
+                    onSuccess: () => {
+                        this.uploaded = true;
+                        this.hasAvatar = true;
+                    },
                 });
             }, false);
 
