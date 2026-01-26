@@ -26,6 +26,12 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('/requests', App\Http\Controllers\Portal\RequestController::class);
 });
 
+Route::middleware(['role:Asset Management Officer'])->group(function () {
+    Route::resource('/buildings', App\Http\Controllers\Assets\BuildingController::class);
+    Route::resource('/equipments', App\Http\Controllers\Assets\EquipmentController::class);
+    Route::resource('/vehicles', App\Http\Controllers\Assets\VehicleController::class);
+});
+
 Route::middleware(['role:Document Management Officer'])->group(function () {
     Route::resource('/events', App\Http\Controllers\Trace\EventController::class);
 });
@@ -38,7 +44,9 @@ Route::middleware(['role:Human Resource Officer'])->group(function () {
     Route::get('/payroll/{type}/{code}', [App\Http\Controllers\HumanResource\PayrollController::class, 'view']);
     Route::resource('/credits', App\Http\Controllers\HumanResource\CreditController::class);
 });
+
 Route::resource('/surveys', App\Http\Controllers\HumanResource\SurveyController::class);
+Route::resource('/approvals', App\Http\Controllers\Portal\ApprovalController::class);
 
 Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);

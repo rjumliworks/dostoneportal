@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\ListRole;
 use App\Models\ListUnit;
@@ -12,6 +13,7 @@ use App\Models\ListSalary;
 use App\Models\ListLeave;
 use App\Models\ListDeduction;
 use App\Models\ListPosition;
+use App\Models\AssetVehicle;
 use App\Models\LocationRegion;
 use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
@@ -49,6 +51,41 @@ class DropdownClass
     //     });
     //     return $data;
     // }
+
+    public function vehicles($date){
+        if(strpos($date, ' to ') !== false) {
+            [$start, $end] = explode(' to ', $date);
+        } else {
+            $start = $end = $date;
+        }
+
+        $start = Carbon::parse($start)->startOfDay();
+        $end = Carbon::parse($end)->endOfDay();
+
+        $vehicles = AssetVehicle::with('driver.organization.division')
+        ->whereDoesntHave('reservations.request.dates', function ($query) use ($start, $end) {
+            $query->where(function ($q) use ($start, $end) {
+                $q->whereBetween('start', [$start, $end])
+                ->orWhereBetween('end', [$start, $end])
+                ->orWhere(function ($q2) use ($start, $end) {
+                    $q2->where('start', '<=', $start)
+                        ->where('end', '>=', $end);
+                });
+            });
+        })
+        ->where('is_available',1)
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'driver_id' => $item->driver_id,
+                'division_id' => ($item->driver_id) ? optional($item->driver->organization->division)->id : null,
+            ];
+        });
+
+        return $vehicles;
+    }
+
     public function leaves(){
        $data = ListLeave::where('is_active', 1)->get()->map(function ($item) {
             if ($item->requires_balance === 1) {

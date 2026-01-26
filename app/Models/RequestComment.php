@@ -12,7 +12,7 @@ class RequestComment extends Model
         'request_id',
         'user_id',
         'content',
-         'commentable_id',   // <-- must be here
+        'commentable_id',   // <-- must be here
         'commentable_type',
     ];
 

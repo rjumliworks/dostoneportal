@@ -68,7 +68,7 @@ class UserProfile extends Model
     public function setAttribute($key, $value)
     {
         if (in_array($key, ['firstname', 'middlename', 'lastname','mobile']) && !is_null($value)) {
-            $value = ucfirst(strtolower($value));
+            $value = ucwords(strtolower($value));
         }
 
         if (in_array($key, $this->encryptable) && !is_null($value) && $value !== '') {
@@ -83,7 +83,7 @@ class UserProfile extends Model
         $value = parent::getAttribute($key);
         if (in_array($key, $this->encryptable) && !is_null($value)) {
             try {
-                return Crypt::decryptString($value);
+                return ucwords(Crypt::decryptString($value));
             } catch (\Throwable $e) {
                 return $value;
             }

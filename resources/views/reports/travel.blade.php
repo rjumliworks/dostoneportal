@@ -264,7 +264,7 @@
                         <td width="33.3%" style="vertical-align: bottom; position: relative; height: 50px; text-align: center;">
                             <div style="position: relative; height:50px;">
                                 {{-- Signature container --}}
-                                <div style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);">
+                                <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
                                     @if($sign['division'] != 'Office of the Regional Director')
                                         @if(!empty($sign['recommended']['signature']))
                                             <img 
@@ -294,7 +294,7 @@
                         <td width="33.3%" style="vertical-align: bottom; position: relative; height: 50px; text-align: center;">
                             <div style="position: relative; height: 50px;">
                                 {{-- Signature container --}}
-                                <div style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);">
+                                <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
                                      @if(!empty($sign['approved']['signature']))
                                         <img 
                                             src="{{ public_path('storage/profile-signatures/' . $sign['approved']['signature']) }}" 

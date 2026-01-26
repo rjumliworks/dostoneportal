@@ -204,4 +204,26 @@ class User extends Authenticatable  implements MustVerifyEmail
         })
         ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
     }
+
+    protected $appends = ['signatory'];
+
+    public function getSignatoryAttribute()
+    {
+        $sig = $this->oic()->with('designationable.designation:id,name,others','designationable.assigned:id,name,others')->where('is_oic', 1)->where('is_active', 1)->first();
+        if(!$sig){
+            $sig = $this->signa()->with('designationable.designation:id,name,others','designationable.assigned:id,name,others')->where('is_oic', 0)->where('is_active', 1)->first();
+        }
+        return $sig;
+    }
+
+    public function signa()
+    {
+        return $this->hasOne('App\Models\OrgSignatory', 'user_id');
+    }
+
+    public function oic()
+    {
+        return $this->hasOne('App\Models\OrgSignatory', 'oic_id');
+    }
+
 }

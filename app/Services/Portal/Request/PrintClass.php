@@ -18,17 +18,16 @@ class PrintClass
 
         $data = RequestReport::where('request_id', $id)->value('information');
         $data = json_decode($data,true);
-       $url = request()->getSchemeAndHttpHost() . '/verification/' . $request->key;
-     $result = new Builder(
-    writer: new PngWriter(),
-    data: $url,
-    size: 300,
-    margin: 10,
-);
+        $url = request()->getSchemeAndHttpHost() . '/verification/' . $request->key;
+        $result = new Builder(
+            writer: new PngWriter(),
+            data: $url,
+            size: 300,
+            margin: 10,
+        );
 
-$qrCodeImageString = $result->build()->getString();
-
-$base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+        $qrCodeImageString = $result->build()->getString();
+        $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
 
         $array = [
             'qrCodeImage' => $base64Image,

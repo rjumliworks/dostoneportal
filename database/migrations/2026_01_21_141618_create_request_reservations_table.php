@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->unsignedTinyInteger('vehicle_id');
-            $table->foreign('vehicle_id')->references('id')->on('list_vehicles')->onDelete('cascade');
+            $table->foreign('vehicle_id')->references('id')->on('asset_vehicles')->onDelete('cascade');
             $table->unsignedInteger('driver_id');
             $table->foreign('driver_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('request_id');

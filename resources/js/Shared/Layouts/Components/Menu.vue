@@ -9,6 +9,15 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                 </Link>
             </li>
+            <template v-if="$page.props.user.data.signatory">
+                <li class="nav-item">
+                    <Link href="/approvals" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/Portal/Approvals') }">
+                    <i class="ri-ball-pen-line"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">For Approval</span>
+                    </Link>
+                </li>
+            </template>
             <li class="nav-item">
                 <Link href="/requests" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Portal/Requests') }">
@@ -113,10 +122,37 @@
                     </Link>
                 </li>
             </template>
+            <template v-if="$page.props.roles.includes('Asset Management Officer')">
+                <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Assets Management</span>
+                </li>
+                <li class="nav-item">
+                    <Link href="/vehicles" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Assets/Vehicles') }">
+                    <i class="ri-car-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Vehicles</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/buildings" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Assets/Buildings') }">
+                    <i class="ri-government-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Buildings</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/equipments" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Assets/Equipments') }">
+                    <i class="ri-mac-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Equipments</span>
+                    </Link>
+                </li>
+            </template>
             <template v-if="$page.props.roles.includes('Administrator')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
-                    <span data-key="t-menu">Laboratory Modules</span>
+                    <span data-key="t-menu">Executive Modules</span>
                 </li>
                 <li class="nav-item">
                     <Link href="/users" class="nav-link menu-link"

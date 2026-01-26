@@ -14,7 +14,7 @@ class RequestReservation extends Model
 
     public function vehicle()
     {
-        return $this->belongsTo('App\Models\ListVehicle', 'vehicle_id', 'id');
+        return $this->belongsTo('App\Models\AssetVehicle', 'vehicle_id', 'id');
     }
 
     public function driver()

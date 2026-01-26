@@ -26,6 +26,7 @@ class UserResource extends JsonResource
             'mobile' => $this->profile->mobile,
             'profile_id' => $this->profile->id,
             'position' => $this->organization->position->name,
+            'signatory' => $this->signatory,
             'is_active' => $this->is_active,
             'must_change' => $this->must_change,
             'two_factor_enabled' => ($this->two_factor_secret) ? true : false,
