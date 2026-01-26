@@ -1,78 +1,183 @@
 <template>
-<div class="">
-    <form @submit.prevent="submit()" class="customform">
-        <BCard no-body>
-            <BCardHeader>
-                <BCardTitle>Profile Information</BCardTitle>
-                <p class="text-muted mb-0">Update your account's profile information and email address.</p>
-            </BCardHeader>
-            <BCardBody class="p-4" style="height: calc(100vh - 300px); overflow: auto;">
-                <form class="customform">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <TextInput id="email" v-model="form.username" type="text" class="form-control"  :readonly="true"/>                
-                                <InputLabel for="username" value="Username" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <TextInput id="email" v-model="form.email" type="email" class="form-control" :readonly="true"/>                
-                                <InputLabel for="email" value="Email" />
-                            </div>
-                        </div>
-                        <div class="col-md-12 mb-1 mt-1">
-                            <hr class="text-muted mt-0 mb-0"/>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <TextInput id="firstname" v-model="form.firstname" type="text" class="form-control" :readonly="false"/>                
-                                <InputLabel for="firstname" value="Firstname" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <TextInput id="middlename" v-model="form.middlename" type="text" class="form-control" :readonly="false"/>                
-                                <InputLabel for="middlename" value="Middlename" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <TextInput id="lastname" v-model="form.lastname" type="text" class="form-control" :readonly="false"/>                
-                                <InputLabel for="lastname" value="Lastname" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <TextInput id="suffix" v-model="form.suffix" type="text" class="form-control" :readonly="false"/>                
-                                <InputLabel for="suffix" value="Suffix" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating mt-n1">
-                                <TextInput id="mobile" v-model="form.mobile" type="text" class="form-control" :readonly="false"/>                
-                                <InputLabel for="mobile" value="Mobile" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating mt-n1">
-                                <!-- <Multiselect :options="['Male','Female']" v-model="form.gender" :message="form.errors.gender" placeholder="Select Gender"/> -->
-                                <select v-model="form.sex" class="form-select" id="floatingSelect">
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                                <InputLabel for="gender" value="Gender" />
-                                <!-- <InputError :message="form.errors.gender" class="mt-2" /> -->
+<div class="card bg-light-subtle shadow-none border">
+    <div class="card-header bg-light-subtle">
+        <div class="d-flex mb-n3">
+            <div class="flex-shrink-0 me-3">
+                <div style="height:2.5rem;width:2.5rem;">
+                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                        <i class="ri-alarm-fill text-primary fs-24"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="mb-0 fs-14"><span class="text-body">Profile Information</span></h5>
+                <p class="text-muted text-truncate-two-lines fs-12">Update your account's profile information and email address.</p>
+            </div>
+            <div class="flex-shrink-0" style="width: 45%;">
+                
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 291px); overflow: auto;">
+        <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
+            <form class="customform">
+                <div class="row g-2 mt-0 mb-1">
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Full Name :</p>
+                                    <h5 class="mb-0 fs-12">{{form.firstname}}</h5>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </form>
-                <div class="d-flex justify-content-end" style="bottom: 0;">
-                    <BButton variant="primary w-lg float-end" type="submit" :disabled="form.processing">Save</BButton>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Middle Name :</p>
+                                    <h5 class="mb-0 fs-12">{{form.middlename}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Last Name :</p>
+                                    <h5 class="mb-0 fs-12">{{form.lastname}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Suffix :</p>
+                                    <h5 class="mb-0 fs-12">{{(form.suffix) ? form.suffix : '-'}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-mail-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Username :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.username }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-mail-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Email :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.email }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-phone-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Contact no. :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.mobile }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-heart-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Sex :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.sex }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </BCardBody>
-        </BCard>
-    </form>
+            </form>
+        </div>
+        <hr class="text-muted"/>
+        <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
+            <form class="customform">
+                <div class="row g-2 mt-0 mb-1">
+                    <div class="col-sm-6">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-road-map-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Home Address :</p>
+                                    <h5 class="mb-0 fs-12">{{form.firstname}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-map-pin-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Permanent Address :</p>
+                                    <h5 class="mb-0 fs-12">{{form.middlename}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-contacts-book-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">In case of emergency :</p>
+                                    <h5 class="mb-0 fs-12">{{form.middlename}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </template>
 <script>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Spatie\Activitylog\Models\Activity;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -75,6 +76,11 @@ class User extends Authenticatable  implements MustVerifyEmail
     public function organization()
     {
         return $this->hasOne('App\Models\UserOrganization', 'user_id');
+    }
+
+    public function information()
+    {
+        return $this->hasOne('App\Models\UserInformation', 'user_id');
     }
 
     public function academics()
@@ -171,5 +177,31 @@ class User extends Authenticatable  implements MustVerifyEmail
         ->useLogName('User')
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();
+    }
+
+     public function activities()
+    {
+        $this->loadMissing(['addresses','information','profile','organization']);
+
+        $profile = $this->profile?->id;
+        $organization = $this->organization?->id;
+        $information = $this->information?->id;
+        $addressIds = $this->addresses->pluck('id')->toArray();
+
+        return Activity::with(['causer:id','causer.profile:user_id,firstname,lastname,middlename,suffix_id']) // 👈 eager load here
+        ->where(function ($query) use ($addressIds, $organization, $information, $profile) {
+            $query->where('subject_type', User::class)->where('subject_id', $this->id);
+            $query->orWhere('subject_type', UserProfile::class)->where('subject_id', $profile);
+            $query->orWhere('subject_type', UserInformation::class)->where('subject_id', $information);
+            $query->orWhere('subject_type', UserOrganization::class)->where('subject_id', $organization);
+
+            if ($addressIds) {
+                $query->orWhere(function ($q) use ($addressIds) {
+                    $q->where('subject_type', UserAddress::class)
+                      ->whereIn('subject_id', $addressIds);
+                });
+            }
+        })
+        ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
     }
 }

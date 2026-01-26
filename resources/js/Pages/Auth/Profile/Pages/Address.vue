@@ -1,29 +1,183 @@
 <template>
-<div class="">
-    <form @submit.prevent="submit()" class="customform">
-        <BCard no-body>
-            <BCardHeader>
-                <BCardTitle>Address Details</BCardTitle>
-                <p class="text-muted mb-0">Update your account's profile information and email address.</p>
-            </BCardHeader>
-            <BCardBody class="p-4" style="height: calc(100vh - 300px); overflow: auto;">
-                <div class="table-responsive">
-                    <table class="table table-nowrap align-middle mb-0">
-                        <thead class="table-light">
-                            <tr class="fs-11">
-                                <th style="width: 4%;"></th>
-                                <th>Address</th>
-                                <th style="width: 17%;" class="text-center">Barangay</th>
-                                <th style="width: 20%;" class="text-center">Municipality</th>
-                                <th style="width: 20%;" class="text-center">Province</th>
-                                <th style="width: 15%;" class="text-center">Region</th>
-                            </tr>
-                        </thead>
-                    </table>
+<div class="card bg-light-subtle shadow-none border">
+    <div class="card-header bg-light-subtle">
+        <div class="d-flex mb-n3">
+            <div class="flex-shrink-0 me-3">
+                <div style="height:2.5rem;width:2.5rem;">
+                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                        <i class="ri-alarm-fill text-primary fs-24"></i>
+                    </span>
                 </div>
-            </BCardBody>
-        </BCard>
-    </form>
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="mb-0 fs-14"><span class="text-body">Profile Information</span></h5>
+                <p class="text-muted text-truncate-two-lines fs-12">Update your account's profile information and email address.</p>
+            </div>
+            <div class="flex-shrink-0" style="width: 45%;">
+                
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 291px); overflow: auto;">
+        <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
+            <form class="customform">
+                <div class="row g-2 mt-0 mb-1">
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Full Name :</p>
+                                    <h5 class="mb-0 fs-12">{{form.firstname}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Middle Name :</p>
+                                    <h5 class="mb-0 fs-12">{{form.middlename}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Last Name :</p>
+                                    <h5 class="mb-0 fs-12">{{form.lastname}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-user-2-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Suffix :</p>
+                                    <h5 class="mb-0 fs-12">{{(form.suffix) ? form.suffix : '-'}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-mail-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Username :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.username }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-mail-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Email :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.email }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-phone-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Contact no. :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.mobile }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-heart-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Sex :</p>
+                                    <h5 class="mb-0 fs-12">{{ form.sex }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr class="text-muted"/>
+        <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
+            <form class="customform">
+                <div class="row g-2 mt-0 mb-1">
+                    <div class="col-sm-6">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-road-map-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Home Address :</p>
+                                    <h5 class="mb-0 fs-12">{{form.firstname}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-map-pin-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">Permanent Address :</p>
+                                    <h5 class="mb-0 fs-12">{{form.middlename}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="p-1 border border-dashed bg-white rounded">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-2">
+                                    <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-contacts-book-fill"></i></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="text-muted mb-0 fs-12">In case of emergency :</p>
+                                    <h5 class="mb-0 fs-12">{{form.middlename}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </template>
 <script>

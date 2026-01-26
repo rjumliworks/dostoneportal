@@ -3,6 +3,7 @@
 namespace App\Services\Profile;
 
 use Illuminate\Support\Carbon;
+use App\Models\User;
 use App\Models\AuthenticationLog;
 use Spatie\Activitylog\Models\Activity;
 use App\Http\Resources\ActivityResource;
@@ -11,13 +12,14 @@ use App\Http\Resources\AuthenticationResource;
 class ViewClass
 {
     public function authenticationlogs($request){
-        dd('wew');
         $data = AuthenticationLog::with('user.profile')->where('user_id',\Auth::user()->id)->paginate($request->count);
         return AuthenticationResource::collection($data);
     }
 
-    public function activitylogs($request){
-        $data = Activity::with('causer.profile')->orderBy('created_at','DESC')->paginate($request->count);
+    public function activitylogs($request)
+    {
+        $user = User::findOrFail(\Auth::user()->id);
+        $data = $user->activities()->paginate(15);
         return ActivityResource::collection($data);
     }
 
