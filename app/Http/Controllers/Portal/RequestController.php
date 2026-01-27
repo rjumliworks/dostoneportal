@@ -146,6 +146,9 @@ class RequestController extends Controller
                 case 'overtime':
                     return $this->save->overtime($request);
                 break;
+                case 'document':
+                    return $this->save->document($request);
+                break;
             }
         });
         

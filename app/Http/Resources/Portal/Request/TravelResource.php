@@ -27,6 +27,7 @@ class TravelResource extends JsonResource
             'request_id' => $this->request->id,
             'code' => $this->request->code,
             'type' => $this->request->type->name,
+            'documents' => $this->request->documents,
             'purpose' => $this->request->detail->purpose,
             'remarks' => $this->request->detail->remarks,
             'start' => $this->request->dates[0]->start,

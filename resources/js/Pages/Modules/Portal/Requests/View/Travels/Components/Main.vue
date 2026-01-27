@@ -133,7 +133,7 @@
                                             </div>
                                         </div>
                                     </template>
-                                     <Signatories :information="information" :statuses="information.statuses" v-if="menu == 'Activities'" />
+                                    <Signatories :information="information" :statuses="information.statuses" v-if="menu == 'Activities'" />
                                     <Attachment :information="information" :attachments="attachments" v-if="menu == 'Documents'" />
                                 </div>
                             </transition>

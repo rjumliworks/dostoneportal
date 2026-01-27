@@ -19,6 +19,11 @@ class Request extends Model
         'user_id'
     ];
 
+    public function documents()
+    {
+        return $this->hasMany('App\Models\RequestDocument', 'request_id');
+    }
+
     public function reservation()
     {
         return $this->hasOne('App\Models\RequestReservation', 'request_id');

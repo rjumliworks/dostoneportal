@@ -26,6 +26,7 @@ class ShowClass
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.type',
+            'request.documents.type','request.documents.status',
             'request.dates',
             'request.detail',
             'request.user:id',

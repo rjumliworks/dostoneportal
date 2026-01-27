@@ -27,6 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('request_id');
             $table->foreign('request_id')->references('id')->on('requests')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['type_id', 'request_id']);
         });
     }
 
