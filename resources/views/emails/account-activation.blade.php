@@ -32,7 +32,7 @@
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                     <tr>
                         <td style="vertical-align: middle; width: auto; padding-right: 20px;">
-                            <img src="{{ asset('DOST LOGO.png') }}" alt="DOST Logo"
+                            <img src="{{ asset('images/logo-sm.png') }}" alt="DOST Logo"
                                 style="max-width: 100px; height: auto; display: block;">
                         </td>
                         <td style="vertical-align: middle; width: auto; text-align: left;">
