@@ -288,12 +288,11 @@ export default {
                 clearTimeout(this.statusTimeout);
             }
 
-            // Start a new 5-second timer
-            // this.statusTimeout = setTimeout(() => {
-            //     this.status = null;
-            //     this.employee = null;
-            //     this.statusTimeout = null;
-            // }, 10000);
+            this.statusTimeout = setTimeout(() => {
+                this.status = null;
+                this.employee = null;
+                this.statusTimeout = null;
+            }, 15000);
         },
         syncTableHeight(force = false) {
             this.$nextTick(() => {
