@@ -6,8 +6,9 @@ use Illuminate\Database\Seeder;
 
 class ListStatusesTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seeder file.
+     * Auto generated seed file
      *
      * @return void
      */
@@ -491,8 +492,30 @@ class ListStatusesTableSeeder extends Seeder
                 'icon' => 'n/a',
                 'is_active' => 1,
             ),
+            43 => 
+            array (
+                'id' => 44,
+                'name' => 'Active',
+                'classification' => 'Visitor',
+                'type' => 'n/a',
+                'color' => 'text-success',
+                'bg' => 'bg-success',
+                'icon' => 'n/a',
+                'is_active' => 1,
+            ),
+            44 => 
+            array (
+                'id' => 45,
+                'name' => 'Inactive',
+                'classification' => 'Visitor',
+                'type' => 'n/a',
+                'color' => 'text-danger',
+                'bg' => 'bg-danger',
+                'icon' => 'n/a',
+                'is_active' => 1,
+            ),
         ));
-
+        
         
     }
 }

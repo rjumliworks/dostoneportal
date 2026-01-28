@@ -6,8 +6,9 @@ use Illuminate\Database\Seeder;
 
 class ListDataTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seeder file.
+     * Auto generated seed file
      *
      * @return void
      */
@@ -1362,8 +1363,29 @@ class ListDataTableSeeder extends Seeder
                 'type' => 'Request',
                 'is_active' => 1,
             ),
+            192 => 
+            array (
+                'id' => 193,
+                'name' => 'On-the-Job Training',
+                'type' => 'Visitor',
+                'is_active' => 1,
+            ),
+            193 => 
+            array (
+                'id' => 194,
+                'name' => 'Immersion',
+                'type' => 'Visitor',
+                'is_active' => 1,
+            ),
+            194 => 
+            array (
+                'id' => 195,
+                'name' => 'Visitor',
+                'type' => 'Visitor',
+                'is_active' => 1,
+            ),
         ));
-
+        
         
     }
 }

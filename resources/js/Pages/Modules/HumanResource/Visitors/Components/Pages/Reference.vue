@@ -45,6 +45,7 @@
                   
                     <div class="card-body">
                         <div class="dropdown float-end mt-n2 mb-n2 me-n1" data-bs-container="body" data-bs-display="static">
+              
                             <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
                                 <template #button-content> 
                                     <i class="ri-more-2-fill fs-16"></i>
@@ -113,7 +114,7 @@ export default {
     },
     methods : {
         fetch(page_url){
-            page_url = page_url || '/users';
+            page_url = page_url || '/visitors';
             return axios.get(page_url,{
                 params : {
                     code: this.code,
@@ -165,7 +166,7 @@ export default {
                 formData.append('option', 'file');
                 formData.append('file', file);
 
-                axios.post('/users', formData, {
+                axios.post('/visitors', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     onUploadProgress: (event) => {
                         window.dispatchEvent(new CustomEvent("upload-progress", {

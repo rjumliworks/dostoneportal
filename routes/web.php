@@ -43,6 +43,7 @@ Route::middleware(['role:Human Resource Officer'])->group(function () {
     Route::resource('/payroll', App\Http\Controllers\HumanResource\PayrollController::class);
     Route::get('/payroll/{type}/{code}', [App\Http\Controllers\HumanResource\PayrollController::class, 'view']);
     Route::resource('/credits', App\Http\Controllers\HumanResource\CreditController::class);
+    Route::resource('/visitors', App\Http\Controllers\HumanResource\VisitorController::class);
 });
 
 Route::resource('/surveys', App\Http\Controllers\HumanResource\SurveyController::class);
@@ -64,5 +65,5 @@ Route::middleware(['role:Administrator'])->group(function () {
 });
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
-
+Route::get('/mailing', [App\Http\Controllers\Public\InfoController::class, 'mailing']);
 require __DIR__.'/auth.php';

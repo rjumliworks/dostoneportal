@@ -28,18 +28,18 @@
 
         <!-- Header -->
         <tr>
-            <td style="padding: 40px 30px; background: linear-gradient(135deg, #004080 0%, #0099CC 100%);">
+            <td style="padding: 25px 25px; background: linear-gradient(135deg, #004080 0%, #0099CC 100%);">
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                     <tr>
-                        <td style="vertical-align: middle; width: auto; padding-right: 20px;">
+                        <td style="vertical-align: middle; width: auto; padding-right: 20px; margin-top:">
                             <img src="{{ asset('images/logo-sm.png') }}" alt="DOST Logo"
-                                style="max-width: 100px; height: auto; display: block;">
+                                style="max-width: 50px; margin-top: -7px; height: auto; display: block;">
                         </td>
                         <td style="vertical-align: middle; width: auto; text-align: left;">
-                            <h1
-                                style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 600; letter-spacing: -0.5px;">
-                                Department of Science and Technology
+                            <h1 style="margin-left: -30px; margin-top: 10px; color: #ffffff; font-size: 17px; font-weight: 600; letter-spacing: -0.5px;">
+                                DEPARTMENT OF SCIENCE AND TECHNOLOGY - IX
                             </h1>
+                            <p style="margin-left: -30px; margin-top: -12px; color: #ffffff; font-size: 16px; font-weight: 600; letter-spacing: -0.5px;">One<span style="color: rgb(44, 143, 205) !important;">DOST</span>4U : <span style="font-weight: 400;">Unified Information Management System</span></p>
                         </td>
                     </tr>
                 </table>

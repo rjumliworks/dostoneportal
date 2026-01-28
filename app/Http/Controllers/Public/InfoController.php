@@ -15,6 +15,10 @@ class InfoController extends Controller
         ]); 
     }
 
+    public function mailing(){
+        return view('emails.account-activation');
+    }
+
     private function designations(){
         $data = OrgChart::with('designation','assigned')
         ->with([

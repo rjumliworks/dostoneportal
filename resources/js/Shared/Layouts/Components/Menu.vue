@@ -121,6 +121,13 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Calendar</span>
                     </Link>
                 </li>
+                <li class="nav-item">
+                    <Link href="/visitors" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/HumanResource/Visitors') }">
+                    <i class="ri-group-2-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Visitors</span>
+                    </Link>
+                </li>
             </template>
             <template v-if="$page.props.roles.includes('Asset Management Officer')">
                 <li class="menu-title">
