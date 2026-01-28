@@ -52,7 +52,8 @@ class ViewClass
                 ->when($request->type, fn($q) => $q->where('type_id', $request->type))
                 ->when($request->position, fn($q) => $q->where('position_id', $request->position))
                 ->when($request->division, fn($q) => $q->where('division_id', $request->division))
-                ->when($request->station, fn($q) => $q->where('station_id', $request->station));
+                ->when($request->station, fn($q) => $q->where('station_id', $request->station))
+                ->when($request->unit, fn($q) => $q->where('unit_id', $request->unit));
         });
         $query->orderBy(UserProfile::select('lastname')->whereColumn('user_profiles.user_id', 'users.id'),'ASC');
         $data = IndexResource::collection($query->paginate($request->count));
