@@ -39,7 +39,7 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/humanresource" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/HumanResource/Dashboard') }">
+                    :class="{'active': $page.component.startsWith('Modules/Trace/Dashboard') }">
                     <i class="ri-apps-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                     </Link>

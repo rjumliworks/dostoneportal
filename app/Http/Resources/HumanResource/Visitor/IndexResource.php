@@ -16,13 +16,15 @@ class IndexResource extends JsonResource
         return [
             'id' => $this->id,
             'code' => $code,
+            'avatar' => ($this->avatar !== 'noavatar.jpg')
+            ? asset('storage/' . $this->avatar) 
+            : asset('images/avatars/avatar.jpg'), 
             'username' => $this->username,
             'name' => $this->name,
             'affiliation' => $this->affiliation,
             'designation' => $this->designation,
             'type' => $this->type,
             'faces' => $this->faces,
-            'logs' => $this->logs,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

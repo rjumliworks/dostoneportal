@@ -10,28 +10,24 @@ use Carbon\Carbon;
 class OldClass
 {
     public function dtr($request){
-        // $time = Carbon::createFromTimestamp(1750119565)->format('g:i A');
-        // $timestamp = 1750119565;
-        // $time = date('H:i:s', $timestamp); 
-        // return $time;
         $success = [];
         $failed = [];
-        // $startOfMonth = Carbon::now()->startOfMonth()->toDateString(); // e.g., '2025-05-01'
-        // $startOfMonth = Carbon::create(null, 5, 1)->startOfDay()->toDateString();
-        // $endOfMonth = Carbon::now()->endOfMonth()->toDateString();     // e.g., '2025-06-30'
-        $startOfMonth = Carbon::create(2025, 1, 1)->startOfDay()->toDateString();
+        $startOfMonth = Carbon::create(2025, 12, 1)->startOfDay()->toDateString();
         $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+
+        $normalizedUsernames = User::pluck('username')
+        ->map(fn ($u) => str_replace('-', '', $u))
+        ->toArray();
         $dtrs = OldDtr::with('user')
-        // ->whereHas('user', function ($query){
-        //     $query->whereIn('username', ['rij0311','RBG0110','RSS1204']);
-        // })
-        ->whereIn('user_id',[265,1307])
         ->whereBetween('date', [$startOfMonth,$endOfMonth])->get();
 
         foreach($dtrs as $dtr){
             $username = $dtr->user?->username ?? null;
             if($username){
-                $user = User::with('profile','organization.division')->where('username',strtolower($username))->first();
+                $normalizedOld = strtolower(str_replace('-', '', $username));
+                $user = User::with('profile','organization.division')
+                ->whereRaw("REPLACE(LOWER(username), '-', '') = ?", [$normalizedOld])
+                ->first();
                 if($user){
                     $remarks = [
                         'tardiness' => null,
@@ -112,10 +108,10 @@ class OldClass
                     $data->save();
                     $success[] = $dtr->user->username;
                 }else{
-                    $failed[] = $dtr->id;
+                    $failed[] = $dtr->user->username;
                 }
             }else{
-                $failed[] = $dtr->id;
+                $failed[] = $dtr->user->username;
             }
         }
         return [$success,array_unique($failed)];

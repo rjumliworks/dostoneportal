@@ -34,6 +34,9 @@ class VisitorController extends Controller
             case 'files':
                 return $this->rekognition->fetch($request);
             break;
+            case 'authentication-logs':
+                return $this->view->logs($request);
+            break;
             default:
                 return inertia('Modules/HumanResource/Visitors/Index',[
                     'counts' => $this->view->counts($this->dropdown->statuses('Visitor')),
@@ -72,6 +75,12 @@ class VisitorController extends Controller
             switch($request->option){
                 case 'status':
                     return $this->save->status($request);
+                break;
+                case 'dtr':
+                    return $this->save->dtr($request);
+                break;
+                case 'add':
+                    return $this->save->add($request);
                 break;
             }
         });

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('user_contracts', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+            $table->integer('days');
             $table->unsignedTinyInteger('status_id'); //retired //
             $table->foreign('status_id')->references('id')->on('list_statuses')->onDelete('cascade');
             $table->unsignedSmallInteger('type_id');

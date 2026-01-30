@@ -2,9 +2,12 @@
 
 namespace App\Services\HumanResource\Visitor;
 
+use Carbon\Carbon;
 use Hashids\Hashids;
 use App\Models\Visitor;
+use App\Models\VisitorLogs;
 use App\Models\ListName;
+use App\Http\Resources\Portal\Dtr\TimeResource;
 use App\Http\Resources\HumanResource\Visitor\IndexResource;
 
 class ViewClass
@@ -61,5 +64,63 @@ class ViewClass
             ];
         });
         return $data;
+    }
+
+    public function logs($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->code);
+
+        
+        $monthName = $request->month;
+        $year  = ($request->year) ? $request->year : date('Y');
+        $month = Carbon::parse($monthName)->month;
+
+        $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        
+        $data =  VisitorLogs::where('visitor_id',$id[0])->get()->map(function ($dtr) {
+            return [
+                'id' => $dtr->id,
+                'date' => $dtr->date,
+                'am_in'  => $dtr && $dtr->am_in_at  ? new TimeResource(json_decode($dtr->am_in_at)) : null,
+                'am_out' => $dtr && $dtr->am_out_at ? new TimeResource(json_decode($dtr->am_out_at)) : null,
+                'pm_in'  => $dtr && $dtr->pm_in_at  ? new TimeResource(json_decode($dtr->pm_in_at))  : null,
+                'pm_out' => $dtr && $dtr->pm_out_at ? new TimeResource(json_decode($dtr->pm_out_at)) : null,
+                'created_at' => $dtr->created_at
+            ];
+        });
+
+        return $data;
+    }
+
+    private function formatDTR($item, $start, $end)
+    {
+        $visitor_id = $item->id;
+        $period = \Carbon\CarbonPeriod::create($start, $end);
+
+        foreach ($period as $date) {
+            $dateStr = $date->toDateString();
+           
+            $dtr = $item->logs->firstWhere('date', $dateStr);
+            $today = Carbon::today();
+        
+            $result[] = [
+                'date' => $dateStr,
+                'am_in'  => $dtr && $dtr->am_in_at  ? new TimeResource(json_decode($dtr->am_in_at)) : null,
+                'am_out' => $dtr && $dtr->am_out_at ? new TimeResource(json_decode($dtr->am_out_at)) : null,
+                'pm_in'  => $dtr && $dtr->pm_in_at  ? new TimeResource(json_decode($dtr->pm_in_at))  : null,
+                'pm_out' => $dtr && $dtr->pm_out_at ? new TimeResource(json_decode($dtr->pm_out_at)) : null,
+                'created_at' => $dtr->created_at
+            ];
+        }
+
+        return [
+            'value' => $item->id,
+            'name' => $item->name . '.',
+            'avatar' => ($item->avatar !== 'noavatar.jpg')
+                ? asset('storage/' . $item->avatar)
+                : asset('images/avatars/avatar.jpg'),
+            'dtrs' => $result
+        ];
     }
 }

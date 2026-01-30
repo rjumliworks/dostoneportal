@@ -37,6 +37,7 @@ Route::middleware(['role:Document Management Officer'])->group(function () {
 });
 
 Route::middleware(['role:Human Resource Officer'])->group(function () {
+    Route::resource('/humanresource', App\Http\Controllers\HumanResource\DashboardController::class);
     Route::resource('/employees', App\Http\Controllers\HumanResource\EmployeeController::class);
     Route::resource('/dtrs', App\Http\Controllers\HumanResource\DtrController::class);
     Route::resource('/calendar', App\Http\Controllers\HumanResource\CalendarController::class);
