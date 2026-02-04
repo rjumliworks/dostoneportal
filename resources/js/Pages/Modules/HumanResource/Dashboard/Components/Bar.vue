@@ -84,10 +84,10 @@ export default {
     },
     methods: {
         formatWeekRange(start) {
-    const startDate = moment(start);            // Monday
-    const endDate = startDate.clone().isoWeekday(5); // Friday
-    return `${startDate.format('MMM DD')} - ${endDate.format('MMM DD')}`;
-},
+            const startDate = moment(start);            // Monday
+            const endDate = startDate.clone().isoWeekday(5); // Friday
+            return `${startDate.format('MMM DD')} - ${endDate.format('MMM DD')}`;
+        },
         fetch() {
             axios.get(this.currentUrl + '/humanresource',{
                 params : {
@@ -124,15 +124,15 @@ export default {
             this.fetch();
         },
         prevWeek() {
-    this.currentWeek = moment(this.currentWeek).subtract(1, 'week').isoWeekday(1).format('YYYY-MM-DD');
-    this.fetch();
-},
-nextWeek() {
-    const next = moment(this.currentWeek).add(1, 'week').isoWeekday(1);
-    if(next.isAfter(moment(), 'week')) return; // prevent future weeks
-    this.currentWeek = next.format('YYYY-MM-DD');
-    this.fetch();
-}
+            this.currentWeek = moment(this.currentWeek).subtract(1, 'week').isoWeekday(1).format('YYYY-MM-DD');
+            this.fetch();
+        },
+        nextWeek() {
+            const next = moment(this.currentWeek).add(1, 'week').isoWeekday(1);
+            if(next.isAfter(moment(), 'week')) return; // prevent future weeks
+            this.currentWeek = next.format('YYYY-MM-DD');
+            this.fetch();
+        }
     }
 }
 </script>

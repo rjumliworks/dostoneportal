@@ -1439,7 +1439,7 @@ export default {
         </div>
         <Footer />
       </div>
-      <Configuration />
+      <!-- <Configuration /> -->
     </div>
   </div>
 </template>

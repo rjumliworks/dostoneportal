@@ -3,6 +3,7 @@
 namespace App\Services\HumanResource\Dashboard;
 
 use Carbon\Carbon;
+use App\Models\Dtr;
 use App\Models\User;
 use App\Models\ListData;
 use App\Models\RequestDate;
@@ -269,5 +270,13 @@ class IndexClass
             'all' => UserOrganization::where('status_id',2)->count(),
             'statuses' => $statuses
         ];
+    }
+
+    public function years(){
+        $years = Dtr::selectRaw('YEAR(date) as year')
+        ->distinct()
+        ->orderBy('year', 'desc')
+        ->pluck('year');
+        return $years;
     }
 }

@@ -10,6 +10,8 @@ use Carbon\Carbon;
 class OldClass
 {
     public function dtr($request){
+        set_time_limit(1200);
+
         $success = [];
         $failed = [];
         $startOfMonth = Carbon::create(2025, 12, 1)->startOfDay()->toDateString();

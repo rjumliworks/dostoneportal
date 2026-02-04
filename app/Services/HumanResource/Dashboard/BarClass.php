@@ -35,8 +35,19 @@ class BarClass
         $period = CarbonPeriod::create($startOfWeek, $endOfWeek);
 
         foreach ($period as $date) {
-            if ($date->isWeekend()) { continue; }
-            if ($date->greaterThan($today)) { continue; }
+            // if ($date->isWeekend()) { continue; }
+            // if ($date->greaterThan($today)) { continue; }
+            if ($date->isWeekend()) {
+                continue;
+            }
+            $categories[] = $date->format('l');
+            if ($date->greaterThan($today)) {
+                $present[] = 0;
+                $late[]    = 0;
+                $absent[]  = 0;
+                continue;
+            }
+
 
             $presentCount = Dtr::whereDate('date', $date)->distinct('user_id')->count('user_id');
 
@@ -47,7 +58,6 @@ class BarClass
 
             $absentCount = max(0, $totalUsers - $presentCount);
 
-            $categories[] = $date->format('l'); // Mon–Fri
             $present[] = $presentCount;
             $late[] = $lateCount;
             $absent[] = $absentCount;

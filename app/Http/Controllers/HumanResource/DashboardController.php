@@ -35,6 +35,7 @@ class DashboardController extends Controller
             break;
             default:
                return inertia('Modules/HumanResource/Dashboard/Index',[
+                    'years' => $this->dashboard->years(),
                     'counts' => $this->dashboard->counts(),
                     'employee' => $this->dashboard->employee(),
                     'divisions' => $this->dropdown->dropdowns('Division')

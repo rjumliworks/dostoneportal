@@ -32,9 +32,15 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $credentials = $this->getCredentials();
-        $email = strtolower($credentials['email']);
-        $kradworkz = hash('sha256', $email);
-        $user = User::where('kradworkz', $kradworkz)->first();
+
+        if(isset($credentials['email'])){
+            $email = strtolower($credentials['email']);
+            $kradworkz = hash('sha256', $email);
+            $user = User::where('kradworkz', $kradworkz)->first();
+        }else{
+            $username = strtolower($credentials['username']);
+            $user = User::where('username', $username)->first();
+        }
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($this->throttleKey());

@@ -179,7 +179,7 @@ class User extends Authenticatable  implements MustVerifyEmail
         ->dontSubmitEmptyLogs();
     }
 
-     public function activities()
+    public function activities()
     {
         $this->loadMissing(['addresses','information','profile','organization']);
 
