@@ -474,12 +474,13 @@ class DropdownClass
         $data = OrgChart::with('user')
         ->where('designation_id', ListDropdown::getID('Regional Director', 'Designation'))->first();
 
+
         if (!$data) {
             return null; // or return an empty array []
         }
-    
+
         return [
-            'value' => $data->id,
+            'value' => $data->user_id,
             'name' => strtoupper(
                 $data->user->profile->full_name ?? null,
             ),
@@ -603,6 +604,28 @@ class DropdownClass
         });
 
         return $data;
+    }
+
+    public function division_head($division_id)
+    {
+        $data = OrgChart::with('user')
+        ->where('designation_id', ListDropdown::getID('Division Head', 'Designation'))
+        ->whereHas('user.organization', function ($query) use ($division_id) {
+            $query->where('division_id', $division_id);
+        })
+        ->first();
+
+        if (!$data) {
+            return null;
+        }
+
+        return [
+            'value' => $data->user_id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
     }
 
 

@@ -55,7 +55,7 @@ class ProcurementController extends Controller
                         'types' => $this->dropdown->dropdowns('Type'),
                         'modes' => $this->dropdown->dropdowns('Mode'),
                     ],
-                    //  'regional_director'  =>  $this->dropdown->regional_director(),
+                    'regional_director'  =>  $this->dropdown->regional_director(),
 
                 ]);
         }
@@ -74,6 +74,11 @@ class ProcurementController extends Controller
                 return $this->procurement->procurement_title($request->id);
             break;
             default:
+                $division_head = null;
+                if (\Auth::user()->organization && \Auth::user()->organization->division_id) {
+                    $division_head = $this->dropdown->division_head(\Auth::user()->organization->division_id);
+                }
+
                 return inertia('Modules/FAIMS/Procurement/CreatePage', [
                     'dropdowns' => [
                         'divisions' => $this->dropdown->dropdowns('Division'),
@@ -81,10 +86,12 @@ class ProcurementController extends Controller
                         'procurement_codes' => $this->dropdown->procurement_codes(),
                         'unit_types' => $this->dropdown->unit_types(),
                         'requesters' => $this->dropdown->requesters(),
-                        'approvers' => $this->dropdown->approvers(),     
+                        'approvers' => $this->dropdown->approvers(),
+                        'regional_director' => $this->dropdown->regional_director(),
+                        'division_head' => $division_head,
                     ],
                     'option' => $request->option,
-                ]); 
+                ]);
             break;
         } 
     }

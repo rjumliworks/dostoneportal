@@ -636,7 +636,7 @@ export default {
       // Filter only awarded quotation
       const awarded_quotations = this.procurement.quotations.filter((quotation) =>
         quotation.items.some(
-          (item) => item.status.name = 'Awarded' && item.bid_price != null && item.is_rebid == 0
+          (item) => item.status.name === 'Awarded' && item.bid_price != null && item.is_rebid == 0
         )
       );
 
@@ -654,7 +654,7 @@ export default {
       const awarded_quotations_list = awarded_quotations
         .map((quotation) => {
           const filtered_items = quotation.items.filter(
-            (item) => item.status.name = 'Awarded' && item.is_rebid == 0
+            (item) => item.status.name === 'Awarded' && item.is_rebid == 0
           );
           if (filtered_items.length === 0) return "";
           const item_numbers = filtered_items.map((item) => item.item.item_no).join(", ");
@@ -698,7 +698,7 @@ export default {
       const awarded_table_rows = awarded_quotations
         .map((quotation) => {
           const filtered_items = quotation.items.filter(
-            (item) => item.status.name = 'Awarded' && item.is_rebid == 1
+            (item) => item.status.name === 'Awarded' && item.is_rebid == 1
           );
           if (filtered_items.length === 0) return null;
           const item_ids = filtered_items.map((bid_item) => bid_item.item_no).join(", ");
@@ -817,7 +817,7 @@ export default {
       let counter = 2;
       const reawarded_quotations_list = reawarded_quotations
         .map((quotation) => {
-          const filtered_items = quotation.items.filter((item) => item.status.name = 'Awarded');
+          const filtered_items = quotation.items.filter((item) => item.status.name === 'Awarded');
           if (filtered_items.length === 0) return "";
           const item_numbers = filtered_items.map((item) => item.item.item_no).join(", ");
           const total_price = filtered_items.reduce((sum, item) => {
@@ -980,7 +980,7 @@ export default {
       // Filter only awarded quotation
       const awarded_quotations = this.procurement.quotations.filter((quotation) =>
         quotation.items.some(
-          (item) => (item.status.name = 'Awarded' && item.bid_price != null) || item.is_rebid == 0
+          (item) => (item.status.name === 'Awarded' && item.bid_price != null) || item.is_rebid == 0
         )
       );
 
@@ -1026,7 +1026,7 @@ export default {
       // === CORRECT total accumulation across awarded bids ===
       const award_bid_total_price = awarded_quotations.reduce((total, quotation) => {
         const filtered_items = quotation.items.filter(
-          (item) => item.status.name = 'Awarded' || item.is_rebid == 0
+          (item) => item.status.name === 'Awarded' || item.is_rebid == 0
         );
         const total_price = filtered_items.reduce((sum, item) => {
           const bp = parseFloat(item.bid_price) || 0;

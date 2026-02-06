@@ -285,6 +285,8 @@
                 </div>
               </div>
 
+
+
               <!-- Assignees Section -->
               <div class="row g-3 mb-4">
                 <div class="col-12">
@@ -430,7 +432,7 @@ export default {
         fund_cluster_id: null,
         items: null,
         requested_by_id: null,
-        approved_by_id: this.dropdowns.regional_director,
+        approved_by_id: null,
         procurement_code_ids: [],
         option: null,
       }),
@@ -507,8 +509,11 @@ export default {
   mounted() {
     // Load from localStorage on component mount
     this.getDataFromLocalStorage();
-  
+
     this.action = this.option;
+    if (this.option === 'create' && this.dropdowns.regional_director) {
+      this.form.approved_by_id = this.dropdowns.regional_director.value;
+    }
     try {
       this.isRightCollapsed = JSON.parse(localStorage.getItem("isRightCollapsed")) ?? true;
     } catch (e) {
