@@ -32,7 +32,7 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Daily Time Record</span>
                 </Link>
             </li>
-               <li class="menu-title">
+            <li class="menu-title">
             <i class="ri-more-fill" aria-expanded="false"></i>
                 <span data-key="t-menu">Procurement</span>
             </li>

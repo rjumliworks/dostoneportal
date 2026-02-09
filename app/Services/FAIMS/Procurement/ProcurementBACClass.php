@@ -231,29 +231,31 @@ class ProcurementBACClass
                 }
             }
         } else {
-            // For Award, group quotations by supplier and create one NOA per supplier
-            $quotationsBySupplier = collect($request->quotations)->groupBy('supplier_id');
+            // For Award, group quotations by supplier_id and create one NOA per supplier, including awarded items from that supplier's quotations
+            $groupedQuotations = collect($request->quotations)->groupBy('supplier_id');
 
-            foreach ($quotationsBySupplier as $supplierId => $supplierQuotations) {
-                $firstQuotation = $supplierQuotations->first();
-                $code = ProcurementBacNoa::generateNOANumber();
-                $noa = ProcurementBacNoa::create([
-                    'code' => $code,
-                    'procurement_id' => $bac_resolution->procurement_id,
-                    'procurement_bac_id' => $bac_resolution->id,
-                    'procurement_quotation_id' => $firstQuotation['id'],
-                    'created_by_id' => $user->id,
-                    'status_id' => ListStatus::getID('Pending','Procurement'), //set to "pending"
-                ]);
+            foreach ($groupedQuotations as $supplierId => $quotations) {
+                $firstQuotation = $quotations->first();
+                if ($firstQuotation) {
+                    $code = ProcurementBacNoa::generateNOANumber();
+                    $noa = ProcurementBacNoa::create([
+                        'code' => $code,
+                        'procurement_id' => $bac_resolution->procurement_id,
+                        'procurement_bac_id' => $bac_resolution->id,
+                        'procurement_quotation_id' => $firstQuotation['id'],
+                        'created_by_id' => $user->id,
+                        'status_id' => ListStatus::getID('Pending','Procurement'), //set to "pending"
+                    ]);
 
-                // create noa items from all quotations of this supplier
-                foreach ($supplierQuotations as $quotation) {
-                    foreach ($quotation['items'] as $item) {
-                        if(!empty($item['bid_price']) && $item['status_id'] === ListStatus::getID('Awarded','Procurement')) {
-                            ProcurementBacNoaItem::create([
-                                'procurement_bac_noa_id' => $noa->id,
-                                'item_id' => $item['id'],
-                            ]);
+                    // create noa items from quotations of this supplier
+                    foreach ($quotations as $quotation) {
+                        foreach ($quotation['items'] as $item) {
+                            if($item['status_id'] === ListStatus::getID('Awarded','Procurement')) {
+                                ProcurementBacNoaItem::create([
+                                    'procurement_bac_noa_id' => $noa->id,
+                                    'item_id' => $item['id'],
+                                ]);
+                            }
                         }
                     }
                 }
