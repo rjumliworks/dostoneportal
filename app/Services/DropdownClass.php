@@ -19,6 +19,10 @@ use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
 use App\Models\LocationDistrict;
 use App\Models\LocationBarangay;
+use App\Models\ProcurementCode;
+use App\Models\UnitType;
+use App\Models\supplier;
+use App\Models\OrgChart;
 
 class DropdownClass
 {  
@@ -345,4 +349,289 @@ class DropdownClass
         });
         return $data;
     }
+
+
+    //procurement
+
+     public function list_units(){
+        $data = ListUnit::where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'short' => $item->short
+            ];
+        });
+        return $data;
+    }
+
+
+    public function procurement_codes(){
+        $data = ProcurementCode::get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'code' => $item->code,
+            ];
+        });
+        return $data;
+    }
+
+    public function unit_types(){
+        $data = UnitType::get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name_short' => $item->name_short,
+                'name_long' => $item->name_long
+            ];
+        });
+        return $data;
+    }
+
+    public function unit_type($code){
+        $data = UnitType::where('id',$code)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name_short' => $item->name_short,
+                'name_long' => $item->name_long
+            ];
+        });
+        return $data;
+    }
+
+    public function requesters()
+    {
+        $data = User::with(['roles', 'profile.suffix'])
+            ->get()
+            ->map(function ($item) {
+                $profile = $item->profile;
+                $firstname = $profile->firstname ?? '';
+                $middlename = $profile->middlename ? strtoupper(substr($profile->middlename, 0, 1)) . '.' : '';
+                $lastname = $profile->lastname ?? '';
+                $suffix = $profile->suffix?->name ? ' ' . $profile->suffix->name : '';
+
+                return [
+                    'value' => $item->id,
+                    'name' => trim("{$firstname} {$middlename} {$lastname}{$suffix}"),
+                ];
+            });
+
+        return $data;
+    }
+
+
+    public function approvers()
+    {
+        $data = User::with(['roles', 'profile.suffix'])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'value' => $user->id,
+                    'name' => $user->profile->full_name,
+                ];
+            });
+
+        return $data;
+    }
+
+    
+    public function supply_officers(){
+        $data = User::with('roles' , 'profile')
+        ->whereHas('roles', function ($query) {
+            $query->where('role_id', 12);
+        })->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->profile->full_name ,
+            ];
+        });
+
+        return $data;
+    }
+
+    public function suppliers(){
+        $data = Supplier::with('conformes')->where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+            ];
+        });
+        return $data;
+    }
+
+    
+    public function attachment_types(){
+        $data = ListData::where('type','Attachment')->where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
+
+    public function regional_director()
+    {
+        $data = OrgChart::with('user')
+        ->where('designation_id', ListDropdown::getID('Regional Director', 'Designation'))->first();
+
+
+        if (!$data) {
+            return null; // or return an empty array []
+        }
+
+        return [
+            'value' => $data->user_id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+
+    public function bac_members(){
+        $data = OrgChart::where('designation_id', ListDropdown::getID('BAC Member', 'Designation'))
+        ->get()
+        ->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' =>  $item->user->profile->full_name ,
+            ];
+        });
+
+        return $data;
+    }
+
+
+    public function bac_chairperson()
+    {
+        $data = OrgChart::where('designation_id', ListDropdown::getID('BAC Chairperson', 'Designation'))->first();
+       
+
+        if (!$data) {
+            return null; // or return an empty array []
+        }
+    
+        return [
+            'value' => $data->id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+    public function bac_vice_chairperson()
+    {
+        
+        $data = OrgChart::where('designation_id', ListDropdown::getID('BAC Vice Chairperson', 'Designation'))->first();
+
+        if (!$data) {
+            return null; // or return an empty array []
+        }
+    
+        return [
+            'value' => $data->id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+
+    public function chief_accountant()
+    {
+       
+        $data = OrgChart::where('designation_id', ListDropdown::getID('Chief Accountant', 'Designation'))->first();
+        
+        if (!$data) {
+            return null; // or return an empty array []
+        }
+        return [
+            'value' => $data->id,
+            'name' => strtoupper(
+                $data->user->profile->full_name,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+
+    public function iar_chairperson()
+    {
+        $data = OrgChart::where('designation_id', ListDropdown::getID('IAR Chairperson', 'Designation'))->first();
+
+        if (!$data) {
+            return null; // or return an empty array []
+        }
+    
+        return [
+            'value' => $data->id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+    public function iar_vice_chairperson()
+    {
+        $data = OrgChart::where('designation_id', ListDropdown::getID('IAR Vice Chairperson', 'Designation'))->first();
+       
+
+        if (!$data) {
+            return null; // or return an empty array []
+        }
+    
+        return [
+            'value' => $data->id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+
+    public function iar_members(){
+        $data = OrgChart::where('designation_id', ListDropdown::getID('IAR Member', 'Designation'))
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' =>  $item->user->profile->full_name ,
+            ];
+        });
+
+        return $data;
+    }
+
+    public function division_head($division_id)
+    {
+        $data = OrgChart::with('user')
+        ->where('designation_id', ListDropdown::getID('Division Head', 'Designation'))
+        ->whereHas('user.organization', function ($query) use ($division_id) {
+            $query->where('division_id', $division_id);
+        })
+        ->first();
+
+        if (!$data) {
+            return null;
+        }
+
+        return [
+            'value' => $data->user_id,
+            'name' => strtoupper(
+                $data->user->profile->full_name ?? null,
+            ),
+            'designation' => $data->designation
+        ];
+    }
+
+
+
+
+
+
+    
 }
