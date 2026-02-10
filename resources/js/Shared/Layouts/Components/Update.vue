@@ -53,40 +53,49 @@
                             <BCol lg="12" class="mt-1">
                                 <div class="d-flex">
                                     <div style="width: 100%;">
-                                        <InputLabel value="Permanent Address" :message="form.errors.address"/>
-                                        <TextInput readonly v-model="address" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" @input="handleInput('address')" :light="true" />
+                                        <InputLabel value="Permanent Address" :message="form.errors['permanent.address']"/>
+                                        <TextInput readonly v-model="permanent" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" :light="true" />
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <b-button @click="addLocation()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
+                                        <b-button @click="addLocation('permanent')" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
                                     </div>
                                 </div>
                             </BCol>
-                            <BCol lg="12" class="mt-1">
+                             <BCol lg="12">
+                                <BRow class="g-3 mt-n1">
+                                    <BCol lg="12"><hr class="text-muted mb-n3 mt-n1"/></BCol>
+                                    <BCol lg="10" style="margin-top: 13px; margin-bottom: -12px;" class="fs-12" :class="(form.errors.is_same) ? 'text-danger' : ''">Is your Permanent Address the same as your Home Address? Please indicate yes or no.</BCol>
+                                    <BCol lg="2" style="margin-top: 13px; margin-bottom: -12px;">
+                                    <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="custom-control custom-radio mb-3">
+                                                    <input type="radio" id="customRadio1" class="custom-control-input me-2" @input="handleInput('is_referral')" :value="true" v-model="form.is_same">
+                                                    <label class="custom-control-label fw-normal fs-12" for="customRadio1">Yes</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="custom-control custom-radio mb-3">
+                                                    <input type="radio" id="customRadio2" class="custom-control-input me-2" @input="handleInput('is_referral')" :value="false" v-model="form.is_same">
+                                                    <label class="custom-control-label fw-normal fs-12" for="customRadio2">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </BCol>
+                                    <BCol lg="12"><hr class="text-muted mt-n2"/></BCol>
+                                </BRow>
+                            </BCol>
+                            <BCol lg="12" class="mt-n2" v-if="form.is_same == false">
                                 <div class="d-flex">
                                     <div style="width: 100%;">
-                                        <InputLabel value="Home Address" :message="form.errors.address"/>
-                                        <TextInput readonly v-model="address" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" @input="handleInput('address')" :light="true" />
+                                        <InputLabel value="Home Address" :message="form.errors['home.address']"/>
+                                        <TextInput readonly v-model="home" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" :light="true" />
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <b-button @click="addLocation(index)" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
+                                        <b-button @click="addLocation('home')" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
                                     </div>
                                 </div>
                             </BCol>
-                            <!-- <BCol lg="12" class="mt-1 mb-n2"><hr class="text-muted"/></BCol>
-                            <span class="fw-semibold text-success fs-12 mt-1">Employee Academics</span>
-                            <BCol lg="12" class="mt-0 mb-n2"><hr class="text-muted"/></BCol>
-                            <BCol lg="3" class="mt-0">
-                                <InputLabel for="name" value="School" :message="form.errors.sex_id"/>
-                                <Multiselect :options="dropdowns.sexes" :searchable="true" label="name" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')"/>
-                            </BCol>
-                            <BCol lg="3" class="mt-0">
-                                <InputLabel for="name" value="Course" :message="form.errors.sex_id"/>
-                                <Multiselect :options="dropdowns.sexes" :searchable="true" label="name" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')"/>
-                            </BCol>
-                            <BCol lg="3" class="mt-0">
-                                <InputLabel for="name" value="School" :message="form.errors.sex_id"/>
-                                <Multiselect :options="dropdowns.sexes" :searchable="true" label="name" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')"/>
-                            </BCol> -->
+                           
                         </BRow>
                     </div>
                     <div class="d-flex mb-n3 mt-4">
@@ -101,7 +110,7 @@
                 </div>
             </BCol>
         </BRow>
-    <Location ref="location"/>
+        <Location :regions="dropdowns.regions" @submit="handleSubmit" ref="location"/>
     </b-modal>
 </template>
 <script>
@@ -115,6 +124,7 @@ export default {
     data(){
         return {
             form: useForm({
+                profile_id: this.$page.props.user.data.profile_id,
                 username: this.$page.props.user.data.username,
                 email: this.$page.props.user.data.email,
                 birthdate: this.$page.props.user.data.birthdate,
@@ -123,18 +133,30 @@ export default {
                 religion_id: this.$page.props.user.data.religion.id,
                 marital_id: this.$page.props.user.data.marital.id,
                 blood_id: this.$page.props.user.data.blood.id,
-                // permanent: {
-                //     address: null,
-                //     region_code: null,
-                //     province_code: null,
-                //     municipality_code: null,
-                //     district_code: null,
-                //     barangay_code: null,
-                //     latitude: null,
-                //     longitude: null,
-                // },
+                permanent: {
+                    address: null,
+                    region_code: null,
+                    province_code: null,
+                    municipality_code: null,
+                    barangay_code: null,
+                    latitude: null,
+                    longitude: null,
+                },
+                home: {
+                    address: null,
+                    region_code: null,
+                    province_code: null,
+                    municipality_code: null,
+                    barangay_code: null,
+                    latitude: null,
+                    longitude: null,
+                },
+                is_same: null,
                 option: 'answers'
             }),
+            type: null,
+            permanent: null,
+            home: null,
             dropdowns: []
         }
     },
@@ -161,8 +183,32 @@ export default {
                 },
             });
         },
-        addLocation(){
+        addLocation(type){
+            this.type = type;
             this.$refs.location.openEdit(this.region);
+        },
+        handleSubmit(data) {
+            if (this.type == 'permanent') {
+                this.permanent = data.address;
+                this.form.permanent.address = data.form.info;
+                this.form.permanent.region_code = data.form.region.value;
+                this.form.permanent.province_code = data.form.province.value;
+                this.form.permanent.municipality_code = data.form.municipality.value;
+                this.form.permanent.barangay_code = data.form.barangay.value;
+                this.form.permanent.latitude = data.form.latitude;
+                this.form.permanent.longitude = data.form.longitude;
+                this.form.clearErrors('permanent.address');
+            }else{
+                this.home = data.address;
+                this.form.home.address = data.form.info;
+                this.form.home.region_code = data.form.region.value;
+                this.form.home.province_code = data.form.province.value;
+                this.form.home.municipality_code = data.form.municipality.value;
+                this.form.home.barangay_code = data.form.barangay.value;
+                this.form.home.latitude = data.form.latitude;
+                this.form.home.longitude = data.form.longitude;
+                this.form.clearErrors('home.address');
+            }
         },
         handleInput(field) {
             this.form.errors[field] = false;

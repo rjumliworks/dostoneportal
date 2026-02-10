@@ -37,7 +37,35 @@ class SaveClass
             $profile->religion_id = $request->religion_id;
             $profile->mobile = $request->mobile;
             $profile->is_completed = 1;
-            $profile->save();
+            if($profile->save()){
+                if($request->filled('permanent.address')) {
+                    $data->addresses()->updateOrCreate(
+                        [
+                            'is_permanent'      => 1,
+                            'address'           => $request->permanent['address'],
+                            'region_code'       => $request->permanent['region_code'],
+                            'province_code'     => $request->permanent['province_code'],
+                            'municipality_code' => $request->permanent['municipality_code'],
+                            'barangay_code'     => $request->permanent['barangay_code'],
+                            'latitude'          => $request->permanent['latitude'],
+                            'longitude'         => $request->permanent['longitude'],
+                        ]
+                    );
+                }elseif($request->filled('home.address')) {
+                        $data->addresses()->updateOrCreate(
+                        [
+                            'is_permanent'      => 0,
+                            'address'           => $request->home['address'],
+                            'region_code'       => $request->home['region_code'],
+                            'province_code'     => $request->home['province_code'],
+                            'municipality_code' => $request->home['municipality_code'],
+                            'barangay_code'     => $request->home['barangay_code'],
+                            'latitude'          => $request->home['latitude'],
+                            'longitude'         => $request->home['longitude'],
+                        ]
+                    );
+                }
+            }
         }
         $data = User::find(\Auth::user()->id);
         return [

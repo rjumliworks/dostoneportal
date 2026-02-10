@@ -28,7 +28,8 @@ class SearchController extends Controller
                 'positions' => $this->dropdown->positions(),
                 'salaries' => $this->dropdown->salaries(),
                 'statuses' => $this->dropdown->statuses('Status'),
-                'employment_statuses' => $this->dropdown->datas('Employment Status')
+                'employment_statuses' => $this->dropdown->datas('Employment Status'),
+                'regions' => $this->dropdown->regions()
             ],
         ];
     }

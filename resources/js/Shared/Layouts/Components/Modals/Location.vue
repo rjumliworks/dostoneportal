@@ -6,7 +6,7 @@
                     <BRow class="g-3">
                         <BCol lg="6" class="mt-1">
                             <InputLabel value="Region"/>
-                            <Multiselect :options="regions" v-model="form.region" label="name" :searchable="true" placeholder="Select Region" />
+                            <Multiselect :options="regions" object v-model="form.region" label="name" :searchable="true" placeholder="Select Region" />
                         </BCol>
                         <BCol lg="6" class="mt-1">
                             <InputLabel value="Province"/>
@@ -33,7 +33,7 @@
                 </BCol>
                 <BCol lg="12">
                     <div class="mt-2">
-                        <Map @set="handleCoordinates" ref="map" class="leaflet-map"/>
+                        <Map @set="handleCoordinates" ref="map" class="leaflet-map" style="height: 200px;"/>
                     </div>
                 </BCol>
             </BRow>
@@ -52,6 +52,7 @@ import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
     components: {InputLabel, TextInput, Multiselect, Map },
+    props: ['regions'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -62,8 +63,7 @@ export default {
                 municipality: null,
                 longitude: null,
                 latitude: null,
-                barangay: null,
-                district: null
+                barangay: null
             }),
             coordinates: {},
             provinces: [],
@@ -95,23 +95,18 @@ export default {
         "form.municipality"(newVal){
             if(!newVal){
                 this.form.barangay = null;
-                this.form.district = null;
             }
-            this.fetchDistrict(newVal);
             this.fetchBarangay(newVal);
         }
     },
     computed: {
         isFormValid() {
-            const districtRequired = this.districts.length > 0;
             return this.form.region && this.form.province && this.form.municipality && this.form.barangay;
-            // &&  (!districtRequired || this.form.district);
         }
     },
     methods: { 
         handleCoordinates(coords) {
             this.coordinates = coords;
-            console.log(coords);
             this.form.longitude = this.coordinates.lng;
             this.form.latitude = this.coordinates.lat;
         },
@@ -122,7 +117,7 @@ export default {
             this.showModal = true;
         },  
         submit(){
-            const address = `${this.form.address}, ${this.form.barangay.name}, ${this.form.municipality.name}, ${this.form.province.name}`;
+            const address = `${this.form.address}, ${this.form.barangay.name}, ${this.form.municipality.name}, ${this.form.province.name}, ${this.form.region.name}`;
             this.$emit('submit', {
                 address: address,
                 index: this.index,
@@ -132,7 +127,6 @@ export default {
                     province: this.form.province,
                     municipality: this.form.municipality,
                     barangay: this.form.barangay,
-                    district: this.form.district,
                     longitude: this.form.longitude,
                     latitude: this.form.latitude,
                 }
@@ -142,7 +136,6 @@ export default {
             this.form.province = null;
             this.form.municipality = null;
             this.form.barangay = null;
-            this.form.district = null;
             this.form.address = null;
             this.hide();
         },
@@ -179,18 +172,6 @@ export default {
             })
             .then(response => {
                 this.barangays = response.data;
-            })
-            .catch(err => console.log(err));
-        },
-        fetchDistrict(code){
-            axios.get('/search',{
-                params: {
-                    option: 'districts',
-                    code: code
-                }
-            })
-            .then(response => {
-                this.districts = response.data;
             })
             .catch(err => console.log(err));
         },

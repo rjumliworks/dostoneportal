@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Profile\ViewClass;
 use App\Services\Profile\SaveClass;
-use App\Http\Requests\ProfileRequest;
+use App\Http\Requests\Auth\ProfileRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -63,7 +63,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(Request $request){
+    public function update( ProfileRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             return $this->save->update($request);
         });
