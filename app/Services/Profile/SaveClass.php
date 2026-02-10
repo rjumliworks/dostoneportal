@@ -29,19 +29,19 @@ class SaveClass
 
     public function update($request){
         $data = User::find(\Auth::user()->id);
-        $data->email = $request->email;
         if($data->save()){
             $profile = $data->profile;
-            $profile->firstname = $request->firstname;
-            $profile->middlename = $request->middlename;
-            $profile->lastname = $request->lastname;
-            $profile->sex = $request->sex;
+            $profile->sex_id = $request->sex_id;
+            $profile->blood_id = $request->blood_id;
+            $profile->marital_id = $request->marital_id;
+            $profile->religion_id = $request->religion_id;
             $profile->mobile = $request->mobile;
+            $profile->is_completed = 1;
             $profile->save();
         }
-        
+        $data = User::find(\Auth::user()->id);
         return [
-            'data' => new UserResource($data),
+            'data' => $data,
             'message' => 'User information updated successfully.', 
             'info' => "All relevant fields have been refreshed with the latest data."
         ];

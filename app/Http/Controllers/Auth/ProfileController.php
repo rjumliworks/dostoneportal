@@ -63,7 +63,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(ProfileRequest $request){
+    public function update(Request $request){
         $result = $this->handleTransaction(function () use ($request) {
             return $this->save->update($request);
         });

@@ -57,7 +57,7 @@
                                         <TextInput readonly v-model="address" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" @input="handleInput('address')" :light="true" />
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <b-button @click="addLocation(index)" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
+                                        <b-button @click="addLocation()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
                                     </div>
                                 </div>
                             </BCol>
@@ -72,7 +72,7 @@
                                     </div>
                                 </div>
                             </BCol>
-                            <BCol lg="12" class="mt-1 mb-n2"><hr class="text-muted"/></BCol>
+                            <!-- <BCol lg="12" class="mt-1 mb-n2"><hr class="text-muted"/></BCol>
                             <span class="fw-semibold text-success fs-12 mt-1">Employee Academics</span>
                             <BCol lg="12" class="mt-0 mb-n2"><hr class="text-muted"/></BCol>
                             <BCol lg="3" class="mt-0">
@@ -86,12 +86,12 @@
                             <BCol lg="3" class="mt-0">
                                 <InputLabel for="name" value="School" :message="form.errors.sex_id"/>
                                 <Multiselect :options="dropdowns.sexes" :searchable="true" label="name" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')"/>
-                            </BCol>
+                            </BCol> -->
                         </BRow>
                     </div>
                     <div class="d-flex mb-n3 mt-4">
                         <div class="flex-shrink-0 me-3">
-                            <span class="text-muted fs-13">You have answered questions in the morale survey.</span>
+                            <!-- <span class="text-muted fs-13">You have answered questions in the morale survey.</span> -->
                         </div>
                         <div class="flex-grow-1"></div>
                         <div class="flex-shrink-0">
@@ -101,19 +101,38 @@
                 </div>
             </BCol>
         </BRow>
+    <Location ref="location"/>
     </b-modal>
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
 import Multiselect from "@vueform/multiselect";
+import Location from  './Modals/Location.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 export default {
-    components: { Multiselect, TextInput, InputLabel },
+    components: { Multiselect, TextInput, InputLabel, Location },
     data(){
         return {
             form: useForm({
-                questions: null,
+                username: this.$page.props.user.data.username,
+                email: this.$page.props.user.data.email,
+                birthdate: this.$page.props.user.data.birthdate,
+                mobile: this.$page.props.user.data.mobile,
+                sex_id: this.$page.props.user.data.sex.id,
+                religion_id: this.$page.props.user.data.religion.id,
+                marital_id: this.$page.props.user.data.marital.id,
+                blood_id: this.$page.props.user.data.blood.id,
+                // permanent: {
+                //     address: null,
+                //     region_code: null,
+                //     province_code: null,
+                //     municipality_code: null,
+                //     district_code: null,
+                //     barangay_code: null,
+                //     latitude: null,
+                //     longitude: null,
+                // },
                 option: 'answers'
             }),
             dropdowns: []
@@ -133,15 +152,20 @@ export default {
             .catch(err => console.log(err));
         },
         submit(){
-            this.form.questions = this.questions;
-            this.form.post('/surveys',{
+            this.form.put('/profile/updated', {
+                errorBag: "submit",
                 preserveScroll: true,
-                onSuccess: (response) => {
-                    this.form.reset();
-                    this.hide();
+                preserveState: true,
+                onSuccess: () => {
                     this.$emit('success',true);
                 },
             });
+        },
+        addLocation(){
+            this.$refs.location.openEdit(this.region);
+        },
+        handleInput(field) {
+            this.form.errors[field] = false;
         },
         hide(){
             this.showModal = false;
