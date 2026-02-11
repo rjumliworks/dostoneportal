@@ -3,6 +3,7 @@
 namespace App\Services\Profile;
 
 use App\Models\User;
+use App\Models\UserInformation;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -65,6 +66,8 @@ class SaveClass
                         ]
                     );
                 }
+
+                $this->information($data->id);
             }
         }
         $data = User::find(\Auth::user()->id);
@@ -98,5 +101,60 @@ class SaveClass
             ->where('user_id', $request->user()->getAuthIdentifier())
             ->where('id', '!=', $request->session()->getId())
             ->delete();
+    }
+
+    private function information($id){
+        $accounts = [
+            ["name" => "Pag-Ibig","number" => null,"deduction" => null, "is_contribution" => true],
+            ["name" => "SSS","number" => null, "deduction" => null, "is_contribution" => true],
+            ["name" => "GSIS", "number" => null, "deduction" => null, "is_contribution" => true],
+            ["name" => "PhilHealth", "number" => null, "deduction" => null, "is_contribution" => true],
+            ["name" => "TIN",  "number" => null, "deduction" => null, "is_contribution" => false],
+            ["name" => "LandBank", "number" => null, "deduction" => null, "is_contribution" => false]
+        ];
+        
+        $family = [
+            "parents" => [
+                "father" => [
+                    "name" => null,
+                    "address" => null,
+                ],
+                "mother" => [
+                    "name" => null,
+                    "address" => null,
+                ]
+            ],
+            "spouse" => [
+                "name" => null,
+                "address" => null,
+                "contact_no" => null,
+                "occupation" => null,
+                "company" => null,
+            ],
+            "children" => []
+        ];
+
+        $contacts = [
+            "emergency_contact" => [
+                "name" => null,
+                "relationship" => null,
+                "contact_no" => null,
+                "address" => [
+                    "region" => null,
+                    "province" => null,
+                    "municipality" => null,
+                    "barangay" => null,
+                    "street" => null
+                ]
+            ]
+        ];
+
+        UserInformation::create([
+            'accounts' => json_encode($accounts),
+            'backgrounds' => json_encode($family),
+            'contacts' => json_encode($contacts),
+            'user_id' => $id
+        ]);
+        
     }
 }

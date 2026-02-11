@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\UserAddress;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -37,7 +38,9 @@ class ProfileController extends Controller
                 return $this->view->sessions($request);
             break;
             default: 
-            return inertia('Auth/Profile/Index');
+            return inertia('Auth/Profile/Index',[
+                'addresses' => UserAddress::with('region','province','municipality','barangay')->where('user_id',\Auth::user()->id)->get()
+            ]);
         }
     }
 
