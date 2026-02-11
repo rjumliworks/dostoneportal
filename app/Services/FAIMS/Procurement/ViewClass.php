@@ -36,7 +36,7 @@ class ViewClass
             ->when($request->status, function ($query, $status) {
                 $query->where('status_id', $status);
             })
-            ->when(auth()->user()->hasRole('Employee','Administrator','Procurment Staff', 'Procurement Officer'), function ($query) {
+            ->when(auth()->user()->hasRole('Employee','Administrator','Procurement Staff', 'Procurement Officer'), function ($query) {
                 $query->where('created_by_id', auth()->id());
             })
             ->orderBy('created_at','DESC')
