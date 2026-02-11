@@ -47,15 +47,17 @@ class ProcurementController extends Controller
             break;
 
             default:
+                $regionalDirector = $this->dropdown->regional_director();
                 return inertia('Modules/FAIMS/Procurement/Index', [
                     'dropdowns' => [
                         'roles'  =>  \Auth::user()->roles,
-                        'designation'  =>  \Auth::user()->designation,
+                        'designation'  =>  \Auth::user()->org_chart?->designation,
                         'statuses' => $this->dropdown->statuses('Procurement'),
                         'types' => $this->dropdown->dropdowns('Type'),
                         'modes' => $this->dropdown->dropdowns('Mode'),
                     ],
-                    'regional_director'  =>  $this->dropdown->regional_director(),
+                    'regional_director'  =>  $regionalDirector,
+                    'is_regional_director' => $regionalDirector && $regionalDirector['value'] == \Auth::id(),
 
                 ]);
         }
