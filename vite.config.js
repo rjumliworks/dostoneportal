@@ -7,10 +7,6 @@ export default defineConfig({
         chunkSizeWarningLimit: 4000,
     },
 
-    server: {
-        host: true,     // 👈 VERY IMPORTANT
-    },
-
     plugins: [
         laravel({
             input: 'resources/js/app.js',
