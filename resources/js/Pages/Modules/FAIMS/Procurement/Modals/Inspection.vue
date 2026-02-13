@@ -19,7 +19,7 @@
           
           <span class="text-danger flex">{{ form.code }}</span></b>
           <br>
-          <span v-if="form.status?.name === 'Delivered/For Inspection'">
+        <span v-if="form.status?.name === 'Delivered/For Inspection'">
             Update status from
             <span :class="form.status?.color">"{{ form.status?.name }}"</span>
             to
@@ -28,13 +28,26 @@
           </span>
           <br />
 
-        
-        <br />
+        <div class="mt-4 p-3 border rounded bg-light ">
+          <p class="mb-2 fw-bold text-danger">
+            Type <span class="text-primary">"confirm"</span> to proceed:
+          </p>
+          <b-form-input
+            v-model="confirmText"
+            placeholder="Type confirm here..."
+            :class="{ 'is-invalid': confirmTextError }"
+            @input="handleConfirmInput"
+            class="text-center  fw-bold"
+          ></b-form-input>
+          <small v-if="confirmTextError" class="text-danger">
+            Please type "confirm" to proceed
+          </small>
+        </div>
       </div>
     </form>
     <template v-slot:footer>
       <b-button @click="hide()" variant="light" block>Close</b-button>
-      <b-button @click="submit()" variant="primary" :disabled="form.processing" block
+      <b-button @click="submit()" variant="primary" :disabled="form.processing || !isConfirmed" block
         >Update</b-button
       >
     </template>
@@ -52,6 +65,8 @@ export default {
     return {
       currentUrl: window.location.origin,
       selected: null,
+        confirmText: "",
+      confirmTextError: false,
       form: useForm({
         id: null,
         code: null,
@@ -63,6 +78,13 @@ export default {
       showModal: false,
     };
   },
+
+  computed: {
+    isConfirmed() {
+      return this.confirmText.toLowerCase() === "confirm";
+    },
+  },
+
   methods: {
     show(data, type) {
       this.form.id = data.id;

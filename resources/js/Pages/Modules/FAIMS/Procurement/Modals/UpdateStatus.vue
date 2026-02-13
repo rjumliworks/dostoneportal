@@ -102,11 +102,27 @@
         </div>
 
         <br />
+
+        <div class="mt-4 p-3 border rounded bg-light">
+          <p class="mb-2 fw-bold text-danger ">
+            tYPE <span class="text-primary">"CONFIRM"</span> TO PROCEED:
+          </p>
+          <b-form-input
+            v-model="confirmText"
+            placeholder="Type confirm here..."
+            :class="{ 'is-invalid': confirmTextError }"
+            class="text-center fw-bold"
+            @input="handleConfirmInput"
+          ></b-form-input>
+          <small v-if="confirmTextError" class="text-danger">
+            Please type "confirm" to proceed
+          </small>
+        </div>
       </div>
     </form>
     <template v-slot:footer>
       <b-button @click="hide()" variant="light" block>Close</b-button>
-      <b-button @click="submit()" variant="primary" :disabled="form.processing" block
+      <b-button @click="submit()" variant="primary" :disabled="form.processing || !isConfirmed" block
         >Update</b-button
       >
     </template>
@@ -124,6 +140,8 @@ export default {
     return {
       currentUrl: window.location.origin,
       selected: null,
+      confirmText: "",
+      confirmTextError: false,
       form: useForm({
         id: null,
         code: null,
@@ -190,8 +208,18 @@ export default {
     handleInput(field) {
       this.form.errors[field] = false;
     },
+    handleConfirmInput() {
+      this.confirmTextError = this.confirmText.toUpperCase() !== "CONFIRM";
+    },
     hide() {
       this.showModal = false;
+      this.confirmText = "";
+      this.confirmTextError = false;
+    },
+  },
+  computed: {
+    isConfirmed() {
+      return this.confirmText.toUpperCase() === "CONFIRM";
     },
   },
 };
