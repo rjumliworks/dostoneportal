@@ -23,10 +23,9 @@ Route::domain('attendance.' . config('app.app_host'))->as('attendance.')->group(
 });
 
 Route::domain('wfh.' . config('app.app_host'))->as('wfh.')->group(function () {
-    Route::get('/', [App\Http\Controllers\Public\AttendanceController::class, 'index']);
-    Route::post('/', [App\Http\Controllers\Public\AttendanceController::class, 'store']);
-    Route::post('/recognize', [App\Http\Controllers\Public\AttendanceController::class, 'recognize']);
-    Route::get('/workfromhome', [App\Http\Controllers\Public\AttendanceController::class, 'wfh']);
+    Route::get('/', [App\Http\Controllers\Public\WfhController::class, 'index']);
+    Route::post('/', [App\Http\Controllers\Public\WfhController::class, 'store']);
+    Route::post('/recognize', [App\Http\Controllers\Public\WfhController::class, 'recognize']);
 });
 
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
