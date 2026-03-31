@@ -144,7 +144,13 @@ class SaveClass
                 'undertime' => null
             ]; 
             if($dtr){
-                
+                if($station_id != $dtr->stationd_id){
+                     return [
+                        'data' => null,
+                        'message' => null, 
+                        'info' => 'Wrong Station',
+                    ];
+                }
                 switch($type){
                     case 'Time In (am)':
                         if($dtr->am_out_at) {

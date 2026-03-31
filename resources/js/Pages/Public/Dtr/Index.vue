@@ -164,6 +164,12 @@
                                                 <p class="mb-0 text-white fs-11">No matching employee was found based on the face data. Please contact Admnistrator.</p>
                                             </div>
                                         </div>
+                                        <div v-else-if="status == 'Wrong Station'" class="d-flex w-100 justify-content-center align-items-center mb-2">
+                                            <div class="p-4 w-100 border rounded bg-danger text-center">
+                                                <p class="mb-0 text-white fw-bold fs-12">Access Denied</p>
+                                                <p class="mb-0 text-white fs-11">Timeout failed: Station mismatch detected. Kindly use the correct assigned station.</p>
+                                            </div>
+                                        </div>
                                         <div v-else-if="status == 'Disabled Overlap'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-danger-subtle text-center">
                                                 <p class="mb-0 text-dark fs-12">Attendance action is restricted for <b v-if="employee" class="text-danger text-uppercase">{{ employee.name }}</b>.</p>
@@ -467,6 +473,13 @@ export default {
                             this.speak("Your attendance has been recorded successfully.")
                         }, 600)
                         this.lists = [this.employee, ...this.lists];
+                    }
+                     if (data.info === 'Wrong Station') {
+                        // Add to the list only for new/success entries
+                        this.$refs.errorBuzz.play();
+                        setTimeout(() => {
+                            this.speak("Station mismatch detected. Kindly use the correct assigned station.")
+                        }, 600)
                     }
                 }
                 this.resetStatusTimer();
