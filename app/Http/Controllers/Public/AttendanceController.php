@@ -58,4 +58,12 @@ class AttendanceController extends Controller
             'station' => ListDropdown::where('id',$id)->value('name')
         ]);
     }
+
+    public function wfh(Request $request)
+    {
+        return inertia('Public/Dtr/Index',[
+            'code' => 'n8LX7LAxw7',
+            'station' => ListDropdown::where('id',49)->value('name')
+        ]);
+    }
 }

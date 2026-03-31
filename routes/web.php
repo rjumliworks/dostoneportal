@@ -18,9 +18,9 @@ Route::domain('attendance.' . config('app.app_host'))->as('attendance.')->group(
     Route::get('/', [App\Http\Controllers\Public\AttendanceController::class, 'index']);
     Route::post('/', [App\Http\Controllers\Public\AttendanceController::class, 'store']);
     Route::post('/recognize', [App\Http\Controllers\Public\AttendanceController::class, 'recognize']);
-    Route::get('/{station}', [App\Http\Controllers\Public\AttendanceController::class, 'show'])
-    ->middleware('attendance') // Middleware to restrict access
-    ->name('attendance.station');
+    Route::get('/wfh', [App\Http\Controllers\Public\AttendanceController::class, 'wfh']);
+    Route::get('/{station}', [App\Http\Controllers\Public\AttendanceController::class, 'show'])->middleware('attendance')->name('attendance.station');
+    
 });
 
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
