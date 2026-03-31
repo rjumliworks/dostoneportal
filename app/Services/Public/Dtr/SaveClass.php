@@ -144,7 +144,7 @@ class SaveClass
                 'undertime' => null
             ]; 
             if($dtr){
-                if($station_id != $dtr->stationd_id){
+                if($station_id != $dtr->station_id){
                      return [
                         'data' => null,
                         'message' => null, 
