@@ -444,7 +444,7 @@ export default {
                 this.status = data.info;
 
                 // Update employee only if not an error
-                if (data.info === 'New' || data.info === 'Success' || data.info === 'Duplicate' || data.info === 'Disabled Overlap' || data.info === 'Disabled AM') {
+                if (data.info === 'New' || data.info === 'Success' || data.info === 'Duplicate' || data.info === 'Disabled Overlap' || data.info === 'Disabled AM' || data.info === 'Wrong Station') {
                     this.employee = data.data ? { ...data.data } : null;
                     this.user = this.employee;
 
