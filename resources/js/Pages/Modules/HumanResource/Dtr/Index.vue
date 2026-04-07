@@ -27,8 +27,12 @@
                     <b-col lg>
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                            <input type="text" v-model="filter.keyword" placeholder="Search Dtr" class="form-control" style="width: 65%;">
+                            <input type="text" v-model="filter.keyword" placeholder="Search Dtr" class="form-control" style="width: 50%;">
                             <input type="date" v-model="filter.date" class="form-control">
+                            <Multiselect class="white" style="width: 15%;" :options="stations" v-model="filter.station" label="others" :searchable="true" placeholder="Select Stations" />
+                            <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
+                                <i class="ri ri-printer-fill search-icon"></i>
+                            </span>
                             <b-button type="button" variant="primary" @click="openGenerate()">
                                 <i class="bx bx-refresh search-icon"></i> Generate
                             </b-button>
@@ -112,17 +116,20 @@
     </div>
     <View @update="updateList" ref="view"/>
     <Generate ref="generate"/>
+    <Print :stations="stations" ref="print"/>
 </BRow>
 </template>
 <script>
 import _ from 'lodash';
 import View from './Modals/View.vue';
+import Print from './Modals/Print.vue';
 import Generate from './Modals/Generate.vue';
+import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, View, Generate },
-    props: ['counts'],
+    components: { PageHeader, Pagination, View, Generate, Print, Multiselect },
+    props: ['counts','stations'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -132,6 +139,7 @@ export default {
             filter: {
                 keyword: null,
                 date: null,
+                station: null,
                 status: null
             },
             type: null,
@@ -143,6 +151,9 @@ export default {
             this.checkSearchStr(newVal);
         },
         "filter.date"(newVal){
+            this.fetch();
+        },
+        "filter.station"(newVal){
             this.fetch();
         }
     },
@@ -160,6 +171,7 @@ export default {
                     keyword: this.filter.keyword,
                     date: this.filter.date,
                     status: this.filter.status,
+                    station: this.filter.station,
                     count: 10,
                     option: 'lists'
                 }
@@ -203,6 +215,9 @@ export default {
         },
         openGenerate(){
             this.$refs.generate.show();
+        },
+        openPrint(){
+            this.$refs.print.show();
         },
         updateList(data){
             this.lists[this.index] = data;

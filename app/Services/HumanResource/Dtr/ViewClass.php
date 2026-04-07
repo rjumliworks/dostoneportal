@@ -26,10 +26,13 @@ class ViewClass
             ->when($request->date, function ($query, $date) {
                 $query ->where('date',$date);
             })
+            ->when($request->station, function ($query, $station) {
+                $query ->where('station_id',$station);
+            })
             ->when($request->status, function ($query, $status) {
                 $query ->where('is_completed',$status);
             })
-            ->orderBy('date', 'DESC')
+            ->orderBy('date', 'DESC')->orderBy('created_at', 'DESC')
             ->paginate($request->count)
         );
         return $data;

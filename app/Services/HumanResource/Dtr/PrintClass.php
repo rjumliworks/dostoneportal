@@ -7,6 +7,8 @@ use App\Models\Dtr;
 use App\Models\Request;
 use App\Models\Schedule;
 use App\Models\UserProfile;
+use App\Models\ListDropdown;
+use App\Http\Resources\HumanResource\Dtr\IndexResource;
 
 class PrintClass
 {
@@ -200,5 +202,30 @@ class PrintClass
         $canvas = $dompdf->getCanvas();
       
         return $pdf->stream($month.'-'.$year.'.pdf');
+    }
+
+    public function bulk($request){
+        $year = $request->year;
+        $monthName = $request->month;
+        $month = Carbon::parse("1 $monthName")->month;
+        $station = $request->station;
+        $data = Dtr::with('user.profile')
+        ->where('station_id',$station)
+        ->whereMonth('created_at',$month)
+        ->whereYear('created_at',$year)
+        ->orderBy('date')
+        ->get();
+
+        $grouped = $data->groupBy('date');
+        $lists = $grouped->map(function ($items) {
+            return IndexResource::collection($items)->resolve(); 
+        })->toArray(); // 🔥 convert to array
+
+        $pdf = \PDF::loadView('prints.bulk', [
+            'lists' => $lists,
+            'station' => ListDropdown::where('id',$station)->first()
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream($month . '-' . $year . '.pdf');
     }
 }

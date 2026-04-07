@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\DropdownClass;
 use App\Services\HumanResource\Dtr\OldClass;
 use App\Services\HumanResource\Dtr\SaveClass;
 use App\Services\HumanResource\Dtr\ViewClass;
@@ -15,14 +16,15 @@ class DtrController extends Controller
 {
     use HandlesTransaction;
 
-    protected $save, $update, $view, $print;
+    protected $save, $update, $view, $print, $old, $dropdown;
 
-    public function __construct(SaveClass $save, ViewClass $view, UpdateClass $update, PrintClass $print, OldClass $old){
+    public function __construct(SaveClass $save, ViewClass $view, UpdateClass $update, PrintClass $print, OldClass $old, DropdownClass $dropdown){
         $this->save = $save;
         $this->view = $view;
         $this->print = $print;
         $this->update = $update;
         $this->old = $old;
+        $this->dropdown = $dropdown;
     }
 
     public function index(Request $request){
@@ -33,12 +35,16 @@ class DtrController extends Controller
             case 'print':
                 return $this->print->dtr($request);
             break;
+            case 'print_bulk':
+                return $this->print->bulk($request);
+            break;
             case 'old':
                 return $this->old->dtr($request);
             break;
             default:
                return inertia('Modules/HumanResource/Dtr/Index',[
-                    'counts' => $this->view->counts()
+                    'counts' => $this->view->counts(),
+                    'stations' => $this->dropdown->stations(),
                ]);
         }   
     }
