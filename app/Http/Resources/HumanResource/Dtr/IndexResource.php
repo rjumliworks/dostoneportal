@@ -20,6 +20,7 @@ class IndexResource extends JsonResource
             'pm_out_at' => new TimeResource(json_decode($this->pm_out_at)),
             'remarks' => json_decode($this->remarks),
             'tardiness' => $this->tardiness,
+            'station' => $this->station,
             'undertime' => $this->undertime,
             'is_updated' => $this->is_updated,
             'is_completed' => $this->is_completed,

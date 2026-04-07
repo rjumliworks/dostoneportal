@@ -44,7 +44,7 @@ class DtrController extends Controller
             default:
                return inertia('Modules/HumanResource/Dtr/Index',[
                     'counts' => $this->view->counts(),
-                    'stations' => $this->dropdown->stations(),
+                    'stations' => $this->dropdown->dtr_stations(),
                ]);
         }   
     }

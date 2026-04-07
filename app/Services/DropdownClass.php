@@ -202,6 +202,17 @@ class DropdownClass
         return $data;
     }
 
+    public function dtr_stations(){
+        $data = ListDropdown::whereIn('classification',['Station','HRMIS'])->where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name.' ('.$item->others.')',
+                'others' => $item->others
+            ];
+        });
+        return $data;
+    }
+
      public function salaries(){
         $data = ListSalary::orderBy('grade','ASC')->get()->map(function ($item) {
             return [
