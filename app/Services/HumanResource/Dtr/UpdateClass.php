@@ -68,7 +68,7 @@ class UpdateClass
             }
         }
 
-        $data =  new IndexResource(Dtr::with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname','station')->where('id',$request->id)->first());
+        $data =  new IndexResource(Dtr::with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname')->where('id',$request->id)->first());
         return [
             'data' => $data,
             'message' => 'DTR Updated successfully.', 
