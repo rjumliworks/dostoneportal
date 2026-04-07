@@ -38,6 +38,11 @@ class Dtr extends Model
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 
+    public function station()
+    {
+        return $this->belongsTo('App\Models\ListDropdown', 'station_id', 'id');
+    }
+
       public function getUpdatedAtAttribute($value)
     {
         return date('M d, Y g:i a', strtotime($value));
