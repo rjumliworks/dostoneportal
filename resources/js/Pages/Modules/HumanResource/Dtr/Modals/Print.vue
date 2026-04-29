@@ -78,7 +78,7 @@ export default {
             this.selected = data;
         }, 
         submit(){
-            window.open('/dtrs?option=print_bulk&station='+this.form.station+'&month='+this.form.month+'&year='+this.form.year);
+            window.open('/dtrs?option=print_old&station='+this.form.station+'&month='+this.form.month+'&year='+this.form.year);
         }, 
         isCustomDropdown() {
             var searchOptions = document.getElementById("search-close-options");

@@ -33,6 +33,11 @@ class Dtr extends Model
         'remarks' => 'encrypted:json',
     ];
 
+    public function olds()
+    {
+        return $this->belongsTo('App\Models\OldDtr', 'old_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');

@@ -55,6 +55,9 @@ class SearchController extends Controller
             case 'vehicles':
                 return $this->dropdown->vehicles($request->keyword);
             break;
+            case 'drivers':
+                return $this->dropdown->drivers($request->keyword);
+            break;
             case 'schools':
                 return $this->dropdown->schools($request->keyword);
             break;

@@ -13,7 +13,7 @@ class TagResource extends JsonResource
             'name' => $this->user->profile->firstname.' '.$this->user->profile->lastname,
             'division' => $this->division_id,
             'avatar' => ($this->user->profile && $this->user->profile->avatar && $this->user->profile->avatar !== 'noavatar.jpg')
-            ? asset('storage/' . $this->user->profile->avatar) 
+            ? asset($this->user->profile->avatar) 
             : asset('images/avatars/avatar.jpg'), 
         ];
     }

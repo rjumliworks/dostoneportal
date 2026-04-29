@@ -50,6 +50,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    <div data-bs-toggle="collapse" data-bs-target="#paymentmethodCollapse.show" aria-expanded="false"
+                        aria-controls="paymentmethodCollapse">
+                        <div class="form-check card-radio">
+                            <input id="paymentMethod05" name="paymentMethod" v-model="selectedType" value="training" type="radio" class="form-check-input">
+                            <label class="form-check-label" for="paymentMethod05">
+                                <span class="fs-16 text-muted me-2"><i class="ri-open-arm-fill align-bottom"></i></span>
+                                <span class="fs-14 text-wrap">Training</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </BRow>
         </form> 
         <template v-slot:footer>
@@ -61,14 +73,16 @@
     <Travel @success="fetch()" :dropdowns="travel_dropdowns" ref="travel"/>
     <Leave @success="fetch()" :dropdowns="leave_dropdowns" ref="leave"/>
     <Overtime @success="fetch()" :dropdowns="leave_dropdowns" ref="overtime"/>
+    <Training ref="training"/>
 </template>
 <script>
 import Travel from './Travel.vue';
 import Vehicle from './Vehicle.vue';
 import Leave from './Leave.vue';
 import Overtime from './Overtime.vue';
+import Training from './Training.vue';
 export default {
-    components : { Travel, Vehicle, Leave, Overtime },
+    components : { Travel, Vehicle, Leave, Overtime, Training },
     props: ['leave_dropdowns','travel_dropdowns','vehicle_dropdowns'],
     data(){
         return {
@@ -91,6 +105,8 @@ export default {
                 this.$refs.leave.show();
             } else if (this.selectedType === 'overtime') {
                 this.$refs.overtime.show();
+            } else if (this.selectedType === 'training') {
+                this.$refs.training.show();
             }
             this.hide();
         },

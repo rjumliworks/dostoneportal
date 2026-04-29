@@ -57,9 +57,14 @@ class ApprovalController extends Controller
                     'information_data' => $this->show->leave($code)
                 ]);
             break;
-             case 'render-overtime-service':
+            case 'render-overtime-service':
                 return inertia('Modules/Portal/Approvals/View/Overtime/View',[
                     'information_data' => $this->show->overtime($code)
+                ]);
+            break;
+            case 'training':
+                return inertia('Modules/Portal/Approvals/View/Training/View',[
+                    'information_data' => $this->show->training($code)
                 ]);
             break;
         }

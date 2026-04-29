@@ -73,6 +73,13 @@ class MyrequestRequest extends FormRequest
                     'document' => 'nullable|mimes:pdf|max:2000'
                 ];
             break;
+            case 'training':
+                return [
+                    'purpose' => 'sometimes|required',
+                    'tags' => 'required|array|min:1',
+                    'document' => 'nullable|mimes:pdf|max:2000'
+                ];
+            break;
         }
     }
 
@@ -233,6 +240,17 @@ class MyrequestRequest extends FormRequest
 
                     'tags.required' => 'Please select at least one employee.',
 
+                    'document.file' => 'The travel document must be a valid file.',
+                    'document.mimes' => 'The travel document must be a PDF file.',
+                    'document.max' => 'The travel document must not exceed 2MB.',
+                ];
+            break;
+            case 'training':
+                return [
+                    'purpose.required' => 'Please provide the purpose of travel.',
+                    'purpose.string' => 'Purpose must be a valid text.',
+                    'purpose.max' => 'Purpose must not exceed 255 characters.',
+                    'tags.required' => 'Please select at least one employee.',
                     'document.file' => 'The travel document must be a valid file.',
                     'document.mimes' => 'The travel document must be a PDF file.',
                     'document.max' => 'The travel document must not exceed 2MB.',

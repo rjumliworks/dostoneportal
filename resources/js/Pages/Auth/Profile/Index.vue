@@ -31,6 +31,9 @@
                         </BListGroupItem>
                         <BListGroupItem :active="activeTab === 3" href="#" class="list-group-item-action" @click="show(3)">
                             <i class="ri-team-fill align-middle me-2"></i>Family Information
+                        </BListGroupItem>                        
+                        <BListGroupItem :active="activeTab === 8" href="#" class="list-group-item-action" @click="show(8)">
+                            <i class="ri-profile-fill align-middle me-2"></i>Digital Certificate
                         </BListGroupItem>
                          <BListGroupItem :active="activeTab === 7" href="#" class="list-group-item-action" @click="show(7)">
                             <i class="ri-bank-card-fill  align-middle me-2"></i>Contributions & Account Numbers
@@ -57,6 +60,7 @@
             <AuthenticationLog v-if="activeTab === 5"/>
             <ActivityLog v-if="activeTab === 6"/>
             <Account v-if="activeTab === 7"/>
+            <Certificate v-if="activeTab === 8"/>
         </div>
     </div>
 </template>
@@ -64,6 +68,7 @@
 import { useForm } from "@inertiajs/vue3"
 import Overview from "./Pages/Overview.vue";
 import Edit from "./Pages/Edit.vue";
+import Certificate from './Pages/Certificate.vue';
 import Account from './Pages/Account.vue';
 import Address from './Pages/Address.vue';
 import Security from './Pages/Security.vue';
@@ -71,7 +76,7 @@ import ActivityLog from './Pages/ActivityLog.vue';
 import AuthenticationLog from "./Pages/AuthenticationLog.vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security, Address, Account },
+    components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security, Address, Account, Certificate },
     props: ['addresses'],
     data() {
         return {

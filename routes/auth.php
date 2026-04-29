@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('activation-check', [ProfileController::class, 'check']);
     Route::post('photo', [ProfileController::class, 'store']);
     Route::get('/profile', [ProfileController::class, 'index']);
+    Route::post('/profile', [ProfileController::class, 'store']);
     Route::put('/profile/updated', [ProfileController::class, 'update']);
     Route::get('two-factor-challenge', [TwoFactorAuthenticationController::class, 'index'])->name('twofactor');
     Route::post('two-factor-challenge', [TwoFactorAuthenticationController::class, 'store']);

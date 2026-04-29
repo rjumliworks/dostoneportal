@@ -86,6 +86,7 @@
                                     <th v-else-if="filter.type == 158" style="width: 14%;" class="text-center">Type</th>
                                     <th v-else-if="filter.type == 157" style="width: 14%;" class="text-center">Vehicle</th>
                                     <th v-else-if="filter.type == 165" style="width: 14%;" class="text-center">Type</th>
+                                    <th v-else-if="filter.type == 196" style="width: 14%;" class="text-center">Type</th>
                                     <th style="width: 10%;" class="text-center">Personnel</th>
                                     <th style="width: 15%;" class="text-center">Dates</th>
                                     <th style="width: 15%;" class="text-center">Date Filed</th>
@@ -106,6 +107,7 @@
                                         <span v-else-if="list.type == 'Travel Order'" class="badge bg-success-subtle text-success">{{list.type}}</span>
                                         <span v-else-if="list.type == 'Leave Form'" class="badge bg-danger-subtle text-danger">{{list.type}}</span>
                                         <span v-else-if="list.type == 'Render Overtime Service'" class="badge bg-info-subtle text-info">{{list.type}}</span>
+                                         <span v-else-if="list.type == 'Training'" class="badge bg-primary-subtle text-dark">{{list.type}}</span>
                                     </td>
                                     <td class="text-center" v-else>
                                         <span :class="'badge bg-primary'">{{list.subtype}}</span>

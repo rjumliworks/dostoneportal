@@ -9,6 +9,7 @@ use App\Models\RequestTravel;
 use App\Models\RequestSignatory;
 use App\Http\Resources\Portal\Approval\TravelResource;
 use App\Http\Resources\Portal\Approval\LeaveResource;
+use App\Http\Resources\Portal\Approval\TrainingResource;
 use App\Http\Resources\Portal\Approval\OvertimeResource;
 use App\Http\Resources\Portal\Approval\ReservationResource;
 
@@ -120,5 +121,29 @@ class ShowClass
         ->first();
 
         return new LeaveResource($data);
+    }
+
+    public function training($code){
+
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($code)[0];
+
+        $data = RequestSignatory::with([
+            'status',
+            'statusable',
+            'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,avatar,suffix_id',
+            'request.tags.user:id',
+            'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'request.type',
+            'request.detail',
+            'request.user:id',
+            'request.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'request.signatories.division','request.signatories.approved','request.signatories.approved.signatory.designationable.designation','request.signatories.recommended','request.signatories.recommended.signatory.designationable.designation'
+        ])
+        ->where('id',$id)
+        ->first();
+
+        return new TrainingResource($data);
     }
 }

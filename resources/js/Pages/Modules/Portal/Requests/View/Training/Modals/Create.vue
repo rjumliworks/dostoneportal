@@ -2,20 +2,9 @@
     <b-modal v-model="showModal" style="--vz-modal-width: 1000px;" header-class="p-3 bg-light" title="File Travel Order" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow class="g-3 p-2">
-                <BCol lg="12" class="mt-2 mb-2">
+                <BCol lg="12" class="mt-2">
                     <InputLabel for="name" value="Purpose" :message="form.errors.purpose"/>
-                    <div class="position-relative">
-                        <textarea
-                            id="attribute" v-model="form.purpose" rows="1"
-                            class="form-control" placeholder="Please enter details"
-                            style="background-color: #f5f6f7; padding-bottom: 28px;" 
-                        ></textarea>
-
-                        <span class="position-absolute" style="top: -18px; font-size: 11px; right: 8px; background-color: white; cursor: pointer; color: #0d6efd; font-weight: 500;" @click="improveText" :class="{ 'text-muted': loading }">
-                            <span v-if="loading">Improving...</span>
-                            <span v-else>Improve with AI</span>
-                        </span>
-                    </div>
+                    <TextInput id="name" v-model="form.purpose" type="text" class="form-control" placeholder="Please enter purpose" @input="handleInput('purpose')" :light="true"/>
                 </BCol>
                 <!-- <BCol lg="4" class="mt-0">
                     <InputLabel for="name" value="Destination" :message="form.errors.destination"/>
@@ -39,7 +28,6 @@
                         placeholder="Select date" 
                         v-model="form.date" 
                         :config="config"
-                         @input="handleInput('date')"
                         class="form-control flatpickr-input" id="calendar">
                         </flat-pickr>
                     </div>
@@ -66,7 +54,6 @@
                         :loading="isLoading"
                         label="name"
                         object
-                         @input="handleInput('tags')"
                         :preserve-search="true"
                         :filter-results="false"
                         placeholder="Select Employee"
@@ -78,13 +65,12 @@
                     <hr class="text-muted mt-n1"/>
                 </BCol>
 
-                <BCol :lg="(form.mode_id == 150) ? 3 : 6" class="mt-n2">
+                <BCol lg="6" class="mt-n2">
                     <InputLabel for="name" value="Travel Expense" :message="form.errors.expense_id"/>
                     <Multiselect
                         v-model="form.expense_id" 
                         :options="dropdowns.expenses"
                         label="name"
-                         @input="handleInput('expense_id')"
                         placeholder="Select type"
                     />
                 </BCol>
@@ -94,7 +80,6 @@
                         v-model="form.mode_id" 
                         :options="dropdowns.modes"
                         label="name"
-                        @input="handleInput('mode_id')"
                         placeholder="Select type"
                     />
                 </BCol>
@@ -104,7 +89,6 @@
                         v-model="form.transpo_id" 
                         :options="dropdowns.transportations"
                         label="name"
-                        @input="handleInput('transpo_id')"
                         placeholder="Select"
                     />
                 </BCol>
@@ -117,16 +101,6 @@
                         object
                         @input="handleInput('vehicle_id')"
                         placeholder="Select Vehicle"
-                    />
-                </BCol>
-                 <BCol v-if="form.mode_id == 150" lg="3" class="mt-n2">
-                    <InputLabel for="name" value="Driver" :message="form.errors.driver_id"/>
-                    <Multiselect
-                        v-model="form.driver_id" 
-                        :options="drivers"
-                        label="name"
-                        @input="handleInput('driver_id')"
-                        placeholder="Select Driver"
                     />
                 </BCol>
                 <BCol lg="12">
@@ -209,7 +183,6 @@ export default {
                 mode_id: null,                
                 expense_id: null,
                 transpo_id: null,
-                driver_id: null,
                 vehicle: null,
                 expenses: [],
                 tags: [],
@@ -219,8 +192,7 @@ export default {
                 municipality_code: null,
                 barangay_code: null,
                 latitude: null,
-                longitude: null,
-                option: 'travel'
+                longitude: null
             }),
             config: {
                 enableTime: false,
@@ -232,8 +204,6 @@ export default {
             address: null,
             employees: [],
             vehicles: [],
-            drivers: [],
-            loading: false,
             isLoading: false,
             showModal: false
         }
@@ -246,22 +216,28 @@ export default {
             }
         },
         'form.mode_id'(val) {
-            this.handleTransportFetch();
+            if (val == 150) {
+               
+            }
         },
         'form.date'(val) {
-            this.handleTransportFetch();
+            if(val) {
+                this.fetchVehicles(val);
+            }else{
+                this.vehicles = [];
+            }
         },
     },
     methods: { 
-        show(){
+        show(data){
+            this.selected = data;
             this.showModal = true;
         },
         submit(){
-            this.form.post('/requests',{
+            this.form.post('/travels',{
                 preserveScroll: true,
                 forceFormData: true, 
                 onSuccess: (response) => {
-                    this.$emit('success',true);
                     this.form.clearErrors();
                     this.form.reset();
                     this.hide();
@@ -280,33 +256,6 @@ export default {
             })
             .catch(err => console.log(err));
         }, 
-        fetchDrivers(string){
-            axios.get('/search',{
-                params: {
-                    option: 'drivers',
-                    keyword: string
-                }
-            })
-            .then(response => {
-                this.drivers = response.data;
-            })
-            .catch(err => console.log(err));
-        }, 
-        async improveText() {
-            this.loading = true;
-            axios.post('/improve', {
-                purpose: this.form.purpose, 
-            })
-            .then(res => {
-                this.form.purpose = res.data.improved.trim();
-            })
-            .catch(err => {
-                console.error(err);
-            })
-            .finally(() => {
-                this.loading = false;
-            });
-        },
         checkSearchStr: _.debounce(function(string) {
             (string) ? this.searchUser(string) : '';
         }, 300),
@@ -342,15 +291,6 @@ export default {
         handleAddFile(error, fileItem) {
             if (error) return console.error('FilePond error:', error);
             this.form.document = fileItem.file;
-        },
-        handleTransportFetch() {
-            if (this.form.mode_id == 150 && this.form.date) {
-                this.fetchVehicles(this.form.date);
-                this.fetchDrivers(this.form.date);
-            } else {
-                this.vehicles = [];
-                this.drivers = [];
-            }
         },
         handleInput(field) {
             this.form.errors[field] = false;

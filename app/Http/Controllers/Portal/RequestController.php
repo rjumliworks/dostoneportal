@@ -14,6 +14,7 @@ use App\Services\Portal\Request\ShowClass;
 use App\Services\Portal\Request\LeaveClass;
 use App\Services\Portal\Request\PrintClass;
 use App\Services\Portal\Request\TravelClass;
+use App\Services\Portal\Request\TrainingClass;
 use App\Services\Portal\Request\ReservationClass;
 use App\Http\Requests\Portal\MyrequestRequest;
 
@@ -21,7 +22,7 @@ class RequestController extends Controller
 {
     use HandlesTransaction;
 
-    public $view,$save,$dropdown,$show,$cto,$leave,$print,$travel,$reservation;
+    public $view,$save,$dropdown,$show,$cto,$leave,$print,$travel,$reservation,$training;
 
     public function __construct(
         CtoClass $cto,
@@ -31,6 +32,7 @@ class RequestController extends Controller
         LeaveClass $leave,
         PrintClass $print,
         TravelClass $travel,
+        TrainingClass $training,
         ReservationClass $reservation,
         DropdownClass $dropdown
     ){
@@ -41,6 +43,7 @@ class RequestController extends Controller
         $this->leave = $leave;
         $this->print = $print;
         $this->travel = $travel;
+        $this->training = $training;
         $this->reservation = $reservation;
         $this->dropdown = $dropdown;
     }
@@ -97,6 +100,9 @@ class RequestController extends Controller
                 case 'reservation':
                     return $this->reservation->store($request);
                 break;
+                case 'training':
+                    return $this->training->store($request);
+                break;
             }
         });
 
@@ -135,6 +141,11 @@ class RequestController extends Controller
             case 'render-overtime-service':
                 return inertia('Modules/Portal/Requests/View/Overtime/View',[
                     'information_data' => $this->show->overtime($code)
+                ]);
+            break;
+            case 'training':
+                return inertia('Modules/Portal/Requests/View/Training/View',[
+                    'information_data' => $this->show->training($code)
                 ]);
             break;
         }

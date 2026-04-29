@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\UserCertificate;
 use App\Models\UserAddress;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,7 @@ use App\Services\Profile\SaveClass;
 use App\Http\Requests\Auth\ProfileRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -46,24 +48,98 @@ class ProfileController extends Controller
 
     public function store(Request $request)
     {
-          $request->validate([
-            'image' => 'required|image|mimes:jpeg,png|max:2048' // Assuming maximum file size is 2MB
-        ],[
-            'image.required' => 'Please upload an image.',
-            'image.image' => 'The file must be a valid image.',
-            'image.mimes' => 'Only JPEG or PNG images are allowed.',
-            'image.max' => 'The image size must be less than 2MB.',
-        ]);
-        $result = $this->handleTransaction(function () use ($request) {
-            return $this->save->save($request);
-        });
+        if($request->option == 'certificate'){
+           
+            $request->validate([
+                'p12' => 'required|file'
+            ]);
+            if ($request->file('p12')->getClientOriginalExtension() !== 'p12') {
+                return back()->withErrors(['p12' => 'The uploaded file must have a .p12 extension.']);
+            }
+            $result = $this->handleTransaction(function () use ($request) {
 
-        return back()->with([
-            'data' => $result['data'],
-            'message' => $result['message'],
-            'info' => $result['info'],
-            'status' => $result['status'],
-        ]);
+                $user = User::find(\Auth::user()->id);
+                // Get the uploaded file
+                $file = $request->file('p12');
+
+                // Optional: generate a unique filename
+                $filename = 'oneportal/certificates/' . $user->username . '.' . $file->getClientOriginalExtension();
+
+                // Store in S3
+                $path = $file->storeAs('', $filename, 's3');
+
+                // Get full URL if needed
+                $url = Storage::disk('s3')->url($path);
+
+                // Find or create the UserCertificate
+                $certificate = UserCertificate::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'file' => $path, // save the S3 path
+                        'password' => 'rstlD057rubber',
+                    ]
+                );
+
+                   return [
+                        'data' => [],
+                        'message' => 'Profile picture updated successfully.', 
+                        'info' => "The user's profile image has been changed to the new photo."
+                    ];
+            });
+        }else if($request->option == 'signature'){
+            $request->validate([
+                'signature' => 'required'
+            ]);
+           
+            $result = $this->handleTransaction(function () use ($request) {
+
+                $user = User::find(\Auth::user()->id);
+                // Get the uploaded file
+                $file = $request->file('signature');
+
+                // Optional: generate a unique filename
+                $filename = 'oneportal/signatures/' . $user->username . '.' . $file->getClientOriginalExtension();
+
+                // Store in S3
+                $path = $file->storeAs('', $filename, 's3');
+
+                // Get full URL if needed
+                $url = Storage::disk('s3')->url($path);
+
+                // Find or create the UserCertificate
+                $certificate = UserCertificate::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'signature' => $path
+                    ]
+                );
+
+                   return [
+                        'data' => [],
+                        'message' => 'Profile picture updated successfully.', 
+                        'info' => "The user's profile image has been changed to the new photo."
+                    ];
+            });
+        }else{
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png|max:2048' // Assuming maximum file size is 2MB
+            ],[
+                'image.required' => 'Please upload an image.',
+                'image.image' => 'The file must be a valid image.',
+                'image.mimes' => 'Only JPEG or PNG images are allowed.',
+                'image.max' => 'The image size must be less than 2MB.',
+            ]);
+            $result = $this->handleTransaction(function () use ($request) {
+                return $this->save->save($request);
+            });
+
+            return back()->with([
+                'data' => $result['data'],
+                'message' => $result['message'],
+                'info' => $result['info'],
+                'status' => $result['status'],
+            ]);
+        }
     }
 
     public function update( ProfileRequest $request){

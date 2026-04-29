@@ -38,6 +38,9 @@ class DtrController extends Controller
             case 'print_bulk':
                 return $this->print->bulk($request);
             break;
+            case 'print_old':
+                return $this->print->old($request);
+            break;
             case 'old':
                 return $this->old->dtr($request);
             break;

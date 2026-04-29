@@ -25,6 +25,9 @@ class IndexResource extends JsonResource
             case 'Render Overtime Service':
                 $subtype = $this->request->type->name;
             break;
+            case 'Training':
+                $subtype = $this->request->type->name;
+            break;
             default:
                 $subtype = $this->request->reservation->vehicle->name;
         }
@@ -40,8 +43,8 @@ class IndexResource extends JsonResource
             'link' => Crypt::encryptString($link),
             'purpose' => $this->request->detail->purpose,
             'remarks' => $this->request->detail->remarks,
-            'start' => $this->request->dates[0]->start,
-            'end' => $this->request->dates[0]->end,
+            'start' => optional($this->request->dates->first())->start ?? '-',
+            'end'   => optional($this->request->dates->first())->end ?? '-',
             'tags' => TagResource::collection($this->request->tags),
             'created_at' => $this->request->created_at,
             'updated_at' => $this->request->updated_at,

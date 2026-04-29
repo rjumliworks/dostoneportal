@@ -9,6 +9,7 @@ use App\Models\RequestTravel;
 use App\Models\RequestSignatory;
 use App\Models\RequestReservation;
 use App\Http\Resources\Portal\Request\TravelResource;
+use App\Http\Resources\Portal\Request\TrainingResource;
 use App\Http\Resources\Portal\Request\LeaveResource;
 use App\Http\Resources\Portal\Request\OvertimeResource;
 use App\Http\Resources\Portal\Request\ReservationResource;
@@ -123,5 +124,29 @@ class ShowClass
         ->first();
 
         return new ReservationResource($data);
+    }
+
+    public function training($code){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($code);
+
+        $data = Request::with([
+            'tags.user:id',
+            'tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'documents.type','documents.status',
+            'type',
+            'detail',
+            'user:id',
+            'user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'signatories.division',
+            'signatories.status',
+            'signatories.statusable',
+            'signatories.approved.user.profile','signatories.approved.signatory.designationable.designation',
+            'signatories.recommended.user.profile','signatories.recommended.signatory.designationable.designation'
+        ])
+        ->where('id',$id)
+        ->first();
+
+        return new TrainingResource($data);
     }
 }
