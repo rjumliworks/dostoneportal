@@ -1384,6 +1384,13 @@ class ListDataTableSeeder extends Seeder
                 'type' => 'Visitor',
                 'is_active' => 1,
             ),
+            195 => 
+            array (
+                'id' => 196,
+                'name' => 'Training',
+                'type' => 'Request Type',
+                'is_active' => 1,
+            ),
         ));
         
         
