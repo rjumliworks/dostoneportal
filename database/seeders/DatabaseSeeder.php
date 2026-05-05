@@ -57,9 +57,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(ListPositionsTableSeeder::class);
         // $this->call(ListLeavesTableSeeder::class);
         // $this->call(ListDeductionsTableSeeder::class);
-        $this->call(ListDropdownsTableSeeder::class);
+        // $this->call(ListDropdownsTableSeeder::class);
         // $this->call(ListUnitsTableSeeder::class);
-        $this->call(ListStatusesTableSeeder::class);
+        // $this->call(ListStatusesTableSeeder::class);
 
         // \DB::table('user_organizations')->insert([
         //     'user_id' => 1,
@@ -95,15 +95,15 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserFoldersTableSeeder::class);
         // $this->call(UserFolderFilesTableSeeder::class);
-        // $this->call(UserOrganizationsTableSeeder::class);
+        $this->call(UserOrganizationsTableSeeder::class);
         // $this->call(UserProfilesTableSeeder::class);
         // $this->call(UserRolesTableSeeder::class);
         // $this->call(UserFacesTableSeeder::class);
-        $this->call(ListExpensesTableSeeder::class);
-        $this->call(ProgramsTableSeeder::class);
-        $this->call(ProjectsTableSeeder::class);
-        $this->call(TargetsTableSeeder::class);
-        $this->call(BudgetsTableSeeder::class);
-        $this->call(BudgetItemsTableSeeder::class);
+        // $this->call(ListExpensesTableSeeder::class);
+        // $this->call(ProgramsTableSeeder::class);
+        // $this->call(ProjectsTableSeeder::class);
+        // $this->call(TargetsTableSeeder::class);
+        // $this->call(BudgetsTableSeeder::class);
+        // $this->call(BudgetItemsTableSeeder::class);
     }
 }
