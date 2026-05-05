@@ -10,4 +10,9 @@ class BudgetItem extends Model
     {
         return $this->belongsTo('App\Models\Budget', 'budget_id', 'id');
     }
+
+    public function allocations()
+    {
+        return $this->hasMany('App\Models\BudgetAllocation', 'project_id');
+    }
 }

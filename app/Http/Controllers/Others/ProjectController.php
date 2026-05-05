@@ -43,27 +43,39 @@ class ProjectController extends Controller
     }
 
     public function collection()
-    {
-        return Budget::with('type', 'items')
-            ->where('year', date('Y'))
-            ->get()
-            ->groupBy(fn ($budget) => $budget->type->name ?? 'Unknown')
-            ->map(function ($budgets, $typeName) {
+{
+    return Budget::with('type', 'items.allocations')
+        ->where('year', date('Y'))
+        ->get()
+        ->groupBy(fn ($budget) => $budget->type->name ?? 'Unknown')
+        ->map(function ($budgets, $typeName) {
 
-                $total = $budgets->flatMap(function ($b) {
-                    return $b->items ?? collect();
-                })->sum('amount');
+            $total = $budgets->flatMap(function ($b) {
+                return $b->items ?? collect();
+            })->sum('amount');
 
-                return [
-                    'name' => $typeName,
-                    'description' => 'Successfully collected and receipted',
-                    'total' => $total,
-                    'icon' => 'ri-checkbox-circle-fill fs-20',
-                    'color' => 'text-success'
-                ];
-            })
-            ->values();
-    }
+            $allocated = $budgets->flatMap(function ($b) {
+                return $b->items;
+            })->flatMap(function ($item) {
+                return $item->allocations ?? collect();
+            })->sum('amount');
+
+            $percent = $total > 0
+                ? ($allocated / $total) * 100
+                : 0;
+
+            return [
+                'name' => $typeName,
+                'description' => 'Successfully collected and receipted',
+                'total' => $total,
+                'allocated' => $allocated,
+                'percent_allocated' => round($percent, 2),
+                'icon' => 'ri-checkbox-circle-fill fs-20',
+                'color' => 'text-success'
+            ];
+        })
+        ->values();
+}
 
     public function statuses()
 {

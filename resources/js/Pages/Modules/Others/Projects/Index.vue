@@ -11,7 +11,7 @@
                             <div class="d-flex flex-lg-row flex-column">
                                 <div class="flex-grow-1">
                                     <h4 class="fs-14 mb-0">{{monthName}} Summary View</h4>
-                                    <p class="text-muted mb-0">Here's what's happening with the laboratory for month of {{monthName}}.</p>
+                                    <p class="text-muted mb-0">Here's what's happening with the office for month of {{monthName}}.</p>
                                 </div>
                                 <div class="mt-3 mt-lg-0">
                                     <form action="javascript:void(0);">
@@ -75,8 +75,8 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Collection Summary</span></h5>
-                                <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Budget Allocation Summary</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">Expense Class Summary</p>
                             </div>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                                         <p class="fs-11 mb-0 text-muted">{{ list.name }}</p>
                                     </div>
                                     <div class="flex-shrink-0 text-end">
-                                        <h6 class="mt-2 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <!-- <h6 class="mt-2 fs-12">{{list.percent_allocated}}%</h6> -->
                                         <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
                                     </div>
                                 </div>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-13"><span class="text-body">Programs</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                            <p class="text-muted text-truncate-two-lines fs-11">A summary of programs, activities, and milestones achieved within a specific reporting period in the office.</p>
                         </div>
                         <div class="flex-shrink-0">
                             <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
@@ -176,13 +176,15 @@
                 </div>
                 <div class="card-body border-bottom">
                     <div class="table-responsive table-card" style="height: calc(100vh - 657px); overflow: auto;">
-                        <table class="table table-nowrap table-bordered align-middle mb-0">
+                        <table class="table table-nowrap align-middle mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-10">
                                     <th style="width: 7%;" class="text-center"></th>
                                     <th >Program</th>
-                                    <th style="width: 9%;" class="text-center">Status</th>
-                                    <th style="width: 20%;" class="text-center">Amount</th>
+                                    <!-- <th style="width: 9%;" class="text-center">Status</th> -->
+                                    <th style="width: 20%;" class="text-center">Allocated</th>
+                                    <th style="width: 20%;" class="text-center">Obligated</th>
+                                    <th style="width: 20%;" class="text-center">Disbursed</th>
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
@@ -194,13 +196,19 @@
                                         <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.name}}</h5>
                                         <!-- <p class="fs-11 text-muted mb-0">-</p> -->
                                     </td>
-                                    <td class="text-center">
+                                    <!-- <td class="text-center">
                                         <span v-if="list.is_active" class="badge bg-success">Active</span>
                                         <span v-else class="badge bg-danger">Inactive</span>
-                                    </td>
+                                    </td> -->
                                     
                                     <td class="text-center">
                                          {{ formatMoney(getTotalAllocation(list)) }}
+                                    </td>
+                                    <td class="text-center">
+                                         {{ formatMoney(0) }}
+                                    </td>
+                                    <td class="text-center">
+                                         {{ formatMoney(0) }}
                                     </td>
                                 </tr>
                             </tbody>
