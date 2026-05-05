@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Others;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Program;
+use App\Models\Project;
 use App\Models\Budget;
 use App\Models\BudgetItem;
 use App\Models\BudgetAllocation;
@@ -17,10 +19,20 @@ class ProjectController extends Controller
                     'info' => [
                         'total' => $this->total(),
                         'collection' => $this->collection(),
-                        'statuses' => $this->statuses()
+                        'statuses' => $this->statuses(),
+                        'programs' => $this->programs()
                     ]
                 ]); 
         }   
+    }
+
+    private function programs(){
+            $data = Program::with([
+            'projects' => function ($query) {
+                $query->withSum('allocations', 'amount');
+            }
+        ])->get();
+        return $data;
     }
 
     private function total(){

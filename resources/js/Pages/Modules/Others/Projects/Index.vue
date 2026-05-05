@@ -109,6 +109,7 @@
 
         <div class="col-md-6 mt-n1">
             <div class="row g-3">
+                
                 <b-col lg="4" v-for="(item, index) of info.statuses" :key="index">
                     <b-card no-body :class="item.color" class="border shadow-none">
                         <b-card-body>
@@ -133,6 +134,82 @@
                         </b-card-body>
                     </b-card>
                 </b-col>
+
+                <b-col lg="12" class="mt-n2">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-trophy-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-13"><span class="text-body">Programs</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                        </div>
+                    </div>
+                </div>
+                 <div class="car-body border-bottom shadow-none">
+                    <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
+                        <b-col lg>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
+                                
+                                
+                                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                    <i class="bx bx-refresh search-icon"></i>
+                                </span>
+                                <b-button type="button" variant="primary" @click="openCreate">
+                                    <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                                </b-button>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </div>
+                <div class="card-body border-bottom">
+                    <div class="table-responsive table-card" style="height: calc(100vh - 657px); overflow: auto;">
+                        <table class="table table-nowrap table-bordered align-middle mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-10">
+                                    <th style="width: 7%;" class="text-center"></th>
+                                    <th >Program</th>
+                                    <th style="width: 9%;" class="text-center">Status</th>
+                                    <th style="width: 20%;" class="text-center">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-white fs-12">
+                                <tr v-for="(list,index) in info.programs" v-bind:key="index">
+                                    <td class="text-center"> 
+                                        {{ index + 1 }}.
+                                    </td>
+                                    <td>
+                                        <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.name}}</h5>
+                                        <!-- <p class="fs-11 text-muted mb-0">-</p> -->
+                                    </td>
+                                    <td class="text-center">
+                                        <span v-if="list.is_active" class="badge bg-success">Active</span>
+                                        <span v-else class="badge bg-danger">Inactive</span>
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                         {{ formatMoney(getTotalAllocation(list)) }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+                </b-col>
             </div>
         </div>
 
@@ -148,100 +225,23 @@ export default {
     props: ['years','info'],
     data(){
         return {
-            currentUrl: window.location.origin,
-            lists: [],
-            meta: {},
-            links: {},
             filter: {
                 keyword: null,
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
             },
-            index: null,
-            selectedRow: null,
-            icons: ['ri-government-line','ri-earth-line','ri-admin-line'],
             month: new Date().getMonth() + 1,
             monthName: new Date().toLocaleString('default', { month: 'long' }),
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
         }
     },
-    watch: {
-        "filter.keyword"(newVal){
-            this.checkSearchStr(newVal);
-        },
-        "filter.mode"(newVal){
-            this.fetch();
-        },
-        "filter.type"(newVal){
-            this.fetch();
-        },
-        "filter.audience"(newVal){
-            this.fetch();
-        }
-    },
-    created(){
-       this.fetch();
-    },
     methods: {
-        checkSearchStr: _.debounce(function(string) {
-            this.fetch();
-        }, 300),
-        fetch(page_url){
-            page_url = page_url || '/events';
-            axios.get(page_url,{
-                params : {
-                    keyword: this.filter.keyword,
-                    status: this.filter.status,
-                    type: this.filter.type,
-                    mode: this.filter.mode,
-                    audience: this.filter.audience,
-                    count: 10, 
-                    option: 'list'
-                }
-            })
-            .then(response => {
-                if(response){
-                    this.lists = response.data.data;
-                    this.meta = response.data.meta;
-                    this.links = response.data.links;          
-                }
-            })
-            .catch(err => console.log(err));
+        getTotalAllocation(program) {
+            return (program.projects || []).reduce((sum, project) => {
+                return sum + parseFloat(project.allocations_sum_amount || 0);
+            }, 0);
         },
-        viewStatus(index,type){
-            this.index = index;
-            this.filter.type = type;
-            this.fetch();
-        },
-          formatDateRange(start, end) {
-            const startDate = new Date(start);
-            const endDate = new Date(end);
-
-            const options = { month: 'long', day: 'numeric' };
-            const startStr = startDate.toLocaleDateString('en-US', options);
-            const endStr = endDate.toLocaleDateString('en-US', { day: 'numeric' });
-
-            if (start === end) {
-            return startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            }
-
-            const year = startDate.getFullYear(); // assume same year
-            return `${startStr}-${endStr}, ${year}`;
-        },
-        openCreate(){
-            this.$refs.create.show();
-        },
-        openEdit(data,index){
-            this.index = index;
-            this.$refs.create.update(data);
-        },
-        updateUser(data){
-            this.lists[this.index] = data;
-        },
-        selectRow(index) {
-            this.selectedRow = index;
-        },
-          formatMoney(value) {
+        formatMoney(value) {
             let val = (value/1).toFixed(2).replace(',', '.')
             return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
