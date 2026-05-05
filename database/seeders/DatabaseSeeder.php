@@ -90,8 +90,8 @@ class DatabaseSeeder extends Seeder
         //     'updated_at' => now(),
         // ]);
 
-        $this->call(OrgChartsTableSeeder::class);
-        $this->call(OrgSignatoriesTableSeeder::class);
+        // $this->call(OrgChartsTableSeeder::class);
+        // $this->call(OrgSignatoriesTableSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserFoldersTableSeeder::class);
         // $this->call(UserFolderFilesTableSeeder::class);
@@ -99,5 +99,11 @@ class DatabaseSeeder extends Seeder
         // $this->call(UserProfilesTableSeeder::class);
         // $this->call(UserRolesTableSeeder::class);
         // $this->call(UserFacesTableSeeder::class);
+        // $this->call(ListExpensesTableSeeder::class);
+        $this->call(ProgramsTableSeeder::class);
+        $this->call(ProjectsTableSeeder::class);
+        $this->call(TargetsTableSeeder::class);
+        $this->call(BudgetsTableSeeder::class);
+        $this->call(BudgetItemsTableSeeder::class);
     }
 }

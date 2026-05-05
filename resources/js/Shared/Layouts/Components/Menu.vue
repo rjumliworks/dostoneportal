@@ -52,6 +52,24 @@
                     </Link>
                 </li>
             </tempalte>
+            <li class="menu-title">
+                <i class="ri-more-fill" aria-expanded="false"></i>
+                <span data-key="t-menu">Project Management</span>
+            </li>
+            <li class="nav-item">
+                <Link href="/projects" class="nav-link menu-link"
+                :class="{'active': $page.component.startsWith('Modules/Others/Projects') }">
+                <i class="ri-apps-fill"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Projects</span>
+                </Link>
+            </li>
+            <li class="nav-item">
+                <Link href="/budgets" class="nav-link menu-link"
+                :class="{'active': $page.component.startsWith('Modules/Others/Budgets') }">
+                <i class="ri-hand-coin-fill"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Budgets</span>
+                </Link>
+            </li>
             <template v-if="$page.props.roles.includes('Human Resource Officer')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

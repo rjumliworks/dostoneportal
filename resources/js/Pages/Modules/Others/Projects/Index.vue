@@ -1,0 +1,250 @@
+<template>
+<Head title="Projects"/>
+    <PageHeader title="Project Management" pageTitle="List" />
+    <b-row class="g-3">
+
+        <div class="col-md-12">
+            <b-card no-body class="bg-white-subtle border shadow-none">
+                <b-card-body>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex flex-lg-row flex-column">
+                                <div class="flex-grow-1">
+                                    <h4 class="fs-14 mb-0">{{monthName}} Summary View</h4>
+                                    <p class="text-muted mb-0">Here's what's happening with the laboratory for month of {{monthName}}.</p>
+                                </div>
+                                <div class="mt-3 mt-lg-0">
+                                    <form action="javascript:void(0);">
+                                        <div class="row g-3 mb-0 align-items-center">
+                                            <div class="col-sm-auto">
+                                                <div class="input-group">
+                                                    <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
+                                                        <option :value="null">All Months</option>
+                                                        <option :value="list" v-for="list in months" v-bind:key="list">{{list}}</option>
+                                                    </select>
+                                                    <select style="width: 100px;" v-model="filter.year" class="form-select" aria-label="Default select example">
+                                                        <option :value="null">All Years</option>
+                                                        <option :value="list" v-for="list in years" v-bind:key="list">{{list}}</option>
+                                                    </select>
+                                                    <div class="input-group-text bg-primary border-primary text-white">
+                                                        <i class="ri-calendar-2-line"></i> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </b-card-body>
+            </b-card>
+        </div>
+
+        <div class="col-md-3 mt-n1">
+            <b-col lg="12">
+                <b-card no-body class="bg-info-subtle border shadow-none">
+                    <b-card-body>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-xs flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle fs-4">
+                                    <i class="ri-loader-2-line align-middle`"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                Total Allocated Budget
+                                </p>
+                                <h4 class="mb-0">
+                                    <span class="counter-value">{{  formatMoney(info.total) }}</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </b-card-body>
+                </b-card>
+            </b-col>
+            <b-col lg="12" class="mt-n2">
+                <div class="card shadow-none border">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-secure-payment-fill text-primary fs-20"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Collection Summary</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                       
+                        <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                            <li class="list-group-item px-0" v-for="(list,index) in info.collection" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.name }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </b-col>
+        </div>
+
+        <div class="col-md-6 mt-n1">
+            <div class="row g-3">
+                <b-col lg="4" v-for="(item, index) of info.statuses" :key="index">
+                    <b-card no-body :class="item.color" class="border shadow-none">
+                        <b-card-body>
+                            <div class="d-flex align-items-center">
+                                <!-- <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-light text-primary rounded-circle fs-3">
+                                        <i :class="`${item.icon} align-middle`"></i>
+                                    </span>
+                                </div> -->
+                                <div class="flex-grow-1">
+                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                        {{ item.name }}
+                                    </p>
+                                    <h4 class="mb-0">
+                                        <span class="counter-value">{{formatMoney(item.total)}}</span>
+                                    </h4>
+                                </div>
+                                <div class="flex-shrink-0 align-self-end">
+                                    <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
+                                </div>
+                            </div>
+                        </b-card-body>
+                    </b-card>
+                </b-col>
+            </div>
+        </div>
+
+    </b-row>
+</template>
+<script>
+import _ from 'lodash';
+import Multiselect from "@vueform/multiselect";
+import PageHeader from '@/Shared/Components/PageHeader.vue';
+import Pagination from "@/Shared/Components/Pagination.vue";
+export default {
+    components: { PageHeader, Pagination, Multiselect },
+    props: ['years','info'],
+    data(){
+        return {
+            currentUrl: window.location.origin,
+            lists: [],
+            meta: {},
+            links: {},
+            filter: {
+                keyword: null,
+                month: new Date().toLocaleString('default', { month: 'long' }),
+                year: new Date().getFullYear()
+            },
+            index: null,
+            selectedRow: null,
+            icons: ['ri-government-line','ri-earth-line','ri-admin-line'],
+            month: new Date().getMonth() + 1,
+            monthName: new Date().toLocaleString('default', { month: 'long' }),
+            months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+        }
+    },
+    watch: {
+        "filter.keyword"(newVal){
+            this.checkSearchStr(newVal);
+        },
+        "filter.mode"(newVal){
+            this.fetch();
+        },
+        "filter.type"(newVal){
+            this.fetch();
+        },
+        "filter.audience"(newVal){
+            this.fetch();
+        }
+    },
+    created(){
+       this.fetch();
+    },
+    methods: {
+        checkSearchStr: _.debounce(function(string) {
+            this.fetch();
+        }, 300),
+        fetch(page_url){
+            page_url = page_url || '/events';
+            axios.get(page_url,{
+                params : {
+                    keyword: this.filter.keyword,
+                    status: this.filter.status,
+                    type: this.filter.type,
+                    mode: this.filter.mode,
+                    audience: this.filter.audience,
+                    count: 10, 
+                    option: 'list'
+                }
+            })
+            .then(response => {
+                if(response){
+                    this.lists = response.data.data;
+                    this.meta = response.data.meta;
+                    this.links = response.data.links;          
+                }
+            })
+            .catch(err => console.log(err));
+        },
+        viewStatus(index,type){
+            this.index = index;
+            this.filter.type = type;
+            this.fetch();
+        },
+          formatDateRange(start, end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+
+            const options = { month: 'long', day: 'numeric' };
+            const startStr = startDate.toLocaleDateString('en-US', options);
+            const endStr = endDate.toLocaleDateString('en-US', { day: 'numeric' });
+
+            if (start === end) {
+            return startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            }
+
+            const year = startDate.getFullYear(); // assume same year
+            return `${startStr}-${endStr}, ${year}`;
+        },
+        openCreate(){
+            this.$refs.create.show();
+        },
+        openEdit(data,index){
+            this.index = index;
+            this.$refs.create.update(data);
+        },
+        updateUser(data){
+            this.lists[this.index] = data;
+        },
+        selectRow(index) {
+            this.selectedRow = index;
+        },
+          formatMoney(value) {
+            let val = (value/1).toFixed(2).replace(',', '.')
+            return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+    }
+}
+</script>

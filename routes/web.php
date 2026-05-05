@@ -48,6 +48,9 @@ Route::middleware(['role:Document Management Officer'])->group(function () {
     Route::resource('/events', App\Http\Controllers\Trace\EventController::class);
 });
 
+Route::resource('/projects', App\Http\Controllers\Others\ProjectController::class);
+Route::resource('/budgets', App\Http\Controllers\Others\BudgetController::class);
+
 Route::middleware(['role:Human Resource Officer'])->group(function () {
     Route::resource('/humanresource', App\Http\Controllers\HumanResource\DashboardController::class);
     Route::resource('/employees', App\Http\Controllers\HumanResource\EmployeeController::class);

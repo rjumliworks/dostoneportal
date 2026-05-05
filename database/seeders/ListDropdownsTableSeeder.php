@@ -489,6 +489,186 @@ class ListDropdownsTableSeeder extends Seeder
                 'others' => 'n/a',
                 'is_active' => 1,
             ),
+            47 => 
+            array (
+                'id' => 49,
+                'name' => 'Work From Home',
+                'classification' => 'HRMIS',
+                'type' => 'DTR',
+                'color' => 'n/a',
+                'others' => 'WFH',
+                'is_active' => 1,
+            ),
+            48 => 
+            array (
+                'id' => 50,
+                'name' => 'Personnel Services',
+                'classification' => 'Expense',
+                'type' => 'Class',
+                'color' => 'n/a',
+                'others' => 'PS',
+                'is_active' => 1,
+            ),
+            49 => 
+            array (
+                'id' => 51,
+                'name' => 'Maintenance and Other Operating Expenses',
+                'classification' => 'Expense',
+                'type' => 'Class',
+                'color' => 'n/a',
+                'others' => 'MOOE',
+                'is_active' => 1,
+            ),
+            50 => 
+            array (
+                'id' => 52,
+                'name' => 'Capital Outlay',
+                'classification' => 'Expense',
+                'type' => 'Class',
+                'color' => 'n/a',
+                'others' => 'CO',
+                'is_active' => 1,
+            ),
+            51 => 
+            array (
+                'id' => 53,
+                'name' => 'General Appropriations Act',
+                'classification' => 'Budget',
+                'type' => 'n/a',
+                'color' => 'n/a',
+                'others' => 'GAA',
+                'is_active' => 1,
+            ),
+            52 => 
+            array (
+                'id' => 54,
+                'name' => 'Sub-Allotment Advice',
+                'classification' => 'Budget',
+                'type' => 'n/a',
+                'color' => 'n/a',
+                'others' => 'SAA',
+                'is_active' => 1,
+            ),
+            53 => 
+            array (
+                'id' => 55,
+                'name' => 'Salaries and Wages',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            54 => 
+            array (
+                'id' => 56,
+                'name' => 'Other Compensation',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            55 => 
+            array (
+                'id' => 57,
+                'name' => 'Traveling Expenses',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            56 => 
+            array (
+                'id' => 58,
+                'name' => 'Supplies and Materials Expenses',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            57 => 
+            array (
+                'id' => 59,
+                'name' => 'Utility Expenses',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            58 => 
+            array (
+                'id' => 60,
+                'name' => 'Communication Expenses',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            59 => 
+            array (
+                'id' => 61,
+                'name' => 'Training and Scholarship Expenses',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            60 => 
+            array (
+                'id' => 62,
+                'name' => 'Professional Services',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            61 => 
+            array (
+                'id' => 63,
+                'name' => 'General Services',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            62 => 
+            array (
+                'id' => 64,
+                'name' => 'Buildings & Structures',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            63 => 
+            array (
+                'id' => 65,
+                'name' => 'Machinery & Equipment',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
+            64 => 
+            array (
+                'id' => 66,
+                'name' => 'Transportation',
+                'classification' => 'Expense',
+                'type' => 'Category',
+                'color' => 'n/a',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
         ));
         
         

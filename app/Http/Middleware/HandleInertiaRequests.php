@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Survey;
 use App\Models\SurveyAnswer;
 use App\Models\SurveyQuestion;
+use App\Models\Target;
 use App\Http\Resources\UserResource;
 
 class HandleInertiaRequests extends Middleware
@@ -60,6 +61,7 @@ class HandleInertiaRequests extends Middleware
                 'status'  => session('status') ?? null,
                 'type'    => session('type') ?? null,
             ],
+            'years' => Target::distinct()->pluck('year') ?? null,
             'updateRequired' => ($status == 0) ? true : false, 
             'surveyRequired' => $surveyRequired,
             'surveyQuestions' => $surveyQuestions
