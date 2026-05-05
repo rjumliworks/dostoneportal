@@ -95,7 +95,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserFoldersTableSeeder::class);
         // $this->call(UserFolderFilesTableSeeder::class);
-        $this->call(UserOrganizationsTableSeeder::class);
+        // $this->call(UserOrganizationsTableSeeder::class);
         // $this->call(UserProfilesTableSeeder::class);
         // $this->call(UserRolesTableSeeder::class);
         // $this->call(UserFacesTableSeeder::class);
@@ -105,5 +105,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(TargetsTableSeeder::class);
         // $this->call(BudgetsTableSeeder::class);
         // $this->call(BudgetItemsTableSeeder::class);
+        $this->call(BudgetAllocationsTableSeeder::class);
     }
 }
