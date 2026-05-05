@@ -1,6 +1,6 @@
 <template>
-<Head title="Projects"/>
-    <PageHeader title="Project Management" pageTitle="List" />
+<Head title="Budget"/>
+    <PageHeader title="Budgeting Dashboard" pageTitle="List" />
     <b-row class="g-3">
 
         <div class="col-md-12">
@@ -43,7 +43,7 @@
 
         <div class="col-md-3 mt-n1">
             <b-col lg="12">
-                <b-card no-body class="bg-info-subtle border shadow-none">
+                <b-card no-body class="bg-warning-subtle border shadow-none">
                     <b-card-body>
                         <div class="d-flex align-items-center">
                             <div class="avatar-xs flex-shrink-0">
@@ -81,10 +81,9 @@
                         </div>
                     </div>
                     <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                       
                         <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
-                            <li class="list-group-item px-0" v-for="(list,index) in info.collection" v-bind:key="index">
-                                <div class="d-flex">
+                            <li class="list-group-item px-0 mt-1" v-for="(list,index) in info.collection" v-bind:key="index">
+                                <div class="d-flex mb-n1">
                                     <div class="flex-shrink-0 avatar-xs">
                                         <span class="avatar-title bg-light p-1 rounded-circle">
                                             <i :class="list.icon+' '+list.color"></i>
@@ -95,7 +94,7 @@
                                         <p class="fs-11 mb-0 text-muted">{{ list.name }}</p>
                                     </div>
                                     <div class="flex-shrink-0 text-end" style="width: 60px;">
-                                        <apexchart v-b-tooltip.hover :title="list.percent_allocated+'%'" class="apex-charts" height="30" dir="ltr" :series="[list.percent_allocated]" :options="{ ...chartOptions }"></apexchart>
+                                        <apexchart v-b-tooltip.hover :title="list.percent_allocated+'%'" class="apex-charts" height="40" dir="ltr" :series="[list.percent_allocated]" :options="{ ...chartOptions }"></apexchart>
                                         <!-- <h6 class="mt-2 fs-12">{{list.percent_allocated}}%</h6> -->
                                         <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
                                     </div>
@@ -129,7 +128,7 @@
                                     </h4>
                                 </div>
                                 <div class="flex-shrink-0 align-self-end">
-                                    <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
+                                    <apexchart class="apex-charts" height="4" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
                                 </div>
                             </div>
                         </b-card-body>
@@ -188,13 +187,13 @@
                                     <th style="width: 20%;" class="text-center">Disbursed</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-white fs-12">
+                            <tbody class="fs-12">
                                 <tr v-for="(list,index) in info.programs" v-bind:key="index">
                                     <td class="text-center"> 
                                         {{ index + 1 }}.
                                     </td>
                                     <td>
-                                        <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.name}}</h5>
+                                        <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.name}} </h5>
                                         <!-- <p class="fs-11 text-muted mb-0">-</p> -->
                                     </td>
                                     <!-- <td class="text-center">
@@ -222,6 +221,72 @@
             </div>
         </div>
 
+        <div class="col-md-3 mt-n1">
+            <b-col lg="12">
+                <b-card no-body class="bg-success-subtle border shadow-none">
+                    <b-card-body>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-xs flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle fs-4">
+                                    <i class="ri-hand-coin-fill align-middle`"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                Total Budget Utilization
+                                </p>
+                                <h4 class="mb-0">
+                                    <span class="counter-value">0%</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </b-card-body>
+                </b-card>
+            </b-col>
+            <b-col lg="12" class="mt-n2">
+                <div class="card shadow-none border">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-secure-payment-fill text-primary fs-20"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Budget Utilization Summary</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">Expense Class Summary</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                        <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                            <li class="list-group-item px-0 mt-1" v-for="(list,index) in info.collection" v-bind:key="index">
+                                <div class="d-flex mb-n1">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="icons[index]+' '+colors[index]+' fs-18'"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.name }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end" style="width: 60px;">
+                                        <!-- <apexchart v-b-tooltip.hover :title="list.percent_allocated+'%'" class="apex-charts" height="40" dir="ltr" :series="[list.percent_allocated]" :options="{ ...chartOptions }"></apexchart> -->
+                                        <h6 class="mt-2 fs-12">0%</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </b-col>
+        </div>
+
     </b-row>
 </template>
 <script>
@@ -234,6 +299,8 @@ export default {
     props: ['years','info'],
     data(){
         return {
+            icons: ['ri-account-circle-fill','ri-todo-fill','ri-home-6-fill'],
+            colors: ['text-primary','text-danger','text-success'],
             filter: {
                 keyword: null,
                 month: new Date().toLocaleString('default', { month: 'long' }),

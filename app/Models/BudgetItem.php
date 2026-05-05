@@ -13,6 +13,6 @@ class BudgetItem extends Model
 
     public function allocations()
     {
-        return $this->hasMany('App\Models\BudgetAllocation', 'project_id');
+        return $this->hasMany('App\Models\BudgetAllocation', 'budget_item_id');
     }
 }

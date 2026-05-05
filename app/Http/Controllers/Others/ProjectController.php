@@ -29,7 +29,7 @@ class ProjectController extends Controller
     private function programs(){
             $data = Program::with([
             'projects' => function ($query) {
-                $query->withSum('allocations', 'amount');
+                $query->with('allocations')->withSum('allocations', 'amount');
             }
         ])->get();
         return $data;
