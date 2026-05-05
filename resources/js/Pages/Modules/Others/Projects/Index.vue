@@ -94,7 +94,8 @@
                                         <h6 class="mb-0 fs-12">{{formatMoney(list.total)}}</h6>
                                         <p class="fs-11 mb-0 text-muted">{{ list.name }}</p>
                                     </div>
-                                    <div class="flex-shrink-0 text-end">
+                                    <div class="flex-shrink-0 text-end" style="width: 60px;">
+                                        <apexchart v-b-tooltip.hover :title="list.percent_allocated+'%'" class="apex-charts" height="30" dir="ltr" :series="[list.percent_allocated]" :options="{ ...chartOptions }"></apexchart>
                                         <!-- <h6 class="mt-2 fs-12">{{list.percent_allocated}}%</h6> -->
                                         <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
                                     </div>
@@ -241,6 +242,32 @@ export default {
             month: new Date().getMonth() + 1,
             monthName: new Date().toLocaleString('default', { month: 'long' }),
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+             chartOptions: {
+                chart: {
+                type: "radialBar",
+                    sparkline: {
+                        enabled: true,
+                    },
+                },
+                dataLabels: {
+                    enabled: false,
+                },
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            margin: 0,
+                            size: "30%",
+                        },
+                        track: {
+                            margin: 1,
+                        },
+                        dataLabels: {
+                            show: false,
+                        },
+                    },
+                },
+                colors: ["#099885"],
+            },
         }
     },
     methods: {
