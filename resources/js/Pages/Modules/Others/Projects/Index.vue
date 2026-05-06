@@ -140,16 +140,16 @@
                         
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3 mt-1">
+                                <!-- <div class="flex-shrink-0 me-3 mt-1">
                                     <div style="height:2rem;width:2rem;">
                                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
                                             <i class="ri-trophy-fill text-primary fs-20"></i>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="flex-grow-1">
                                     <h5 class="mb-0 fs-13"><span class="text-body">Personnel Services</span></h5>
-                                    <p class="text-muted text-truncate-two-lines fs-11">Salaries, wages, and employee benefits.</p>
+                                    <p class="text-muted text-truncate-two-lines fs-10">Salaries, wages, and employee benefits.</p>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
@@ -173,16 +173,16 @@
                         
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3 mt-1">
+                                <!-- <div class="flex-shrink-0 me-3 mt-1">
                                     <div style="height:2rem;width:2rem;">
                                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
                                             <i class="ri-trophy-fill text-primary fs-20"></i>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="flex-grow-1">
                                     <h5 class="mb-0 fs-13"><span class="text-body">MOOE</span></h5>
-                                    <p class="text-muted text-truncate-two-lines fs-11"> Day-to-day operational expenses.</p>
+                                    <p class="text-muted text-truncate-two-lines fs-10"> Day-to-day operational expenses.</p>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
@@ -206,16 +206,16 @@
                         
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3 mt-1">
+                                <!-- <div class="flex-shrink-0 me-3 mt-1">
                                     <div style="height:2rem;width:2rem;">
                                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
                                             <i class="ri-trophy-fill text-primary fs-20"></i>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="flex-grow-1">
                                     <h5 class="mb-0 fs-13"><span class="text-body">Capital Outlay</span></h5>
-                                    <p class="text-muted text-truncate-two-lines fs-11">Investments in assets and infrastructure.</p>
+                                    <p class="text-muted text-truncate-two-lines fs-10">Investments in assets and infrastructure.</p>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
@@ -240,13 +240,13 @@
                         
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3 mt-1">
+                                <!-- <div class="flex-shrink-0 me-3 mt-1">
                                     <div style="height:2rem;width:2rem;">
                                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
                                             <i class="ri-trophy-fill text-primary fs-20"></i>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="flex-grow-1">
                                     <h5 class="mb-0 fs-13"><span class="text-body">Programs</span></h5>
                                     <p class="text-muted text-truncate-two-lines fs-11">A summary of programs, activities, and milestones achieved within a specific reporting period in the office.</p>
