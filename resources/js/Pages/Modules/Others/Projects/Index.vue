@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                    <div class="card border-bottom shadow-none" no-body style="height: 250px;">
                         <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
                             <li class="list-group-item px-0 mt-1" v-for="(list,index) in info.collection" v-bind:key="index">
                                 <div class="d-flex mb-n1">
@@ -362,7 +362,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                    <div class="card border-bottom shadow-none" no-body style="height: 250px;">
                         <ul class="list-group list-group-flush border-dashed mb-1 p-3 mt-n2">
                             <li class="list-group-item px-0 mt-1" v-for="(list,index) in info.collection" v-bind:key="index">
                                 <div class="d-flex mb-1">
