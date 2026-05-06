@@ -175,7 +175,7 @@
                     </b-row>
                 </div>
                 <div class="card-body border-bottom">
-                    <div class="table-responsive table-card" style="height: calc(100vh - 657px); overflow: auto;">
+                    <div class="table-responsive table-card" style="height: 291px; overflow: auto;">
                         <table class="table table-nowrap align-middle mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-10">
