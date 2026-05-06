@@ -135,89 +135,191 @@
                     </b-card>
                 </b-col>
 
-                <b-col lg="12" class="mt-n2">
-            <div class="card bg-light-subtle shadow-none border">
-                
-                <div class="card-header bg-light-subtle">
-                    <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3 mt-1">
-                            <div style="height:2rem;width:2rem;">
-                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-trophy-fill text-primary fs-20"></i>
-                                </span>
+                <b-col lg="4" class="mt-n2">
+                    <div class="card bg-light-subtle shadow-none border">
+                        
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-3 mt-1">
+                                    <div style="height:2rem;width:2rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                            <i class="ri-trophy-fill text-primary fs-20"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-13"><span class="text-body">Personnel Services</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11">Salaries, wages, and employee benefits.</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                                </div>
                             </div>
                         </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-13"><span class="text-body">Programs</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-11">A summary of programs, activities, and milestones achieved within a specific reporting period in the office.</p>
+                        <div class="card-body border-bottom">
+                            <apexchart
+                                type="bar"
+                                height="100"
+                                :series="chartOptions1.series"
+                                :options="chartOptions1"
+                                />
+                          
                         </div>
-                        <div class="flex-shrink-0">
-                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
-                        </div>
-                    </div>
-                </div>
-                 <div class="car-body border-bottom shadow-none">
-                    <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
-                        <b-col lg>
-                            <div class="input-group mb-1">
-                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
-                                
-                                
-                                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
-                                    <i class="bx bx-refresh search-icon"></i>
-                                </span>
-                                <b-button type="button" variant="primary" @click="openCreate">
-                                    <i class="ri-add-circle-fill align-bottom me-1"></i> Create
-                                </b-button>
-                            </div>
-                        </b-col>
-                    </b-row>
-                </div>
-                <div class="card-body border-bottom">
-                    <div class="table-responsive table-card" style="height: 291px; overflow: auto;">
-                        <table class="table table-nowrap align-middle mb-0">
-                            <thead class="table-light thead-fixed">
-                                <tr class="fs-10">
-                                    <th style="width: 7%;" class="text-center"></th>
-                                    <th >Program</th>
-                                    <!-- <th style="width: 9%;" class="text-center">Status</th> -->
-                                    <th style="width: 20%;" class="text-center">Allocated</th>
-                                    <th style="width: 20%;" class="text-center">Obligated</th>
-                                    <th style="width: 20%;" class="text-center">Disbursed</th>
-                                </tr>
-                            </thead>
-                            <tbody class="fs-12">
-                                <tr v-for="(list,index) in info.programs" v-bind:key="index">
-                                    <td class="text-center"> 
-                                        {{ index + 1 }}.
-                                    </td>
-                                    <td>
-                                        <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.name}} </h5>
-                                        <!-- <p class="fs-11 text-muted mb-0">-</p> -->
-                                    </td>
-                                    <!-- <td class="text-center">
-                                        <span v-if="list.is_active" class="badge bg-success">Active</span>
-                                        <span v-else class="badge bg-danger">Inactive</span>
-                                    </td> -->
-                                    
-                                    <td class="text-center">
-                                         {{ formatMoney(getTotalAllocation(list)) }}
-                                    </td>
-                                    <td class="text-center">
-                                         {{ formatMoney(0) }}
-                                    </td>
-                                    <td class="text-center">
-                                         {{ formatMoney(0) }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-            </div>
+                    </div>
                 </b-col>
+                <b-col lg="4" class="mt-n2">
+                    <div class="card bg-light-subtle shadow-none border">
+                        
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-3 mt-1">
+                                    <div style="height:2rem;width:2rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                            <i class="ri-trophy-fill text-primary fs-20"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-13"><span class="text-body">MOOE</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11"> Day-to-day operational expenses.</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body border-bottom">
+                            <apexchart
+                                type="bar"
+                                height="100"
+                                :series="chartOptions1.series"
+                                :options="chartOptions1"
+                                />
+                          
+                        </div>
+
+                    </div>
+                </b-col>
+                <b-col lg="4" class="mt-n2">
+                    <div class="card bg-light-subtle shadow-none border">
+                        
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-3 mt-1">
+                                    <div style="height:2rem;width:2rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                            <i class="ri-trophy-fill text-primary fs-20"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-13"><span class="text-body">Capital Outlay</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11">Investments in assets and infrastructure.</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body border-bottom">
+                            <apexchart
+                                type="bar"
+                                height="100"
+                                :series="chartOptions1.series"
+                                :options="chartOptions1"
+                                />
+                          
+                        </div>
+
+                    </div>
+                </b-col>
+
+                <b-col lg="12" class="mt-n2">
+                    <div class="card bg-light-subtle shadow-none border">
+                        
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-3 mt-1">
+                                    <div style="height:2rem;width:2rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                            <i class="ri-trophy-fill text-primary fs-20"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-13"><span class="text-body">Programs</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11">A summary of programs, activities, and milestones achieved within a specific reporting period in the office.</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="car-body border-bottom shadow-none">
+                            <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
+                                <b-col lg>
+                                    <div class="input-group mb-1">
+                                        <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                        <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
+                                        
+                                        
+                                        <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                            <i class="bx bx-refresh search-icon"></i>
+                                        </span>
+                                        <b-button type="button" variant="primary" @click="openCreate">
+                                            <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                                        </b-button>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                        </div>
+                        <div class="card-body border-bottom">
+                            <div class="table-responsive table-card" style="height: 291px; overflow: auto;">
+                                <table class="table table-nowrap align-middle mb-0">
+                                    <thead class="table-light thead-fixed">
+                                        <tr class="fs-10">
+                                            <th style="width: 7%;" class="text-center"></th>
+                                            <th >Program</th>
+                                            <!-- <th style="width: 9%;" class="text-center">Status</th> -->
+                                            <th style="width: 20%;" class="text-center">Allocated</th>
+                                            <th style="width: 20%;" class="text-center">Obligated</th>
+                                            <th style="width: 20%;" class="text-center">Disbursed</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="fs-12">
+                                        <tr v-for="(list,index) in info.programs" v-bind:key="index">
+                                            <td class="text-center"> 
+                                                {{ index + 1 }}.
+                                            </td>
+                                            <td>
+                                                <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.name}} </h5>
+                                                <!-- <p class="fs-11 text-muted mb-0">-</p> -->
+                                            </td>
+                                            <!-- <td class="text-center">
+                                                <span v-if="list.is_active" class="badge bg-success">Active</span>
+                                                <span v-else class="badge bg-danger">Inactive</span>
+                                            </td> -->
+                                            
+                                            <td class="text-center">
+                                                {{ formatMoney(getTotalAllocation(list)) }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ formatMoney(0) }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ formatMoney(0) }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </b-col>
+
+                
             </div>
         </div>
 
@@ -261,16 +363,16 @@
                         </div>
                     </div>
                     <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                        <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                        <ul class="list-group list-group-flush border-dashed mb-1 p-3 mt-n2">
                             <li class="list-group-item px-0 mt-1" v-for="(list,index) in info.collection" v-bind:key="index">
-                                <div class="d-flex mb-n1">
+                                <div class="d-flex mb-1">
                                     <div class="flex-shrink-0 avatar-xs">
                                         <span class="avatar-title bg-light p-1 rounded-circle">
                                             <i :class="icons[index]+' '+colors[index]+' fs-18'"></i>
                                         </span>
                                     </div>
                                     <div class="flex-grow-1 ms-2">
-                                        <h6 class="mb-0 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <h6 class="mb-0 fs-12">{{formatMoney(0)}}</h6>
                                         <p class="fs-11 mb-0 text-muted">{{ list.name }}</p>
                                     </div>
                                     <div class="flex-shrink-0 text-end" style="width: 60px;">
@@ -309,7 +411,7 @@ export default {
             month: new Date().getMonth() + 1,
             monthName: new Date().toLocaleString('default', { month: 'long' }),
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-             chartOptions: {
+            chartOptions: {
                 chart: {
                 type: "radialBar",
                     sparkline: {
@@ -335,6 +437,48 @@ export default {
                 },
                 colors: ["#099885"],
             },
+            chartOptions1: {
+                chart: {
+                    type: "bar",
+                    sparkline: {
+                        enabled: true // removes axes for clean UI
+                    }
+                },
+                series: [
+                    {
+                        name: "Budget",
+                        data: [70, 45, 30] // Allocated, Obligated, Disbursed
+                    }
+                ],
+                xaxis: {
+                    categories: ["Allocated", "Obligated", "Disbursed"],
+                    labels: { show: false },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false }
+                },
+
+                yaxis: {
+                    show: false
+                },
+
+                plotOptions: {
+                    bar: {
+                        columnWidth: "100%",
+                        borderRadius: 0,
+                        distributed: true // 👈 each bar gets its own color
+                    }
+                },
+
+                dataLabels: {
+                    enabled: false
+                },
+
+                grid: {
+                    show: false
+                },
+
+                colors: ["#099885", "#FEB019", "#FF4560"]
+            }
         }
     },
     methods: {
