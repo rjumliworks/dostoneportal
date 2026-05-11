@@ -164,13 +164,21 @@ class PrintClass
                     ];
                 }else{
                     if($date < $today){
+                        // $array[] =  [
+                        //     'date' => date('Y-m-d', $i),
+                        //     'text' => date('F d, Y', $i),
+                        //     'day' => date('l', $i),
+                        //     'data' => 'ABSENT',
+                        //     'bg' => 'bg bg-danger bg-soft',
+                        //     'is_with' => false
+                        // ];
                         $array[] =  [
                             'date' => date('Y-m-d', $i),
                             'text' => date('F d, Y', $i),
                             'day' => date('l', $i),
-                            'data' => 'ABSENT',
-                            'bg' => 'bg bg-danger bg-soft',
-                            'is_with' => false
+                            'data' => [],
+                            'bg' => '',
+                            'is_with' => true
                         ];
                     }else{
                         $array[] =  [
