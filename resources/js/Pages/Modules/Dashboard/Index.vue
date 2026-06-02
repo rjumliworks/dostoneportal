@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="fs-13 fw-semibold text-primary mb-0">{{ $page.props.user.data.name }}</h6>
+                            <h6 class="fs-13 fw-semibold text-primary mb-0 text-uppercase">{{ $page.props.user.data.name }}</h6>
                             <p class="fs-11 text-muted mb-0">{{ $page.props.user.data.position }}</p>
                         </div>
                     </div>
@@ -45,25 +45,25 @@
                         <div class="row g-0 text-center">
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr.data.am_in_at?.time ?? '-' }}</h5>
+                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr?.data.am_in_at?.time ?? '-' }}</h5>
                                     <p class="text-muted fs-11 mb-n2">AM IN</p>
                                 </div>
                             </div>
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr.data.am_out_at?.time ?? '-' }}</h5>
+                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr?.data.am_out_at?.time ?? '-' }}</h5>
                                     <p class="text-muted fs-11 mb-n2">AM OUT</p>
                                 </div>
                             </div>
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0">
-                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr.data.pm_in_at?.time ?? '-' }}</h5>
+                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr?.data.pm_in_at?.time ?? '-' }}</h5>
                                     <p class="text-muted fs-11 mb-n2">PM IN</p>
                                 </div>
                             </div>
                             <div class="col-6 col-sm-3">
                                 <div class="p-3 border border-dashed border-start-0 border-end-0">
-                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr.data.pm_out_at?.time ?? '-' }}</h5>
+                                    <h5 class="mb-0 fs-12 mt-n2">{{ dtr?.data.pm_out_at?.time ?? '-' }}</h5>
                                     <p class="text-muted fs-11 mb-n2">PM OUT</p>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                                     <div class="mb-2">
                                         <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
                                     </div>
-                                    <h6 class="fs-13 folder-name">File Server</h6>
+                                    <h6 class="fs-16 folder-name">File Server</h6>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                                     <div class="mb-2">
                                         <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
                                     </div>
-                                    <h6 class="fs-13 folder-name">Media Files</h6>
+                                    <h6 class="fs-16 folder-name">Media Files</h6>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +126,7 @@
                                     <div class="mb-2">
                                         <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
                                     </div>
-                                    <h6 class="fs-13 folder-name">Employees</h6>
+                                    <h6 class="fs-16 folder-name">Employees</h6>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +139,7 @@
                                     <div class="mb-2">
                                         <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
                                     </div>
-                                    <h6 class="fs-13 folder-name">Files</h6>
+                                    <h6 class="fs-16 folder-name">Files</h6>
                                 </div>
                             </div>
                         </div>
@@ -173,26 +173,52 @@
 
         <div class="col-md-3 mt-n2">
             <simplebar style="height: calc(100vh - 460px); overflow: auto;">
-                <div class="card shadow-none border mt-n1">
+
+                <Link href="/dtr">
+                    <div class="card overflow-hidden shadow-none mt-0 mb-3" style="cursor: pointer;">
+                        <div class="card-body bg-secondary-subtle">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="avatar-sm">
+                                        <div class="avatar-title bg-purple bg-opacity-10 text-purple rounded-circle fs-17">
+                                            <i class="ri-alarm-fill fs-24"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fs-12 text-purple mb-1">Daily Time Record</h6>
+                                    <p class="fs-11 text-muted mb-0">Tracks daily attendance, working hours, and employee time entries.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Link>
+
+                <div class="card shadow-none border mt-0">
                     <div class="card-header bg-light-subtle">
                         <div class="d-flex mb-n3">
                             <div class="flex-shrink-0 me-3 mt-1">
                                 <div style="height:2rem;width:2rem;">
                                     <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                        <i class=" ri-calendar-fill text-primary fs-20"></i>
+                                        <i class="ri-file-list-fill text-primary fs-20"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Pending Request</span></h5>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">My Pending Request</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
                             </div>
                         </div>
                     </div>
                     <div class="cards border-bottom shadow-none" no-body style="height: 230px;">
-                        <div class="card-body"><ul class="list-group list-group-flush border-dashed mt-n2"><li class="list-group-item ps-0"><div class="row align-items-center g-3"><div class="col-auto"><div class="avatar-sm p-1 py-2 h-auto rounded-3 material-shadow bg-info"><div class="text-center"><h5 class="mb-0 fs-12 text-white">28</h5><div class="fs-10 text-white">Thu</div></div></div></div><div class="col"><h5 class="fw-normal mt-0 mb-0 fs-11">BOD Schedule</h5><p class="text-primary text-truncate fw-semibold fs-12 mb-0">Puting Manok Corporation</p><h5 class="text-muted fw-normal mt-0 mb-0 fs-11">Testing Services</h5></div></div></li></ul><!--v-if--></div>
+                         <div class="card-body">
+                            <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
+                                <i class="ri-alert-line label-icon"></i>No request found.
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
 
                 <div class="card shadow-none border mt-n2">
                     <div class="card-header bg-light-subtle">
@@ -200,49 +226,22 @@
                             <div class="flex-shrink-0 me-3 mt-1">
                                 <div style="height:2rem;width:2rem;">
                                     <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                        <i class="ri-cake-2-fill text-danger fs-20"></i>
+                                        <i class="ri-calendar-fill text-primary fs-20"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Birthdays</span></h5>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">My Schedules</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Celebrating employees with birthdays this month</p>
                             </div>
                         </div>
                     </div>
                     <div class="cards border-bottom shadow-none" no-body style="height: 250px;">
-                        <ul class="list-group list-group-flush border-dashed mb-n4 mt-0 p-3">
-                            <li v-if="nearestBirthday" class="list-group-item bg-danger-subtle mb-2 rounded">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img :src="nearestBirthday.avatar" alt="" class="rounded-circle avatar-xs">
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0 fs-12">{{ nearestBirthday.fullname }}</h6>
-                                        <p class="text-muted mb-0 fs-11">{{ new Date(nearestBirthday.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <i class="ri-hearts-fill fs-24 text-danger"></i>
-                                    </div>
-                                </div>
-                            </li>
-                            <simplebar style="height: 150px; overflow: auto;">
-                                <li class="list-group-item px-0 border-0 border-bottom" v-for="(list,index) in sortedBirthdays" v-bind:key="index">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0 me-3">
-                                            <img :src="list.avatar" alt="" class="rounded-circle avatar-xxs">
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-0 fs-12">{{ list.fullname }}</h6>
-                                            <!-- <p class="text-muted mb-0 fs-11">{{ new Date(list.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p> -->
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <p class="text-muted mb-0 fs-11">{{ new Date(list.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </simplebar>
-                        </ul>
+                        <div class="card-body">
+                            <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
+                                <i class="ri-alert-line label-icon"></i>No schedules found
+                            </div>
+                        </div>
                     </div>
                 </div>
             </simplebar>
@@ -407,7 +406,27 @@ For your information.</p>
                         </div>
                     </div>
                     <div class="cards border-bottom shadow-none" no-body style="height: 230px;">
-                        <div class="card-body"><ul class="list-group list-group-flush border-dashed mt-n2"><li class="list-group-item ps-0"><div class="row align-items-center g-3"><div class="col-auto"><div class="avatar-sm p-1 py-2 h-auto rounded-3 material-shadow bg-info"><div class="text-center"><h5 class="mb-0 fs-12 text-white">28</h5><div class="fs-10 text-white">Thu</div></div></div></div><div class="col"><h5 class="fw-normal mt-0 mb-0 fs-11">BOD Schedule</h5><p class="text-primary text-truncate fw-semibold fs-12 mb-0">Puting Manok Corporation</p><h5 class="text-muted fw-normal mt-0 mb-0 fs-11">Testing Services</h5></div></div></li></ul><!--v-if--></div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush border-dashed mt-n2">
+                                <li class="list-group-item ps-0">
+                                    <div class="row align-items-center g-3">
+                                        <div class="col-auto">
+                                            <div class="avatar-sm p-1 py-2 h-auto rounded-3 material-shadow bg-info">
+                                                <div class="text-center">
+                                                    <h5 class="mb-0 fs-12 text-white">2</h5>
+                                                    <div class="fs-10 text-white">Tue</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h5 class="fw-normal mt-0 mb-0 fs-11">Zamboanga Peninsula</h5>
+                                            <p class="text-primary text-truncate fw-semibold fs-12 mb-0">AI Roadmapping</p>
+                                            <h5 class="text-muted fw-normal mt-0 mb-0 fs-11">Workshop</h5>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
