@@ -33,6 +33,7 @@ class SocialAuthController extends Controller
             $email = strtolower($socialUser->getEmail());
             $kradworkz = hash('sha256', $email);
             $user = User::where('kradworkz', $kradworkz)->first();
+            $user->update(['email_verified_at' => now()]);
 
             if ($user) {
                 // Link existing account
