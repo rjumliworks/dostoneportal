@@ -1,5 +1,5 @@
 <template>
-    <PageHeader title="Dashboard" pageTitle="Hehe" />
+    <PageHeader title="Dashboard" pageTitle="DOST-IX" />
     <BRow class="g-3">
 
         <div class="col-md-12">
