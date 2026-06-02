@@ -51,8 +51,7 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Events</span>
                     </Link>
                 </li>
-            </tempalte>
-            <li class="menu-title">
+                 <li class="menu-title">
                 <i class="ri-more-fill" aria-expanded="false"></i>
                 <span data-key="t-menu">Project Management</span>
             </li>
@@ -70,6 +69,8 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Budgets</span>
                 </Link>
             </li>
+            </tempalte>
+           
             <template v-if="$page.props.roles.includes('Human Resource Officer')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

@@ -33,6 +33,7 @@ Route::get('/dropdowns', [App\Http\Controllers\SearchController::class, 'dropdow
 
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
     
     Route::resource('/dtr', App\Http\Controllers\Portal\DtrController::class);
     Route::resource('/requests', App\Http\Controllers\Portal\RequestController::class);

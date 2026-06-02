@@ -10,9 +10,10 @@ class ProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'avatar' => ($this->profile && $this->profile->avatar && $this->profile->avatar !== 'noavatar.jpg')
-            ? asset('storage/' .$this->profile->avatar) 
-            : asset('images/avatars/avatar.jpg'), 
+            // 'avatar' => ($this->profile && $this->profile->avatar && $this->profile->avatar !== 'noavatar.jpg')
+            // ? asset('storage/' .$this->profile->avatar) 
+            // : asset('images/avatars/avatar.jpg'), 
+            'avatar' => $this->profile?->avatar,
             'name' => $this->profile->name
         ];
     }

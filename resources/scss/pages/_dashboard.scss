@@ -114,7 +114,12 @@
 //nft dashboard
 
 .bg-marketplace {
-    background-image: url(../images/nft/marketplace.png);
+     background-image: url('/images/background/background.png');
+    background-size: cover;
+}
+
+.bg-marketplace2 {
+     background-image: url('/images/background/background2.png');
     background-size: cover;
 }
 

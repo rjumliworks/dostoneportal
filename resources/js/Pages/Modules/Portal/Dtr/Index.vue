@@ -45,7 +45,7 @@
                 <div class="card bg-white border-bottom shadow-none p-4" no-body style="margin-bottom: 0px;">
                      <div class="row g-3">
                         <div class="col-sm-4">
-                            <div class="p-1 border border-dashed rounded">
+                            <div class="p-1 border bg-light border-dashed rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-2">
                                         <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-check-fill"></i></div>
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <div class="p-1 border border-dashed rounded">
+                            <div class="p-1 border bg-light border-dashed rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-2">
                                         <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-todo-fill"></i></div>
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <div class="p-1 border border-dashed rounded">
+                            <div class="p-1 border bg-light border-dashed rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-2">
                                         <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-map-pin-fill"></i></div>
@@ -84,7 +84,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <div class="p-1 border border-dashed rounded">
+                            <div class="p-1 border bg-light border-dashed rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-2">
                                         <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-road-map-fill"></i></div>
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <div class="p-1 border border-dashed rounded">
+                            <div class="p-1 border bg-light border-dashed rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-2">
                                         <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-close-circle-fill"></i></div>
@@ -112,21 +112,23 @@
                     </div>
                 </div>
                 <div class="card-body bg-white rounded-bottom">
-                    <div class="table-responsive" style="height: calc(100vh - 500px); overflow: auto;">
-                        <table class="table table-bordered align-middle mb-1">
-                            <thead class="bg-primary fs-11 thead-fixed">
+                    <div class="table-responsive" style="height: calc(100vh - 510px); overflow: auto;">
+                        <table class="table table-bordered table-striped align-middle mb-1">
+                            <thead class="bg-primary fs-12 thead-fixed">
                                 <tr class="text-white">
-                                    <th class="text-center" style="width: 25%;">Date</th>
-                                    <th class="text-center" style="width: 15%;">Am In</th>
-                                    <th class="text-center" style="width: 15%;">Am Out</th>
-                                    <th class="text-center" style="width: 15%;">Pm In</th>
-                                    <th class="text-center" style="width: 15%;">Pm Out</th>
-                                    <th class="text-center" style="width: 15%;">Is updated</th>
+                                    <th class="text-center" style="width: 15%;">Date</th>
+                                    <th class="text-center" style="width: 15%;">Day</th>
+                                    <th class="text-center" style="width: 14%;">Am In</th>
+                                    <th class="text-center" style="width: 14%;">Am Out</th>
+                                    <th class="text-center" style="width: 14%;">Pm In</th>
+                                    <th class="text-center" style="width: 14%;">Pm Out</th>
+                                    <th class="text-center" style="width: 14%;">Is updated</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-white fs-12">
+                            <tbody class="table-white fs-13">
                                 <tr v-for="(list,index) in selected.dtrs" v-bind:key="index" :class="rowClass(list)">
                                     <td class="text-center">{{ list.date }}</td>
+                                    <td class="text-center"> {{ formatDateWithDay(list.date) }}</td>
                                     <template v-if="list.status === 'Non-working Day'">
                                         <td class="text-center" colspan="5">{{list.title}}</td>
                                     </template>
@@ -265,6 +267,18 @@ export default {
 
             // Default — Not completed
             return 'bg-warning-subtle';
+        },
+        formatDateWithDay(date) {
+            return new Date(date).toLocaleDateString('en-US', {
+                weekday: 'long'
+            });
+        },
+        formatDateWithDate(date) {
+            return new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
         },
         print(){
             window.open('/dtr?option=print&id='+this.$page.props.user.data.id+'&month='+this.month+'&year='+this.year);
