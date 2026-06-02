@@ -165,6 +165,35 @@
                     </div>
                 </div>
 
+                 <div class="col-lg-2">
+                    <div class="card border overflow-hidden" style="border-radius: 10px;">
+                        <div class="position-relative">
+                            <img src="/images/background/img-3.gif"
+                                alt=""
+                                class="img-fluid w-100"
+                                style="height: 125px; object-fit: cover;">
+
+                            <!-- Dark overlay -->
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+
+                            <!-- Avatar -->
+                            <div class="position-absolute top-0 start-0 p-3">
+                                <img :src="$page.props.user.data.avatar"
+                                    alt=""
+                                    class="rounded-circle border border-3 border-secondary"
+                                    style="width: 40px; height: 40px; object-fit: cover;">
+                            </div>
+
+                            <!-- Full-width text background -->
+                            <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 px-3 py-2">
+                                <h6 class="mb-0 text-white fs-12 fw-semibold">
+                                    {{ $page.props.user.data.name }}
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-lg-2">
                     <div class="card border overflow-hidden" style="border-radius: 10px;">
                         <div class="position-relative">
@@ -211,22 +240,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-2">
-                    <div class="card border overflow-hidden  shadow-none" style="border-radius: 10px; cursor: pointer;">
-                        <div class="position-relative">
-
-                            <!-- Background Image -->
-                            <img src="/images/background/dost.png"
-                                alt=""
-                                class="img-fluid w-100 bg-dark-subtle"
-                                style="height: 125px; object-fit: cover;">
-
-                            <!-- Bottom White Section -->
-                           
-
-                        </div>
-                    </div>
-                </div>
+               
 
                 
             </div>
