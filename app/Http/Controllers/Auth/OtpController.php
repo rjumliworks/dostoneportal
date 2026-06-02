@@ -28,7 +28,7 @@ class OtpController extends Controller
         $profile = UserProfile::where('mobile_hash', $mobileHash)->first();
 
         // 🔐 Prevent enumeration
-        if (! $profile) {
+        if (!$profile) {
             return back()->with([
                 'data' => 'success',
                 'message' => 'If this mobile is registered, an OTP has been sent.',
@@ -56,6 +56,7 @@ class OtpController extends Controller
         );
 
         $sms->sendSms($normalized, "Your login OTP is {$otp}");
+  
         return back()->with([
             'data' => 'success',
             'message' => 'If this mobile is registered, an OTP has been sent.',

@@ -76,7 +76,7 @@
 
         <div class="col-md-6 mt-n2">
            
-                <!-- <div class="col-lg-2">
+                <div class="col-lg-2">
                     <div class="card border overflow-hidden" style="border-radius: 10px;">
                         <div class="position-relative">
                             <img src="https://img.themesbrand.com/velzon/images/img-1.gif" alt="" class="img-fluid w-100" style="height: 125px; object-fit: cover;">
@@ -90,8 +90,8 @@
                             </div>
                         </div>
                     </div>
-                </div> -->
-                <div class="row g-3" id="folderlist-data">
+                </div>
+                <!-- <div class="row g-3" id="folderlist-data">
                     <div class="col-xxl-3 col-6 folder-card">
                         <div class="card bg-white shadow-none" id="folder-1">
                             <div class="card-body">
@@ -145,7 +145,7 @@
                         </div>
                     </div>
                     
-                </div>
+                </div> -->
             
         </div>
 
@@ -206,7 +206,7 @@
                             </div>
                             <div class="flex-grow-1">
                                 <h5 class="mb-0 mt-0 fs-13"><span class="text-body">My Pending Request</span></h5>
-                                <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
+                                <p class="text-muted text-truncate-two-lines fs-11">Review and track your pending requests</p>
                             </div>
                         </div>
                     </div>
@@ -232,7 +232,7 @@
                             </div>
                             <div class="flex-grow-1">
                                 <h5 class="mb-0 mt-0 fs-13"><span class="text-body">My Schedules</span></h5>
-                                <p class="text-muted text-truncate-two-lines fs-11">Celebrating employees with birthdays this month</p>
+                                <p class="text-muted text-truncate-two-lines fs-11">Your upcoming schedules at a glance.</p>
                             </div>
                         </div>
                     </div>
@@ -362,7 +362,7 @@ For your information.</p>
                             </div>
                             <div class="flex-grow-1">
                                 <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Signatories</span></h5>
-                                <p class="text-muted text-truncate-two-lines fs-11">Celebrating employees with birthdays this month</p>
+                                <p class="text-muted text-truncate text-truncate-two-lines fs-11">Authorized personnel for signing and approval processes.</p>
                             </div>
                         </div>
                     </div>

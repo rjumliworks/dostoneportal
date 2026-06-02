@@ -264,10 +264,14 @@ const sendOtp = () => {
         onError: (errors) => {
             console.log('OTP Errors:', errors);
         },
-        onSuccess: () => {
-            // optional: show OTP input step
-            // type.value = 'OTP_VERIFY'
-        }
+       onSuccess: (page) => {
+            console.log(page.props.flash.message)
+            console.log(page.props.flash.status)
+
+            if (page.props.flash.status === 'success') {
+                type.value = 'OTP'
+            }
+        },
     });
 };
 const verifyOtp = () => {
