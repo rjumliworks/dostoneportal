@@ -389,6 +389,53 @@
         <div class="col-md-6 mt-n2">
             <simplebar style="height: calc(100vh - 460px); overflow: auto;">
                 <div class="row mt-0">
+
+                    <div class="col-xxl-12 col-sm-6 project-card">
+                        <div class="card card-height-100">
+                            <div class="card-body">
+                                <div class="bookmark-icon position-absolute top-0 end-0 p-3"> 
+                                    <BButton variant="link" class="btn-icon" @click="toggleLike(list)" data-bs-toggle="button" aria-pressed="true">
+                                        <i class="mdi mdi-cards-heart fs-16"></i>
+                                    </BButton>
+                                </div>
+                                <div class="d-flex flex-column h-100">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avatar-xs">
+                                                <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
+                                                    <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="fs-13 fw-semibold mb-0">{{ $page.props.user.data.name }}</h6>
+                                            <p class="fs-11 text-muted mb-0">May 26 at 5:40 PM</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mb-2 mt-4">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar-xl">
+                                                <span class="avatar-title bg-warning-subtle rounded p-2">
+                                                    <img src="assets/images/brands/slack.png" alt="" class="img-fluid p-1">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1 fs-14 fw-semibold text-primary">Announcement Notice</h5>
+                                            <p class="fs-12 text-muted text-truncate-two-lines mb-3">This announcement is currently a placeholder and not yet finalized. Content is under development.</p>
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+
+                            </div>
+                              <div class="card-footer border-top border-top-dashed mb-n2 fs-12" style="cursor: pointer;" @click="openView(list)">
+                            <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 2</p>
+                            <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart text-danger align-middle"></i> 5</p>
+                        </div>
+                        </div>
+                    </div>
+
                     <div class="col-xxl-12 col-sm-6 project-card">
                         <div class="card card-height-100">
                             <div class="card-body">
