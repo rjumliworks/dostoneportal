@@ -15,8 +15,8 @@ class SmsService
         $post = array(
             'recipient' => $to,
             'message' => $message,
-            'title' => 'DOST-IX EULIMS Notification',
-            'via' => 'DOST-IX EULIMS v2'
+            'title' => 'DOST-IX OneApp',
+            'via' => 'DOST-IX Notification'
         );
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 
@@ -24,6 +24,7 @@ class SmsService
         if (curl_errno($ch)) {
             echo 'Error:' . curl_error($ch);
         }
+        dd($result);
         curl_close($ch);
     }
 }
