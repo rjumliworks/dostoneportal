@@ -25,12 +25,12 @@ class OrgChartsTableSeeder extends Seeder
                 'order' => 1,
                 'designation_id' => 43,
                 'assigned_id' => 2,
-                'user_id' => NULL,
+                'user_id' => 3,
                 'oic_id' => NULL,
                 'is_oic' => 0,
                 'is_active' => 1,
                 'created_at' => '2026-01-11 18:36:48',
-                'updated_at' => '2026-01-11 18:36:48',
+                'updated_at' => '2026-05-28 10:22:38',
             ),
             1 => 
             array (
@@ -39,11 +39,11 @@ class OrgChartsTableSeeder extends Seeder
                 'designation_id' => 44,
                 'assigned_id' => 3,
                 'user_id' => NULL,
-                'oic_id' => NULL,
-                'is_oic' => 0,
+                'oic_id' => 2,
+                'is_oic' => 1,
                 'is_active' => 1,
                 'created_at' => '2026-01-11 18:36:48',
-                'updated_at' => '2026-01-11 18:36:48',
+                'updated_at' => '2026-05-28 10:23:45',
             ),
             2 => 
             array (
@@ -51,12 +51,12 @@ class OrgChartsTableSeeder extends Seeder
                 'order' => 2,
                 'designation_id' => 44,
                 'assigned_id' => 4,
-                'user_id' => NULL,
+                'user_id' => 4,
                 'oic_id' => NULL,
                 'is_oic' => 0,
                 'is_active' => 1,
                 'created_at' => '2026-01-11 18:36:48',
-                'updated_at' => '2026-01-11 18:36:48',
+                'updated_at' => '2026-05-28 10:23:07',
             ),
             3 => 
             array (
