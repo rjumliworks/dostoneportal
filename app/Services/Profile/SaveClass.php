@@ -159,12 +159,16 @@ class SaveClass
             ]
         ];
 
-        UserInformation::create([
-            'accounts' => json_encode($accounts),
-            'backgrounds' => json_encode($family),
-            'contacts' => json_encode($contacts),
-            'user_id' => $id
-        ]);
+        UserInformation::updateOrCreate(
+            [
+                'user_id' => $id
+            ],
+            [
+                'accounts' => json_encode($accounts),
+                'backgrounds' => json_encode($family),
+                'contacts' => json_encode($contacts),
+            ]
+        );
         
     }
 }
