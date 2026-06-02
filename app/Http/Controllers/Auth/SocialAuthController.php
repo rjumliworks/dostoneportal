@@ -9,6 +9,8 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Mail\AccountActivationCode; 
+use Illuminate\Support\Facades\Mail;
 
 class SocialAuthController extends Controller
 {
@@ -33,8 +35,13 @@ class SocialAuthController extends Controller
             $email = strtolower($socialUser->getEmail());
             $kradworkz = hash('sha256', $email);
             $user = User::where('kradworkz', $kradworkz)->first();
-            $user->update(['email_verified_at' => now()]);
+            
+            do{
+                $code = random_int(100000000, 999999999); // 9 digits
+            } while (\App\Models\User::where('code', $code)->exists());
 
+            $user->update(['email_verified_at' => now(), 'code' => $code]);
+            Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
             if ($user) {
                 // Link existing account
                 $user->update([
