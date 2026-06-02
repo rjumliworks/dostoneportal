@@ -36,13 +36,14 @@ class SocialAuthController extends Controller
             $kradworkz = hash('sha256', $email);
             $user = User::where('kradworkz', $kradworkz)->first();
             
-            do{
-                $code = random_int(100000000, 999999999); // 9 digits
-            } while (\App\Models\User::where('code', $code)->exists());
-
-            $user->update(['email_verified_at' => now(), 'code' => $code]);
-            Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+           
             if ($user) {
+                do{
+                    $code = random_int(100000000, 999999999); // 9 digits
+                } while (\App\Models\User::where('code', $code)->exists());
+
+                $user->update(['email_verified_at' => now(), 'code' => $code]);
+                Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
                 // Link existing account
                 $user->update([
                     'provider'    => $provider,
@@ -50,25 +51,26 @@ class SocialAuthController extends Controller
                     // 'avatar'      => $socialUser->getAvatar(),
                 ]);
             } else {
+                return redirect('/login')->withErrors('Unable to login.');
                 // Create new user
-                $user = User::create([
-                    'name'        => $socialUser->getName() ?? $socialUser->getNickname(),
-                    'username'    => $socialUser->getEmail(),
-                    'email'       => $socialUser->getEmail(),
-                    'password'    => bcrypt(Str::random(16)),
-                    'provider'    => $provider,
-                    'provider_id' => $socialUser->getId(),
-                    'role'      => 'Photographer',
-                    'email_verified_at' => now()
-                ]);
-                $fullName = $socialUser->getName() ?? $socialUser->getNickname() ?? '';
-                $name = $this->splitFirstLast($fullName);
-                if($user){
-                    UserProfile::create([
-                        'firstname' => $name['first_name'],
-                        'lastname'  => $name['last_name'],
-                    ]);
-                }
+                // $user = User::create([
+                //     'name'        => $socialUser->getName() ?? $socialUser->getNickname(),
+                //     'username'    => $socialUser->getEmail(),
+                //     'email'       => $socialUser->getEmail(),
+                //     'password'    => bcrypt(Str::random(16)),
+                //     'provider'    => $provider,
+                //     'provider_id' => $socialUser->getId(),
+                //     'role'      => 'Photographer',
+                //     'email_verified_at' => now()
+                // ]);
+                // $fullName = $socialUser->getName() ?? $socialUser->getNickname() ?? '';
+                // $name = $this->splitFirstLast($fullName);
+                // if($user){
+                //     UserProfile::create([
+                //         'firstname' => $name['first_name'],
+                //         'lastname'  => $name['last_name'],
+                //     ]);
+                // }
             }
         }
 
