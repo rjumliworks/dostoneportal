@@ -651,7 +651,7 @@ For your information.</p>
                                                     <img
                                                         v-if="user.avatar"
                                                         :src="user.avatar"
-                                                        class="rounded-circle img-fluid"
+                                                        class="avatar-img rounded-circle"
                                                     />
                                                     <div v-else class="avatar-img rounded-circle bg-danger">
                                                         {{ user.name.charAt(0) }}
@@ -896,3 +896,19 @@ export default {
     }
 }
 </script>
+<style scoped>
+.avatar-xxs {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    position: relative;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+</style>
