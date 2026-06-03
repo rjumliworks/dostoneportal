@@ -64,19 +64,20 @@ class SaveClass
                             'longitude'         => $request->permanent['longitude'],
                         ]
                     );
-                }elseif($request->filled('home.address')) {
+                }
+                
+                if($request->filled('home.address')) {
                         $data->addresses()->updateOrCreate(
                         [
-                            [
-                                'is_permanent' => 0,
-                            ],
+                            'is_permanent' => 0,
+                        ],[
                             'address'           => $request->home['address'],
                             'region_code'       => $request->home['region_code'],
                             'province_code'     => $request->home['province_code'],
                             'municipality_code' => $request->home['municipality_code'],
                             'barangay_code'     => $request->home['barangay_code'],
                             'latitude'          => $request->home['latitude'],
-                            'longitude'         => $request->home['longitude'],
+                            'longitude'         => $request->home['longitude']
                         ]
                     );
                 }
