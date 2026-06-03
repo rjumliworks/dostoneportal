@@ -653,7 +653,7 @@ For your information.</p>
                                                         :src="user.avatar"
                                                         class="rounded-circle img-fluid"
                                                     />
-                                                    <div v-else class="avatar-title rounded-circle bg-danger">
+                                                    <div v-else class="avatar-img rounded-circle bg-danger">
                                                         {{ user.name.charAt(0) }}
                                                     </div>
                                                 </div>
