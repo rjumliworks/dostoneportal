@@ -4,11 +4,11 @@
             <BRow>
                 <BCol lg="12">
                     <BRow class="g-3">
-                        <BCol lg="6" class="mt-1">
+                        <BCol lg="6" class="mt-3">
                             <InputLabel value="Region"/>
                             <Multiselect :options="regions" object v-model="form.region" label="name" :searchable="true" placeholder="Select Region" />
                         </BCol>
-                        <BCol lg="6" class="mt-1">
+                        <BCol lg="6" class="mt-3">
                             <InputLabel value="Province"/>
                             <Multiselect :options="provinces" object v-model="form.province" label="name" :searchable="true" placeholder="Select Province" />
                         </BCol>
@@ -16,12 +16,7 @@
                             <InputLabel value="Municipality" :message="form.errors.municipality_code"/>
                             <Multiselect :options="municipalities" object v-model="form.municipality" label="name" :searchable="true" placeholder="Select Municipality" />
                         </BCol>
-                        <!-- $page.props.user.data.agency_id == 11 -->
-                         <BCol v-if="districts.length > 0 && $page.props.user.data.agency_id == 11" lg="6" class="mt-1">
-                            <InputLabel value="District" :message="form.errors.district_code"/>
-                            <Multiselect :options="districts" object v-model="form.district" label="name" :searchable="true" placeholder="Select District" />
-                        </BCol>
-                        <BCol :lg="(districts.length > 0 && $page.props.user.data.agency_id == 11) ? 12 : 6" class="mt-1">
+                        <BCol lg="6" class="mt-1">
                             <InputLabel value="Barangay" :message="form.errors.barangay_code"/>
                             <Multiselect :options="barangays" object v-model="form.barangay" label="name" :searchable="true" placeholder="Select Barangay" />
                         </BCol>
@@ -32,6 +27,7 @@
                     </BRow>  
                 </BCol>
                 <BCol lg="12">
+                    <hr class="text-muted mt-3 mb-3"/>
                     <div class="mt-2">
                         <Map @set="handleCoordinates" ref="map" class="leaflet-map" style="height: 200px;"/>
                     </div>
@@ -69,7 +65,6 @@ export default {
             provinces: [],
             municipalities: [],
             barangays: [],
-            districts: [],
             index: null,
             showModal: false,
             editable: false,
@@ -97,14 +92,57 @@ export default {
                 this.form.barangay = null;
             }
             this.fetchBarangay(newVal);
+        },
+        "form.barangay": function (val) {
+            if (val) {
+                this.flyToBarangay(val);
+            }
         }
     },
     computed: {
         isFormValid() {
-            return this.form.region && this.form.province && this.form.municipality && this.form.barangay;
+            return this.form.region && this.form.province && this.form.municipality && this.form.barangay && this.form.latitude && this.form.longitude;
         }
     },
     methods: { 
+        async flyToBarangay(barangay) {
+            if (!barangay) return;
+
+            const query = [
+                barangay.name,
+                this.form.municipality?.name,
+                this.form.province?.name,
+                this.form.region?.name,
+                "Philippines"
+            ]
+            .filter(Boolean)
+            .join(", ");
+
+            try {
+                const res = await axios.get(
+                    "https://nominatim.openstreetmap.org/search",
+                    {
+                        params: {
+                            q: query,
+                            format: "json",
+                            limit: 1
+                        }
+                    }
+                );
+
+                if (res.data.length > 0) {
+                    const lat = parseFloat(res.data[0].lat);
+                    const lng = parseFloat(res.data[0].lon);
+
+                    this.form.latitude = lat;
+                    this.form.longitude = lng;
+
+                    this.$refs.map.flyTo(lat, lng);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
         handleCoordinates(coords) {
             this.coordinates = coords;
             this.form.longitude = this.coordinates.lng;
@@ -188,3 +226,11 @@ export default {
     }
 }
 </script>
+<style scoped>
+.multiselect.is-active {
+    z-index: 9999;
+}
+.multiselect-dropdown {
+    z-index: 10000 !important;
+}
+</style>

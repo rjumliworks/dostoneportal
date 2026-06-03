@@ -39,18 +39,36 @@ export default {
                 lng: parseFloat(event.latlng.lng.toFixed(6)),
                 lat: parseFloat(event.latlng.lat.toFixed(6))
             };
-            this.$emit('set',this.coordinates);
+
+            this.$emit('set', this.coordinates);
             this.markerLatLng = this.coordinates;
-            this.$refs.mymap.leafletObject.flyTo(this.coordinates, 15, {
-                animate: true,
-                duration: 1.0
-            });
+
+            this.$refs.mymap.leafletObject.flyTo(
+                [this.coordinates.lat, this.coordinates.lng],
+                15,
+                {
+                    animate: true,
+                    duration: 1.0
+                }
+            );
         },
         empty(){
-                this.coordinates = {};
-                this.markerLatLng = null;
+            this.coordinates = {};
+            this.markerLatLng = null;
+        },
+        flyTo(lat, lng, zoom = 15) {
+            if (this.$refs.mymap?.leafletObject) {
+                this.$refs.mymap.leafletObject.flyTo(
+                    [lat, lng],
+                    zoom,
+                    {
+                        animate: true,
+                        duration: 1.2
+                    }
+                );
+            }
         }
-    },
+    }
 };
 </script>
 <style>

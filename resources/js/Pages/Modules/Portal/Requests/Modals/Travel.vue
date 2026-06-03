@@ -331,7 +331,7 @@ export default {
 
             if (index !== undefined) {
                 this.form.address = data.form.info;
-                this.form.region_code = data.form.region;
+                this.form.region_code = data.form.region.value;
                 this.form.province_code = data.form.province.value;
                 this.form.municipality_code = data.form.municipality.value;
                 this.form.barangay_code = data.form.barangay.value;
