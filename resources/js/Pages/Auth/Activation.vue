@@ -326,10 +326,16 @@ export default {
 
             let score = 0;
 
-            if (password.length >= 8) score++;
-            if (/[A-Z]/.test(password)) score++;
-            if (/[0-9]/.test(password)) score++;
-            if (/[^A-Za-z0-9]/.test(password)) score++;
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[^A-Za-z0-9]/.test(password);
+            const hasMinLength = password.length >= 8;
+
+            if (hasLower && hasUpper && hasMinLength) score++;
+
+            if (hasNumber) score++;
+            if (hasSpecial) score++;
 
             const map = [
                 { percent: 25, label: 'Weak', class: 'bg-danger', textClass: 'text-danger' },
@@ -338,7 +344,7 @@ export default {
                 { percent: 100, label: 'Strong', class: 'bg-success', textClass: 'text-success' }
             ];
 
-            return map[Math.max(score - 1, 0)] || map[0];
+            return map[Math.min(score, 3)] || map[0];
         },
         passwordMatches() {
             return (
