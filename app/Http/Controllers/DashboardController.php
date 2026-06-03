@@ -23,11 +23,20 @@ class DashboardController extends Controller
             if($user->must_change) {
                 return inertia('Auth/Activation');
             }
-            return inertia('Modules/Dashboard/Index',[
-                'birthdays' => $this->view->birthdays(),
-                'dtr' => $this->view->dtr(),
-                'designations' => $this->view->designations()
-            ]);
+
+             switch($request->option){
+                case 'whereabouts':
+                    return $this->view->whereabouts();
+                break;
+                default:
+                    return inertia('Modules/Dashboard/Index',[
+                        'birthdays' => $this->view->birthdays(),
+                        'dtr' => $this->view->dtr(),
+                        'designations' => $this->view->designations(),
+                        'attendance' => $this->view->attendance(),
+                    ]);
+            }   
+           
         }
     }
 }

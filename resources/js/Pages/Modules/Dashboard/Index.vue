@@ -325,7 +325,7 @@
         </div>
 
         <div class="col-md-3 mt-n2">
-            <simplebar style="height: calc(100vh - 460px); overflow: auto;">
+            <simplebar style="height: calc(100vh - 445px); overflow: auto;">
 
                 <Link href="/dtr">
                     <div class="card overflow-hidden shadow-none mt-0 mb-3" style="cursor: pointer;">
@@ -346,6 +346,49 @@
                         </div>
                     </div>
                 </Link>
+
+                <div class="card shadow-none border mb-3">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 fs-13">Attendance Overview</h5>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="d-flex gap-1 align-items-center my-n2">
+                                    <button type="button" class="btn avatar-xs p-0 favourite-btn material-shadow-none active">
+                                        <span class="avatar-title bg-transparent fs-15">
+                                            <i class="ri-star-fill"></i>
+                                        </span>
+                                    </button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-header p-0 border-0 bg-light-subtle">
+                        <div class="row g-0 text-center">
+                            <div class="col-6 col-sm-4">
+                                <div class="p-3 border border-dashed border-start-0">
+                                    <h5 class="mb-1">{{ attendance[0] }}</h5>
+                                    <p class="text-muted mb-0">Incomplete</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                <div class="p-3 border border-dashed border-start-0">
+                                    <h5 class="mb-1">{{ attendance[1] }}</h5>
+                                    <p class="text-muted mb-0">Lates</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                <div class="p-3 border border-dashed border-start-0 border-end-0">
+                                    <h5 class="mb-1">{{ attendance[2] }}</h5>
+                                    <p class="text-muted mb-0">Absences</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card shadow-none border mt-0">
                     <div class="card-header bg-light-subtle">
@@ -401,7 +444,7 @@
         </div>
 
         <div class="col-md-6 mt-n2">
-            <simplebar style="height: calc(100vh - 460px); overflow: auto;">
+            <simplebar style="height: calc(100vh - 445px); overflow: auto;">
                 <div class="row mt-0">
 
                     <div class="col-xxl-12 col-sm-6 project-card">
@@ -549,7 +592,96 @@ For your information.</p>
         </div>
 
         <div class="col-md-3 mt-n2">
-            <simplebar style="height: calc(100vh - 460px); overflow: auto;">
+            <simplebar style="height: calc(100vh - 445px); overflow: auto;">
+                <div class="card shadow-none border mt-n1">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-team-fill text-primary fs-20"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Whereabouts</span></h5>
+                                <p class="text-muted text-truncate text-truncate-two-lines fs-11"> Authorized signatories and approvers.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cards border-bottom shadow-none" no-body style="height: 170px;">
+                        <div v-if="loadingWhereabouts" 
+                            class="d-flex flex-column justify-content-center align-items-center h-100">
+                            
+                            <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                            <p class="mt-2 fs-11 text-muted mb-0">Loading attendance...</p>
+                        </div>
+                       
+                        <ul v-else class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+   
+                            <li
+                                class="list-group-item px-0"
+                                v-for="(users, status) in groupedAttendance"
+                                :key="status"
+                            >
+                                <div class="d-flex align-items-center justify-content-between">
+
+                                    <!-- LEFT SIDE: STATUS -->
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="fs-12 mb-0">
+                                            {{ status }}
+                                        </h6>
+                                    </div>
+
+                                    <!-- RIGHT SIDE: AVATARS -->
+                                    <div class="flex-shrink-0 text-end">
+                                        <div class="avatar-group d-flex align-items-center">
+
+                                            <!-- FIRST 10 USERS -->
+                                            <a
+                                                v-for="user in users.slice(0, 10)"
+                                                :key="user.user_id"
+                                                href="javascript:void(0);"
+                                                class="avatar-group-item material-shadow"
+                                               
+                                                :title="user.name"
+                                                v-b-tooltip.hover 
+                                            >
+                                                <div class="avatar-xxs">
+                                                    <img
+                                                        v-if="user.avatar"
+                                                        :src="user.avatar"
+                                                        class="rounded-circle img-fluid"
+                                                    />
+                                                    <div v-else class="avatar-title rounded-circle bg-danger">
+                                                        {{ user.name.charAt(0) }}
+                                                    </div>
+                                                </div>
+                                            </a>
+
+                                            <!-- + REMAINING -->
+                                            <a
+                                                v-if="users.length > 10"
+                                                class="avatar-group-item material-shadow"
+                                            >
+                                                <div class="avatar-xxs">
+                                                    <span class="avatar-title rounded-circle bg-info text-white fs-10">
+                                                        {{ users.length - 10 }}
+                                                    </span>
+                                                </div>
+                                            </a>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </li>
+
+                        </ul>
+                        
+
+                    </div>
+                </div>
                 <div class="card shadow-none border mt-n1">
                     <div class="card-header bg-light-subtle">
                         <div class="d-flex mb-n3">
@@ -561,8 +693,8 @@ For your information.</p>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Signatories</span></h5>
-                                <p class="text-muted text-truncate text-truncate-two-lines fs-11">Authorized personnel for signing and approval processes.</p>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Organizational Chart</span></h5>
+                                <p class="text-muted text-truncate text-truncate-two-lines fs-11"> Authorized signatories and approvers.</p>
                             </div>
                         </div>
                     </div>
@@ -692,7 +824,13 @@ import simplebar from "simplebar-vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     components: { PageHeader, simplebar },
-    props: ['birthdays','dtr','designations'],
+    props: ['birthdays','dtr','designations', 'attendance','whereabouts'],
+    data(){
+        return {
+            whereabouts: [],
+             loadingWhereabouts: false
+        }
+    },
     computed: {
         sortedBirthdays() {
             return [...this.birthdays].sort((a, b) => {
@@ -721,7 +859,40 @@ export default {
             return this.sortedBirthdays.length
                 ? this.sortedBirthdays[0]
                 : null;
+        },
+        groupedAttendance() {
+            return this.whereabouts.reduce((groups, item) => {
+
+                if (!groups[item.status]) {
+                    groups[item.status] = [];
+                }
+
+                groups[item.status].push(item);
+
+                return groups;
+
+            }, {});
         }
+    },
+    created(){
+        this.fetchDaily();
+    },
+    methods: {
+        fetchDaily(){
+             this.loadingWhereabouts = true;
+            axios.get('/dashboard',{
+                params : {
+                    option: 'whereabouts',
+                }
+            })
+            .then(response => {
+                this.whereabouts = response.data;         
+            })
+            .catch(err => console.log(err))
+            .finally(() => {
+                this.loadingWhereabouts = false;
+            });
+        },
     }
 }
 </script>
