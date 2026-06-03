@@ -21,7 +21,7 @@
                             <Multiselect :options="barangays" object v-model="form.barangay" label="name" :searchable="true" placeholder="Select Barangay" />
                         </BCol>
                         <BCol lg="12" class="mt-1">
-                            <InputLabel value="Street, Landmark, Block, Lot, Unit (Optional)"/>
+                            <InputLabel value="Street, Landmark, Block, Lot, Unit"/>
                             <TextInput v-model="form.address" type="text" class="form-control" placeholder="Please enter st.,road" @input="handleInput('address')" :light="true" />
                         </BCol>
                     </BRow>  
@@ -101,7 +101,7 @@ export default {
     },
     computed: {
         isFormValid() {
-            return this.form.region && this.form.province && this.form.municipality && this.form.barangay && this.form.latitude && this.form.longitude;
+            return this.form.region && this.form.province && this.form.municipality && this.form.barangay && this.form.address && this.form.latitude && this.form.longitude;
         }
     },
     methods: { 

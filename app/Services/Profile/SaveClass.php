@@ -52,7 +52,9 @@ class SaveClass
                 if($request->filled('permanent.address')) {
                     $data->addresses()->updateOrCreate(
                         [
-                            'is_permanent'      => 1,
+                            'is_permanent' => 1,
+                        ],
+                        [
                             'address'           => $request->permanent['address'],
                             'region_code'       => $request->permanent['region_code'],
                             'province_code'     => $request->permanent['province_code'],
@@ -65,7 +67,9 @@ class SaveClass
                 }elseif($request->filled('home.address')) {
                         $data->addresses()->updateOrCreate(
                         [
-                            'is_permanent'      => 0,
+                            [
+                                'is_permanent' => 0,
+                            ],
                             'address'           => $request->home['address'],
                             'region_code'       => $request->home['region_code'],
                             'province_code'     => $request->home['province_code'],
