@@ -271,7 +271,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </BCol>
                 </BRow>
             </BContainer>
@@ -285,6 +284,7 @@ export default {
     layout: null,
     data() {
         return {
+            currentUrl: window.location.origin,
             form: useForm({
                 code: null,
                 password: '',
@@ -295,7 +295,7 @@ export default {
             form2: useForm({
                 image: null,
             }),
-            hasAvatar: (this.$page.props.user.data.avatar_name == 'noavatar.jpg') ? false : true,
+            hasAvatar: (this.$page.props.user.data.avatar_name == window.location.origin+'/images/avatars/noavatar.jpg') ? false : true,
             uploaded: false,
             remainingTime: 0,
             timerInterval: null,
