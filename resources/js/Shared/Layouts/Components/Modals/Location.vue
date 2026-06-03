@@ -27,7 +27,11 @@
                     </BRow>  
                 </BCol>
                 <BCol lg="12">
-                    <hr class="text-muted mt-3 mb-3"/>
+                    <!-- <hr class="text-muted mt-3 mb-3"/> -->
+                     <div class="alert alert-warning alert-border-left alert-dismissible fade show material-shadow fs-12 fw-semibold mt-3" role="alert">
+                       
+                        Once the map loads, please pin your location by clicking on the map
+                    </div>
                     <div class="mt-2">
                         <Map @set="handleCoordinates" ref="map" class="leaflet-map" style="height: 200px;"/>
                     </div>

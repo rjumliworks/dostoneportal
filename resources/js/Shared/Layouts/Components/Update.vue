@@ -54,7 +54,7 @@
                                 <div class="d-flex">
                                     <div style="width: 100%;">
                                         <InputLabel value="Permanent Address" :message="form.errors['permanent.address']"/>
-                                        <TextInput readonly v-model="permanent" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" :light="true" />
+                                        <TextInput  @click="addLocation('permanent')" readonly v-model="permanent" type="text" class="form-control" placeholder="House No., Street, Barangay, City/Municipality, Province" :light="true" />
                                     </div>
                                     <div class="flex-shrink-0">
                                         <b-button @click="addLocation('permanent')" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
@@ -104,7 +104,7 @@
                         </div>
                         <div class="flex-grow-1"></div>
                         <div class="flex-shrink-0">
-                            <BButton @click="submit()" variant="primary" class="mt-n1" type="button" id="button-addon1">Submit</BButton>
+                            <BButton @click="submit()" variant="primary" class="mt-n1" type="button" :disabled="form.processing" id="button-addon1">Submit</BButton>
                         </div>
                     </div>
                 </div>

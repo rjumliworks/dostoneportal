@@ -29,8 +29,10 @@ class HandleInertiaRequests extends Middleware
         $surveyRequired = false;
         $surveyQuestions = [];
 
-        if ($user && $activeSurvey) {
+        if ($user) {
             $status = $user->profile->is_completed;
+
+            if($activeSurvey){
             $survey_id = $activeSurvey->id;
             $hasAnswered = SurveyAnswer::where('user_id', $user->id)
                 ->where('survey_id', $activeSurvey->id)
@@ -49,6 +51,9 @@ class HandleInertiaRequests extends Middleware
                 });
             }
         }
+        }
+
+        
 
         return [
             ...parent::share($request),
