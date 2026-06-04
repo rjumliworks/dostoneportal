@@ -346,7 +346,7 @@ class SaveClass
                             break;
                         }
                         $status = 'New';
-                        $dtr->tardiness += $minutes;
+                        // $dtr->tardiness += $minutes;
                         $dtr->am_in_at = json_encode($info);
                         $dtr->save();
                     break;
@@ -357,7 +357,7 @@ class SaveClass
                         }
 
                         $status = 'Success';
-                        $dtr->undertime += $minutes;
+                        // $dtr->undertime += $minutes;
                         $dtr->am_out_at = json_encode($info);
                         $dtr->save();
                     break;
@@ -370,7 +370,7 @@ class SaveClass
                             $status = 'Duplicate';
                         }else{
                             $status = 'New';
-                            $dtr->tardiness += $minutes;
+                            // $dtr->tardiness += $minutes;
                             $dtr->pm_in_at = json_encode($info);
                             $dtr->save();
                         }
@@ -380,7 +380,7 @@ class SaveClass
                             $status = 'Duplicate';
                         }else{
                             $status = 'Success';
-                            $dtr->undertime += $minutes;
+                            // $dtr->undertime += $minutes;
                             $dtr->pm_out_at = json_encode($info);
                             $dtr->save();
                         }
