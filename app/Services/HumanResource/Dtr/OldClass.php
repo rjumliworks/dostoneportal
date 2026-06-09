@@ -14,7 +14,7 @@ class OldClass
 
         $success = [];
         $failed = [];
-        $startOfMonth = Carbon::create(2025, 12, 1)->startOfDay()->toDateString();
+        $startOfMonth = Carbon::create(2026, 5, 1)->startOfDay()->toDateString();
         $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
 
         $normalizedUsernames = User::pluck('username')
@@ -96,19 +96,32 @@ class OldClass
                     $tardiness = $amin_tardiness + $pmin_tardiness;
                     $undertime = $amout_undertime + $pmout_undertime;
 
-                    $data = new Dtr;
-                    $data->date = $dtr->date;
-                    $data->tardiness = $tardiness;
-                    $data->undertime = $undertime;
-                    $data->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
-                    $data->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
-                    $data->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
-                    $data->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
-                    $data->remarks = json_encode($remarks);
-                    $data->user_id = $user->id;
-                    $data->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
-                    $data->save();
-                    $success[] = $dtr->user->username;
+                    $new_dtr = Dtr::where('date',$dtr->date)->where('user_id',$user->id)->first();
+                    
+                    if($new_dtr){
+                        $new_dtr->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
+                        $new_dtr->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
+                        $new_dtr->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
+                        $new_dtr->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
+                        $new_dtr->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
+                        $new_dtr->save();
+
+                    }else{
+
+                        $data = new Dtr;
+                        $data->date = $dtr->date;
+                        $data->tardiness = $tardiness;
+                        $data->undertime = $undertime;
+                        $data->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
+                        $data->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
+                        $data->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
+                        $data->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
+                        $data->remarks = json_encode($remarks);
+                        $data->user_id = $user->id;
+                        $data->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
+                        $data->save();
+                        $success[] = $dtr->user->username;
+                    }
                 }else{
                     $failed[] = $dtr->user->username;
                 }
