@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dtr_shifts', function (Blueprint $table) {
+        Schema::create('user_shifts', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            
+            $table->unsignedInteger('shift_id');
+            $table->foreign('shift_id')->references('id')->on('shifts')->onDelete('cascade');
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unique(['user_id', 'shift_id']);
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dtr_shifts');
+        Schema::dropIfExists('user_shifts');
     }
 };

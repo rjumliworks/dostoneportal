@@ -68,6 +68,7 @@ Route::resource('/approvals', App\Http\Controllers\Portal\ApprovalController::cl
 
 Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);
+    Route::resource('/shifts', App\Http\Controllers\Executive\ShiftController::class);
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
     Route::resource('/signatories', App\Http\Controllers\Executive\SignatoryController::class);
 

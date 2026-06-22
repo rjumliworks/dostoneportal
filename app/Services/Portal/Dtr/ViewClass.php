@@ -180,6 +180,8 @@ class ViewClass
                 'am_out' => $dtr && $dtr->am_out_at ? new TimeResource(json_decode($dtr->am_out_at)) : null,
                 'pm_in'  => $dtr && $dtr->pm_in_at  ? new TimeResource(json_decode($dtr->pm_in_at))  : null,
                 'pm_out' => $dtr && $dtr->pm_out_at ? new TimeResource(json_decode($dtr->pm_out_at)) : null,
+                'tardiness' => $dtr ? $dtr->tardiness : 0,
+                'undertime' => $dtr ? $dtr->undertime : 0,
                 'is_completed' => $forceCompleted ? 1 : ($dtr?->is_completed),
                 'status' => $status ?? ($dtr ? 'Present' : ($isFutureDate ? '-' : 'Absent')),
                 'title' => $title

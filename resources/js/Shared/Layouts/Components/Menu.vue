@@ -188,6 +188,13 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/shifts" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/Shifts') }">
+                    <i class="ri-time-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Shift Management</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <BLink class="nav-link menu-link" href="#sidebarDashboards"
                     :class="{'active': $page.url.startsWith('Modules/System/References') }"
                     data-bs-toggle="collapse" role="button" :aria-expanded="$page.url.startsWith('/references')" aria-controls="sidebarDashboards">

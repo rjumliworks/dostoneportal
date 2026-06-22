@@ -117,11 +117,13 @@
                             <thead class="bg-primary fs-12 thead-fixed">
                                 <tr class="text-white">
                                     <th class="text-center" style="width: 15%;">Date</th>
-                                    <th class="text-center" style="width: 15%;">Day</th>
-                                    <th class="text-center" style="width: 14%;">Am In</th>
-                                    <th class="text-center" style="width: 14%;">Am Out</th>
-                                    <th class="text-center" style="width: 14%;">Pm In</th>
-                                    <th class="text-center" style="width: 14%;">Pm Out</th>
+                                    <th class="text-center">Day</th>
+                                    <th class="text-center" style="width: 10%;">Am In</th>
+                                    <th class="text-center" style="width: 10%;">Am Out</th>
+                                    <th class="text-center" style="width: 10%;">Pm In</th>
+                                    <th class="text-center" style="width: 10%;">Pm Out</th>
+                                    <th class="text-center" style="width: 10%;">Tardiness</th>
+                                    <th class="text-center" style="width: 10%;">Undertime</th>
                                     <th class="text-center" style="width: 14%;">Is updated</th>
                                 </tr>
                             </thead>
@@ -130,28 +132,30 @@
                                     <td class="text-center">{{ list.date }}</td>
                                     <td class="text-center"> {{ formatDateWithDay(list.date) }}</td>
                                     <template v-if="list.status === 'Non-working Day'">
-                                        <td class="text-center" colspan="5">{{list.title}}</td>
+                                        <td class="text-center" colspan="7">{{list.title}}</td>
                                     </template>
                                         <template v-else-if="list.status === 'Holiday'">
-                                        <td class="text-center" colspan="5">{{list.title}}</td>
+                                        <td class="text-center" colspan="7">{{list.title}}</td>
                                     </template>
                                     <template v-else-if="list.status === 'Official Travel'">
-                                        <td class="text-center" colspan="5">Official Travel : {{list.title}}</td>
+                                        <td class="text-center" colspan="7">Official Travel : {{list.title}}</td>
                                     </template>
                                     <template v-else-if="list.status === 'Official Business'">
-                                        <td class="text-center" colspan="5">Official Business : {{list.title}}</td>
+                                        <td class="text-center" colspan="7">Official Business : {{list.title}}</td>
                                     </template>
                                     <template v-else-if="list.status === 'Absent'">
-                                        <td class="text-center" colspan="5">Absent</td>
+                                        <td class="text-center" colspan="7">Absent</td>
                                     </template>
                                     <template v-else-if="list.status === '-'">
-                                        <td class="text-center" colspan="5">-</td>
+                                        <td class="text-center" colspan="7">-</td>
                                     </template>
                                     <template v-else>
                                         <td class="text-center">{{ list.am_in ? list.am_in.time : '-' }}</td>
                                         <td class="text-center">{{ list.am_out ? list.am_out.time : '-' }}</td>
                                         <td class="text-center">{{ list.pm_in ? list.pm_in.time : '-' }}</td>
                                         <td class="text-center">{{ list.pm_out ? list.pm_out.time : '-' }}</td>
+                                        <td class="text-center">{{ list.tardiness }}</td>
+                                        <td class="text-center">-</td>
                                         <td class="text-center">
                                             <span v-if="list.is_updated" class="badge bg-border border-success border border-danger text-danger">Updated</span>
                                             <span v-else class="badge bg-border border-success border border-primary text-primary">Not Updated</span>
