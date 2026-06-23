@@ -90,7 +90,7 @@ class DatabaseSeeder extends Seeder
         //     'updated_at' => now(),
         // ]);
 
-        $this->call(OrgChartsTableSeeder::class);
+        // $this->call(OrgChartsTableSeeder::class);
         // $this->call(OrgSignatoriesTableSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserFoldersTableSeeder::class);

@@ -155,7 +155,7 @@
                                         <td class="text-center">{{ list.pm_in ? list.pm_in.time : '-' }}</td>
                                         <td class="text-center">{{ list.pm_out ? list.pm_out.time : '-' }}</td>
                                         <td class="text-center">{{ list.tardiness }}</td>
-                                        <td class="text-center">-</td>
+                                        <td class="text-center">{{ list.undertime }}</td>
                                         <td class="text-center">
                                             <span v-if="list.is_updated" class="badge bg-border border-success border border-danger text-danger">Updated</span>
                                             <span v-else class="badge bg-border border-success border border-primary text-primary">Not Updated</span>
@@ -251,7 +251,11 @@ export default {
             }
 
             // Priority 2 — Holidays / Non-working Days
-            if (list.status === 'Holiday' || list.status === 'Non-working Day') {
+            if(list.status === 'Holiday'){
+                return 'bg-primary-subtle';
+            }
+
+            if (list.status === 'Non-working Day') {
                 return 'bg-dark-subtle';
             }
 

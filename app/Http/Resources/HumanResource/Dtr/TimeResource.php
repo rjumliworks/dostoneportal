@@ -16,6 +16,7 @@ class TimeResource extends JsonResource
             'date' => date('M d, Y g:i a', strtotime($this->date)),
             'time' =>  \Carbon\Carbon::parse($this->time)->format('h:i A'),
             'minutes' => $this->minutes,
+            'temporary_minutes' => ($this->temporary_minutes) ?? '-',
             'is_updated' => $this->is_updated,
             'image' => isset($this->image) ? $this->image : null,
             'changes' => $this->changes

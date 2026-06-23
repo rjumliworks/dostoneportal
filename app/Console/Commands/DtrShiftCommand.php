@@ -4,105 +4,213 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use App\Models\Dtr;
+use App\Models\Schedule;
 use App\Models\UserShift;
+use App\Models\ShiftTime;
 use Illuminate\Console\Command;
 
 class DtrShiftCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'shift';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    protected $signature = 'shift';
     protected $description = 'Command description';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        $users = UserShift::with('shift.times')->where('user_id',1)->get();
-        
-        foreach($users as $user){
-            $shifts = $user->shift->times;
-        
-            $dtrs = Dtr::whereMonth('date', 6)->whereYear('date', 2026)->where('user_id',$user->id)->get();
+        $users = UserShift::with('shift.times')
+            ->where('user_id', 1)
+            ->get();
+
+        foreach ($users as $user) {
+
+            $shift_name = $user->shift->name;
+
+            $dtrs = Dtr::whereMonth('date', 6)
+                ->whereYear('date', 2026)
+                ->where('user_id', $user->user_id)
+                ->get();
+
             foreach ($dtrs as $dtr) {
-              
+
                 $tardiness = 0;
                 $undertime = 0;
+
                 $date = Carbon::parse($dtr->date);
-                foreach($shifts as $shift){
-                    if($shift->segment == 'am'){
-                        if($dtr->am_in_at){
-                            $d = json_decode($dtr->am_in_at);
-                            if($date->isMonday()) {
-                                $start_time = $shift->in_time;
-                            }else{
-                                $time = Carbon::parse($d->time);
-                                $officialStart = Carbon::parse($shift->in_time);
-                                $flexibleCutoff = Carbon::parse($shift->in_time)->addMinutes($shift->in_grace);
-                                $tardiness= ($time->greaterThan($flexibleCutoff)) ? (int) $officialStart->diffInMinutes($time) : 0;
-                            }
-                        }
-                        if($dtr->am_out_at){
-                            $d = json_decode($dtr->am_out_at);
-                            $time = Carbon::parse($d->time);
-                            $officialMorningOut = Carbon::parse($shift->out_time);
-                            $undertime = ($time->lessThan($officialMorningOut)) ? ceil($time->diffInMinutes($officialMorningOut)) : 0;
-                        }
-                       
-                    }else if($shift->segment == 'pm'){
-                         if($dtr->pm_in_at){
-                            $d = json_decode($dtr->pm_in_at);
-                            $time = Carbon::parse($d->time);
-                            $officialStart = Carbon::parse($shift->in_time);
-                            $tardiness = $time->greaterThan($officialStart) ? (int) $officialStart->diffInMinutes($time) : 0;
-                            
-                        }
-                        if($dtr->pm_out_at){
-                            $d = json_decode($dtr->pm_out_at);
-                            $time = Carbon::parse($d->time);
-                            $officialMorningOut = Carbon::parse($shift->out_time);
-                            $undertime = ($time->lessThan($officialMorningOut)) ? ceil($time->diffInMinutes($officialMorningOut)) : 0;
-                        }
+                $weekStart = $date->copy()->startOfWeek(); 
+                $weekEnd = $date->copy()->endOfWeek();     
+
+                $fridayHoliday = Schedule::where('event_id',31)->whereBetween('start', [$weekStart, $weekEnd])
+                ->whereRaw('DAYOFWEEK(start) = 6') // Friday (MySQL: 6 = Friday)
+                ->exists();
+
+                if ($fridayHoliday) {
+                    switch($shift_name){
+                        case 'Four-Day Work Week':
+                            $shifts = ShiftTime::where('shift_id',1)->get();
+                        break;
+                        case 'Four-Day Work Week (Early Departure)':
+                            $shifts = ShiftTime::where('shift_id',2)->get();
+                        break;
+                        case 'Four-Day Work Week (Late Start)':
+                            $shifts = ShiftTime::where('shift_id',3)->get();
+                        break;
                     }
-                    // if ($shift->segment == 'am' && $dtr->am_in_at) {
-
-                    //     $amInTime = $dtr->am_in_at['time'] ?? null;
-
-                    //     if (!$amInTime) continue;
-
-                    //     $actualIn = Carbon::parse($amInTime);
-
-                    //     $officialStart = Carbon::parse($shift->in_time);
-
-                    //     // cutoff with grace
-                    //     $cutoff = Carbon::parse($shift->in_time)
-                    //         ->addMinutes($shift->in_grace)
-                    //         ->addSeconds(59);
-
-                    //     // LATE computation
-                    //     if ($actualIn->gt($cutoff)) {
-                    //         $tardiness += $officialStart->diffInMinutes($actualIn);
-                    //     }
-                    // }
+                }else{
+                    $shifts = $user->shift->times;
                 }
 
-                
-                $dtr->update([
-                    'tardiness' => $tardiness,
-                    'undertime' => $undertime,
-                ]);
+                $dayOfWeek = $date->dayOfWeekIso; // Mon=1 ... Sun=7
+
+                $updates = [];
+
+                foreach ($shifts as $shift) {
+
+                    /**
+                     * Only process shifts assigned to this day
+                     */
+                    $days = array_map('trim', explode(',', $shift->days));
+
+                    if (!in_array($dayOfWeek, $days)) {
+                        continue;
+                    }
+
+                    /**
+                     * ==========================
+                     * AM SHIFT
+                     * ==========================
+                     */
+                    if ($shift->segment === 'am') {
+
+                        // AM IN
+                        if ($dtr->am_in_at) {
+
+                            $am_in_at = json_decode($dtr->am_in_at);
+
+                            $amTime = Carbon::parse($am_in_at->time)->startOfMinute();
+
+                            $officialStart = Carbon::parse($shift->in_time)->startOfMinute();
+
+                            $amLateMinutes = 0;
+
+                            if ($amTime->gt($officialStart)) {
+                                $amLateMinutes = $officialStart->diffInMinutes($amTime);
+                            }
+
+                            if (!$date->isMonday() && $amLateMinutes <= $shift->in_grace) {
+
+                                // Flex schedule
+                                $am_in_at->minutes = 0;
+                                $am_in_at->temporary_minutes = $amLateMinutes;
+
+                            } else {
+
+                                // Real tardiness
+                                $am_in_at->minutes = $amLateMinutes;
+                                $am_in_at->temporary_minutes = 0;
+
+                                $tardiness += $amLateMinutes;
+                            }
+
+                            $updates['am_in_at'] = json_encode($am_in_at);
+                        }
+
+                        // AM OUT
+                        if ($dtr->am_out_at) {
+
+                            $am_out_at = json_decode($dtr->am_out_at);
+
+                            $time = Carbon::parse($am_out_at->time)->startOfMinute();
+                            $officialOut = Carbon::parse($shift->out_time)->startOfMinute();
+
+                            $computedUndertime = 0;
+
+                            if ($time->lt($officialOut)) {
+                                $computedUndertime = $time->diffInMinutes($officialOut);
+                            }
+
+                            $undertime += $computedUndertime;
+
+                            $am_out_at->minutes = $computedUndertime;
+
+                            $updates['am_out_at'] = json_encode($am_out_at);
+                        }
+                    }
+
+                    /**
+                     * ==========================
+                     * PM SHIFT
+                     * ==========================
+                     */
+                    if ($shift->segment === 'pm') {
+
+                        // PM IN
+                        if ($dtr->pm_in_at) {
+
+                            $pm_in_at = json_decode($dtr->pm_in_at);
+
+                            $time = Carbon::parse($pm_in_at->time)->startOfMinute();
+                            $officialStart = Carbon::parse($shift->in_time)->startOfMinute();
+
+                            $computedTardiness = 0;
+
+                            if ($time->gt($officialStart)) {
+                                $computedTardiness = $officialStart->diffInMinutes($time);
+                            }
+
+                            $tardiness += $computedTardiness;
+
+                            $pm_in_at->minutes = $computedTardiness;
+
+                            $updates['pm_in_at'] = json_encode($pm_in_at);
+                        }
+
+                        // PM OUT
+                        if ($dtr->pm_out_at) {
+
+                            $pm_out_at = json_decode($dtr->pm_out_at);
+
+                            $pmTime = Carbon::parse($pm_out_at->time)->startOfMinute();
+
+                            $adjustedOut = Carbon::parse($shift->out_time)->startOfMinute();
+
+                            
+                            if (!$date->isMonday() && $dtr->am_in_at) {
+
+                                $am_in_at = json_decode($dtr->am_in_at);
+
+                                $flexMinutes = 0;
+
+                                if (isset($updates['am_in_at'])) {
+                                    $amData = json_decode($updates['am_in_at']);
+                                    $flexMinutes = (int) ($amData->temporary_minutes ?? 0);
+                                } elseif ($dtr->am_in_at) {
+                                    $amData = json_decode($dtr->am_in_at);
+                                    $flexMinutes = (int) ($amData->temporary_minutes ?? 0);
+                                }
+
+                                $adjustedOut->addMinutes($flexMinutes);
+                            }
+
+                            $computedUndertime = 0;
+
+                            if ($pmTime->lt($adjustedOut)) {
+                                $computedUndertime = $pmTime->diffInMinutes($adjustedOut);
+                            }
+
+                            $undertime += $computedUndertime;
+
+                            $pm_out_at->minutes = $computedUndertime;
+
+                            $updates['pm_out_at'] = json_encode($pm_out_at);
+                        }
+                    }
+                }
+
+                $updates['tardiness'] = $tardiness;
+                $updates['undertime'] = $undertime;
+
+                $dtr->update($updates);
             }
-        }        
-        
+        }
     }
 }
