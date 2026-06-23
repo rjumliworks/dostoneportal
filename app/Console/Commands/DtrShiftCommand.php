@@ -203,6 +203,25 @@ class DtrShiftCommand extends Command
 
                             $updates['pm_out_at'] = json_encode($pm_out_at);
                         }
+
+                        $isHalfDay = empty($dtr->pm_in_at) && empty($dtr->pm_out_at);
+                        if ($isHalfDay && $dtr->am_in_at) {
+
+                            $am_in_at = json_decode($dtr->am_in_at);
+
+                            $flex = (int) ($am_in_at->temporary_minutes ?? 0);
+
+                            if ($flex > 0) {
+
+                                // convert flex into real tardiness
+                                $am_in_at->minutes = $flex;
+                                $am_in_at->temporary_minutes = 0;
+
+                                $tardiness += $flex;
+
+                                $updates['am_in_at'] = json_encode($am_in_at);
+                            }
+                        }
                     }
                 }
 
