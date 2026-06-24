@@ -101,7 +101,7 @@ class DailyDtrChecker extends Command
                                 $amLateMinutes = $officialStart->diffInMinutes($amTime);
                             }
 
-                            if (!$date->isMonday() && $amLateMinutes <= $shift->in_grace) {
+                            if ($amLateMinutes <= $shift->in_grace) { //!$date->isMonday() && 
 
                                 // Flex schedule
                                 $am_in_at->minutes = 0;
