@@ -17,16 +17,14 @@ class DtrShiftCommand extends Command
 
     public function handle()
     {
-        $users = UserShift::with('shift.times')
-            ->where('user_id', 1)
-            ->get();
+        $users = UserShift::with('shift.times')->get();
 
         foreach ($users as $user) {
 
             $shift_name = $user->shift->name;
             $hours = $user->shift->hours;
 
-            $dtrs = Dtr::whereMonth('date', 6)
+            $dtrs = Dtr::whereIn(\DB::raw('MONTH(date)'), [5, 6])
                 ->whereYear('date', 2026)
                 ->where('user_id', $user->user_id)
                 ->get();
