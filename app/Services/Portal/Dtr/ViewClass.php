@@ -192,7 +192,7 @@ class ViewClass
                 'tardiness' => $dtr ? $dtr->tardiness : 0,
                 'undertime' => $dtr ? $dtr->undertime : 0,
                 'is_completed' => $forceCompleted ? 1 : ($dtr?->is_completed),
-                'is_halfday' => $dtr->is_updated,
+                'is_halfday' => $dtr->is_halfday,
                 'status' => $status ?? ($dtr ? 'Present' : ($isFutureDate ? '-' : 'Absent')),
                 'title' => $title
             ];
