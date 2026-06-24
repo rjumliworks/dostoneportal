@@ -21,6 +21,7 @@ class DailyDtrChecker extends Command
 
         foreach ($users as $user) {
 
+            $shift_id = $user->shift->id;
             $shift_name = $user->shift->name;
             $hours = $user->shift->hours;
 
@@ -257,6 +258,7 @@ class DailyDtrChecker extends Command
                
                 $updates['tardiness'] = $tardiness;
                 $updates['undertime'] = $undertime;
+                $updates['shift_id'] =  $shift_id;
                 $updates['processed_at'] = now();
                 $dtr->update($updates);
             }
