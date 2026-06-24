@@ -203,6 +203,16 @@ class SaveClass
                             $dtr->undertime += $minutes;
                             $dtr->pm_out_at = json_encode($info);
                             $dtr->save();
+
+                            if (
+                                $dtr->am_in_at !== null &&
+                                $dtr->am_out_at !== null &&
+                                $dtr->pm_in_at !== null &&
+                                $dtr->pm_out_at !== null
+                            ){
+                                $dtr->is_completed = 1;
+                                $dtr->save();
+                            }
                         }
                     break;
                 }

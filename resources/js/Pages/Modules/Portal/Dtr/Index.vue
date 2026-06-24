@@ -116,14 +116,14 @@
                         <table class="table table-bordered table-striped align-middle mb-1">
                             <thead class="bg-primary fs-12 thead-fixed">
                                 <tr class="text-white">
-                                    <th class="text-center" style="width: 15%;">Date</th>
+                                    <th class="text-center" style="width: 12%;">Date</th>
                                     <th class="text-center">Day</th>
-                                    <th class="text-center" style="width: 10%;">Am In</th>
-                                    <th class="text-center" style="width: 10%;">Am Out</th>
-                                    <th class="text-center" style="width: 10%;">Pm In</th>
-                                    <th class="text-center" style="width: 10%;">Pm Out</th>
-                                    <th class="text-center" style="width: 10%;">Tardiness</th>
-                                    <th class="text-center" style="width: 10%;">Undertime</th>
+                                    <th class="text-center" style="width: 11%;">Am In</th>
+                                    <th class="text-center" style="width: 11%;">Am Out</th>
+                                    <th class="text-center" style="width: 11%;">Pm In</th>
+                                    <th class="text-center" style="width: 11%;">Pm Out</th>
+                                    <th class="text-center" style="width: 15%;">Tardiness + Undertime</th>
+                                    <!-- <th class="text-center" style="width: 10%;">Undertime</th> -->
                                     <th class="text-center" style="width: 14%;">Is updated</th>
                                 </tr>
                             </thead>
@@ -150,12 +150,21 @@
                                         <td class="text-center" colspan="7">-</td>
                                     </template>
                                     <template v-else>
-                                        <td class="text-center">{{ list.am_in ? list.am_in.time : '-' }}</td>
-                                        <td class="text-center">{{ list.am_out ? list.am_out.time : '-' }}</td>
-                                        <td class="text-center">{{ list.pm_in ? list.pm_in.time : '-' }}</td>
-                                        <td class="text-center">{{ list.pm_out ? list.pm_out.time : '-' }}</td>
-                                        <td class="text-center">{{ list.tardiness }}</td>
-                                        <td class="text-center">{{ list.undertime }}</td>
+                                        <template v-if="!list.am_in && !list.am_out">
+                                            <td colspan="2" class="text-center fw-semibold text-danger fs-12">-- HALFDAY --</td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="text-center">{{ list.am_in ? list.am_in.time : '-' }}</td>
+                                            <td class="text-center">{{ list.am_out ? list.am_out.time : '-' }}</td>
+                                        </template>
+                                        <template v-if="!list.pm_in && !list.pm_out">
+                                            <td colspan="2" class="text-center fw-semibold text-danger fs-12">-- HALFDAY --</td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="text-center">{{ list.pm_in ? list.pm_in.time : '-' }}</td>
+                                            <td class="text-center">{{ list.pm_out ? list.pm_out.time : '-' }}</td>
+                                        </template>
+                                        <td class="text-center">{{ list.tardiness }} + {{ list.undertime }} = <span class="fst-italic fw-semibold">{{ list.tardiness + list.undertime }}</span></td>
                                         <td class="text-center">
                                             <span v-if="list.is_updated" class="badge bg-border border-success border border-danger text-danger">Updated</span>
                                             <span v-else class="badge bg-border border-success border border-primary text-primary">Not Updated</span>

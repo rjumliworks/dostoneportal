@@ -23,6 +23,7 @@ class ViewClass
         $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         
         $data =  User::with([
+            'shift.shift.times',
             'profile',
             'organization.position',
             'organization.division',
@@ -49,6 +50,9 @@ class ViewClass
     {
         $alreadyInPayroll = $item->payrolls->isNotEmpty();
         $user_id = $item->id;
+
+
+    
 
         $period = \Carbon\CarbonPeriod::create($start, $end);
 
@@ -141,6 +145,10 @@ class ViewClass
          *  DAILY LOOP
          * =========================
          */
+        $uniqueDays = $item->shift->shift->times->pluck('days') 
+        ->flatMap(function ($days) {        
+            return explode(',', $days);
+        })->unique()->values();
         $result = [];
 
         foreach ($period as $date) {
@@ -154,13 +162,14 @@ class ViewClass
             // status resolution
             $status = null;
             $title = null;
-
-            if ($date->isWeekend()) {
-                $status = 'Non-working Day';
-                $title = 'Non-working Day';
-            } elseif (isset($holidays[$dateStr])) {
+            $dayNumber = (int) $date->format('N');
+            if (isset($holidays[$dateStr])) {
                 $status = 'Holiday';
                 $title = $holidays[$dateStr];
+            } 
+            elseif (!$uniqueDays->contains($dayNumber)) {
+                $status = 'Non-working Day';
+                $title = 'Non-working Day';
             } 
             elseif (isset($officialTravel[$dateStr])) {
                 $status = 'Official Travel';

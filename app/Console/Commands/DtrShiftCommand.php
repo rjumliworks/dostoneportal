@@ -24,6 +24,7 @@ class DtrShiftCommand extends Command
         foreach ($users as $user) {
 
             $shift_name = $user->shift->name;
+            $hours = $user->shift->hours;
 
             $dtrs = Dtr::whereMonth('date', 6)
                 ->whereYear('date', 2026)
@@ -204,9 +205,16 @@ class DtrShiftCommand extends Command
                             $updates['pm_out_at'] = json_encode($pm_out_at);
                         }
 
-                        $isHalfDay = empty($dtr->pm_in_at) && empty($dtr->pm_out_at);
-                        if ($isHalfDay && $dtr->am_in_at) {
+                        $isHalfDayAm = empty($dtr->am_in_at) && empty($dtr->am_out_at);
+                        if ($isHalfDayAm && $dtr->pm_in_at) {
+                            $updates['is_halfday'] = 1;
+                            $updates['hours'] = $hours/2;
+                        }
 
+                        $isHalfDayPm = empty($dtr->pm_in_at) && empty($dtr->pm_out_at);
+                        if ($isHalfDayPm && $dtr->am_in_at) {
+                            $updates['is_halfday'] = 1;
+                            $updates['hours'] = $hours/2;
                             $am_in_at = json_decode($dtr->am_in_at);
 
                             $flex = (int) ($am_in_at->temporary_minutes ?? 0);
@@ -223,6 +231,13 @@ class DtrShiftCommand extends Command
                             }
                         }
                     }
+                }
+
+                $amComplete = $dtr->am_in_at !== null && $dtr->am_out_at !== null;
+                $pmComplete = $dtr->pm_in_at !== null && $dtr->pm_out_at !== null;
+
+                if ($amComplete || $pmComplete) {
+                    $updates['is_completed'] = 1;
                 }
 
                 $updates['tardiness'] = $tardiness;

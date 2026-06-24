@@ -22,6 +22,8 @@ return new class extends Migration
             $table->longText('remarks')->nullable();
             $table->unsignedSmallInteger('tardiness')->default(0);
             $table->unsignedSmallInteger('undertime')->default(0);
+            $table->unsignedSmallInteger('hours')->default(0);
+            $table->boolean('is_halfday')->default(0);
             $table->boolean('is_updated')->default(0);
             $table->boolean('is_completed')->default(0);
             $table->unsignedInteger('user_id');

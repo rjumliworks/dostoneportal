@@ -23,6 +23,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 1,
                 'name' => 'Regular Office',
+                'days' => 5,
+                'hours' => 8,
                 'required_punches' => 4,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -32,6 +34,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 2,
             'name' => 'Regular Office (Early Departure)',
+                'days' => 5,
+                'hours' => 8,
                 'required_punches' => 4,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -41,6 +45,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 3,
             'name' => 'Regular Office (Late Start)',
+                'days' => 5,
+                'hours' => 8,
                 'required_punches' => 4,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -50,6 +56,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 4,
                 'name' => 'Security Morning',
+                'days' => 7,
+                'hours' => 0,
                 'required_punches' => 2,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -59,6 +67,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 5,
                 'name' => 'Security Afternoon',
+                'days' => 7,
+                'hours' => 0,
                 'required_punches' => 2,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -68,6 +78,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 6,
                 'name' => 'Security Night',
+                'days' => 7,
+                'hours' => 0,
                 'required_punches' => 2,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -77,6 +89,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 7,
                 'name' => 'Four-Day Work Week',
+                'days' => 4,
+                'hours' => 10,
                 'required_punches' => 4,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -86,6 +100,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 8,
             'name' => 'Four-Day Work Week (Early Departure)',
+                'days' => 4,
+                'hours' => 10,
                 'required_punches' => 4,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',
@@ -95,6 +111,8 @@ class ShiftsTableSeeder extends Seeder
             array (
                 'id' => 9,
             'name' => 'Four-Day Work Week (Late Start)',
+                'days' => 4,
+                'hours' => 10,
                 'required_punches' => 4,
                 'is_active' => 1,
                 'created_at' => '2026-06-22 13:30:33',

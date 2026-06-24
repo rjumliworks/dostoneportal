@@ -16,11 +16,13 @@ class Dtr extends Model
         'am_out_at',
         'pm_in_at',
         'pm_out_at',
+        'is_halfday',
         'is_updated',
         'is_completed',
         'station_id',
         'tardiness',
         'undertime',
+        'hours',
         'remarks',
         'date'
     ];
