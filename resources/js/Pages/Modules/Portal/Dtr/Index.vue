@@ -150,14 +150,14 @@
                                         <td class="text-center" colspan="7">-</td>
                                     </template>
                                     <template v-else>
-                                        <template v-if="!list.am_in && !list.am_out">
+                                        <template v-if="!list.am_in && !list.am_out && list.is_halfday">
                                             <td colspan="2" class="text-center fw-semibold text-danger fs-12">-- HALFDAY --</td>
                                         </template>
                                         <template v-else>
                                             <td class="text-center">{{ list.am_in ? list.am_in.time : '-' }}</td>
                                             <td class="text-center">{{ list.am_out ? list.am_out.time : '-' }}</td>
                                         </template>
-                                        <template v-if="!list.pm_in && !list.pm_out">
+                                        <template v-if="!list.pm_in && !list.pm_out && list.is_halfday">
                                             <td colspan="2" class="text-center fw-semibold text-danger fs-12">-- HALFDAY --</td>
                                         </template>
                                         <template v-else>
