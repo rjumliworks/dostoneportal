@@ -106,9 +106,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(BudgetsTableSeeder::class);
         // $this->call(BudgetItemsTableSeeder::class);
         // $this->call(BudgetAllocationsTableSeeder::class);
-        $this->call(ShiftsTableSeeder::class);
-        $this->call(ShiftTimesTableSeeder::class);
-        $this->call(UserShiftsTableSeeder::class);
+        // $this->call(ShiftsTableSeeder::class);
+        // $this->call(ShiftTimesTableSeeder::class);
+        // $this->call(UserShiftsTableSeeder::class);
         $this->call(ListEventsTableSeeder::class);
     }
 }
