@@ -37,6 +37,11 @@ class DtrShiftCommand extends Command
                 $undertime = 0;
 
                 $date = Carbon::parse($dtr->date);
+
+                if ($date->isToday()) {
+                    continue;
+                }
+
                 $weekStart = $date->copy()->startOfWeek(); 
                 $weekEnd = $date->copy()->endOfWeek();     
 
