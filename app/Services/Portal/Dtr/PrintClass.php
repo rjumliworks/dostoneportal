@@ -4,6 +4,7 @@ namespace App\Services\Portal\Dtr;
 
 use Carbon\Carbon;
 use App\Models\Dtr;
+use App\Models\UserShift;
 use App\Models\Request;
 use App\Models\Schedule;
 use App\Models\UserProfile;
@@ -16,6 +17,7 @@ class PrintClass
         $user_id = $request->id;
 
         $user = UserProfile::select('id','user_id','firstname','lastname','middlename','suffix_id')->where('user_id',$user_id)->first();
+        $shift = UserShift::with('shift.times')->where('user_id',$user_id)->first();
 
         $month_number = date("n", strtotime($month));
         $today = date('Y-m-d', strtotime(now()));
@@ -55,14 +57,34 @@ class PrintClass
         ->with('dates','event','detail')
         ->get();
 
-        $holidays = Schedule::whereBetween('start', [$startOfMonth, $endOfMonth]) // starts this month
-        ->orWhereBetween('end', [$startOfMonth, $endOfMonth]) // ends this month
-        ->orWhere(function ($q2) use ($startOfMonth, $endOfMonth) { // spans whole month
-            $q2->where('start', '<', $startOfMonth)
-                ->where('end', '>', $endOfMonth);
+        $holidays = Schedule::where(function ($q) use ($startOfMonth, $endOfMonth) {
+            $q->whereBetween('start', [$startOfMonth, $endOfMonth])
+            ->orWhereBetween('end', [$startOfMonth, $endOfMonth])
+            ->orWhere(function ($q2) use ($startOfMonth, $endOfMonth) {
+                $q2->where('start', '<', $startOfMonth)
+                    ->where('end', '>', $endOfMonth);
+            });
         })
-        ->where('event_id',31)
+        ->where('event_id',1)
+        ->with('event')
         ->get();
+
+        $suspensions = Schedule::where(function ($q) use ($startOfMonth, $endOfMonth) {
+            $q->whereBetween('start', [$startOfMonth, $endOfMonth])
+            ->orWhereBetween('end', [$startOfMonth, $endOfMonth])
+            ->orWhere(function ($q2) use ($startOfMonth, $endOfMonth) {
+                $q2->where('start', '<', $startOfMonth)
+                    ->where('end', '>', $endOfMonth);
+            });
+        })
+        ->where('event_id',2)
+        ->with('event')
+        ->get();
+
+        $uniqueDays = $shift->shift->times->pluck('days') 
+        ->flatMap(function ($days) {        
+            return explode(',', $days);
+        })->unique()->values();
 
 
         for($i=$start_time; $i<$end_time; $i+=86400){
@@ -92,7 +114,39 @@ class PrintClass
                 return $date2->between($start, $end, true);
             });
 
-            if($day == 'Saturday' || $day == 'Sunday'){
+            $suspensionToday = $suspensions->first(function ($t) use ($date2) {
+                $start = Carbon::parse($t->start)->startOfDay();
+                $end   = Carbon::parse($t->end)->endOfDay();
+                return $date2->between($start, $end, true);
+            });
+
+            $dayNames = [
+                1 => 'Monday',
+                2 => 'Tuesday',
+                3 => 'Wednesday',
+                4 => 'Thursday',
+                5 => 'Friday',
+                6 => 'Saturday',
+                7 => 'Sunday',
+            ];
+
+            $nonWorkingDays = collect(range(1, 7))
+            ->diff($uniqueDays)
+            ->map(fn ($day) => $dayNames[$day])
+            ->values();
+
+             if($holidayToday){
+                $array[] = [
+                    'date' => date('Y-m-d', $i),
+                    'text' => date('F d, Y', $i),
+                    'day' => date('l', $i),
+                    'data' => 'HOLIDAY', 
+                    'title' => $holidayToday->title,
+                    'bg' => 'bg bg-info bg-soft',
+                    'is_with' => false
+                ];
+                continue;
+           }else if ($nonWorkingDays->contains($day)) {
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
@@ -101,6 +155,7 @@ class PrintClass
                     'bg' => 'bg bg-secondary bg-soft',
                     'is_with' => false
                 ];
+                continue;
             }else if($travelToday){
                 $array[] = [
                     'date' => date('Y-m-d', $i),
@@ -127,16 +182,36 @@ class PrintClass
                     'travel_group' => $obToday->id
                 ];
                 continue;
-            }else if($holidayToday){
-                $array[] = [
-                    'date' => date('Y-m-d', $i),
-                    'text' => date('F d, Y', $i),
-                    'day' => date('l', $i),
-                    'data' => 'HOLIDAY', 
-                    'title' => $holidayToday->title,
-                    'bg' => 'bg bg-info bg-soft',
-                    'is_with' => false
-                ];
+            }else if($suspensionToday){
+                $data = Dtr::whereDate('date', $date)
+                    ->where('user_id', $user_id)
+                    ->first();
+
+                if($data){
+
+                    $array[] = [
+                        'date' => date('Y-m-d', $i),
+                        'text' => date('F d, Y', $i),
+                        'day' => date('l', $i),
+                        'data' => 'WORK SUSPENDED',
+                        'title' => $suspensionToday->event->name,
+                        'bg' => 'bg bg-info bg-soft',
+                        'is_with' => false
+                    ];
+
+                }else{
+
+                    $array[] = [
+                        'date' => date('Y-m-d', $i),
+                        'text' => date('F d, Y', $i),
+                        'day' => date('l', $i),
+                        'data' => '',
+                        'bg' => 'bg bg-danger bg-soft',
+                        'is_with' => false
+                    ];
+
+                }
+
                 continue;
             }else{
                 $data = Dtr::whereDate('date',$date)->where('user_id',$user_id)->first();
@@ -164,22 +239,22 @@ class PrintClass
                     ];
                 }else{
                     if($date < $today){
-                        // $array[] =  [
-                        //     'date' => date('Y-m-d', $i),
-                        //     'text' => date('F d, Y', $i),
-                        //     'day' => date('l', $i),
-                        //     'data' => 'ABSENT',
-                        //     'bg' => 'bg bg-danger bg-soft',
-                        //     'is_with' => false
-                        // ];
                         $array[] =  [
                             'date' => date('Y-m-d', $i),
                             'text' => date('F d, Y', $i),
                             'day' => date('l', $i),
-                            'data' => [],
-                            'bg' => '',
-                            'is_with' => true
+                            'data' => 'ABSENT',
+                            'bg' => 'bg bg-danger bg-soft',
+                            'is_with' => false
                         ];
+                        // $array[] =  [
+                        //     'date' => date('Y-m-d', $i),
+                        //     'text' => date('F d, Y', $i),
+                        //     'day' => date('l', $i),
+                        //     'data' => [],
+                        //     'bg' => '',
+                        //     'is_with' => true
+                        // ];
                     }else{
                         $array[] =  [
                             'date' => date('Y-m-d', $i),

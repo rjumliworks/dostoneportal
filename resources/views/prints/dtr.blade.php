@@ -162,6 +162,10 @@
                                     <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
+                                @elseif($list['data'] == 'WORK SUSPENDED')
+                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                        {{$list['title']}}
+                                    </td>
                                 @elseif($list['data'] == 'NON-WORKING DAY')
                                 <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; background: rgba(214, 214, 214, 0.5)">
                                     {{$list['data']}}
@@ -335,6 +339,10 @@
                                     {{-- Skip cell because it's already merged above --}}
                                 @else
                                     @if($list['data'] == 'HOLIDAY')
+                                        <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                            {{$list['title']}}
+                                        </td>
+                                    @elseif($list['data'] == 'WORK SUSPENDED')
                                         <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                             {{$list['title']}}
                                         </td>

@@ -20,6 +20,7 @@ class Dtr extends Model
         'is_updated',
         'is_completed',
         'station_id',
+        'shift_id',
         'tardiness',
         'undertime',
         'hours',
