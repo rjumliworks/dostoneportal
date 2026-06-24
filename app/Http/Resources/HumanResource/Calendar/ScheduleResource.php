@@ -9,7 +9,6 @@ class ScheduleResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-       $user = strtoupper(preg_replace('/\d+/', '', $this->user->username));
         $start =  date("M d, Y",strtotime($this->start));
         $end =  date("M d, Y",strtotime($this->end));
         $s_time = date("g:i a",strtotime($this->start));
@@ -29,10 +28,11 @@ class ScheduleResource extends JsonResource
         }
         return [
             'id' => $this->id,
-            'title' => $this->title.' ('.$user.')',
+            'title' => $this->title,
             'start' => $this->start,
             'end' => $this->end,
-            'className' => $this->event->others.' '.$this->event->color,
+            'type' => $this->event->name,
+            'className' => $this->event->bg.' '.$this->event->color,
             'full_title' => $this->title,
             'full_name' => $this->user->profile->firstname.' '.$this->user->profile->lastname,
             'start_date' => date("M d, Y g:i a",strtotime($this->start)),
@@ -41,10 +41,10 @@ class ScheduleResource extends JsonResource
             'e_date' => date("Y-m-d H:i",strtotime($this->end)),
             'ss_date' => date("M d, Y",strtotime($this->start)),
             'ee_date' => date("M d, Y",strtotime($this->end)),
+            'day' => date("d", strtotime($this->start)),
+            'day_name' => date("D", strtotime($this->start)),
             'datee' => $date,
-            'venue' => $this->venue,
             'stations' => $this->stations,
-            'description' => $this->description,
             'is_allday' => $this->is_allday,
             'event' => $this->event,
             'user_id' => $this->user_id,

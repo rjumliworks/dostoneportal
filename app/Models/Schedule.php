@@ -29,7 +29,7 @@ class Schedule extends Model
     
     public function event()
     {
-        return $this->belongsTo('App\Models\ListDropdown', 'event_id', 'id');
+        return $this->belongsTo('App\Models\ListEvent', 'event_id', 'id');
     }
 
     public function user()

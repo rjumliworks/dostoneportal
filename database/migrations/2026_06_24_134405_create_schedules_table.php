@@ -21,7 +21,7 @@ return new class extends Migration
             $table->datetime('end');
             $table->boolean('is_allday');
             $table->unsignedTinyInteger('event_id');
-            $table->foreign('event_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
+            $table->foreign('event_id')->references('id')->on('list_events')->onDelete('cascade');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

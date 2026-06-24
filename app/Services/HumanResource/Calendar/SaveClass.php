@@ -16,7 +16,7 @@ class SaveClass
             $start = $start.' '.$startTime;
             $end = $end.' '.$endTime;
         }else{
-            if($request->is_allday){
+            if(!$request->is_allday){
                 $startTime = "08:00:00";
                 $endTime = "17:00:00";
                 $date = substr($request->date, 0, 10);
@@ -30,12 +30,10 @@ class SaveClass
         
         $data = Schedule::create([
             'title' => $request->title,
-            'description' => $request->description,
-            'venue' => $request->venue,
             'start' => $start,
             'end' => $end,
             'is_allday' => $request->is_allday,
-            'event_id' => $request->event_id,
+            'event_id' => $request->event['value'],
             'user_id' => \Auth::user()->id
         ]);
 

@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('is_completed')->default(0);
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamp('processed_at')->nullable();
             $table->timestamps();
             $table->unique(['date', 'user_id']);
         });

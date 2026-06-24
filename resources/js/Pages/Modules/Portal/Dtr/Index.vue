@@ -42,9 +42,9 @@
                         </b-col>
                     </b-row>
                 </div>
-                <div class="card bg-white border-bottom shadow-none p-4" no-body style="margin-bottom: 0px;">
+                <div class="card bg-white border-bottom shadow-none p-3" no-body style="margin-bottom: 0px;">
                      <div class="row g-3">
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                             <div class="p-1 border bg-light border-dashed rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-2">
@@ -53,6 +53,19 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted mb-0 fs-12">Completed DTR :</p>
                                         <h5 class="mb-0 fs-12">{{completedCount - (travelCount+businessCount)}} / {{ totalWorkDays }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="p-1 border bg-light border-dashed rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm me-2">
+                                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-timer-fill"></i></div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="text-muted mb-0 fs-12">Minutes :</p>
+                                        <h5 class="mb-0 fs-12">{{ totalTardiness + totalUndertime}}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +125,7 @@
                     </div>
                 </div>
                 <div class="card-body bg-white rounded-bottom">
-                    <div class="table-responsive" style="height: calc(100vh - 510px); overflow: auto;">
+                    <div class="table-responsive" style="height: calc(100vh - 495px); overflow: auto;">
                         <table class="table table-bordered table-striped align-middle mb-1">
                             <thead class="bg-primary fs-12 thead-fixed">
                                 <tr class="text-white">
@@ -227,6 +240,16 @@ export default {
         },
         totalWorkDays() {
             return (this.selected?.dtrs?.length || 0) - (this.holidayCount + this.travelCount + this.nonCount + this.absentCount + this.businessCount + this.futureCount);
+        },
+        totalTardiness() {
+            return this.selected.dtrs?.reduce((sum, dtr) => {
+            return sum + (dtr.tardiness ?? 0);
+            }, 0) || 0;
+        },
+        totalUndertime() {
+            return this.selected.dtrs?.reduce((sum, dtr) => {
+            return sum + (dtr.undertime ?? 0);
+            }, 0) || 0;
         }
     },
     created(){

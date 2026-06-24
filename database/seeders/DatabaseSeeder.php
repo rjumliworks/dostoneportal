@@ -109,5 +109,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ShiftsTableSeeder::class);
         $this->call(ShiftTimesTableSeeder::class);
         $this->call(UserShiftsTableSeeder::class);
+        $this->call(ListEventsTableSeeder::class);
     }
 }

@@ -19,6 +19,8 @@ use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
 use App\Models\LocationDistrict;
 use App\Models\LocationBarangay;
+use App\Models\Schedule;
+use App\Models\ListEvent;
 
 class DropdownClass
 {  
@@ -212,17 +214,40 @@ class DropdownClass
         return $data;
     }
 
-    public function events(){
-        $data = ListDropdown::where('classification','Calendar')->get()->map(function ($item) {
+    public function events()
+    {
+        $counts = Schedule::selectRaw('event_id, COUNT(*) as total')
+            ->whereDate('start', '>=', now())
+            ->groupBy('event_id')
+            ->pluck('total', 'event_id'); 
+
+        $data = ListEvent::where('is_active', 1)
+            ->orderBy('id','asc')->get()
+            ->map(function ($item) use ($counts) {
+                return [
+                    'label' => $item->type, 
+                    'count' => $counts[$item->id] ?? 0, 
+                    'options' => [
+                        'value' => $item->id,
+                        'name' => $item->name,
+                        'fields' => $item->fields,
+                        'color' => $item->color,
+                        'others' => $item->others,
+                        'type' => $item->type,
+                        'count' => Schedule::where('event_id',$item->id)->whereDate('start', '>=', now())->count()
+                    ]
+                ];
+            });
+
+        $grouped = $data->groupBy('label')->map(function ($items) {
             return [
-                'value' => $item->id,
-                'name' => $item->name,
-                'type' => $item->type,
-                'color' => $item->color,
-                'others' => $item->others
+                'label' => $items->first()['label'],
+                'count' => $items->sum('count'),
+                'options' => $items->pluck('options')->values()
             ];
-        });
-        return $data;
+        })->values();
+
+        return $grouped;
     }
 
     public function stations(){

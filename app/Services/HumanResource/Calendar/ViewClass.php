@@ -8,7 +8,9 @@ use App\Http\Resources\HumanResource\Calendar\ScheduleResource;
 class ViewClass
 {
     public function events($request){
-        $data = Schedule::with('user','event','stations.station')->get();
+        $data = Schedule::with('event')
+        ->with('stations.station')
+        ->get();
         return ScheduleResource::collection($data);
     }
 }
