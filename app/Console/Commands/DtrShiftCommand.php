@@ -207,42 +207,54 @@ class DtrShiftCommand extends Command
 
                             $updates['pm_out_at'] = json_encode($pm_out_at);
                         }
+                    }
+                }
 
-                        $isHalfDayAm = empty($dtr->am_in_at) && empty($dtr->am_out_at);
-                        if ($isHalfDayAm && $dtr->pm_in_at) {
-                            $updates['is_halfday'] = 1;
-                            $updates['hours'] = $hours/2;
-                        }
+                $isHalfDayAm = empty($dtr->am_in_at) && empty($dtr->am_out_at);
+                if ($isHalfDayAm && $dtr->pm_in_at) {
+                    $updates['is_halfday'] = 1;
+                    $updates['hours'] = $hours/2;
+                }
 
-                        $isHalfDayPm = empty($dtr->pm_in_at) && empty($dtr->pm_out_at);
-                        if ($isHalfDayPm && $dtr->am_in_at) {
-                            $updates['is_halfday'] = 1;
-                            $updates['hours'] = $hours/2;
-                            $am_in_at = json_decode($dtr->am_in_at);
+                $isHalfDayPm = empty($dtr->pm_in_at) && empty($dtr->pm_out_at);
+                if ($isHalfDayPm && $dtr->am_in_at) {
+                    $updates['is_halfday'] = 1;
+                    $updates['hours'] = $hours/2;
+                    $am_in_at = json_decode($dtr->am_in_at);
 
-                            $flex = (int) ($am_in_at->temporary_minutes ?? 0);
+                    $flex = (int) ($am_in_at->temporary_minutes ?? 0);
 
-                            if ($flex > 0) {
+                    if ($flex > 0) {
 
-                                // convert flex into real tardiness
-                                $am_in_at->minutes = $flex;
-                                $am_in_at->temporary_minutes = 0;
+                        // convert flex into real tardiness
+                        $am_in_at->minutes = $flex;
+                        $am_in_at->temporary_minutes = 0;
 
-                                $tardiness += $flex;
+                        $tardiness += $flex;
 
-                                $updates['am_in_at'] = json_encode($am_in_at);
-                            }
-                        }
+                        $updates['am_in_at'] = json_encode($am_in_at);
                     }
                 }
 
                 $amComplete = $dtr->am_in_at !== null && $dtr->am_out_at !== null;
                 $pmComplete = $dtr->pm_in_at !== null && $dtr->pm_out_at !== null;
 
-                if ($amComplete || $pmComplete) {
+                $isHalfDayAm = empty($dtr->am_in_at) && empty($dtr->am_out_at);
+                $isHalfDayPm = empty($dtr->pm_in_at) && empty($dtr->pm_out_at);
+
+                $isFullDay = $amComplete && $pmComplete;
+
+                if ($isFullDay) {
                     $updates['is_completed'] = 1;
+                } elseif ($isHalfDayAm && $dtr->pm_in_at !== null && $dtr->pm_out_at !== null) {
+                    $updates['is_completed'] = 1;
+                } elseif ($isHalfDayPm && $dtr->am_in_at !== null && $dtr->am_out_at !== null) {
+                    $updates['is_completed'] = 1;
+                } else {
+                    $updates['is_completed'] = 0;
                 }
 
+               
                 $updates['tardiness'] = $tardiness;
                 $updates['undertime'] = $undertime;
 
