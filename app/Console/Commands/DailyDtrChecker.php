@@ -18,7 +18,6 @@ class DailyDtrChecker extends Command
     public function handle()
     {
         $users = UserShift::with('shift.times')->get();
-
         foreach ($users as $user) {
 
             $shift_id = $user->shift->id;
@@ -36,10 +35,6 @@ class DailyDtrChecker extends Command
                 $undertime = 0;
 
                 $date = Carbon::parse($dtr->date);
-
-                if ($date->isToday()) {
-                    continue;
-                }
 
                 $weekStart = $date->copy()->startOfWeek(); 
                 $weekEnd = $date->copy()->endOfWeek();     
