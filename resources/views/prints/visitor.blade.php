@@ -184,38 +184,63 @@
 
             <tbody>
                 @foreach($lists as $dtr)
-                    @php
-                        $grandMinutes = $grandMinutes ?? 0;
+                  @php
+    $totalMinutes = 0;
 
-                        $amMinutes = (
-                            isset($dtr['am_in']->time) &&
-                            isset($dtr['am_out']->time)
-                        )
-                            ? \Carbon\Carbon::parse($dtr['am_in']->time)
-                                ->diffInMinutes(\Carbon\Carbon::parse($dtr['am_out']->time))
-                            : 0;
+    // AM: 7:00 AM - 12:00 PM
+    if (
+        isset($dtr['am_in']->time) &&
+        isset($dtr['am_out']->time)
+    ) {
+        $amIn = \Carbon\Carbon::parse($dtr['am_in']->time);
+        $amOut = \Carbon\Carbon::parse($dtr['am_out']->time);
 
-                        $pmMinutes = (
-                            isset($dtr['pm_in']->time) &&
-                            isset($dtr['pm_out']->time)
-                        )
-                            ? \Carbon\Carbon::parse($dtr['pm_in']->time)
-                                ->diffInMinutes(\Carbon\Carbon::parse($dtr['pm_out']->time))
-                            : 0;
+        $amStart = $amIn->copy()->setTime(7, 0);
+        $amEnd = $amIn->copy()->setTime(12, 0);
 
-                        $totalMinutes = $amMinutes + $pmMinutes;
+        if ($amIn->lt($amStart)) {
+            $amIn = $amStart;
+        }
 
-                        // Apply the 10-hour rule
-                        if ($totalMinutes > 600) { // 600 mins = 10 hours
-                            $totalMinutes = floor($totalMinutes / 60) * 60;
-                        }
+        if ($amOut->gt($amEnd)) {
+            $amOut = $amEnd;
+        }
 
-                        $grandMinutes += $totalMinutes;
+        if ($amOut->gt($amIn)) {
+            $totalMinutes += $amIn->diffInMinutes($amOut);
+        }
+    }
 
-                        $totalHours = $totalMinutes
-                        ? floor($totalMinutes / 60).'h '.($totalMinutes % 60).'m'
-                        : '';
-                    @endphp
+    // PM: 1:00 PM - 6:00 PM
+    if (
+        isset($dtr['pm_in']->time) &&
+        isset($dtr['pm_out']->time)
+    ) {
+        $pmIn = \Carbon\Carbon::parse($dtr['pm_in']->time);
+        $pmOut = \Carbon\Carbon::parse($dtr['pm_out']->time);
+
+        $pmStart = $pmIn->copy()->setTime(13, 0);
+        $pmEnd = $pmIn->copy()->setTime(18, 0);
+
+        if ($pmIn->lt($pmStart)) {
+            $pmIn = $pmStart;
+        }
+
+        if ($pmOut->gt($pmEnd)) {
+            $pmOut = $pmEnd;
+        }
+
+        if ($pmOut->gt($pmIn)) {
+            $totalMinutes += $pmIn->diffInMinutes($pmOut);
+        }
+    }
+
+    $grandMinutes = ($grandMinutes ?? 0) + $totalMinutes;
+
+    $totalHours = $totalMinutes
+        ? floor($totalMinutes / 60).'h '.($totalMinutes % 60).'m'
+        : '';
+@endphp
                 <tr>
                     <td class="cntr">{{ \Carbon\Carbon::parse($dtr['date'])->format('F d, Y') }}</td>
                     <td class="cntr">
