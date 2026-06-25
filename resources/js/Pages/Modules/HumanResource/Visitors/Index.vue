@@ -70,8 +70,8 @@
                                     <tr class="fs-11">
                                         <th style="width: 3%;"></th>
                                         <th>Name</th>
-                                        <th style="width: 13%;" class="text-center">Affiliation</th>
-                                        <th style="width: 20%;" class="text-center">Designation</th>
+                                        <th style="width: 30%;" class="text-center">Affiliation</th>
+                                        <th style="width: 15%;" class="text-center">Designation</th>
                                         <th style="width: 15%;" class="text-center">Type</th>
                                         <th style="width: 8%;" class="text-center">Status</th>
                                         <th style="width: 4%;"></th>
@@ -106,17 +106,17 @@
                                                             </Link>
                                                         </li>
                                                         <li>
-                                                            <a @click="openUpdate(list,index)" class="dropdown-item d-flex align-items-center" role="button">
-                                                                <i class="ri-edit-2-fill me-2"></i> Update
+                                                            <a @click="openPrint(list.code)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-edit-2-fill me-2"></i> Print
                                                             </a>
                                                         </li>
-                                                        <li><hr class="dropdown-divider"></li>
+                                                        <!-- <li><hr class="dropdown-divider"></li>
                                                         <li>
                                                             <a @click="openActivation(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                                 <span v-if="list.status.name == 'Active'" class="text-danger"><i class="ri-lock-2-fill me-2"></i> Deactivate User</span>
                                                                 <span v-else class="text-success"><i class="ri-lock-unlock-line me-2"></i> Activate User</span>
                                                             </a>
-                                                        </li>
+                                                        </li> -->
                                                     </BDropdown>
                                                 </div>
                                             </div>
@@ -209,6 +209,9 @@
             },
             updateData(data){
                 this.lists[this.index] = data;
+            },
+            openPrint(code){
+                window.open('/visitors?option=print&code='+code);
             }
         }
     }

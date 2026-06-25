@@ -112,14 +112,57 @@
                                         <span :class="'badge '+list.organization.status.bg+' '+list.organization.status.type">{{list.organization.status.name}}</span>
                                     </td>
                                     <td class="text-end">
-                                        <b-button @click="openEdit(list,index)" variant="soft-warning" class="me-1" v-b-tooltip.hover title="Edit" size="sm">
+                                        <!-- <b-button @click="openEdit(list,index)" variant="soft-warning" class="me-1" v-b-tooltip.hover title="Edit" size="sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </b-button>
                                         <Link :href="`/employees/${list.code}`">
                                             <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
                                             </b-button>
-                                        </Link>
+                                        </Link> -->
+                                        <div class="d-flex gap-3 justify-content-center"> 
+                                            <button v-if="!list.is_locked" type="button" class="btn btn-ghost-dark btn-icon btn-sm material-shadow-none favourite-btn"> 
+                                                <i class="ri-lock-unlock-line fs-13 align-bottom"></i>
+                                            </button>
+                                            <button v-else type="button" class="btn btn-ghost-danger btn-icon btn-sm material-shadow-none favourite-btn"> 
+                                                <i class="ri-lock-2-fill fs-13 align-bottom"></i>
+                                            </button>
+                                            <div class="dropdown">
+                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                    <template #button-content> 
+                                                        <i class="ri-more-fill"></i>
+                                                    </template>
+                                                    <li>
+                                                        <Link :href="`/users/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-eye-fill me-2"></i> View
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-edit-2-fill me-2"></i> Update Details
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openStatus(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-group-2-line me-2"></i> Update Status
+                                                        </a>
+                                                    </li>
+                                                    <!-- <li>
+                                                        <a @click="openActivation('verification',list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-mail-send-fill me-2"></i> Send Verification
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                            <span v-if="list.is_active"><i class="ri-lock-2-fill me-2"></i> Deactivate User</span>
+                                                            <span v-else><i class="ri-lock-unlock-line me-2"></i> Activate User</span>
+                                                        </a>
+                                                    </li> -->
+                                                </BDropdown>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>

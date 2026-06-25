@@ -24,7 +24,7 @@ class ViewClass
     }
 
     public function list($request){
-        $query = User::select('id', 'email', 'username', 'created_at')
+        $query = User::select('id', 'email', 'username', 'is_locked', 'is_active', 'created_at')
         ->with([
             'profile.religion',
             'profile.blood',

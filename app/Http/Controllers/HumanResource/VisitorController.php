@@ -37,6 +37,9 @@ class VisitorController extends Controller
             case 'authentication-logs':
                 return $this->view->logs($request);
             break;
+            case 'print':
+                return $this->view->print($request);
+            break;
             default:
                 return inertia('Modules/HumanResource/Visitors/Index',[
                     'counts' => $this->view->counts($this->dropdown->statuses('Visitor')),

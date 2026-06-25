@@ -71,12 +71,12 @@ class ViewClass
         $id = $hashids->decode($request->code);
 
         
-        $monthName = $request->month;
-        $year  = ($request->year) ? $request->year : date('Y');
-        $month = Carbon::parse($monthName)->month;
+        // $monthName = $request->month;
+        // $year  = ($request->year) ? $request->year : date('Y');
+        // $month = Carbon::parse($monthName)->month;
 
-        $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-        $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        // $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        // $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         
         $data =  VisitorLogs::where('visitor_id',$id[0])->get()->map(function ($dtr) {
             return [
@@ -122,5 +122,42 @@ class ViewClass
                 : asset('images/avatars/avatar.jpg'),
             'dtrs' => $result
         ];
+    }
+
+    public function print($request)
+    {
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->code);
+
+
+        // $monthName = $request->month;
+        // $year  = ($request->year) ? $request->year : date('Y');
+        // $month = Carbon::parse($monthName)->month;
+
+        // $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        // $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        $info = Visitor::with('affiliation')->where('id',$id[0])->first();
+        
+       $data = VisitorLogs::where('visitor_id', $id[0])
+        ->orderBy('date')
+        ->get()
+        ->map(function ($dtr) {
+            return [
+                'id' => $dtr->id,
+                'date' => $dtr->date,
+                'am_in' => $dtr->am_in_at ? json_decode($dtr->am_in_at) : null,
+                'am_out' => $dtr->am_out_at ? json_decode($dtr->am_out_at) : null,
+                'pm_in' => $dtr->pm_in_at ? json_decode($dtr->pm_in_at) : null,
+                'pm_out' => $dtr->pm_out_at ? json_decode($dtr->pm_out_at) : null,
+            ];
+        });
+
+       
+        $pdf = \PDF::loadView('prints.visitor', [
+            'lists' => $data,
+            'info' => $info,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('OJT.pdf');
     }
 }

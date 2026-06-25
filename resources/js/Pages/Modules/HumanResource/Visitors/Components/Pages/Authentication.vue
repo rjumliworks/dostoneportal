@@ -9,8 +9,8 @@
                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                    <i class="bx bx-refresh search-icon"></i>
                </span>
-               <b-button type="button" variant="primary">
-                   Search
+               <b-button type="button" @click="openPrint()" variant="primary">
+                   Print Dtr
                </b-button>
            </div>
        </b-col>
@@ -88,7 +88,9 @@ export default {
                 }
             })
             .then(response => {
-                this.lists = response.data;    
+                this.lists = response.data.sort((a, b) => {
+                    return new Date(b.date) - new Date(a.date); // newest first
+                });
             });
         },
         openView(data,index){
@@ -98,6 +100,9 @@ export default {
         updateList(data){
             this.lists[this.index] = data;
         },
+        openPrint(){
+            window.open('/visitors?option=print&code='+this.code);
+        }
     }
 }
 </script>

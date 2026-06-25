@@ -5,11 +5,12 @@ namespace App\Services\HumanResource\Dtr;
 use App\Models\Dtr;
 use App\Models\OldDtr;
 use App\Models\User;
+use App\Models\VisitorLogs;
 use Carbon\Carbon;
 
 class OldClass
 {
-    public function dtr($request){
+    public function visitor($request){
         set_time_limit(1200);
 
         $success = [];
@@ -17,161 +18,239 @@ class OldClass
         $startOfMonth = Carbon::create(2026, 5, 1)->startOfDay()->toDateString();
         $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
 
-        $normalizedUsernames = User::pluck('username')
-        ->map(fn ($u) => str_replace('-', '', $u))
-        ->toArray();
+      
         $dtrs = OldDtr::with('user')
+        ->whereIn('user_id',[1356,1355,1353])
         ->whereBetween('date', [$startOfMonth,$endOfMonth])->get();
 
         foreach($dtrs as $dtr){
-            $username = $dtr->user?->username ?? null;
-            if($username){
-                $normalizedOld = strtolower(str_replace('-', '', $username));
-                $user = User::with('profile','organization.division')
-                ->whereRaw("REPLACE(LOWER(username), '-', '') = ?", [$normalizedOld])
-                ->first();
-                if($user){
-                    $remarks = [
-                        'tardiness' => null,
-                        'undertime' => null
-                    ];
+            $id = $dtr->user_id;
 
-                    $amin_tardiness = ($dtr->inAM) ? $this->computeLateMinutes($dtr->date,'Time In (am)',date('H:i:s',$dtr->inAM)) : 0;
-                    $pmin_tardiness = ($dtr->inPM) ? $this->computeLateMinutes($dtr->date,'Time In (pm)',date('H:i:s',$dtr->inPM)) : 0;
-                    $amout_undertime = ($dtr->outAM) ? $this->computeLateMinutes($dtr->date,'Time Out (am)',date('H:i:s',$dtr->outAM)) : 0;
-                    $pmout_undertime = ($dtr->outPM) ? $this->computeLateMinutes($dtr->date,'Time Out (pm)',date('H:i:s',$dtr->outPM),date('H:i:s',$dtr->inAM)) : 0;
-
-                    $amin = $dtr->inAM 
-                    ? [
-                        'ip' => $dtr->ip,
-                        'pcname' => gethostname(),
-                        'browser' => $request->header('User-Agent'),
-                        'time' =>  date('H:i:s',$dtr->inAM),
-                        'date' => $dtr->date,
-                        'minutes' => $amin_tardiness,
-                        'is_updated' => false,
-                        'changes' => []
-                    ] 
-                    : null;
-
-                    $amout = $dtr->outAM 
-                    ? [
-                        'ip' => $dtr->ip,
-                        'pcname' => gethostname(),
-                        'browser' => $request->header('User-Agent'),
-                        'time' => date('H:i:s',$dtr->outAM),
-                        'date' => $dtr->date,
-                        'minutes' => $amout_undertime,
-                        'is_updated' => false,
-                        'changes' => []
-                    ] 
-                    : null;
-
-                    $pmin = $dtr->inPM 
-                    ? [
-                        'ip' => $dtr->ip,
-                        'pcname' => gethostname(),
-                        'browser' => $request->header('User-Agent'),
-                        'time' => date('H:i:s',$dtr->inPM),
-                        'date' => $dtr->date,
-                        'minutes' => $pmin_tardiness,
-                        'is_updated' => false,
-                        'changes' => []
-                    ] 
-                    : null;
-
-                    $pmout = $dtr->outPM 
-                    ? [
-                        'ip' => $dtr->ip,
-                        'pcname' => gethostname(),
-                        'browser' => $request->header('User-Agent'),
-                        'time' => date('H:i:s',$dtr->outPM),
-                        'date' => $dtr->date,
-                        'minutes' => $pmout_undertime,
-                        'is_updated' => false,
-                        'changes' => []
-                    ] 
-                    : null;
-                    
-                    $tardiness = $amin_tardiness + $pmin_tardiness;
-                    $undertime = $amout_undertime + $pmout_undertime;
-
-                    $new_dtr = Dtr::where('date',$dtr->date)->where('user_id',$user->id)->first();
-                    
-                    if($new_dtr){
-                        $new_dtr->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
-                        $new_dtr->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
-                        $new_dtr->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
-                        $new_dtr->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
-                        $new_dtr->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
-                        $new_dtr->save();
-
-                    }else{
-
-                        $data = new Dtr;
-                        $data->date = $dtr->date;
-                        $data->tardiness = $tardiness;
-                        $data->undertime = $undertime;
-                        $data->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
-                        $data->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
-                        $data->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
-                        $data->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
-                        $data->remarks = json_encode($remarks);
-                        $data->user_id = $user->id;
-                        $data->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
-                        $data->save();
-                        $success[] = $dtr->user->username;
-                    }
-                }else{
-                    $failed[] = $dtr->user->username;
-                }
-            }else{
-                $failed[] = $dtr->id;
+            switch($id){
+                case '1356':
+                    $user = 3;
+                break;
+                case '1355':
+                    $user = 1;
+                break;
+                case '1353':
+                    $user = 2;
+                break;
             }
+           
+            $remarks = [
+                'tardiness' => null,
+                'undertime' => null
+            ];
+
+            $amin_tardiness = ($dtr->inAM) ? $this->computeLateMinutes($dtr->date,'Time In (am)',date('H:i:s',$dtr->inAM)) : 0;
+            $pmin_tardiness = ($dtr->inPM) ? $this->computeLateMinutes($dtr->date,'Time In (pm)',date('H:i:s',$dtr->inPM)) : 0;
+            $amout_undertime = ($dtr->outAM) ? $this->computeLateMinutes($dtr->date,'Time Out (am)',date('H:i:s',$dtr->outAM)) : 0;
+            $pmout_undertime = ($dtr->outPM) ? $this->computeLateMinutes($dtr->date,'Time Out (pm)',date('H:i:s',$dtr->outPM),date('H:i:s',$dtr->inAM)) : 0;
+
+            $amin = $dtr->inAM 
+            ? [
+                'ip' => $dtr->ip,
+                'pcname' => gethostname(),
+                'browser' => $request->header('User-Agent'),
+                'time' =>  date('H:i:s',$dtr->inAM),
+                'date' => $dtr->date,
+                'minutes' => $amin_tardiness,
+                'is_updated' => false,
+                'changes' => []
+            ] 
+            : null;
+
+            $amout = $dtr->outAM 
+            ? [
+                'ip' => $dtr->ip,
+                'pcname' => gethostname(),
+                'browser' => $request->header('User-Agent'),
+                'time' => date('H:i:s',$dtr->outAM),
+                'date' => $dtr->date,
+                'minutes' => $amout_undertime,
+                'is_updated' => false,
+                'changes' => []
+            ] 
+            : null;
+
+            $pmin = $dtr->inPM 
+            ? [
+                'ip' => $dtr->ip,
+                'pcname' => gethostname(),
+                'browser' => $request->header('User-Agent'),
+                'time' => date('H:i:s',$dtr->inPM),
+                'date' => $dtr->date,
+                'minutes' => $pmin_tardiness,
+                'is_updated' => false,
+                'changes' => []
+            ] 
+            : null;
+
+            $pmout = $dtr->outPM 
+            ? [
+                'ip' => $dtr->ip,
+                'pcname' => gethostname(),
+                'browser' => $request->header('User-Agent'),
+                'time' => date('H:i:s',$dtr->outPM),
+                'date' => $dtr->date,
+                'minutes' => $pmout_undertime,
+                'is_updated' => false,
+                'changes' => []
+            ] 
+            : null;
+            
+
+            $new_dtr = VisitorLogs::where('date',$dtr->date)->where('visitor_id',$user)->first();
+            
+            if($new_dtr){
+                $new_dtr->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
+                $new_dtr->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
+                $new_dtr->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
+                $new_dtr->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
+                $new_dtr->save();
+
+            }else{
+
+                $data = new VisitorLogs;
+                $data->date = $dtr->date;
+                $data->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
+                $data->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
+                $data->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
+                $data->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
+                $data->remarks = json_encode($remarks);
+                $data->visitor_id = $user;
+                $data->station_id = 5;
+                $data->save();
+                $success[] = $dtr->user_id;
+            }
+        
         }
         return [$success,array_unique($failed)];
-
-
-        // $employees = Employee::where('is_active',1)->get();
-        // foreach($employees as $employee){
-        //     $user = User::create([
-        //         'username' => $employee->username,
-        //         'email' => ($employee->email) ? $employee->email : $employee->username.'@gmail.com',
-        //         'password' => bcrypt($employee->username.'!@#$%'),
-        //         'created_at' => $employee->created_at,
-        //         'updated_at' => $employee->updated_at,
-        //     ]);
-        //     if($user){
-        //         $profile = $user->profile()->create([
-        //             'firstname' => $employee->first_name,
-        //             'middlename' => $employee->middle_name,
-        //             'lastname' => $employee->last_name,
-        //             'suffix' => $employee->name_suffix,
-        //             'sex' => 'Male',
-        //             'birthdate' => now(),
-        //             'contact_no' => '09123456789',
-        //             'avatar' => ($employee->picture) ? $employee->picture : 'avatar.jpg',
-        //             'signature' => ($employee->signature) ? $employee->signature : 'signature.jpg',
-        //             'marital_id' => 1,
-        //             'religion_id' => 1,
-        //             'blood_id' => 1,
-        //         ]);
-
-        //         if($profile){
-        //             $user->organization()->create([
-        //                 'status_id' => 2,
-        //                 'type_id' => $this->status($employee->employee_status_id),
-        //                 'position_id' => 1,
-        //                 'division_id' => 1,
-        //                 'unit_id' => 1,
-        //                 'station_id' => 1
-        //             ]);
-
-        //             $this->information($user->id);
-        //         }
-        //     }
-        // }
     }
+
+    // public function dtr($request){
+    //     set_time_limit(1200);
+
+    //     $success = [];
+    //     $failed = [];
+    //     $startOfMonth = Carbon::create(2026, 5, 1)->startOfDay()->toDateString();
+    //     $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+
+    //     $normalizedUsernames = User::pluck('username')
+    //     ->map(fn ($u) => str_replace('-', '', $u))
+    //     ->toArray();
+    //     $dtrs = OldDtr::with('user')
+    //     ->whereBetween('date', [$startOfMonth,$endOfMonth])->get();
+
+    //     foreach($dtrs as $dtr){
+    //         $username = $dtr->user?->username ?? null;
+    //         if($username){
+    //             $normalizedOld = strtolower(str_replace('-', '', $username));
+    //             $user = User::with('profile','organization.division')
+    //             ->whereRaw("REPLACE(LOWER(username), '-', '') = ?", [$normalizedOld])
+    //             ->first();
+    //             if($user){
+    //                 $remarks = [
+    //                     'tardiness' => null,
+    //                     'undertime' => null
+    //                 ];
+
+    //                 $amin_tardiness = ($dtr->inAM) ? $this->computeLateMinutes($dtr->date,'Time In (am)',date('H:i:s',$dtr->inAM)) : 0;
+    //                 $pmin_tardiness = ($dtr->inPM) ? $this->computeLateMinutes($dtr->date,'Time In (pm)',date('H:i:s',$dtr->inPM)) : 0;
+    //                 $amout_undertime = ($dtr->outAM) ? $this->computeLateMinutes($dtr->date,'Time Out (am)',date('H:i:s',$dtr->outAM)) : 0;
+    //                 $pmout_undertime = ($dtr->outPM) ? $this->computeLateMinutes($dtr->date,'Time Out (pm)',date('H:i:s',$dtr->outPM),date('H:i:s',$dtr->inAM)) : 0;
+
+    //                 $amin = $dtr->inAM 
+    //                 ? [
+    //                     'ip' => $dtr->ip,
+    //                     'pcname' => gethostname(),
+    //                     'browser' => $request->header('User-Agent'),
+    //                     'time' =>  date('H:i:s',$dtr->inAM),
+    //                     'date' => $dtr->date,
+    //                     'minutes' => $amin_tardiness,
+    //                     'is_updated' => false,
+    //                     'changes' => []
+    //                 ] 
+    //                 : null;
+
+    //                 $amout = $dtr->outAM 
+    //                 ? [
+    //                     'ip' => $dtr->ip,
+    //                     'pcname' => gethostname(),
+    //                     'browser' => $request->header('User-Agent'),
+    //                     'time' => date('H:i:s',$dtr->outAM),
+    //                     'date' => $dtr->date,
+    //                     'minutes' => $amout_undertime,
+    //                     'is_updated' => false,
+    //                     'changes' => []
+    //                 ] 
+    //                 : null;
+
+    //                 $pmin = $dtr->inPM 
+    //                 ? [
+    //                     'ip' => $dtr->ip,
+    //                     'pcname' => gethostname(),
+    //                     'browser' => $request->header('User-Agent'),
+    //                     'time' => date('H:i:s',$dtr->inPM),
+    //                     'date' => $dtr->date,
+    //                     'minutes' => $pmin_tardiness,
+    //                     'is_updated' => false,
+    //                     'changes' => []
+    //                 ] 
+    //                 : null;
+
+    //                 $pmout = $dtr->outPM 
+    //                 ? [
+    //                     'ip' => $dtr->ip,
+    //                     'pcname' => gethostname(),
+    //                     'browser' => $request->header('User-Agent'),
+    //                     'time' => date('H:i:s',$dtr->outPM),
+    //                     'date' => $dtr->date,
+    //                     'minutes' => $pmout_undertime,
+    //                     'is_updated' => false,
+    //                     'changes' => []
+    //                 ] 
+    //                 : null;
+                    
+    //                 $tardiness = $amin_tardiness + $pmin_tardiness;
+    //                 $undertime = $amout_undertime + $pmout_undertime;
+
+    //                 $new_dtr = Dtr::where('date',$dtr->date)->where('user_id',$user->id)->first();
+                    
+    //                 if($new_dtr){
+    //                     $new_dtr->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
+    //                     $new_dtr->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
+    //                     $new_dtr->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
+    //                     $new_dtr->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
+    //                     $new_dtr->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
+    //                     $new_dtr->save();
+
+    //                 }else{
+
+    //                     $data = new Dtr;
+    //                     $data->date = $dtr->date;
+    //                     $data->tardiness = $tardiness;
+    //                     $data->undertime = $undertime;
+    //                     $data->am_in_at = ($dtr->inAM) ? json_encode($amin) : null;
+    //                     $data->am_out_at = ($dtr->outAM) ? json_encode($amout) : null;
+    //                     $data->pm_in_at = ($dtr->inPM) ? json_encode($pmin) : null;
+    //                     $data->pm_out_at =  ($dtr->outPM) ? json_encode($pmout) : null;
+    //                     $data->remarks = json_encode($remarks);
+    //                     $data->user_id = $user->id;
+    //                     $data->is_completed = ($amin && $amout && $pmin && $pmout) ? 1 : 0;
+    //                     $data->save();
+    //                     $success[] = $dtr->user->username;
+    //                 }
+    //             }else{
+    //                 $failed[] = $dtr->user->username;
+    //             }
+    //         }else{
+    //             $failed[] = $dtr->id;
+    //         }
+    //     }
+    //     return [$success,array_unique($failed)];
+    // }
 
     public function computeLateMinutes($date, $type, $time, $in = null)
     {

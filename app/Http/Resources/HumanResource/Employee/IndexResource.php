@@ -18,6 +18,8 @@ class IndexResource extends JsonResource
             'code' => $code,
             'email' => $this->email,
             'username' => $this->username,
+            'is_active' => $this->is_active,
+            'is_locked' => $this->is_locked,
             'avatar' => $this->profile?->avatar,
             'name' => $this->profile->name,
             'fullname' => $this->profile->fullname,

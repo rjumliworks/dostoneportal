@@ -44,6 +44,9 @@ class DtrController extends Controller
             case 'old':
                 return $this->old->dtr($request);
             break;
+              case 'visitor':
+                return $this->old->visitor($request);
+            break;
             default:
                return inertia('Modules/HumanResource/Dtr/Index',[
                     'counts' => $this->view->counts(),
