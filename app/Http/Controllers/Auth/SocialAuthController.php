@@ -39,7 +39,7 @@ class SocialAuthController extends Controller
             
            
             if ($user) {
-                if($user->is_active) {
+                if(!$user->is_locked) {
                     do{
                         $code = random_int(100000000, 999999999); // 9 digits
                     } while (\App\Models\User::where('code', $code)->exists());
