@@ -179,7 +179,6 @@ class SaveClass
         if($update){
             $dtr = VisitorLogs::where('id',$request->id)->first();
             if ($dtr->am_in_at && $dtr->am_out_at && $dtr->pm_in_at && $dtr->pm_out_at) {
-                $dtr->is_completed = 1;
                 $dtr->save();
             }
         }
