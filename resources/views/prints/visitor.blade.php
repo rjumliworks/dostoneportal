@@ -192,8 +192,8 @@
         isset($dtr['am_in']->time) &&
         isset($dtr['am_out']->time)
     ) {
-        $amIn = \Carbon\Carbon::parse($dtr['am_in']->time);
-        $amOut = \Carbon\Carbon::parse($dtr['am_out']->time);
+       $amIn = \Carbon\Carbon::parse($dtr['am_in']->time)->seconds(0);
+$amOut = \Carbon\Carbon::parse($dtr['am_out']->time)->seconds(0);
 
         $amStart = $amIn->copy()->setTime(7, 0);
         $amEnd = $amIn->copy()->setTime(12, 0);
@@ -216,8 +216,8 @@
         isset($dtr['pm_in']->time) &&
         isset($dtr['pm_out']->time)
     ) {
-        $pmIn = \Carbon\Carbon::parse($dtr['pm_in']->time);
-        $pmOut = \Carbon\Carbon::parse($dtr['pm_out']->time);
+        $pmIn = \Carbon\Carbon::parse($dtr['pm_in']->time)->seconds(0);
+$pmOut = \Carbon\Carbon::parse($dtr['pm_out']->time)->seconds(0);
 
         $pmStart = $pmIn->copy()->setTime(13, 0);
         $pmEnd = $pmIn->copy()->setTime(18, 0);
