@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Mail\AccountActivationCode; 
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class SocialAuthController extends Controller
 {
@@ -31,46 +32,30 @@ class SocialAuthController extends Controller
             ->where('provider_id', $socialUser->getId())
             ->first();
 
-        if (!$user) {
+        if(!$user) {
             $email = strtolower($socialUser->getEmail());
             $kradworkz = hash('sha256', $email);
             $user = User::where('kradworkz', $kradworkz)->first();
             
            
             if ($user) {
-                do{
-                    $code = random_int(100000000, 999999999); // 9 digits
-                } while (\App\Models\User::where('code', $code)->exists());
+                if($user->is_active) {
+                    do{
+                        $code = random_int(100000000, 999999999); // 9 digits
+                    } while (\App\Models\User::where('code', $code)->exists());
 
-                $user->update(['email_verified_at' => now(), 'code' => $code]);
-                Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
-                // Link existing account
-                $user->update([
-                    'provider'    => $provider,
-                    'provider_id' => $socialUser->getId(),
-                    // 'avatar'      => $socialUser->getAvatar(),
-                ]);
+                    $user->update(['email_verified_at' => now(), 'code' => $code]);
+                    Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+
+                    $user->update([
+                        'provider'    => $provider,
+                        'provider_id' => $socialUser->getId()
+                    ]);
+                }else{
+                   return redirect('/login')->withErrors('Unable to login.');
+                }
             } else {
                 return redirect('/login')->withErrors('Unable to login.');
-                // Create new user
-                // $user = User::create([
-                //     'name'        => $socialUser->getName() ?? $socialUser->getNickname(),
-                //     'username'    => $socialUser->getEmail(),
-                //     'email'       => $socialUser->getEmail(),
-                //     'password'    => bcrypt(Str::random(16)),
-                //     'provider'    => $provider,
-                //     'provider_id' => $socialUser->getId(),
-                //     'role'      => 'Photographer',
-                //     'email_verified_at' => now()
-                // ]);
-                // $fullName = $socialUser->getName() ?? $socialUser->getNickname() ?? '';
-                // $name = $this->splitFirstLast($fullName);
-                // if($user){
-                //     UserProfile::create([
-                //         'firstname' => $name['first_name'],
-                //         'lastname'  => $name['last_name'],
-                //     ]);
-                // }
             }
         }
 

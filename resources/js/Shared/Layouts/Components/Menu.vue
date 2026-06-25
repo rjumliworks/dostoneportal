@@ -32,6 +32,13 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Daily Time Record</span>
                 </Link>
             </li>
+            <!-- <li class="nav-item">
+                <Link href="/whereabouts" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Portal/Whereabouts') }">
+                <i class="ri-map-pin-fill"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Whereabouts</span>
+                </Link>
+            </li> -->
             <tempalte v-if="$page.props.roles.includes('Document Management Officer')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
