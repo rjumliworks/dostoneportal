@@ -24,6 +24,7 @@ class DtrShiftCommand extends Command
             $shift_id = $user->shift->id;
             $shift_name = $user->shift->name;
             $hours = $user->shift->hours;
+            $with_holidays = $user->shift->has_holidays;
 
             $dtrs = Dtr::whereIn(\DB::raw('MONTH(date)'), [5, 6])
                 ->whereYear('date', 2026)
@@ -40,25 +41,29 @@ class DtrShiftCommand extends Command
                 if ($date->isToday()) {
                     continue;
                 }
+                
+                if($with_holidays){
+                    $weekStart = $date->copy()->startOfWeek(); 
+                    $weekEnd = $date->copy()->endOfWeek();     
 
-                $weekStart = $date->copy()->startOfWeek(); 
-                $weekEnd = $date->copy()->endOfWeek();     
+                    $fridayHoliday = Schedule::where('event_id',1)->whereBetween('start', [$weekStart, $weekEnd])
+                    ->whereRaw('DAYOFWEEK(start) = 6') // Friday (MySQL: 6 = Friday)
+                    ->exists();
 
-                $fridayHoliday = Schedule::where('event_id',1)->whereBetween('start', [$weekStart, $weekEnd])
-                ->whereRaw('DAYOFWEEK(start) = 6') // Friday (MySQL: 6 = Friday)
-                ->exists();
-
-                if ($fridayHoliday) {
-                    switch($shift_name){
-                        case 'Four-Day Work Week':
-                            $shifts = ShiftTime::where('shift_id',1)->get();
-                        break;
-                        case 'Four-Day Work Week (Early Departure)':
-                            $shifts = ShiftTime::where('shift_id',2)->get();
-                        break;
-                        case 'Four-Day Work Week (Late Start)':
-                            $shifts = ShiftTime::where('shift_id',3)->get();
-                        break;
+                    if ($fridayHoliday) {
+                        switch($shift_name){
+                            case 'Four-Day Work Week':
+                                $shifts = ShiftTime::where('shift_id',1)->get();
+                            break;
+                            case 'Four-Day Work Week (Early Departure)':
+                                $shifts = ShiftTime::where('shift_id',2)->get();
+                            break;
+                            case 'Four-Day Work Week (Late Start)':
+                                $shifts = ShiftTime::where('shift_id',3)->get();
+                            break;
+                        }
+                    }else{
+                        $shifts = $user->shift->times;
                     }
                 }else{
                     $shifts = $user->shift->times;

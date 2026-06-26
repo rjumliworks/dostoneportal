@@ -18,6 +18,7 @@ return new class extends Migration
             $table->smallInteger('days')->default(0);
             $table->smallInteger('hours')->default(0);
             $table->integer('required_punches')->default(2);
+            $table->boolean('has_holidays')->default(0);
             $table->boolean('is_active')->default(0);
             $table->timestamps();
         });
