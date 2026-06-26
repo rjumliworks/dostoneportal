@@ -39,7 +39,7 @@ class DailyDtrChecker extends Command
                 $weekStart = $date->copy()->startOfWeek(); 
                 $weekEnd = $date->copy()->endOfWeek();     
 
-                $fridayHoliday = Schedule::where('event_id',31)->whereBetween('start', [$weekStart, $weekEnd])
+                $fridayHoliday = Schedule::where('event_id',1)->whereBetween('start', [$weekStart, $weekEnd])
                 ->whereRaw('DAYOFWEEK(start) = 6') // Friday (MySQL: 6 = Friday)
                 ->exists();
 
