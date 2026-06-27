@@ -103,13 +103,21 @@ class UserProfile extends Model
         });
     }
 
+    // public function getAvatarAttribute($value)
+    // {
+    //     if (Storage::disk('s3')->exists($value)) {
+    //         return Storage::disk('s3')->url($value);
+    //     }
+
+    //     return asset('images/avatars/' . $value);
+    // }
     public function getAvatarAttribute($value)
     {
-        if (Storage::disk('s3')->exists($value)) {
-            return Storage::disk('s3')->url($value);
+        if ($value === 'noavatar.jpg') {
+            return asset('images/avatars/' . $value);
         }
 
-        return asset('images/avatars/' . $value);
+        return Storage::disk('s3')->url($value);
     }
 
     protected static $recordEvents = ['updated'];

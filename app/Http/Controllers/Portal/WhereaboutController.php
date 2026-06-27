@@ -16,8 +16,8 @@ class WhereaboutController extends Controller
 
     public function index(Request $request){
         switch($request->option){
-            case 'dtr':
-                return $this->view->dtr($request);
+            case 'list':
+                return $this->view->list($request);
             break;
             default:
                 return inertia('Modules/Portal/Whereabouts/Index'); 

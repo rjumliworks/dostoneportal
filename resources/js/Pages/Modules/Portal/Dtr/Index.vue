@@ -148,7 +148,7 @@
                                         <td class="text-center" colspan="7">{{list.title}}</td>
                                     </template>
                                         <template v-else-if="list.status === 'Holiday'">
-                                        <td class="text-center" colspan="7">{{list.title}}</td>
+                                        <td class="text-center text-danger fw-semibold" colspan="7">{{list.title}}</td>
                                     </template>
                                     <template v-else-if="list.status === 'Official Travel'">
                                         <td class="text-center" colspan="7">Official Travel : {{list.title}}</td>
