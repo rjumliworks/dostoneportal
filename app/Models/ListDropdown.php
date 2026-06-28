@@ -13,4 +13,9 @@ class ListDropdown extends Model
     {
         return $this->morphOne('App\Models\Signatory', 'designationable');
     }
+
+    public function assigned()
+    {
+        return $this->hasOne('App\Models\OrgChart', 'assigned_id');
+    }
 }

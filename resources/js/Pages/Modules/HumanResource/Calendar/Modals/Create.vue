@@ -15,7 +15,7 @@
                     <hr v-if="form.event" class="text-muted"/>
                 </BCol>
                 <BCol :lg="(form.event?.type == 'Official Business') ? 6 : 12" class="mt-n2 mb-n1" v-if="form.event?.fields.title">
-                    <InputLabel for="name" value="Titles" :message="form.errors.event"/>
+                    <InputLabel for="name" value="Title" :message="form.errors.event"/>
                     <TextInput id="name" v-model="form.title" type="text" class="form-control" placeholder="Please enter title" @input="handleInput('name')" :light="true"/>
                 </BCol>
                 <BCol lg="12"><hr class="text-muted mt-0 mb-n3"/></BCol>

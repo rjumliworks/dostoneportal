@@ -3,126 +3,352 @@
     <PageHeader title="Whereabouts" pageTitle="List" />
 
     <BRow>
-
         <div class="col-md-12">
             <b-card no-body class="bg-white-subtle border shadow-none">
                 <b-card-body>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="d-flex flex-lg-row flex-column">
-                                <div class="flex-grow-1">
-                                    <h4 class="fs-14 mb-0">Summary View</h4>
-                                    <p class="text-muted mb-0">
-                                        Here's what's happening with the laboratory for month of
-                                        {{ month }}
-                                    </p>
-                                </div>
+                     <b-row>
+                        <b-col lg>
+                            <div class="input-group mb-0">
+                                <input type="text" v-model="filter.keyword" placeholder="Search Employee" class="form-control" style="width: 10%;">
+                                <Multiselect class="white" style="width: 13%;" :options="dropdowns.divisions" v-model="filter.division" label="others" :searchable="true" placeholder="Select Division" />
+                                <Multiselect class="white" style="width: 13%;" :options="dropdowns.stations" v-model="filter.station" label="others" :searchable="true" placeholder="Select Stations" />
+                                <Multiselect class="white" style="width: 13%;" :options="dropdowns.statuses" v-model="filter.status" label="name" :searchable="true" placeholder="Select Status" />
+                                <Multiselect class="white" style="width: 13%;" :options="dropdowns.employment_statuses" v-model="filter.type" label="name" :searchable="true" placeholder="Select Type" />
+                               <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </b-card-body>
+                <div class="card bg-white border-top shadow-none p-2 mb-0" no-body>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex flex-wrap gap-1 ms-2">
+                                <button
+                                    v-for="letter in alphabet"
+                                    :key="letter"
+                                    class="btn btn-sm"
+                                    :class="selectedLetter === letter ? 'btn-primary' : 'btn-light'"
+                                    @click="selectedLetter = letter"
+                                >
+                                    {{ letter }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="btn-group mt-4 mt-md-0 me-2" role="group" aria-label="Basic example">
+                                <button @click="sort = 'lists'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Solo"><i class="ri-list-check"></i></button>
+                                <button @click="sort = 'units'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Units"><i class="ri-group-2-fill"></i></button>
+                                <button @click="sort = 'divisions'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Division"><i class="ri-list-check-2"></i></button>
+                                <button @click="sort = 'stations'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Station"><i class="ri-map-pin-fill"></i></button>
+                                <button @click="toggleSortPosition" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Position"><i class="ri-sort-asc"></i></button>
                             </div>
                         </div>
                     </div>
-                </b-card-body>
+                </div>
+                <div class="card bg-white border-top shadow-none p-2 mb-0" no-body>
+
+                </div>
             </b-card>
         </div>
+    </BRow>
 
-        <div
-            class="row job-list-row"
-            id="candidate-list"
-            style="height: calc(100vh - 320px); overflow: auto;"
-        >
 
-            <div
-                class="col-xxl-3 col-md-6"
-                v-for="(list,index) in employees"
-                :key="index"
-            >
+    <div class="row g-3" style="height: calc(100vh - 370px); overflow: auto;">
 
-                <div class="card">
-                    <div class="card-body">
+        <div class="col-md-3 mb-n4" v-for="(list,index) in filteredEmployees" :key="index" v-if="sort == 'lists'">
+            <div class="card ribbon-box">  
+                <!-- border shadow-none -->
+                <div class="card-body text-center">
+                    <div class="ribbon ribbon-primary round-shape fs-10 mt-2" :class="list.organization.status.bg">{{ list.organization.status.name }}</div>
+                    <div class="mb-2 mt-2">
+                        <img
+                            :src="list.avatarSrc"
+                            loading="lazy"
+                            class="rounded-circle img-thumbnail"
+                            style="width:70px;height:70px;object-fit:cover;"
+                            alt="Avatar"
+                        >
+                    </div>
+                    <h5 class="mb-0 text-uppercase fw-semibold text-primary fs-12">{{ list.name }}</h5>
+                    <div class="text-muted small mb-1">{{ list.organization.position.name }}</div>
+                    <span class="badge text-bg-primary" style="font-size: 9px;">{{ list.organization.type.name }}</span>
+                </div>
 
-                        <div class="d-flex align-items-center">
-
-                            <div class="flex-shrink-0">
-                                <div class="avatar-sm rounded">
-                                    <img
-                                        :src="list.avatarSrc"
-                                        loading="lazy"
-                                        class="member-img img-fluid d-block rounded"
-                                        alt="Avatar"
-                                    >
-                                </div>
-                            </div>
-
-                            <div class="flex-grow-1 ms-3">
-                                <h5 class="fs-12 mb-1 text-primary">
-                                    {{ list.name }}
-                                </h5>
-
-                                <p class="text-muted fs-11 mb-0">
-                                    {{ list.organization.position.name }}
-                                </p>
-
-                                <p class="text-muted fs-11 mb-0">
-                                    {{ list.organization.division.name }}
-                                </p>
-
-                            </div>
-
-                        </div>
-
+                <div class="card-body border-top border-top-dashed fs-11">
+                    <div class="d-flex justify-content-between mb-0">
+                        <span class="text-muted">Unit</span>
+                        <span class="text-end text-truncate ms-3">
+                            {{ list.organization.unit.name }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-0">
+                        <span class="text-muted">Division</span>
+                        <span class="text-end text-truncate ms-3">
+                            {{ list.organization.division.name }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Station</span>
+                        <span class="text-end text-truncate ms-3">
+                            {{ list.organization.station.name }}
+                        </span>
                     </div>
                 </div>
 
+                <!-- <div class="card-footer bg-transparent border-top-dashed py-2">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="text-muted fs-12">                            
+                                <i class="ri-map-pin-2-line me-1 align-bottom"></i> {{ list.organization.station.others }} - {{ list.organization.station.name }}
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="text-muted">
+                                <i class="ri-calendar-event-fill me-1 align-bottom"></i> 10 Jul, 2021
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div> -->
             </div>
 
         </div>
 
-    </BRow>
+        <div class="col-xxl-3 col-sm-6 project-card" v-for="(list,index) in dropdowns.divisions" :key="index" v-if="sort == 'divisions'">
+            <div class="card">
+                <div class="card-body">
+                    <div class="p-3 mt-n3 mx-n3 bg-info-subtle rounded-top">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 fs-12 fw-semibold text-primary">{{ list.name }}</h5>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="d-flex gap-1 align-items-center my-n2">
+                                    <button type="button" class="btn avatar-xs p-0 favourite-btn material-shadow-none active">
+                                        <span class="avatar-title bg-transparent fs-15">
+                                            <i class="ri-star-fill"></i>
+                                        </span>
+                                    </button>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-muted p-1 mt-n1 py-0 text-decoration-none fs-15 material-shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal icon-sm"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                        </button>
+
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a class="dropdown-item" href="apps-projects-overview.html"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a>
+                                            <a class="dropdown-item" href="apps-projects-create.html"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#removeProjectModal"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="py-3">
+                        <div class="row gy-3">
+                            <div class="col-12" v-if="list.assigned">
+                                <div>
+                                    <p class="text-muted fs-11 mb-0">{{ list.assigned.designation.name }} :</p>
+                                    <h5 class="fs-12 fw-semibold" v-if="list.assigned.is_oic">{{ list.assigned.oic.profile.fullname }}</h5>
+                                    <h5 class="fs-12 fw-semibold" v-else>{{ list.assigned.user.profile.fullname }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-12" v-else>
+                                <div>
+                                    <p class="text-muted fs-11 mb-0">Division Head :</p>
+                                    <h5 class="fs-12 fw-semibold">-</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1 mb-n4">
+                            <div class="col-6">
+                                <div v-if="list.assigned??designationable">
+                                    <p class="text-muted mb-0 fs-11">Signatory :</p>
+                                    <h5 class="fs-12" v-if="list.assigned.designationable.is_oic">{{ list.assigned.designationable.oic.profile.name }}</h5>
+                                    <h5 class="fs-12" v-else>{{ list.assigned.designationable.user.profile.name }}</h5>
+                                </div>
+                                <div v-else>
+                                    <p class="text-muted mb-0 fs-11">Signatory :</p>
+                                    <h5 class="fs-12">-</h5>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div>
+                                    <p class="text-muted mb-0 fs-11">Date</p>
+                                     <h5 class="fs-12" v-if="list.assigned??designationable">-</h5>
+                                    <h5 class="fs-12" v-else>-</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center fs-10">
+                        <div class="col-md-12">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">9,851</h5>
+                                <p class="text-muted mb-0">No. of Employees</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-white rounded-bottom">
+                    <div class="table-responsive table-card" style="height: calc(100vh - 680px); overflow: auto;">
+                        <table class="table align-middle table-striped table-centered mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th style="width: 5%;"></th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="employee in filteredEmployees.filter(e => e.organization?.division?.id === list.value)" :key="employee.id">
+                                    <td>
+                                        <img :src="employee.avatarSrc" class="rounded-circle" width="28" height="28">
+                                    </td>
+                                    <td>
+                                       <h5 class="fs-12 mb-0 fw-semibold text-primary">{{employee.name}}</h5>
+                                        <p class="fs-11 text-muted mb-0">{{employee.organization.unit.name}}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-dashed py-2">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="avatar-group">
+                                <a href="javascript: void(0);" class="avatar-group-item material-shadow" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" aria-label="Darline Williams" data-bs-original-title="Darline Williams">
+                                    <div class="avatar-xxs">
+                                        <img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-fluid">
+                                    </div>
+                                </a>
+                                <a href="javascript: void(0);" class="avatar-group-item material-shadow" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" data-bs-original-title="Add Members">
+                                    <div class="avatar-xxs">
+                                        <div class="avatar-title fs-16 rounded-circle bg-light border-dashed border text-primary">
+                                            +
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="text-muted">
+                                <i class="ri-calendar-event-fill me-1 align-bottom"></i> 10 Jul, 2021
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
 </template>
 
 <script>
 import _ from "lodash";
 import Multiselect from "@vueform/multiselect";
 import PageHeader from "@/Shared/Components/PageHeader.vue";
-
 export default {
     components: {
         PageHeader,
         Multiselect
     },
-
+    props: ['dropdowns'],
     data() {
         return {
             employees: [],
-            month: new Date().toLocaleString("default", {
-                month: "long"
-            }),
-            months: [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December"
-            ],
-            icons: [
-                "ri-flight-takeoff-fill",
-                "ri-car-fill",
-                "ri-calendar-2-fill"
-            ],
+            filter: {
+                keyword: null,
+                type: null,
+                status: null,
+                division: null,
+                station: null,
+                unit: null
+            },
             index: null,
+            selectedLetter: 'All',
+            sortPosition: 'asc',
             year: new Date().getFullYear(),
-
+            alphabet: [
+                'All',
+                ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+            ],
             // Change this to your own placeholder image
-            defaultAvatar: "/assets/images/users/avatar-10.jpg"
+            defaultAvatar: "/assets/images/users/avatar-10.jpg",
+            sort: 'lists'
         };
     },
+computed: {
+    filteredEmployees() {
 
+        let list = [...this.employees];
+
+        if (this.filter.keyword && this.filter.keyword.trim() !== '') {
+            const keyword = this.filter.keyword.toLowerCase().trim();
+
+            list = list.filter(employee =>
+                employee.name?.toLowerCase().includes(keyword)
+            );
+        }
+
+        if (this.filter.division) {
+            list = list.filter(employee =>
+                employee.organization?.division?.id === this.filter.division
+            );
+        }
+
+        if (this.filter.type) {
+            list = list.filter(employee =>
+                employee.organization?.type?.id === this.filter.type
+            );
+        }
+
+        // Station
+        if (this.filter.station) {
+            list = list.filter(employee =>
+                employee.organization?.station?.id === this.filter.station
+            );
+        }
+
+        // Status
+        if (this.filter.status) {
+            list = list.filter(employee =>
+                employee.organization?.status?.id === this.filter.status
+            );
+        }
+
+        // Filter by first letter
+        if (this.selectedLetter !== 'All') {
+            list = list.filter(employee =>
+                employee.name
+                    ?.toUpperCase()
+                    .startsWith(this.selectedLetter)
+            );
+        }
+
+        // Sort by position id
+        list.sort((a, b) => {
+
+            const posA = a.organization?.position?.id ?? 999;
+            const posB = b.organization?.position?.id ?? 999;
+
+            if (this.sortPosition === 'asc') {
+                return posA - posB;
+            }
+
+            return posB - posA;
+        });
+
+        return list;
+    }
+},
     created() {
         this.fetch();
     },
@@ -155,7 +381,9 @@ export default {
             .catch(err => console.log(err));
 
         },
-
+        toggleSortPosition() {
+            this.sortPosition = this.sortPosition === 'asc' ? 'desc' : 'asc';
+        },
         loadAvatars() {
 
             this.employees.forEach(employee => {

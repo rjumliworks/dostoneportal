@@ -4,6 +4,7 @@ namespace App\Services\Portal\Whereabouts;
 
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\ListDropdown;
 use App\Http\Resources\Portal\Whereabouts\ListResource;
 
 class ViewClass
@@ -42,6 +43,20 @@ class ViewClass
         });
         $query->orderBy(UserProfile::select('lastname')->whereColumn('user_profiles.user_id', 'users.id'),'ASC');
         $data = ListResource::collection($query->get());
+        return $data;
+    }
+
+    public function dropdowns(){
+        $data = ListDropdown::with('assigned.user.profile','assigned.oic.profile','assigned.designation','assigned.designationable.user.profile','assigned.designationable.oic.profile')
+        ->where('classification','Division')
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'others' => $item->others,
+                'assigned' => $item->assigned
+            ];
+        });
         return $data;
     }
 }

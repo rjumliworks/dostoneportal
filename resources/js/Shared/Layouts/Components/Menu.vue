@@ -35,7 +35,7 @@
             <li class="nav-item">
                 <Link href="/whereabouts" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Portal/Whereabouts') }">
-                <i class="ri-map-pin-fill"></i>
+                <i class="ri-team-fill"></i>
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Whereabouts</span>
                 </Link>
             </li>
