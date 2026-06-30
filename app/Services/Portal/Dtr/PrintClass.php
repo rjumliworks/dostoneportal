@@ -8,6 +8,7 @@ use App\Models\UserShift;
 use App\Models\Request;
 use App\Models\Schedule;
 use App\Models\UserProfile;
+use App\Models\UserOrganization;
 
 class PrintClass
 {
@@ -18,6 +19,7 @@ class PrintClass
 
         $user = UserProfile::select('id','user_id','firstname','lastname','middlename','suffix_id')->where('user_id',$user_id)->first();
         $shift = UserShift::with('shift.times')->where('user_id',$user_id)->first();
+        $station_id = UserOrganization::where('user_id',$user_id)->value('station_id');
 
         $month_number = date("n", strtotime($month));
         $today = date('Y-m-d', strtotime(now()));
@@ -76,6 +78,9 @@ class PrintClass
                 $q2->where('start', '<', $startOfMonth)
                     ->where('end', '>', $endOfMonth);
             });
+        })
+        ->whereHas('stations', function ($q) use ($station_id) {
+            $q->where('station_id', $station_id);
         })
         ->where('event_id',2)
         ->with('event')
