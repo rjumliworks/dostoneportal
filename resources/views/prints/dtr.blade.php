@@ -179,9 +179,15 @@
                                     OB : {{ $list['title'] }}
                                 </td>
                                 @else
-                                <td width="80%" colspan="6" style="letter-spacing: 1px; text-transform: uppercase; font-size: 8px;">
+                                {{-- <td width="80%" colspan="6" style="letter-spacing: 1px; text-transform: uppercase; font-size: 8px;">
                                     {{ $list['data'] }}
-                                </td>
+                                </td> --}}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 @endif
                             @endif
                         @else
@@ -359,9 +365,15 @@
                                         OB : {{ $list['title'] }}
                                     </td>
                                     @else
-                                    <td width="80%" colspan="6" style="letter-spacing: 1px; text-transform: uppercase; font-size: 8px; background: rgba(128,128,128, .5)">
+                                    {{-- <td width="80%" colspan="6" style="letter-spacing: 1px; text-transform: uppercase; font-size: 8px; background: rgba(128,128,128, .5)">
                                         {{ $list['data'] }}
-                                    </td>
+                                    </td> --}}
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     @endif
                                 @endif
                             @else
