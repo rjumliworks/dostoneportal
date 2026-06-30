@@ -67,6 +67,9 @@ class PrintClass
                     ->where('end', '>', $endOfMonth);
             });
         })
+        ->whereHas('stations', function ($q) use ($station_id) {
+            $q->where('station_id', $station_id);
+        })
         ->where('event_id',1)
         ->with('event')
         ->get();

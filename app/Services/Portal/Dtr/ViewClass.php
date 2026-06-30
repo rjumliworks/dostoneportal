@@ -67,7 +67,7 @@ class ViewClass
                 $q2->where('start', '<', $start)
                     ->where('end', '>', $end);
             })
-            ->where('event_id', 31)
+            // ->where('event_id', 31)
             ->get(['start', 'title'])
             ->flatMap(function ($holiday) {
                 $list = [];
@@ -80,7 +80,9 @@ class ViewClass
                 return $list;
             });
 
-        $ignoreDates = array_keys($holidays->toArray());
+            $holidays = [];
+
+        // $ignoreDates = array_keys($holidays->toArray());
 
         /**
          * =========================
