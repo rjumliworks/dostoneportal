@@ -4,6 +4,7 @@ namespace App\Services\Portal\Dtr;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\UserOrganization;
 use App\Models\Schedule;
 use App\Models\Request;
 use App\Http\Resources\Portal\Dtr\TimeResource;
@@ -50,7 +51,7 @@ class ViewClass
     {
         $alreadyInPayroll = $item->payrolls->isNotEmpty();
         $user_id = $item->id;
-
+        $station_id = UserOrganization::where('user_id',$user_id)->value('station_id');
 
     
 
@@ -61,28 +62,31 @@ class ViewClass
          *  HOLIDAYS
          * =========================
          */
-        $holidays = Schedule::whereBetween('start', [$start, $end])
-            ->orWhereBetween('end', [$start, $end])
-            ->orWhere(function ($q2) use ($start, $end) {
-                $q2->where('start', '<', $start)
-                    ->where('end', '>', $end);
-            })
-            // ->where('event_id', 31)
-            ->get(['start', 'title'])
-            ->flatMap(function ($holiday) {
-                $list = [];
-                $startDate = \Carbon\Carbon::parse($holiday->start);
-                $endDate = \Carbon\Carbon::parse($holiday->end ?? $holiday->start);
+       $holidays = Schedule::where(function ($q) use ($start, $end) {
+            $q->whereBetween('start', [$start, $end])
+                ->orWhereBetween('end', [$start, $end])
+                ->orWhere(function ($q2) use ($start, $end) {
+                    $q2->where('start', '<', $start)
+                        ->where('end', '>', $end);
+                });
+        })
+        ->whereHas('stations', function ($q) use ($station_id) {
+            $q->where('station_id', $station_id);
+        })
+        ->get(['start', 'end', 'title'])
+        ->flatMap(function ($holiday) {
+            $list = [];
+            $startDate = \Carbon\Carbon::parse($holiday->start);
+            $endDate = \Carbon\Carbon::parse($holiday->end ?? $holiday->start);
 
-                foreach (\Carbon\CarbonPeriod::create($startDate, $endDate) as $day) {
-                    $list[$day->format('Y-m-d')] = $holiday->title;
-                }
-                return $list;
-            });
+            foreach (\Carbon\CarbonPeriod::create($startDate, $endDate) as $day) {
+                $list[$day->format('Y-m-d')] = $holiday->title;
+            }
 
-            $holidays = [];
+            return $list;
+        });
 
-        // $ignoreDates = array_keys($holidays->toArray());
+        $ignoreDates = array_keys($holidays->toArray());
 
         /**
          * =========================
