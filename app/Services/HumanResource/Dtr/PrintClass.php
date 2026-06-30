@@ -254,7 +254,7 @@ class PrintClass
                             'date' => date('Y-m-d', $i),
                             'text' => date('F d, Y', $i),
                             'day' => date('l', $i),
-                            'data' => 'ABSENT',
+                            'data' => '',
                             'bg' => 'bg bg-danger bg-soft',
                             'is_with' => false
                         ];
