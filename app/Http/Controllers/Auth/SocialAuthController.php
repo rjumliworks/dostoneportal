@@ -40,17 +40,19 @@ class SocialAuthController extends Controller
            
             if ($user) {
                 if(!$user->is_locked) {
-                    do{
-                        $code = random_int(100000000, 999999999); // 9 digits
-                    } while (\App\Models\User::where('code', $code)->exists());
+                    if(!$user->email_verified_at) {
+                        do{
+                            $code = random_int(100000000, 999999999); // 9 digits
+                        } while (\App\Models\User::where('code', $code)->exists());
 
-                    $user->update(['email_verified_at' => now(), 'code' => $code]);
-                    Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+                        $user->update(['email_verified_at' => now(), 'code' => $code]);
+                        Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
 
-                    $user->update([
-                        'provider'    => $provider,
-                        'provider_id' => $socialUser->getId()
-                    ]);
+                        $user->update([
+                            'provider'    => $provider,
+                            'provider_id' => $socialUser->getId()
+                        ]);
+                    }
                 }else{
                    return redirect('/login')->withErrors('Unable to login.');
                 }
