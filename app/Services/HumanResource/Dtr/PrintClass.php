@@ -23,6 +23,7 @@ class PrintClass
         $user = UserProfile::select('id','user_id','firstname','lastname','middlename','suffix_id')->where('user_id',$user_id)->first();
         $shift = UserShift::with('shift.times')->where('user_id',$user_id)->first();
         $station_id = UserOrganization::where('user_id',$user_id)->value('station_id');
+        $type_id = UserOrganization::where('user_id',$user_id)->value('type_id');
 
         $month_number = date("n", strtotime($month));
         $today = date('Y-m-d', strtotime(now()));
@@ -284,7 +285,8 @@ class PrintClass
             'lists' => $array,
             'user' => $user,
             'month' => $month,
-            'year' => $year
+            'year' => $year,
+            'type' => $type_id
         ];
 
         $pdf = \PDF::loadView('prints.dtr',$array)->setPaper('a4', 'portrait');
