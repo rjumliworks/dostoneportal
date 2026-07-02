@@ -240,6 +240,20 @@
         $pmStart = $pmIn->copy()->setTime($pmStartHour, 0);
         $pmEnd   = $pmIn->copy()->setTime($pmEndHour, 0);
 
+        if (!$specialSchedule && isset($dtr['am_in']->time)) {
+
+            $amIn = \Carbon\Carbon::parse($dtr['am_in']->time)->seconds(0);
+
+            $graceStart = $amIn->copy()->setTime(7, 0);
+            $graceEnd   = $amIn->copy()->setTime(7, 30);
+
+            // If IN is between 7:00 and 7:30,
+            // extend the allowable OUT time by the same number of minutes.
+            if ($amIn->betweenIncluded($graceStart, $graceEnd)) {
+                $pmEnd->addMinutes($graceStart->diffInMinutes($amIn));
+            }
+        }
+
         if ($pmIn->lt($pmStart)) {
             $pmIn = $pmStart;
         }
