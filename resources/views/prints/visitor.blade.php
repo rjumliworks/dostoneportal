@@ -187,16 +187,37 @@
                   @php
     $totalMinutes = 0;
 
-    // AM: 7:00 AM - 12:00 PM
-    if (
-        isset($dtr['am_in']->time) &&
-        isset($dtr['am_out']->time)
-    ) {
-       $amIn = \Carbon\Carbon::parse($dtr['am_in']->time)->seconds(0);
-$amOut = \Carbon\Carbon::parse($dtr['am_out']->time)->seconds(0);
+    // Get the current DTR date
+    $currentDate = \Carbon\Carbon::parse($dtr['date']);
 
-        $amStart = $amIn->copy()->setTime(7, 0);
-        $amEnd = $amIn->copy()->setTime(12, 0);
+    // Check if date is June 9-12, 2026
+    $specialSchedule = $currentDate->betweenIncluded(
+        \Carbon\Carbon::create(2026, 6, 9),
+        \Carbon\Carbon::create(2026, 6, 12)
+    );
+
+    // Set schedule based on date
+    if ($specialSchedule) {
+        // June 9-12, 2026
+        $amStartHour = 8;
+        $amEndHour   = 12;
+        $pmStartHour = 13;
+        $pmEndHour   = 17;
+    } else {
+        // Default schedule
+        $amStartHour = 7;
+        $amEndHour   = 12;
+        $pmStartHour = 13;
+        $pmEndHour   = 18;
+    }
+
+    // AM
+    if (isset($dtr['am_in']->time) && isset($dtr['am_out']->time)) {
+        $amIn  = \Carbon\Carbon::parse($dtr['am_in']->time)->seconds(0);
+        $amOut = \Carbon\Carbon::parse($dtr['am_out']->time)->seconds(0);
+
+        $amStart = $amIn->copy()->setTime($amStartHour, 0);
+        $amEnd   = $amIn->copy()->setTime($amEndHour, 0);
 
         if ($amIn->lt($amStart)) {
             $amIn = $amStart;
@@ -211,16 +232,13 @@ $amOut = \Carbon\Carbon::parse($dtr['am_out']->time)->seconds(0);
         }
     }
 
-    // PM: 1:00 PM - 6:00 PM
-    if (
-        isset($dtr['pm_in']->time) &&
-        isset($dtr['pm_out']->time)
-    ) {
-        $pmIn = \Carbon\Carbon::parse($dtr['pm_in']->time)->seconds(0);
-$pmOut = \Carbon\Carbon::parse($dtr['pm_out']->time)->seconds(0);
+    // PM
+    if (isset($dtr['pm_in']->time) && isset($dtr['pm_out']->time)) {
+        $pmIn  = \Carbon\Carbon::parse($dtr['pm_in']->time)->seconds(0);
+        $pmOut = \Carbon\Carbon::parse($dtr['pm_out']->time)->seconds(0);
 
-        $pmStart = $pmIn->copy()->setTime(13, 0);
-        $pmEnd = $pmIn->copy()->setTime(18, 0);
+        $pmStart = $pmIn->copy()->setTime($pmStartHour, 0);
+        $pmEnd   = $pmIn->copy()->setTime($pmEndHour, 0);
 
         if ($pmIn->lt($pmStart)) {
             $pmIn = $pmStart;
@@ -236,63 +254,62 @@ $pmOut = \Carbon\Carbon::parse($dtr['pm_out']->time)->seconds(0);
     }
 
     $grandMinutes = ($grandMinutes ?? 0) + $totalMinutes;
-
     $totalHours = $totalMinutes
-        ? floor($totalMinutes / 60).'h '.($totalMinutes % 60).'m'
+        ? floor($totalMinutes / 60) . 'h ' . ($totalMinutes % 60) . 'm'
         : '';
 @endphp
-                <tr>
-                    <td class="cntr">{{ \Carbon\Carbon::parse($dtr['date'])->format('F d, Y') }}</td>
-                    <td class="cntr">
-                        {{ isset($dtr['am_in']->time) ? \Carbon\Carbon::parse($dtr['am_in']->time)->format('h:i A') : '-' }}
-                    </td>
-                    <td class="cntr">
-                        {{ isset($dtr['am_out']->time) ? \Carbon\Carbon::parse($dtr['am_out']->time)->format('h:i A') : '-' }}
-                    </td>
-                    <td class="cntr">
-                        {{ isset($dtr['pm_in']->time) ? \Carbon\Carbon::parse($dtr['pm_in']->time)->format('h:i A') : '-' }}
-                    </td>
-                    <td class="cntr">
-                        {{ isset($dtr['pm_out']->time) ? \Carbon\Carbon::parse($dtr['pm_out']->time)->format('h:i A') : '-' }}
-                    </td>
-                    <td class="cntr">{{ $totalHours }}</td>
-                </tr>
-                
-                @endforeach
-                @php
-                $grandHours = floor($grandMinutes / 60);
-                $remainingMinutes = $grandMinutes % 60;
-                @endphp
-                <tr>
-    <td colspan="5" style="text-align:right; font-weight:bold;">
-        TOTAL:
-    </td>
-    <td class="cntr" style="font-weight:bold;">
-        {{ $grandHours }}h {{ $remainingMinutes }}m
-    </td>
-</tr>
-                {{-- @foreach($list as $dtr)
-
-                @php
-                    $newInAM = isset($dtr['am_in_at']->time) ? \Carbon\Carbon::parse($dtr['am_in_at']->time) : null;
-                    $newOutAM = isset($dtr['am_out_at']->time) ? \Carbon\Carbon::parse($dtr['am_out_at']->time) : null;
-                    $newInPM = isset($dtr['pm_in_at']->time) ? \Carbon\Carbon::parse($dtr['pm_in_at']->time) : null;
-                    $newOutPM = isset($dtr['pm_out_at']->time) ? \Carbon\Carbon::parse($dtr['pm_out_at']->time) : null;
-
-            
-                    @endphp
-
                     <tr>
-                        <td class="cntr">{{ $newInAM ? $newInAM->format('h:i A') : '-' }}</td>
-                        <td class="cntr">{{ $newOutAM ? $newOutAM->format('h:i A') : '-' }}</td>
-                        <td class="cntr">{{ $newInPM ? $newInPM->format('h:i A') : '-' }}</td>
-                        <td class="cntr">{{ $newOutPM ? $newOutPM->format('h:i A') : '-' }}</td>
+                        <td class="cntr">{{ \Carbon\Carbon::parse($dtr['date'])->format('F d, Y') }}</td>
+                        <td class="cntr">
+                            {{ isset($dtr['am_in']->time) ? \Carbon\Carbon::parse($dtr['am_in']->time)->format('h:i A') : '-' }}
+                        </td>
+                        <td class="cntr">
+                            {{ isset($dtr['am_out']->time) ? \Carbon\Carbon::parse($dtr['am_out']->time)->format('h:i A') : '-' }}
+                        </td>
+                        <td class="cntr">
+                            {{ isset($dtr['pm_in']->time) ? \Carbon\Carbon::parse($dtr['pm_in']->time)->format('h:i A') : '-' }}
+                        </td>
+                        <td class="cntr">
+                            {{ isset($dtr['pm_out']->time) ? \Carbon\Carbon::parse($dtr['pm_out']->time)->format('h:i A') : '-' }}
+                        </td>
+                        <td class="cntr">{{ $totalHours }}</td>
                     </tr>
-                    @endforeach --}}
+                    
+                    @endforeach
+                    @php
+                    $grandHours = floor($grandMinutes / 60);
+                    $remainingMinutes = $grandMinutes % 60;
+                    @endphp
+                    <tr>
+                        <td colspan="5" style="text-align:right; font-weight:bold;">
+                            TOTAL:
+                        </td>
+                        <td class="cntr" style="font-weight:bold;">
+                            {{ $grandHours }}h {{ $remainingMinutes }}m
+                        </td>
+                    </tr>
+             
                 </tbody>
 
             </table>
+            <br><br><br>
 
+            <table style="width:100%; border:none; margin-top:40px;">
+                <tr>
+                    <td style="border:none; width:60%;"></td>
+                    <td style="border:none; width:40%; text-align:center;">
+                        <div style="margin-bottom:5px;">
+                            ____________________________
+                        </div>
+                        <div style="font-weight:bold; font-size:10px;">
+                            Julius T. Fojas
+                        </div>
+                        <div style="font-size:10px;">
+                            Laboratory Head
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
     </div>
 </body>
