@@ -145,7 +145,7 @@
                 <center style="font-size: 11px; margin-bottom: 0px; font-weight: bold;">REGIONAL STANDARDS AND TESTING LABORATORIES</center>
                 <center style="font-size: 11px;">Pettit Barracks, Zamboanga City | ord@ro9.dost.gov.ph</center>
                 <br/>
-                <center style="margin-top: 8px; font-size: 12px;  color:#000; font-weight: bold; padding: 2px;">DATE TIME RECORD</center>
+                <center style="margin-top: 8px; font-size: 12px;  color:#000; font-weight: bold; padding: 2px;">DAILY TIME RECORD</center>
                 <center style="font-size: 10px; background-color: blue; color:#fff; font-weight: bold; padding: 2px;">On-the-Job Training</center>
             </div>
 
