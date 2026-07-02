@@ -75,7 +75,6 @@ class DropdownClass
                 });
             });
         })
-        ->where('is_available',1)
         ->get()->map(function ($item) {
             return [
                 'value' => $item->id,
