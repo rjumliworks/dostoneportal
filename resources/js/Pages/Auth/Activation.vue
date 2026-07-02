@@ -81,7 +81,25 @@
                                                 <p class="fs-10 text-muted">Please enter the 9-digit activation code sent to your registered email address.</p>
                                                 <h5 v-if="remainingTime > 0" class="fs-13 mt-4 text-primary text-center fw-semibold"><i class="ri-mail-send-fill me-2"></i>Resend available in {{ formattedTime }}</h5>
                                                 <h5 v-else-if="codeValid == false" class="fs-11 mt-4 text-danger text-center"><i class="ri-error-warning-line fs-14 me-1"></i>Invalid activation code. Please check your email and try again.</h5>
-                                                <h5 v-else class="fs-13 mt-4 text-primary text-center fw-semibold"><i class="ri-mail-send-fill me-2"></i>Resend Verification Code</h5>
+                                                <h5
+                                                    v-else
+                                                    class="fs-13 mt-4 text-center fw-semibold"
+                                                >
+                                                    <span
+                                                        v-if="!resendMessage"
+                                                        class="text-primary"
+                                                        @click="resend"
+                                                        style="cursor:pointer;"
+                                                    >
+                                                        <i class="ri-mail-send-fill me-2"></i>
+                                                        {{ sending ? 'Sending...' : 'Resend Verification Code' }}
+                                                    </span>
+
+                                                    <span v-else class="text-success">
+                                                        <i class="ri-check-line me-2"></i>
+                                                        {{ resendMessage }}
+                                                    </span>
+                                                </h5>
                                             </div>
                                         </div>
 
@@ -295,6 +313,9 @@ export default {
             form2: useForm({
                 image: null,
             }),
+            form3: useForm({
+                id: this.$page.props.user.data.id,
+            }),
             hasAvatar: (this.$page.props.user.data.avatar_name == window.location.origin+'/images/avatars/noavatar.jpg') ? false : true,
             uploaded: false,
             remainingTime: 0,
@@ -306,6 +327,8 @@ export default {
                     length: 9
                 }, () => ''),
             codeValid: null,
+            resendMessage: '',
+            sending: false,
         }
     },
     computed: {
@@ -424,6 +447,27 @@ export default {
         },
         handleInput(field) {
             this.form.errors[field] = false;
+        },
+        async resend() {
+            this.sending = true;
+
+            try {
+                const { data } = await axios.post('/otp', {
+                    id: this.$page.props.user.data.id
+                });
+
+                this.resendMessage = data.message;
+
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    this.resendMessage = '';
+                }, 10000);
+
+            } catch (e) {
+                this.resendMessage = 'Failed to send verification code.';
+            } finally {
+                this.sending = false;
+            }
         },
         focusInput(idx) {
             const inputs = this.$refs.otpInputs;

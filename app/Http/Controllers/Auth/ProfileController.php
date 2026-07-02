@@ -14,6 +14,8 @@ use App\Http\Requests\Auth\ProfileRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\AccountActivationCode; 
+use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends Controller
 {
@@ -205,6 +207,17 @@ class ProfileController extends Controller
 
         return response()->json([
             'valid' => $valid,
+        ]);
+    }
+
+    public function otp(Request $request){
+        $user = User::where('id',$request->id)->first();
+        $code = random_int(100000000, 999999999); // 9 digits
+        $user->update(['code' => $code]);
+        Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+         return response()->json([
+            'success' => true,
+            'message' => 'Verification code sent.'
         ]);
     }
 
