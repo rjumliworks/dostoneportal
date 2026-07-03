@@ -82,6 +82,8 @@ export default {
             this.form.errors[field] = false;
         },
         hide(){
+            this.form.id = null;
+            this.form.status_id = null;
             this.showModal = false;
         }
     }
