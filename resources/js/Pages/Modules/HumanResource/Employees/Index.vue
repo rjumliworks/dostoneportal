@@ -94,9 +94,8 @@
                                     'bg-danger-subtle': list.organization.status.name === 'Retired',
                                 } : ''">
                                     <td class="text-center"> 
-                                        <div class="avatar-xs chat-user-img online">
-                                            <img :src="list.avatar" alt="" class="avatar-xs rounded-circle">
-                                            <!-- <span v-if="list.is_active" class="user-status text-success"></span> -->
+                                        <div class="avatar-xs">
+                                            <img :src="list.avatar" class="rounded-circle avatar-xs" style="object-fit:cover;" alt="Avatar">
                                         </div>
                                     </td>
                                     <td>
@@ -133,19 +132,20 @@
                                                         <i class="ri-more-fill"></i>
                                                     </template>
                                                     <li>
-                                                        <Link :href="`/users/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <Link :href="`/employees/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-eye-fill me-2"></i> View
                                                         </Link>
-                                                    </li>
-                                                    <li>
-                                                        <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
-                                                            <i class="ri-edit-2-fill me-2"></i> Update Details
-                                                        </a>
                                                     </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openStatus(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-group-2-line me-2"></i> Update Status
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-edit-2-fill me-2"></i> Update Details
                                                         </a>
                                                     </li>
                                                     <!-- <li>
@@ -176,16 +176,18 @@
             </div>
         </div>
     </BRow>
+    <Status @update="updateStatus" :statuses="dropdowns.statuses" ref="status"/>
     <Create @update="updateUser" @success="fetch()" :dropdowns="dropdowns" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
 import Create from './Modals/Create.vue';
+import Status from './Modals/Status.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create },
+    components: { PageHeader, Pagination, Multiselect, Create, Status },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -284,8 +286,16 @@ export default {
             this.index = index;
             this.$refs.create.update(data);
         },
+        openStatus(data,index){
+            this.index = index;
+            this.$refs.status.show(data);
+        },
         updateUser(data){
             this.lists[this.index] = data;
+        },
+        updateStatus(data){
+            console.log(data);
+            this.lists[this.index].organization.status = data;
         },
         selectRow(index) {
             this.selectedRow = index;

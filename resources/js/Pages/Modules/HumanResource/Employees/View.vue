@@ -12,8 +12,14 @@
                                         <BRow class="align-items-center g-3">
                                             <BCol md="auto">
                                                 <div style="height: 3.5rem; width: 3.5rem;">
-                                                    <div class="avatar-title bg-white rounded-circle">
+                                                    <!-- <div class="avatar-sm avatar-title  bg-white rounded-circle">
                                                         <img :src="employee.avatar" alt="" class="avatar-sm rounded-circle">
+                                                    </div> -->
+                                                      <!-- <div class="avatar-sm ">
+                                                        <img :src="employee.avatar" class="img-thumbnail rounded-circle avatar-sm" style="object-fit:cover;" alt="Avatar">
+                                                    </div> -->
+                                                    <div class="avatar-sm mt-n1" style="width:70px;height:70px;">
+                                                        <img :src="employee.avatar" class="rounded-circle img-thumbnail" style="width:60px;height:60px;object-fit:cover;" alt="Avatar">
                                                     </div>
                                                 </div>
                                             </BCol>

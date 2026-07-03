@@ -87,6 +87,9 @@ class EmployeeController extends Controller
                 case 'employee':
                     return $this->save->update($request);
                 break;
+                case 'status':
+                    return $this->update->status($request);
+                break;
                 case 'background':
                     return $this->update->background($request);
                 break;

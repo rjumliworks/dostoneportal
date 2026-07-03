@@ -36,6 +36,15 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
+        if($user->is_locked){
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'System access is permanently disabled.',
+            ]);
+        }
         if($user->is_active) {
             if($user->must_change) {
                 do{
@@ -51,6 +60,9 @@ class LoginController extends Controller
             }
             return redirect()->intended(route('dashboard', absolute: false));
         }else{
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
             throw ValidationException::withMessages([
                 'email' => 'Account Locked, Please contact administrator.',
             ]);

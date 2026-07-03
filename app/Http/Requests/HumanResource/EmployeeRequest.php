@@ -74,6 +74,12 @@ class EmployeeRequest extends FormRequest
                     'user_id' => 'required'
                 ];
             break;
+            case 'status':
+                return [
+                    'id' => 'required',
+                    'status_id' => 'required'
+                ];
+            break;
             default: 
                 return [];
         }
