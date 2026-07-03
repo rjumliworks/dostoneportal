@@ -4,7 +4,6 @@ namespace App\Services\Portal\Dtr;
 
 use Carbon\Carbon;
 use App\Models\Dtr;
-use App\Models\UserShift;
 use App\Models\Request;
 use App\Models\Schedule;
 use App\Models\UserProfile;
@@ -18,7 +17,7 @@ class PrintClass
         $user_id = $request->id;
 
         $user = UserProfile::select('id','user_id','firstname','lastname','middlename','suffix_id')->where('user_id',$user_id)->first();
-        $shift = UserShift::with('shift.times')->where('user_id',$user_id)->first();
+        $shift = UserOrganization::with('shift.times')->where('user_id',$user_id)->first();
         $station_id = UserOrganization::where('user_id',$user_id)->value('station_id');
         $type_id = UserOrganization::where('user_id',$user_id)->value('type_id');
 

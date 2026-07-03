@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\Dtr;
 use App\Models\Schedule;
-use App\Models\UserShift;
+use App\Models\UserOrganization;
 use App\Models\ShiftTime;
 use Illuminate\Console\Command;
 
@@ -17,7 +17,7 @@ class DailyDtrChecker extends Command
 
     public function handle()
     {
-        $users = UserShift::with('shift.times')->get();
+        $users = UserOrganization::with('shift.times')->get();
         foreach ($users as $user) {
 
             $shift_id = $user->shift->id;

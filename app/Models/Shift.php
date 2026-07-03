@@ -8,7 +8,7 @@ class Shift extends Model
 {
     public function shift()
     {
-        return $this->hasOne('App\Models\UserShift', 'shift_id');
+        return $this->hasOne('App\Models\UserOrganization', 'shift_id');
     }
 
     public function times()

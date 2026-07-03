@@ -27,6 +27,11 @@ class UserOrganization extends Model
         return $this->belongsTo('App\Models\ListData', 'type_id', 'id');
     }
 
+    public function shift()
+    {
+        return $this->belongsTo('App\Models\Shift', 'shift_id', 'id');
+    }
+
     public function position()
     {
         return $this->belongsTo('App\Models\ListPosition', 'position_id', 'id');

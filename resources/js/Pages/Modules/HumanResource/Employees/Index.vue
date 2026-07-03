@@ -142,6 +142,11 @@
                                                             <i class="ri-group-2-line me-2"></i> Update Status
                                                         </a>
                                                     </li>
+                                                     <li>
+                                                        <a @click="openSchedule(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-calendar-2-fill me-2"></i> Update Schedule
+                                                        </a>
+                                                    </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
@@ -287,6 +292,10 @@ export default {
             this.$refs.create.update(data);
         },
         openStatus(data,index){
+            this.index = index;
+            this.$refs.status.show(data);
+        },
+        openSchedule(data,index){
             this.index = index;
             this.$refs.status.show(data);
         },
