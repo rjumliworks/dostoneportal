@@ -44,7 +44,7 @@
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
                                 <!-- @click="openCreate" -->
-                                <b-button type="button" variant="primary" @click="openCreate">
+                                <b-button type="button" variant="primary" disabled>
                                     <i class="ri-add-circle-fill align-bottom me-1"></i> Create
                                 </b-button>
                             </div>
