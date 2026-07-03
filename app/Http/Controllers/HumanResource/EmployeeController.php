@@ -42,6 +42,7 @@ class EmployeeController extends Controller
                     'positions' => $this->dropdown->positions(),
                     'salaries' => $this->dropdown->salaries(),
                     'statuses' => $this->dropdown->statuses('Status'),
+                    'shifts' => $this->dropdown->shifts(),
                     'employment_statuses' => $this->dropdown->datas('Employment Status')
                 ],
                 'counts' => $this->view->counts()

@@ -15,7 +15,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="fs-13 fw-semibold text-uppercase text-primary mb-0">{{ selected.fullname }}</h6>
-                                <span :class="'badge '+selected.organization.status.bg+' '+selected.organization.status.type">{{selected.organization.status.name}}</span>
+                                <span :class="'badge '+selected.organization.status.bg+' '+selected.organization.status.type">{{selected.organization.shift.name}}</span>
                             </div>
                         </div>
                     </div>
@@ -23,8 +23,8 @@
                 <BCol lg="12" class="mt-2">
                     <InputLabel for="name" value="Status" :message="form.errors.status_id"/>
                      <Multiselect
-                    v-model="form.status_id" 
-                    :options="statuses"
+                    v-model="form.shift_id" 
+                    :options="shifts"
                     label="name"
                     ref="multiselect"
                     placeholder="Select Status"/>
@@ -50,14 +50,14 @@ import Multiselect from "@vueform/multiselect";
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 export default {
     components: { Multiselect, InputLabel },
-    props: ['statuses'],
+    props: ['shifts'],
     data(){
         return {
             currentUrl: window.location.origin,
             form: useForm({
                 id: null,
-                status_id: null,
-                option: 'status'
+                shift_id: null,
+                option: 'shift'
             }),
             selected: null,
             showModal: false

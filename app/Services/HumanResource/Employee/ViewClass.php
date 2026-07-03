@@ -38,6 +38,7 @@ class ViewClass
             'organization.type',
             'organization.status',
             'organization.salary',
+            'organization.shift'
         ]);
         $query->when($request->keyword, function ($query, $keyword) {
             $query->whereHas('profile', function ($sub) use ($keyword) {
@@ -53,7 +54,8 @@ class ViewClass
                 ->when($request->position, fn($q) => $q->where('position_id', $request->position))
                 ->when($request->division, fn($q) => $q->where('division_id', $request->division))
                 ->when($request->station, fn($q) => $q->where('station_id', $request->station))
-                ->when($request->unit, fn($q) => $q->where('unit_id', $request->unit));
+                ->when($request->unit, fn($q) => $q->where('unit_id', $request->unit))
+                ->when($request->shift, fn($q) => $q->where('shift_id', $request->shift));
         });
         $query->orderBy(UserProfile::select('lastname')->whereColumn('user_profiles.user_id', 'users.id'),'ASC');
         $data = IndexResource::collection($query->paginate($request->count));
@@ -67,7 +69,7 @@ class ViewClass
         $data = new ViewResource(
             User::query()
             ->with('profile.religion','profile.blood','profile.marital','profile.sex','profile.suffix')
-            ->with('organization.division','organization.position','organization.unit','organization.station','organization.type','organization.status','organization.salary')
+            ->with('organization.division','organization.position','organization.unit','organization.station','organization.type','organization.status','organization.salary','organization.shift')
             ->with('academics.school','academics.course','academics.level')
             ->with('credentials.name','credentials.type')
             ->with('contracts.division','contracts.position','contracts.unit','contracts.station','contracts.type','contracts.status','contracts.salary')

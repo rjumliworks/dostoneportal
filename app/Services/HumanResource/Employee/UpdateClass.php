@@ -33,4 +33,17 @@ class UpdateClass
             'info' => 'You can now manage this employee’s status',
         ];
     }
+
+    public function shift($request){
+        $data = UserOrganization::where('user_id',$request->id)->first();
+        $data->shift_id = $request->shift_id;
+        $data->save();
+        $data->load('shift');
+
+        return [
+            'data' => $data->shift,
+            'message' => 'Shift updated successfully', 
+            'info' => 'You can now manage this employee’s shift',
+        ];
+    }
 }

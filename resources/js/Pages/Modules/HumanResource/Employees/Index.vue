@@ -181,6 +181,7 @@
             </div>
         </div>
     </BRow>
+    <Schedule @update="updateUser" :shifts="dropdowns.shifts" ref="schedule"/>
     <Status @update="updateStatus" :statuses="dropdowns.statuses" ref="status"/>
     <Create @update="updateUser" @success="fetch()" :dropdowns="dropdowns" ref="create"/>
 </template>
@@ -188,11 +189,12 @@
 import _ from 'lodash';
 import Create from './Modals/Create.vue';
 import Status from './Modals/Status.vue';
+import Schedule from './Modals/Schedule.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Status },
+    components: { PageHeader, Pagination, Multiselect, Create, Status, Schedule },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -297,7 +299,7 @@ export default {
         },
         openSchedule(data,index){
             this.index = index;
-            this.$refs.status.show(data);
+            this.$refs.schedule.show(data);
         },
         updateUser(data){
             this.lists[this.index] = data;

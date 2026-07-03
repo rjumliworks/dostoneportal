@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Shift;
 use App\Models\ListRole;
 use App\Models\ListUnit;
 use App\Models\ListData;
@@ -212,6 +213,19 @@ class DropdownClass
         });
         return $data;
     }
+
+    public function shifts(){
+        $data = Shift::where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'days' => $item->days,
+                'hours' => $item->hours
+            ];
+        });
+        return $data;
+    }
+
 
     public function events()
     {
