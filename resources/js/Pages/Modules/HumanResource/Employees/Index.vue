@@ -181,7 +181,7 @@
             </div>
         </div>
     </BRow>
-    <Schedule @update="updateUser" :shifts="dropdowns.shifts" ref="schedule"/>
+    <Schedule @update="updateSchedule" :shifts="dropdowns.shifts" ref="schedule"/>
     <Status @update="updateStatus" :statuses="dropdowns.statuses" ref="status"/>
     <Create @update="updateUser" @success="fetch()" :dropdowns="dropdowns" ref="create"/>
 </template>
@@ -307,6 +307,10 @@ export default {
         updateStatus(data){
             console.log(data);
             this.lists[this.index].organization.status = data;
+        },
+        updateSchedule(data){
+            console.log(data);
+            this.lists[this.index].organization.shift = data;
         },
         selectRow(index) {
             this.selectedRow = index;
