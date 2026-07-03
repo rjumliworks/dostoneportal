@@ -255,6 +255,139 @@
             </div>
         </div>
 
+        <div class="col-md-4 project-card" v-for="(list,index) in dropdowns.shifts" :key="index" v-if="sort == 'shifts'">
+            <div class="card mb-0">
+                <div class="card-body">
+                    <div class="p-3 mt-n3 mx-n3 mb-n3 bg-info-subtle rounded-top">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 fs-12 fw-semibold text-primary">{{ list.name }}</h5>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="d-flex gap-1 align-items-center my-n2">
+                                    <button type="button" class="btn avatar-xs p-0 favourite-btn material-shadow-none active">
+                                        <span class="avatar-title bg-transparent fs-15">
+                                            <i class="ri-star-fill"></i>
+                                        </span>
+                                    </button>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-muted p-1 mt-n1 py-0 text-decoration-none fs-15 material-shadow-none" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal icon-sm"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                        </button>
+
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a class="dropdown-item" href="apps-projects-overview.html"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a>
+                                            <a class="dropdown-item" href="apps-projects-create.html"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#removeProjectModal"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="py-3">
+                        <div class="row gy-3">
+                            <div class="col-12" v-if="list.assigned">
+                                <div>
+                                    <p class="text-muted fs-11 mb-0">{{ list.assigned.designation.name }} :</p>
+                                    <h5 class="fs-12 fw-semibold" v-if="list.assigned.is_oic">{{ list.assigned.oic.profile.fullname }}</h5>
+                                    <h5 class="fs-12 fw-semibold" v-else>{{ list.assigned.user.profile.fullname }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-12" v-else>
+                                <div>
+                                    <p class="text-muted fs-11 mb-0">Division Head :</p>
+                                    <h5 class="fs-12 fw-semibold">-</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1 mb-n4">
+                            <div class="col-6">
+                                <div v-if="list.assigned??designationable">
+                                    <p class="text-muted mb-0 fs-11">Signatory :</p>
+                                    <h5 class="fs-12" v-if="list.assigned.designationable.is_oic">{{ list.assigned.designationable.oic.profile.name }}</h5>
+                                    <h5 class="fs-12" v-else>{{ list.assigned.designationable.user.profile.name }}</h5>
+                                </div>
+                                <div v-else>
+                                    <p class="text-muted mb-0 fs-11">Signatory :</p>
+                                    <h5 class="fs-12">-</h5>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div>
+                                    <p class="text-muted mb-0 fs-11">Date</p>
+                                     <h5 class="fs-12" v-if="list.assigned??designationable">-</h5>
+                                    <h5 class="fs-12" v-else>-</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center fs-10">
+                        <div class="col-md-12">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">9,851</h5>
+                                <p class="text-muted mb-0">No. of Employees</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-white rounded-bottom">
+                    <div class="table-responsive table-card" style="height: calc(100vh - 680px); overflow: auto;">
+                        <table class="table align-middle table-striped table-centered mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th style="width: 5%;"></th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="employee in filteredEmployees.filter(e => e.organization?.shift?.id === list.value)" :key="employee.id">
+                                    <td>
+                                        <img :src="employee.avatarSrc" class="rounded-circle" width="28" height="28">
+                                    </td>
+                                    <td>
+                                       <h5 class="fs-12 mb-0 fw-semibold text-primary">{{employee.name}}</h5>
+                                        <p class="fs-11 text-muted mb-0">{{employee.organization.unit.name}}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- <div class="card-footer bg-transparent border-top-dashed py-2">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="avatar-group">
+                                <a href="javascript: void(0);" class="avatar-group-item material-shadow" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" aria-label="Darline Williams" data-bs-original-title="Darline Williams">
+                                    <div class="avatar-xxs">
+                                        <img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-fluid">
+                                    </div>
+                                </a>
+                                <a href="javascript: void(0);" class="avatar-group-item material-shadow" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" data-bs-original-title="Add Members">
+                                    <div class="avatar-xxs">
+                                        <div class="avatar-title fs-16 rounded-circle bg-light border-dashed border text-primary">
+                                            +
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="text-muted">
+                                <i class="ri-calendar-event-fill me-1 align-bottom"></i> 10 Jul, 2021
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div> -->
+            </div>
+        </div>
+
     </div>
 </template>
 
