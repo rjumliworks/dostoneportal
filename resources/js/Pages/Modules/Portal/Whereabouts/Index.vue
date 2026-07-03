@@ -37,9 +37,10 @@
                         <div class="flex-shrink-0">
                             <div class="btn-group mt-4 mt-md-0 me-2" role="group" aria-label="Basic example">
                                 <button @click="sort = 'lists'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Solo"><i class="ri-list-check"></i></button>
-                                <button @click="sort = 'units'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Units"><i class="ri-group-2-fill"></i></button>
+                                <button @click="sort = 'units'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Units"><i class="ri-group-2-line"></i></button>
                                 <button @click="sort = 'divisions'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Division"><i class="ri-list-check-2"></i></button>
-                                <button @click="sort = 'stations'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Station"><i class="ri-map-pin-fill"></i></button>
+                                <button @click="sort = 'stations'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Station"><i class="ri-map-pin-line"></i></button>
+                                <button @click="sort = 'shifts'" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Work Schedule"><i class="ri-calendar-line"></i></button>
                                 <button @click="toggleSortPosition" type="button" class="btn btn-light material-shadow-none" v-b-tooltip.hover title="Position"><i class="ri-sort-asc"></i></button>
                             </div>
                         </div>
@@ -60,22 +61,22 @@
                 <!-- border shadow-none -->
                 <div class="card-body text-center">
                     <div class="ribbon ribbon-primary round-shape fs-10 mt-2" :class="list.organization.status.bg">{{ list.organization.status.name }}</div>
-                    <div class="mb-2 mt-2">
+                    <div class="mb-2 mt-0">
                         <img
                             :src="list.avatarSrc"
                             loading="lazy"
                             class="rounded-circle img-thumbnail"
-                            style="width:70px;height:70px;object-fit:cover;"
+                            style="width:60px;height:60px;object-fit:cover;"
                             alt="Avatar"
                         >
                     </div>
                     <h5 class="mb-0 text-uppercase fw-semibold text-primary fs-12">{{ list.name }}</h5>
-                    <div class="text-muted small mb-1">{{ list.organization.position.name }}</div>
+                    <div class="text-muted small mb-0">{{ list.organization.position.name }}</div>
                     <span class="badge text-bg-primary" style="font-size: 9px;">{{ list.organization.type.name }}</span>
                 </div>
 
                 <div class="card-body border-top border-top-dashed fs-11">
-                    <div class="d-flex justify-content-between mb-0">
+                    <div class="d-flex justify-content-between mb-0 mt-n2">
                         <span class="text-muted">Unit</span>
                         <span class="text-end text-truncate ms-3">
                             {{ list.organization.unit.name }}
@@ -91,6 +92,12 @@
                         <span class="text-muted">Station</span>
                         <span class="text-end text-truncate ms-3">
                             {{ list.organization.station.name }}
+                        </span>
+                    </div>
+                     <div class="d-flex justify-content-between mb-n1">
+                        <span class="text-muted">Work Schedule</span>
+                        <span class="text-end text-truncate ms-3">
+                            {{ list.organization.shift.name }}
                         </span>
                     </div>
                 </div>

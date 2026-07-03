@@ -24,6 +24,7 @@ class ViewClass
             'organization.type',
             'organization.status',
             'organization.salary',
+            'organization.shift'
         ]);
         $query->when($request->keyword, function ($query, $keyword) {
             $query->whereHas('profile', function ($sub) use ($keyword) {

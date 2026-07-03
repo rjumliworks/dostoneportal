@@ -28,6 +28,7 @@ class WhereaboutController extends Controller
                         'divisions' => $this->view->dropdowns(),
                         'stations' => $this->dropdown->stations(),
                         'positions' => $this->dropdown->positions(),
+                        'shifts' => $this->dropdown->shifts(),
                         'statuses' => $this->dropdown->statuses('Status'),
                         'employment_statuses' => $this->dropdown->datas('Employment Status')
                     ]
