@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" header-class="p-3 bg-light" title="Update Status" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" header-class="p-3 bg-light" title="Update EmployeeShift" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform" v-if="selected">
             <BRow class="g-3">
                 <BCol lg="12" class="mt-3">
@@ -27,7 +27,7 @@
                     :options="shifts"
                     label="name"
                     ref="multiselect"
-                    placeholder="Select Status"/>
+                    placeholder="Select Shift"/>
                 </BCol>
                  <BCol lg="12" class="mt-3 mb-n3">
                     <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-10" role="alert">
