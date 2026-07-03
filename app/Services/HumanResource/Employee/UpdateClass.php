@@ -2,6 +2,7 @@
 
 namespace App\Services\HumanResource\Employee;
 
+use App\Models\User;
 use App\Models\UserOrganization;
 
 class UpdateClass
