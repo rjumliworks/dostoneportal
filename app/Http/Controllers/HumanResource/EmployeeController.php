@@ -91,6 +91,9 @@ class EmployeeController extends Controller
                 case 'status':
                     return $this->update->status($request);
                 break;
+                case 'shift':
+                    return $this->update->shift($request);
+                break;
                 case 'background':
                     return $this->update->background($request);
                 break;
