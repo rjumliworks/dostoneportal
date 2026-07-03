@@ -26,7 +26,7 @@ class DtrShiftCommand extends Command
             $hours = $user->shift->hours;
             $with_holidays = $user->shift->has_holidays;
 
-            $dtrs = Dtr::whereIn(\DB::raw('MONTH(date)'), [5, 6])
+            $dtrs = Dtr::whereIn(\DB::raw('MONTH(date)'), [5, 6, 7])
                 ->whereYear('date', 2026)
                 ->where('user_id', $user->user_id)
                 ->get();
