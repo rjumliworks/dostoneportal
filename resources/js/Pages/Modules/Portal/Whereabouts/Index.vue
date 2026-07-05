@@ -315,7 +315,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 project-card" v-for="(list,index) in dropdowns.units" :key="index" v-if="sort == 'units'">
+        <div class="col-md-4 project-card" v-for="(list,index) in sortedUnits" :key="index" v-if="sort == 'units'">
             <div class="card mb-0">
                 <div class="card-body">
                     <div class="p-3 mt-n3 mx-n3 mb-n3 bg-info-subtle rounded-top">
@@ -506,6 +506,19 @@ export default {
 
                 const countB = this.filteredEmployees.filter(
                     e => e.organization?.shift?.id === b.value
+                ).length;
+
+                return countB - countA; // Highest to lowest
+            });
+        },
+        sortedUnits() {
+            return [...this.dropdowns.units].sort((a, b) => {
+                const countA = this.filteredEmployees.filter(
+                    e => e.organization?.unit?.id === a.value
+                ).length;
+
+                const countB = this.filteredEmployees.filter(
+                    e => e.organization?.unit?.id === b.value
                 ).length;
 
                 return countB - countA; // Highest to lowest
