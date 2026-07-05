@@ -204,7 +204,10 @@ class DropdownClass
     }
 
     public function units($code){
-        $data = ListUnit::where('division_id',$code)->where('is_active',1)->get()->map(function ($item) {
+        $data = ListUnit::when($code, function ($query) use ($code){
+            $query->where('division_id',$code);
+        })
+        ->where('is_active',1)->get()->map(function ($item) {
             return [
                 'value' => $item->id,
                 'name' => $item->name,
