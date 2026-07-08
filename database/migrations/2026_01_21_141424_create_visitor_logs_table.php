@@ -20,6 +20,8 @@ return new class extends Migration
             $table->longText('pm_in_at')->nullable();
             $table->longText('pm_out_at')->nullable();
             $table->longText('remarks')->nullable();
+            $table->unsignedTinyInteger('station_id')->nullable();
+            $table->foreign('station_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
             $table->unsignedInteger('visitor_id');
             $table->foreign('visitor_id')->references('id')->on('visitors')->onDelete('cascade');
             $table->timestamps();

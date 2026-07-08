@@ -10,7 +10,7 @@ class UserOrganization extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['status_id','type_id','position_id','salary_id','unit_id','division_id','station_id','user_id'];
+    protected $fillable = ['status_id','type_id','position_id','salary_id','unit_id','division_id','station_id','shift_id','user_id'];
 
     public function user()
     {

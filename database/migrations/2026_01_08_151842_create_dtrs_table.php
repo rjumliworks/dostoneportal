@@ -28,6 +28,10 @@ return new class extends Migration
             $table->boolean('is_completed')->default(0);
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedTinyInteger('station_id')->nullable();
+            $table->foreign('station_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
+            $table->unsignedInteger('shift_id')->nullable();
+            $table->foreign('shift_id')->references('id')->on('shifts')->onDelete('cascade');
             $table->timestamp('processed_at')->nullable();
             $table->timestamps();
             $table->unique(['date', 'user_id']);
