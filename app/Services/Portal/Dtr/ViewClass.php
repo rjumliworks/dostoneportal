@@ -24,11 +24,11 @@ class ViewClass
         $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         
         $data =  User::with([
-            'shift.shift.times',
             'profile',
             'organization.position',
             'organization.division',
             'organization.type',
+            'organization.shift.times',
             'payrolls' => function ($q) use ($cutoff_id) {
                 $q->where('cutoff_id', $cutoff_id);
             },
@@ -151,7 +151,8 @@ class ViewClass
          *  DAILY LOOP
          * =========================
          */
-        $uniqueDays = $item->shift->shift->times->pluck('days') 
+
+        $uniqueDays = $item->organization->shift->times->pluck('days') 
         ->flatMap(function ($days) {        
             return explode(',', $days);
         })->unique()->values();
