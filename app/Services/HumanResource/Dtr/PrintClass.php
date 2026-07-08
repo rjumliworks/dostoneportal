@@ -244,6 +244,11 @@ class PrintClass
                             'am_out' => ($data['am_out_at']) ? \Carbon\Carbon::parse(json_decode($data['am_out_at'])->time)->format('h:i') : null,
                             'pm_in' => ($data['pm_in_at']) ? \Carbon\Carbon::parse(json_decode($data['pm_in_at'])->time)->format('h:i') : null,
                             'pm_out' => ($data['pm_out_at']) ? \Carbon\Carbon::parse(json_decode($data['pm_out_at'])->time)->format('h:i') : null,
+                            'total_minutes' => $data->undertime + $data->tardiness,
+                            'undertime' => [
+                                'hours' => intdiv($data->undertime + $data->tardiness, 60),
+                                'minutes' => ($data->undertime + $data->tardiness) % 60,
+                            ],
                         ],
                         'bg' => ($is_completed) ? 'bg bg-soft bg-success' : $chck ,
                         'is_with' => true
