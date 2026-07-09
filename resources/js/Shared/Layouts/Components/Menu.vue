@@ -39,6 +39,13 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Whereabouts</span>
                 </Link>
             </li>
+            <li class="nav-item">
+                <Link href="/schedules" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Portal/Schedules') }">
+                <i class="ri-calendar-fill"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
+                </Link>
+            </li>
             <tempalte v-if="$page.props.roles.includes('Document Management Officer')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

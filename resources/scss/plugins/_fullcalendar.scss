@@ -259,7 +259,33 @@
 .fc-prev-button,
 .fc-next-button {
     position: relative;
-    padding: 6px 8px!important;
+    height: 37.5px;
+    width: 37.5px;
+
+    &::before {
+        position: absolute;
+        font-family: remixicon !important;
+        font-size: 20px;
+        top: 0;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.fc-prev-button {
+    &::before {
+        content: "\ea64";
+    }
+}
+
+.fc-next-button {
+    &::before {
+        content: "\ea6e";
+    }
 }
 
 

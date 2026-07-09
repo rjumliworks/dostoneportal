@@ -725,3 +725,37 @@ File: Custom Css File
   background-color: #fff; /* Set the background color for the fixed header */
   z-index: 1; /* Ensure the fixed header is above the scrolling content */
 }
+
+.name-cell {
+    max-width: 250px;   /* adjust as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.custom-group {
+    display: flex;
+    align-items: stretch;
+}
+
+/* Multiselect styling */
+.custom-multiselect {
+    flex: 1;
+}
+
+.custom-multiselect .multiselect {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    height: 100%;
+}
+
+/* Button styling */
+.custom-button {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    display: flex;
+    align-items: center;
+}

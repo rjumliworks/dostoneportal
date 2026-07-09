@@ -38,6 +38,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('/dtr', App\Http\Controllers\Portal\DtrController::class);
     Route::resource('/requests', App\Http\Controllers\Portal\RequestController::class);
     Route::resource('/whereabouts', App\Http\Controllers\Portal\WhereaboutController::class);
+    Route::resource('/schedules', App\Http\Controllers\Portal\ScheduleController::class);
 });
 
 Route::middleware(['role:Asset Management Officer'])->group(function () {
