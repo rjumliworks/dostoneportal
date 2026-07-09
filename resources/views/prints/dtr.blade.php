@@ -195,7 +195,13 @@
                             <td>{{ $list['data']['am_out'] ?? '' }}</td>
                             <td>{{ $list['data']['pm_in'] ?? '' }}</td>
                             <td>{{ $list['data']['pm_out'] ?? '' }}</td>
-                            <td>{{ ($list['data']['undertime'] == 0) ? $list['data']['undertime'] : ''}}</td>
+                            <td style="font-size: 9px;">
+                                {{
+                                    $list['data'] && $list['data']['total_minutes'] > 0
+                                        ? ( ($list['data']['undertime']['hours'] == 0) ? '' : $list['data']['undertime']['hours'] )
+                                        : ''
+                                }}
+                            </td>
                             <td></td>
                         @endif
                 </tr>
