@@ -8,6 +8,7 @@ class RequestEvent extends Model
 {
     protected $fillable = [
         'title',
+        'status_id',
         'audience_id',
         'mode_id',
         'type_id',

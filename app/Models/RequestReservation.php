@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RequestReservation extends Model
 {
     protected $fillable = [
+        'event_id',
         'vehicle_id',
         'request_id',
         'driver_id'

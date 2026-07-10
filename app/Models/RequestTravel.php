@@ -14,6 +14,7 @@ class RequestTravel extends Model
 
     protected $fillable = [
         'code',
+        'event_id',
         'mode_id',
         'transpo_id',
         'expense_id',

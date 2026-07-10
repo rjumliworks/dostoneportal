@@ -16,6 +16,8 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('code',30)->unique()->index();
             $table->json('expenses');
+            $table->unsignedBigInteger('event_id');
+            $table->foreign('event_id')->references('id')->on('request_events')->onDelete('cascade');
             $table->unsignedSmallInteger('purpose_id');
             $table->foreign('purpose_id')->references('id')->on('list_data')->onDelete('cascade');
             $table->unsignedSmallInteger('mode_id');
