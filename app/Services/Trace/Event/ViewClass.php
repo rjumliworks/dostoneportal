@@ -107,14 +107,12 @@ class ViewClass
             $isAvailable = $conflicts->isEmpty();
             return [
                 'value' => $item->id,
-                'name' => $item->profile->lastname . ', ' . $item->profile->firstname . ' ' . $item->profile->middlename . '.',
+                'name' => $item->profile->name,
                 'position' => optional($item->organization->position)->name,
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,
                 'type' => $item->organization->type->name,
-                'avatar' => ($item->profile && $item->profile->avatar && $item->profile->avatar !== 'noavatar.jpg')
-                ? asset('storage/' . $item->profile->avatar) 
-                : asset('images/avatars/avatar.jpg'),
+                'avatar' => $item->profile?->avatar,
                 'available' => $isAvailable,
                 'conflicts' => $conflicts 
             ];

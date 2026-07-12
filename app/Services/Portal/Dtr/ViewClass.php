@@ -62,7 +62,7 @@ class ViewClass
          *  HOLIDAYS
          * =========================
          */
-       $holidays = Schedule::where(function ($q) use ($start, $end) {
+        $holidays = Schedule::where(function ($q) use ($start, $end) {
             $q->whereBetween('start', [$start, $end])
                 ->orWhereBetween('end', [$start, $end])
                 ->orWhere(function ($q2) use ($start, $end) {

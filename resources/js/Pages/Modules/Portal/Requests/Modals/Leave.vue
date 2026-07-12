@@ -238,7 +238,7 @@ export default {
                 dateFormat: 'Y-m-d',
                 altInput: true,
                 altFormat: 'F j, Y',
-                minDate:'',
+                // minDate:'',
             },
             multiple: {
                 mode: "multiple",

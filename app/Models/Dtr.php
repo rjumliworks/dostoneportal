@@ -25,7 +25,8 @@ class Dtr extends Model
         'undertime',
         'hours',
         'remarks',
-        'date'
+        'date',
+        'processed_at'
     ];
 
     protected $casts = [

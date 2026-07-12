@@ -98,7 +98,7 @@
                                 <td class="text-center">{{ (list.am_out_at) ? list.am_out_at.time : '-' }}</td>
                                 <td class="text-center">{{ (list.pm_in_at) ? list.pm_in_at.time : '-' }}</td>
                                 <td class="text-center">{{ (list.pm_out_at) ? list.pm_out_at.time : '-' }}</td>
-                                <td class="text-center">-</td>
+                                 <td class="text-center">{{ list.tardiness }} + {{ list.undertime }} = <span class="fst-italic fw-semibold">{{ list.tardiness + list.undertime }}</span></td>
                                 <td class="text-end">
                                     <b-button @click="openView(list,index)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                         <i class="ri-eye-fill align-bottom"></i>

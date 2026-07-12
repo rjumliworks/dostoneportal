@@ -84,6 +84,14 @@ class SaveClass
                 'used' => 0,
                 'year' => date('Y')
             ]);
+            $credit = $user->credits()->create([
+                'leave_id' => 17,
+                'user_id' => $user->id,
+                'balance' => 5,
+                'earned' => 5,
+                'used' => 0,
+                'year' => date('Y')
+            ]);
         }
         
         return [

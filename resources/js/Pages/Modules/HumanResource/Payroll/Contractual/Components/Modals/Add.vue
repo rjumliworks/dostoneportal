@@ -1,5 +1,5 @@
 <template>
-<b-modal v-model="showModal" style="--vz-modal-width: 900px;" header-class="p-3 bg-light" title="Select Employee" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+<b-modal v-model="showModal" style="--vz-modal-width: 1200px;" header-class="p-3 bg-light" title="Select Employee" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow class="g-3">
                 <BCol lg="12">
@@ -63,7 +63,7 @@
                         </BCol>
                         <BCol lg="12" v-if="selected && !selected.already_in_payroll">
                             <div class="row g-3 mt-n3 mb-3">
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="p-1 border border-dashed rounded">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm me-2">
@@ -76,7 +76,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="p-1 border border-dashed rounded">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm me-2">
@@ -89,7 +89,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="p-1 border border-dashed rounded">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm me-2">
@@ -102,7 +102,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                 <div class="col-sm-2">
+                                    <div class="p-1 border border-dashed rounded">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm me-2">
+                                                <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-map-pin-fill"></i></div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <p class="text-muted mb-0 fs-12">Official Leave :</p>
+                                                <h5 class="mb-0 fs-12">{{leaveCount}}</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
                                     <div class="p-1 border border-dashed rounded">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm me-2">
@@ -115,7 +128,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="p-1 border border-dashed rounded">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm me-2">
@@ -127,7 +140,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                             <div v-if="completedCount != totalWorkDays"
                                 class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow mt-2"
@@ -152,17 +165,24 @@
                                             'bg-success-subtle': list.is_completed,
                                             'bg-dark-subtle': list.status === 'Holiday' || list.status === 'Non-working Day',
                                             'bg-warning-subtle': list.status === 'Official Travel',
+                                            'bg-info-subtle': list.status === 'Official Leave',
                                             'bg-danger-subtle': list.status === 'Absent'
                                         }">
-                                            <td class="text-center">{{ list.date }}</td>
+                                            <td class="text-center">
+                                                <h5 class="fs-11 mb-0 fw-semibold text-primary">{{list.date}}</h5>
+                                                <p class="fs-10 text-muted mb-0">({{list.date_day}})</p>
+                                            </td>
                                             <template v-if="list.status === 'Non-working Day'">
                                                 <td class="text-center" colspan="5">{{list.title}}</td>
                                             </template>
                                              <template v-else-if="list.status === 'Holiday'">
-                                                <td class="text-center" colspan="5">{{list.title}}</td>
+                                                <td class="text-center text-dark fw-semibold" colspan="5">{{list.title}}</td>
                                             </template>
                                             <template v-else-if="list.status === 'Official Travel'">
                                                 <td class="text-center" colspan="5">Official Travel : {{list.title}}</td>
+                                            </template>
+                                             <template v-else-if="list.status === 'Official Leave'">
+                                                <td class="text-center text-info fw-semibold" colspan="5">{{list.title}}</td>
                                             </template>
                                             <template v-else-if="list.status === 'Official Business'">
                                                 <td class="text-center" colspan="5">Official Business : {{list.title}}</td>
@@ -224,20 +244,20 @@ export default {
         holidayCount() {
             return (this.selected?.dtrs || []).filter(item => item.status == "Holiday").length;
         },
+        leaveCount() {
+            return (this.selected?.dtrs || []).filter(item => item.status == "Official Leave").length;
+        },
         travelCount() {
             return (this.selected?.dtrs || []).filter(item => item.status == "Official Travel").length;
         },
         businessCount() {
             return (this.selected?.dtrs || []).filter(item => item.status == "Official Business").length;
         },
-        nonCount() {
-            return (this.selected?.dtrs || []).filter(item => item.status == "Non-working Day").length;
-        },
         absentCount() {
             return (this.selected?.dtrs || []).filter(item => item.status == "Absent").length;
         },
         totalWorkDays() {
-            return (this.selected?.dtrs?.length || 0) - (this.holidayCount + this.travelCount + this.nonCount + this.absentCount + this.businessCount);
+            return (this.selected?.dtrs?.length || 0) - (this.holidayCount + this.travelCount + this.absentCount + this.businessCount + this.leaveCount);
         }
     },
     methods: { 

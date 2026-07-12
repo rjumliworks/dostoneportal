@@ -245,9 +245,10 @@ class LeaveClass
         ])
         ->where('request_id',$id)
         ->first();
+       
 
         $user = $data->request->tags[0]->user;
-  
+
         $employee = [
             'lastname' => $user->profile->lastname,
             'middlename' => $user->profile->middlename,
@@ -261,6 +262,7 @@ class LeaveClass
             'division' => $user->organization->division->name ?? 'n/a',
             'division_id' => $user->organization->division->id ?? null
         ];
+        
 
         $divisions[] = $user->organization->division->name;
  
@@ -297,7 +299,7 @@ class LeaveClass
             // Join multiple ranges with comma
             $formattedDateRange = implode(', ', $ranges);
         }
-    
+  
 
         $information = [
             'code' => $data->request->code,
@@ -312,11 +314,12 @@ class LeaveClass
             'date' => $formattedDateRange,
             'employee' => $employee,
             'divisions' => $divisions,
-            'signatory' => $this->signatory($division),
+            'signatory' => $this->signatory($division), // HAVE ERROR
             'signatories' => $this->sign($data->request->signatories),
             'created_by' => $data->request->user->profile->fullname,
             'created_at' => Carbon::parse($data->request->created_at)->format('F d, Y')
         ];
+
 
         if(RequestReport::where('request_id',$id)->count() > 0){
             $data = RequestReport::where('request_id',$id)->first();
@@ -333,15 +336,20 @@ class LeaveClass
 
     private function signatory($division){
         $a = OrgChart::with('user.profile','oic.profile')->where('designation_id',43)->where('is_active',1)->first(); 
+
+        
         $approved = [
             'name' => ($a->is_oic) ? $a->oic->profile->fullname : $a->user->profile->fullname,    
             'role' => ($a->is_oic) ? 'OIC - Regional Director' : 'Regional Director'
         ];
+       
         $c = OrgChart::with('user.profile','oic.profile')->where('designation_id',48)->where('is_active',1)->first(); 
+        
         $hrmo = [
             'name' => ($c->is_oic) ? $c->oic->profile->fullname : $c->user->profile->fullname,    
             'role' => 'Human Resource Management Officer'
         ];
+        
         $d = OrgChart::with('user.profile','oic.profile','assigned')
             ->whereHas('assigned', function ($query) use ($division){
                 $query->where('id', $division);

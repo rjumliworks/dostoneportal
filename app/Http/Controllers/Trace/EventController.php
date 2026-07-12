@@ -35,7 +35,7 @@ class EventController extends Controller
                 return inertia('Modules/Trace/Events/Index',[
                     'dropdowns' => [
                         'regions' => $this->dropdown->regions(),
-                        'types' => $this->dropdown->datas('Event'),
+                        'types' => $this->dropdown->event_list(),
                         'modes' => $this->dropdown->datas('Event Mode'),
                         'audiences' => $this->dropdown->datas('Audience')
                     ],

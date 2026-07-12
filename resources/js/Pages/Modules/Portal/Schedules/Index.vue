@@ -103,13 +103,16 @@ export default {
     },
     methods: {
         fetch(){
-            axios.get('/calendar',{
+            axios.get('/schedules',{
                 params : {
                     option: 'events' 
                 }
             })
             .then(response => {
-                this.calendarOptions.events = response.data.data;        
+                this.calendarOptions.events = [
+                    ...response.data.holidays,
+                    ...response.data.official
+                ];        
             })
             .catch(err => console.log(err));
         },

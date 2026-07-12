@@ -17,7 +17,11 @@
                                     <SimpleBar data-simplebar >
                                         <div class="notification-list">
                                             <b-link @click="chooseUser(list)" v-for="(list, index) of names" :key="index" class="d-flex dropdown-item notify-item py-2">
-                                                <img :src="list.avatar" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
+                                                 <img
+                                                    :src="list.avatar"
+                                                    class="me-3 rounded-circle avatar-xs"    
+                                                    style="object-fit:cover;"
+                                                    alt="Avatar"> 
                                                 <div class="flex-1">
                                                     <h6 class="m-0">{{ list.name}}</h6>
                                                     <span class="fs-11 mb-0 text-muted">{{list.position}}</span>

@@ -71,6 +71,7 @@ class SaveClass
                 'mode_id' => $request->mode_id,
                 'type_id' => $request->type_id,
                 'audience_id' => $request->audience_id,
+                'status_id' => 26
             ];
             $data->event()->create($eventData);
             $this->report($data->id);

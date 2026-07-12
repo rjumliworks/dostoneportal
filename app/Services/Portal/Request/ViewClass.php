@@ -115,32 +115,34 @@ class ViewClass
             }
         }else{
             $options = collect();
-            $item = UserCredit::with('leave')
-            ->where('leave_id', 14)
+            $items = UserCredit::with('leave')
+            ->whereIn('leave_id', [14,17])
             ->where('user_id', $user_id)
             ->where('is_active', 1)
             ->where('year', $year)
-            ->first();
+            ->get();
 
-            if ($item) {
-                $options->push([
-                    'label' => 'Require Credits',
-                    'options' => [
-                        'value' => $item->id,
-                        'type_id' => $item->leave->id,
-                        'label' => $item->leave->name.' - '.$item->balance,
-                        'name' => $item->leave->name,
-                        'citation' => $item->leave->citation,
-                        'is_regular' => $item->leave->is_regular,
-                        'is_after' => $item->leave->is_after,
-                        'type' => $item->leave->type,
-                        'others' => $item->leave->others,
-                        'balance' => $item->balance,
-                        'disabled'   => ($item->balance == 0 || $item->balance == 0.00),
-                        'required_credits' => true,
-                        'required_document' => false
-                    ]
-                ]);
+            if ($items) {
+                foreach($items as $item){
+                    $options->push([
+                        'label' => 'Require Credits',
+                        'options' => [
+                            'value' => $item->id,
+                            'type_id' => $item->leave->id,
+                            'label' => $item->leave->name.' - '.$item->balance,
+                            'name' => $item->leave->name,
+                            'citation' => $item->leave->citation,
+                            'is_regular' => $item->leave->is_regular,
+                            'is_after' => $item->leave->is_after,
+                            'type' => $item->leave->type,
+                            'others' => $item->leave->others,
+                            'balance' => $item->balance,
+                            'disabled'   => ($item->balance == 0 || $item->balance == 0.00),
+                            'required_credits' => true,
+                            'required_document' => false
+                        ]
+                    ]);
+                }
             }
 
             $leaves = ListLeave::where(function ($query) use ($sex){

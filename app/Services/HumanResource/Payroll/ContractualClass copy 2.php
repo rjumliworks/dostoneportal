@@ -419,7 +419,6 @@ class ContractualClass
         $start = Carbon::parse($data->start);
         $end = Carbon::parse($data->end);
         $employee = User::with('organization.shift.times')->findOrFail($user);
-        $station_id = UserOrganization::where('user_id',$user)->value('station_id');
 
         $workingDays = $employee->organization->shift->times
         ->pluck('days')
@@ -429,27 +428,42 @@ class ContractualClass
         ->map(fn ($day) => (int) trim($day))
         ->unique()
         ->values();
-
-
         $datesList = collect();
-
-        $holidays = Schedule::whereHas('stations', function ($q) use ($station_id) {
-            $q->where('station_id', $station_id);
+        $travels = Request::where('type_id',156)
+        ->whereHas('tags', function ($query) use ($user) {
+            $query->where('user_id', $user);
         })
-        ->whereBetween('start', [
-            Carbon::parse($start)->startOfDay(),
-            Carbon::parse($end)->endOfDay(),
-        ])
-        ->whereIn('event_id',[1,2])
-        ->pluck('start')
-         ->map(function ($date) {
-            return Carbon::parse($date)->toDateString();
-        })->toArray();
+        ->whereHas('dates', function ($q) use ($start, $end) {
+            $q->whereBetween('start', [$start, $end]) // starts this month
+            ->orWhereBetween('end', [$start, $end]) // ends this month
+            ->orWhere(function ($q2) use ($start, $end) { // spans whole month
+                $q2->where('start', '<', $start)
+                    ->where('end', '>', $end);
+            });
+        })
+        ->with('dates')
+        ->get();
+        $obs = Request::where('type_id',192)
+        ->whereHas('tags', function ($query) use ($user) {
+            $query->where('user_id', $user);
+        })
+        ->whereHas('dates', function ($q) use ($start, $end) {
+            $q->whereBetween('start', [$start, $end]) // starts this month
+            ->orWhereBetween('end', [$start, $end]) // ends this month
+            ->orWhere(function ($q2) use ($start, $end) { // spans whole month
+                $q2->where('start', '<', $start)
+                    ->where('end', '>', $end);
+            });
+        })
+        ->with('dates')
+        ->get();
+        // $travels = [];
+        // $obs = [];
        
 
-        $leaves = Request::where('type_id', 158)
+        $approvedLeaves = Request::where('type_id', 158)
         ->whereHas('tags', fn($q) => $q->where('user_id', $user))
-        ->whereHas('dates', function ($q) use ($start, $end) {
+        ->withWhereHas('dates', function ($q) use ($start, $end) {
             $q->whereBetween('start', [$start, $end])
                 ->orWhereBetween('end', [$start, $end])
                 ->orWhere(function ($q2) use ($start, $end) {
@@ -459,39 +473,66 @@ class ContractualClass
         })
         ->get();
 
-        foreach ($leaves as $ob) {
-            foreach ($ob->dates as $obDate) {
-                $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
-                foreach ($period3 as $day) {
-                    $datesList->push($day->format('Y-m-d'));
+        dd($approvedLeaves);
+
+        foreach ($travels as $travel) {
+            foreach ($travel->dates as $range) {
+                $current = Carbon::parse($range->start);
+                $endDate = Carbon::parse($range->end);
+
+                while ($current->lte($endDate)) {
+                    $datesList->push($current->toDateString());
+                    $current->addDay();
                 }
             }
         }
 
+           foreach ($obs as $ob) {
+            foreach ($ob->dates as $range) {
+                $current = Carbon::parse($range->start);
+                $endDate = Carbon::parse($range->end);
+
+                while ($current->lte($endDate)) {
+                    $datesList->push($current->toDateString());
+                    $current->addDay();
+                }
+            }
+        }
+$leaves = collect();
+        foreach ($approvedLeaves as $leave) {
+            $current = Carbon::parse($leave->start_date);
+            $endDate = Carbon::parse($leave->end_date);
+
+            while ($current->lte($endDate)) {
+                $leaves->push($current->toDateString());
+                $current->addDay();
+            }
+        }
+
+        dd($leaves);
+
         $datesList = $datesList->unique()->sort()->values();
-     
         $ignoredDates = $datesList
-        ->merge($holidays)
+            ->merge($this->holidays)
+            ->merge($leaves)
             ->unique()
             ->sort()
             ->values();
 
-
-        $period = CarbonPeriod::create($start, $end);
-        $filteredPeriod = collect($period)->reject(function ($date) use ($ignoredDates) {
+                $period = CarbonPeriod::create($start, $end);
+            $filteredPeriod = collect($period)->reject(function ($date) use ($ignoredDates) {
             return in_array($date->toDateString(), $ignoredDates->toArray());
         });
-       
         $lateMinutes = 0;
         $undertimeMinutes = 0;
         $absentDays = 0;
 
         $dtrs = Dtr::where('user_id',$user)
         ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
+        ->whereNotIn('date', $ignoredDates)
         ->get()
         ->keyBy(fn ($dtr) => Carbon::parse($dtr->date)->toDateString());
-       
-        
+        $test = [];
 
         foreach ($filteredPeriod as $day) {
             $dayNumber = $day->dayOfWeekIso;
@@ -503,10 +544,28 @@ class ContractualClass
             $dayString = $day->toDateString();
             $dtr = $dtrs[$dayString] ?? null;
             if($dtr){
+                $hasAmLogs = !empty($dtr->am_in_at) && !empty($dtr->am_out_at);
+                $hasPmLogs = !empty($dtr->pm_in_at) && !empty($dtr->pm_out_at);
+            
+                if (!$hasAmLogs) {
+                    $test[] = $dtr;
+                    $absentDays += 0.5;
+                }
 
-                ($dtr->hours) ? $absentDays += .5 : '';
-                $lateMinutes += $dtr->tardiness;
-                $undertimeMinutes += $dtr->undertime;
+                if (!$hasPmLogs) {
+                     $test[] = $dtr;
+                    $absentDays += 0.5;
+                }
+
+                if ($hasAmLogs && $hasPmLogs) {
+                    $amin = json_decode($dtr->am_in_at);
+                    $amout = json_decode($dtr->am_out_at);
+                    $pmin = json_decode($dtr->pm_in_at);
+                    $pmout = json_decode($dtr->pm_out_at);
+
+                    $lateMinutes += $amin->minutes + $pmin->minutes;
+                    $undertimeMinutes += $amout->minutes + $pmout->minutes;
+                }
             }else{
                 $absentDays += 1;
             }

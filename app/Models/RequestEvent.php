@@ -20,7 +20,7 @@ class RequestEvent extends Model
 
     public function type()
     {
-        return $this->belongsTo('App\Models\ListData', 'type_id', 'id');
+        return $this->belongsTo('App\Models\ListEvent', 'type_id', 'id');
     }
 
     public function mode()

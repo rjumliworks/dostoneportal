@@ -4,6 +4,7 @@ namespace App\Services\HumanResource\Dtr;
 
 use Carbon\Carbon;
 use App\Models\Dtr;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Resources\HumanResource\Dtr\IndexResource;
 
 class UpdateClass
@@ -60,10 +61,16 @@ class UpdateClass
                 $dtr = Dtr::where('id',$request->id)->first();
                 $dtr->tardiness += $tardiness;
                 $dtr->undertime += $undertime;
-                $dtr->save();
-                if ($dtr->am_in_at && $dtr->am_out_at && $dtr->pm_in_at && $dtr->pm_out_at) {
-                    $dtr->is_completed = 1;
-                    $dtr->save();
+                if($dtr->save()){
+                    if ($dtr->am_in_at && $dtr->am_out_at && $dtr->pm_in_at && $dtr->pm_out_at) {
+                        $dtr->is_completed = 1;
+                        if($dtr->save()){
+                            Artisan::call('dtr', [
+                                'id' => $dtr->id,
+                            ]);
+                        }
+                    }
+                    
                 }
             }
         }

@@ -229,7 +229,19 @@ class DropdownClass
         return $data;
     }
 
-
+    public function event_list()
+    {
+        $data = ListEvent::where('is_active', 1)
+            ->orderBy('id','asc')->get()
+            ->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'name' => $item->name
+                ];
+            });
+            return $data;
+    }
+    
     public function events()
     {
         $counts = Schedule::selectRaw('event_id, COUNT(*) as total')
