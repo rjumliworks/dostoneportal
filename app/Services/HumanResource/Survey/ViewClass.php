@@ -112,6 +112,7 @@ class ViewClass
 
     public function question()
     {
+        $eligible = User::where('is_active', 1)->count();
         $body = SurveyQuestion::leftJoin('survey_answers', 'survey_questions.id', '=', 'survey_answers.question_id')
         ->selectRaw("
             survey_questions.id,
@@ -121,7 +122,8 @@ class ViewClass
             COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
             COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
             COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-            COUNT(survey_answers.id) AS total,
+            COUNT(survey_answers.id) AS answers,
+            COUNT(DISTINCT survey_answers.user_id) AS respondents,
             COALESCE(SUM(survey_answers.rating),0) AS score,
             ROUND(
                 COALESCE(SUM(survey_answers.rating),0) /
@@ -131,6 +133,10 @@ class ViewClass
         ")
         ->groupBy('survey_questions.id', 'survey_questions.question')
         ->get();
+
+        $body->each(function ($row) use ($eligible) {
+            $row->eligible = $eligible;
+        });
 
         return $this->addSummary($body);
     }
@@ -148,7 +154,9 @@ class ViewClass
                 COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
                 COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
                 COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-                COUNT(survey_answers.id) AS total,
+                COUNT(survey_answers.id) AS answers,
+                COUNT(DISTINCT survey_answers.user_id) AS respondents,
+                COUNT(DISTINCT users.id) AS eligible,
                 COALESCE(SUM(survey_answers.rating),0) AS score,
                 ROUND(
                     COALESCE(SUM(survey_answers.rating),0) /
@@ -176,7 +184,9 @@ class ViewClass
                 COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
                 COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
                 COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-                COUNT(survey_answers.id) AS total,
+                COUNT(survey_answers.id) AS answers,
+                COUNT(DISTINCT survey_answers.user_id) AS respondents,
+                COUNT(DISTINCT users.id) AS eligible,
                 COALESCE(SUM(survey_answers.rating),0) AS score,
                 ROUND(
                     COALESCE(SUM(survey_answers.rating),0) /
@@ -207,7 +217,9 @@ class ViewClass
                 COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
                 COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
                 COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-                COUNT(survey_answers.id) AS total,
+                COUNT(survey_answers.id) AS answers,
+                COUNT(DISTINCT survey_answers.user_id) AS respondents,
+                COUNT(DISTINCT users.id) AS eligible,
                 COALESCE(SUM(survey_answers.rating),0) AS score,
                 ROUND(
                     COALESCE(SUM(survey_answers.rating),0) /
@@ -222,25 +234,28 @@ class ViewClass
         return $this->addSummary($body);
     }
 
-    private function addSummary($body)
-    {
-        $footer = [
-            'dn'     => $body->sum('dn'),
-            'n'      => $body->sum('n'),
-            'ns'     => $body->sum('ns'),
-            'y'      => $body->sum('y'),
-            'dy'     => $body->sum('dy'),
-            'total'  => $body->sum('total'),
-            'score'  => $body->sum('score'),
-        ];
+   private function addSummary($body)
+{
+    $footer = [
+        'dn' => $body->sum('dn'),
+        'n' => $body->sum('n'),
+        'ns' => $body->sum('ns'),
+        'y' => $body->sum('y'),
+        'dy' => $body->sum('dy'),
 
-        $footer['percentage'] = $footer['total']
-            ? round(($footer['score'] / ($footer['total'] * 5)) * 100, 2)
-            : 0;
+        // answer records
+        'answers' => $body->sum('answers'),
 
-        return [
-            'body' => $body,
-            'footer' => $footer
-        ];
-    }
+        'score' => $body->sum('score'),
+    ];
+
+    $footer['percentage'] = $footer['answers']
+        ? round(($footer['score'] / ($footer['answers'] * 5)) * 100, 2)
+        : 0;
+
+    return [
+        'body' => $body,
+        'footer' => $footer
+    ];
+}
 }
