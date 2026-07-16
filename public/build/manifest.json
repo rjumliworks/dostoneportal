@@ -200,8 +200,16 @@
     "file": "assets/logo-sm-BMbbSDmV.png",
     "src": "public/images/logo-sm.png"
   },
+  "public/images/logos/bagongpilipinas.png": {
+    "file": "assets/bagongpilipinas-DcObCbJR.png",
+    "src": "public/images/logos/bagongpilipinas.png"
+  },
+  "public/images/logos/logo-sm.png": {
+    "file": "assets/logo-sm-BMbbSDmV.png",
+    "src": "public/images/logo-sm.png"
+  },
   "resources/js/app.js": {
-    "file": "assets/app-Br8QYx4y.js",
+    "file": "assets/app-SZx_yrDo.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -218,12 +226,13 @@
       "node_modules/leaflet/dist/leaflet-src.esm.js"
     ],
     "css": [
-      "assets/app-ChMEVc4e.css"
+      "assets/app-BgG2ZQ7o.css"
     ],
     "assets": [
       "assets/logo-sm-BMbbSDmV.png",
       "assets/reset-password-BNEyUq9v.png",
       "assets/new-password-DFqpapdk.png",
+      "assets/bagongpilipinas-DcObCbJR.png",
       "assets/logo-dark-BTQwWYkM.png",
       "assets/logo-light-xO5Q2xFH.png",
       "assets/customer-BnSpBMSv.png",
