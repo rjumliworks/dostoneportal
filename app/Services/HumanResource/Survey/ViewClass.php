@@ -112,8 +112,12 @@ class ViewClass
 
     public function question()
     {
+        $survey_id = $this->activeSurveyId();
         $eligible = User::where('is_active', 1)->count();
-        $body = SurveyQuestion::leftJoin('survey_answers', 'survey_questions.id', '=', 'survey_answers.question_id')
+        $body = SurveyQuestion::leftJoin('survey_answers', function ($join) use ($survey_id) {
+            $join->on('survey_questions.id', '=', 'survey_answers.question_id')
+                ->where('survey_answers.survey_id', $survey_id);
+        })
         ->selectRaw("
             survey_questions.id,
             survey_questions.question AS name,
@@ -143,10 +147,14 @@ class ViewClass
 
     public function station()
     {
+        $survey_id = $this->activeSurveyId();
         $body = ListDropdown::where('classification', 'Station')
             ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.station_id')
             ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
-            ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
+            ->leftJoin('survey_answers', function ($join) use ($survey_id) {
+                $join->on('users.id', '=', 'survey_answers.user_id')
+                    ->where('survey_answers.survey_id', $survey_id);
+            })
             ->selectRaw("
                 list_dropdowns.name AS name,
                 COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
@@ -173,10 +181,14 @@ class ViewClass
 
     public function division()
     {
+        $survey_id = $this->activeSurveyId();
         $body = ListDropdown::where('classification', 'Division')
             ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.division_id')
             ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
-            ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
+            ->leftJoin('survey_answers', function ($join) use ($survey_id) {
+                $join->on('users.id', '=', 'survey_answers.user_id')
+                    ->where('survey_answers.survey_id', $survey_id);
+            })
             ->selectRaw("
                 list_dropdowns.name AS name,
                 COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
@@ -203,14 +215,19 @@ class ViewClass
 
     public function unit($request)
     {
+        $survey_id = $this->activeSurveyId();
         $body = ListUnit::where('list_units.is_active', 1)
             ->leftJoin('user_organizations', 'list_units.id', '=', 'user_organizations.unit_id')
             ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
-            ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
+            ->leftJoin('survey_answers', function ($join) use ($survey_id) {
+                $join->on('users.id', '=', 'survey_answers.user_id')
+                    ->where('survey_answers.survey_id', $survey_id);
+            })
             ->when($request->division, function ($query, $division) {
                 $query->where('list_units.division_id', $division);
             })
             ->selectRaw("
+                list_units.id,
                 list_units.name AS name,
                 COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
                 COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
@@ -227,35 +244,60 @@ class ViewClass
                     2
                 ) AS percentage
             ")
-            ->groupBy('list_units.name')
+            ->groupBy('list_units.id', 'list_units.name')
             ->orderBy('list_units.name')
             ->get();
+
+            
+             // or your survey id variable
+
+            $body->each(function ($item) use ($survey_id) {
+
+                $item->not_submitted = User::where('users.is_active', 1)
+                    ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
+                    ->where('user_organizations.unit_id', $item->id)
+                    ->whereNotExists(function ($query) use ($survey_id) {
+                        $query->selectRaw(1)
+                            ->from('survey_answers')
+                            ->whereColumn('survey_answers.user_id', 'users.id')
+                            ->where('survey_answers.survey_id', $survey_id);
+                    })
+                    ->pluck('users.username')
+                    ->values();
+            });
+
+        
 
         return $this->addSummary($body);
     }
 
-   private function addSummary($body)
-{
-    $footer = [
-        'dn' => $body->sum('dn'),
-        'n' => $body->sum('n'),
-        'ns' => $body->sum('ns'),
-        'y' => $body->sum('y'),
-        'dy' => $body->sum('dy'),
+    private function addSummary($body)
+    {
+        $footer = [
+            'dn' => $body->sum('dn'),
+            'n' => $body->sum('n'),
+            'ns' => $body->sum('ns'),
+            'y' => $body->sum('y'),
+            'dy' => $body->sum('dy'),
 
-        // answer records
-        'answers' => $body->sum('answers'),
+            // answer records
+            'answers' => $body->sum('answers'),
 
-        'score' => $body->sum('score'),
-    ];
+            'score' => $body->sum('score'),
+        ];
 
-    $footer['percentage'] = $footer['answers']
-        ? round(($footer['score'] / ($footer['answers'] * 5)) * 100, 2)
-        : 0;
+        $footer['percentage'] = $footer['answers']
+            ? round(($footer['score'] / ($footer['answers'] * 5)) * 100, 2)
+            : 0;
 
-    return [
-        'body' => $body,
-        'footer' => $footer
-    ];
-}
+        return [
+            'body' => $body,
+            'footer' => $footer
+        ];
+    }
+
+    private function activeSurveyId()
+    {
+        return Survey::where('is_active', 1)->value('id');
+    }
 }
