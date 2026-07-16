@@ -13,6 +13,7 @@
                                           
                                             <BCol md>
                                                 <div>
+                                                    
                                                     <h4 class="fw-bold">{{ survey.year }} - {{ survey.semester.name }} </h4>
                                                     <div class="hstack gap-3 flex-wrap">
                                                         <div><i class="ri-qr-code-fill align-bottom me-1"></i> {{survey.year}}</div>

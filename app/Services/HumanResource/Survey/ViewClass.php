@@ -49,6 +49,7 @@ class ViewClass
 
         $statuses = ListData::where('is_active', 1)
             ->where('type', 'Employment Status')
+            ->whereNot('id',18)
             ->get()
             ->map(function ($item) use ($id) {
 
@@ -206,6 +207,7 @@ class ViewClass
                     2
                 ) AS percentage
             ")
+            ->where('list_dropdowns.type','Main')
             ->groupBy('list_dropdowns.name')
             ->orderBy('list_dropdowns.name')
             ->get();
@@ -299,5 +301,21 @@ class ViewClass
     private function activeSurveyId()
     {
         return Survey::where('is_active', 1)->value('id');
+    }
+
+    public function print($reference){
+
+      
+        $main = $this->counts($reference);
+        $questions = $this->question();
+          
+        $array = [
+            'counts' => $main,
+            'questions' => $questions
+        ];
+        $pdf = \PDF::loadView('reports.survey',$array)->setPaper('a4', 'portrait');
+        $pdf->output();
+        
+        return $pdf->stream('test.pdf');
     }
 }

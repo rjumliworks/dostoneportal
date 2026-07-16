@@ -38,6 +38,9 @@ class SurveyController extends Controller
             case 'Unit':
                 return $this->view->unit($request);
             break;
+            case 'print':
+                return $this->view->print($request->id);
+            break;
             default:
                 return inertia('Modules/HumanResource/Surveys/Index',[
                     'dropdowns' => [

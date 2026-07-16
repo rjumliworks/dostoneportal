@@ -48,6 +48,9 @@
                     </div>
                 </li>
             </ul>
+            <div class="mt-auto p-3">
+                <button type="button" @click="openPrint()" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#composemodal"><i class="ri-printer-fill me-2"></i>Print Morale Survey</button>
+            </div>
         </div>
     </div>
 </template>
@@ -65,6 +68,11 @@ export default {
                 'ri-account-circle-fill','ri-emotion-fill','ri-user-3-fill','ri-government-fill'
             ]
         }
+    },
+    methods: {
+        openPrint(){
+            window.open('/surveys?option=print&id='+this.survey.reference);
+        },
     }
 }
 </script>

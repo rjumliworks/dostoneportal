@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Model;
 
 class Survey extends Model
 {
     protected $fillable = ['reports','year','is_active','is_completed','semester_id','user_id','finished_at'];
+
+    protected $appends = ['reference'];
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
 
     public function answers()
     {
