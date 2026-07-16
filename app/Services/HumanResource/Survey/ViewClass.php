@@ -305,11 +305,11 @@ class ViewClass
 
     public function print($reference){
 
-      
+
         $main = $this->counts($reference);
         $questions = $this->question();
-          
         $array = [
+            'info' => Survey::with('semester')->where('is_active', 1)->first(),
             'counts' => $main,
             'questions' => $questions
         ];

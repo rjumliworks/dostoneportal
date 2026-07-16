@@ -45,7 +45,6 @@
                     <div style="font-size: 15px; margin-bottom: 0px; font-weight: bold;">DEPARTMENT OF SCIENCE AND TECHNOLOGY</div>
                     <div style="font-size:13px;">ZAMBOANGA PENINSULA</div>
                     <div style="font-size:11px;  font-weight: bold;">OneDOST4U: Solutions and Opportunities for All</div>
-                
                 </td>
                 <td style="width:78px; text-align:right;">
                     <img src="{{ public_path('images/logos/bagongpilipinas.png') }}" style="width:75px;">
@@ -54,45 +53,52 @@
         </table>
 
         <table style="width:100%; border-collapse:collapse; margin: 0px 0; font-size:11px;">
-            <tr>
-                <td rowspan="2" style="width:34%; border:1px solid #000; padding:3px; text-align:center; vertical-align:middle;">
-                    <div style="font-size:10px; font-weight:bold;">
-                        OVERALL SATISFACTION
-                    </div>
-                    <div style="font-size:20px; font-weight:bold; margin:2px 0;">
-                        {{ $counts['rating'] }}
-                    </div>
-                    <div style="font-size:9px; color: #606060;">
-                        Employee Satisfaction Rating
-                    </div>
-                </td>
-                <td style="width:22%; border:1px solid #000; padding:5px; text-align:center;">
-                    <div style="font-size:10px; color: #606060;">Eligible Employees</div>
-                    <div style="font-size:15px; font-weight:bold;">
-                        {{ $counts['active'] }}
-                    </div>
-                </td>
-                <td style="width:22%; border:1px solid #000; padding:5px; text-align:center;">
-                    <div style="font-size:10px; color: #606060;">Survey Respondents</div>
-                    <div style="font-size:15px; font-weight:bold;">
-                        {{ $counts['answered'] }}
-                    </div>
-                </td>
-                <td style="width:22%; border:1px solid #000; padding:5px; text-align:center;">
-                    <div style="font-size:10px; color: #606060;">Response Rate</div>
-                    <div style="font-size:15px; font-weight:bold;">
-                        {{ number_format(($counts['answered'] / $counts['active']) * 100, 2) }}%
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3" style="border:1px solid #000; padding:5px;">
-                    <strong>Summary:</strong>
-                    {{ $counts['answered'] }} out of {{ $counts['active'] }} eligible employees completed the survey.
-                </td>
-            </tr>
+             <thead>
+                <tr style="background:#efefef;">
+                    <th style="border:1px solid #000; padding:6px; text-align:center; text-transform: uppercase;" colspan="4">{{$info['year']}} - {{$info['semester']['name']}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2" style="width:34%; border:1px solid #000; padding:3px; text-align:center; vertical-align:middle;">
+                        <div style="font-size:10px; font-weight:bold;">
+                            OVERALL SATISFACTION
+                        </div>
+                        <div style="font-size:20px; font-weight:bold; margin:2px 0;">
+                            {{ $counts['rating'] }}
+                        </div>
+                        <div style="font-size:9px; color: #606060;">
+                            Employee Satisfaction Rating
+                        </div>
+                    </td>
+                    <td style="width:22%; border:1px solid #000; padding:5px; text-align:center;">
+                        <div style="font-size:9px; color: #606060;">Eligible Employees</div>
+                        <div style="font-size:13px; font-weight:bold;">
+                            {{ $counts['active'] }}
+                        </div>
+                    </td>
+                    <td style="width:22%; border:1px solid #000; padding:5px; text-align:center;">
+                        <div style="font-size:9px; color: #606060;">Survey Respondents</div>
+                        <div style="font-size:13px; font-weight:bold;">
+                            {{ $counts['answered'] }}
+                        </div>
+                    </td>
+                    <td style="width:22%; border:1px solid #000; padding:5px; text-align:center;">
+                        <div style="font-size:9px; color: #606060;">Response Rate</div>
+                        <div style="font-size:13px; font-weight:bold;">
+                            {{ number_format(($counts['answered'] / $counts['active']) * 100, 2) }}%
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="border:1px solid #000; padding:5px;">
+                        <strong>Summary:</strong>
+                        {{ $counts['answered'] }} out of {{ $counts['active'] }} eligible employees completed the survey.
+                    </td>
+                </tr>
+            </tbody>
         </table>
-        <h6 style="font-size: 11px; margin-top: 12px;"> Employment Status Breakdown</h6>
+        <h6 style="font-size: 11px; margin-top: 5px;"> Employment Status Breakdown</h6>
         <table style="width:100%; border-collapse:collapse; margin-top: -23px; font-size:9px;">
             <thead>
                 <tr style="background:#efefef;">
@@ -157,7 +163,7 @@
 
 
 
-        <h6 style="font-size: 11px; margin-top: 12px;"> Survey Questions Analysis</h6>
+        <h6 style="font-size: 11px; margin-top: 5px;"> Survey Questions Analysis</h6>
         <table style="width:100%; border-collapse:collapse; margin-top: -23px; font-size:9px;">
             <thead>
                 <tr style="background:#efefef;">
