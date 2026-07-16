@@ -164,7 +164,7 @@ class ViewClass
                 COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
                 COUNT(survey_answers.id) AS answers,
                 COUNT(DISTINCT survey_answers.user_id) AS respondents,
-                COUNT(DISTINCT users.id) AS eligible,
+                COUNT(DISTINCT CASE WHEN users.is_active = 1 THEN users.id END) AS eligible,
                 COALESCE(SUM(survey_answers.rating),0) AS score,
                 ROUND(
                     COALESCE(SUM(survey_answers.rating),0) /
@@ -198,7 +198,7 @@ class ViewClass
                 COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
                 COUNT(survey_answers.id) AS answers,
                 COUNT(DISTINCT survey_answers.user_id) AS respondents,
-                COUNT(DISTINCT users.id) AS eligible,
+                COUNT(DISTINCT CASE WHEN users.is_active = 1 THEN users.id END) AS eligible,
                 COALESCE(SUM(survey_answers.rating),0) AS score,
                 ROUND(
                     COALESCE(SUM(survey_answers.rating),0) /
@@ -236,7 +236,7 @@ class ViewClass
                 COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
                 COUNT(survey_answers.id) AS answers,
                 COUNT(DISTINCT survey_answers.user_id) AS respondents,
-                COUNT(DISTINCT users.id) AS eligible,
+                COUNT(DISTINCT CASE WHEN users.is_active = 1 THEN users.id END) AS eligible,
                 COALESCE(SUM(survey_answers.rating),0) AS score,
                 ROUND(
                     COALESCE(SUM(survey_answers.rating),0) /
