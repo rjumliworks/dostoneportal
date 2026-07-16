@@ -43,7 +43,7 @@
                             <p class="fs-11 mb-0 text-muted">{{ desriptions[index] }}</p>
                         </div>
                         <div class="flex-shrink-0 text-end">
-                            <h6 class="mt-2 fs-11">{{list.count}}</h6>
+                            <h6 class="mt-2 fs-11">{{list.count}} <span class="text-muted fw-normal">({{list.respondents}}/{{ list.eligible }})</span></h6>
                         </div>
                     </div>
                 </li>

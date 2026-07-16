@@ -42,41 +42,71 @@ class ViewClass
         return $data;
     }
 
-    public function counts($code){
-        $hashids = new Hashids('krad',10);
-        $id = $hashids->decode($code);
-        $statuses = ListData::where('is_active',1)->where('type','Employment Status')->get()->map(function ($item){
-            $status = $item->id;
+    public function counts($code)
+    {
+        $hashids = new Hashids('krad', 10);
+        $id = $hashids->decode($code)[0];
 
-            $averageRating = User::where('is_active', 1)
-                ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
-                ->where('user_organizations.type_id', $status)
-                ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
-                ->selectRaw('AVG(COALESCE(survey_answers.rating, 0)) as overall_rating')
-                ->value('overall_rating');
+        $statuses = ListData::where('is_active', 1)
+            ->where('type', 'Employment Status')
+            ->get()
+            ->map(function ($item) use ($id) {
 
-            $ratingPercentage = round(($averageRating / 5) * 100, 2);
+                $result = User::where('users.is_active', 1)
+                    ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
+                    ->where('user_organizations.type_id', $item->id)
+                    ->leftJoin('survey_answers', function ($join) use ($id) {
+                        $join->on('users.id', '=', 'survey_answers.user_id')
+                            ->where('survey_answers.survey_id', $id);
+                    })
+                    ->selectRaw("
+                        COALESCE(SUM(survey_answers.rating), 0) AS score,
+                        COUNT(survey_answers.id) AS total,
+                        COUNT(DISTINCT survey_answers.user_id) AS respondents,
+                        COUNT(DISTINCT users.id) AS eligible
+                    ")
+                    ->first();
 
-            return [
-                'name' => $item->name,
-                'count' =>  $ratingPercentage .'%',
-                'description' => 'TSR payment covered by the contract',
-                'icon' => 'ri-secure-payment-line',
-                'color' => 'bg-primary-subtle text-primary'
-            ];
-        });
+                $ratingPercentage = $result->total
+                    ? round(($result->score / ($result->total * 5)) * 100, 2)
+                    : 0;
 
-        $rating = User::where('is_active', 1)
-        ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
-        ->selectRaw('AVG(COALESCE(survey_answers.rating, 0)) as overall_rating')
-        ->value('overall_rating');
-        $ratingPercentage = round(($rating / 5) * 100, 2);
+                return [
+                    'name' => $item->name,
+                    'count' => $ratingPercentage . '%',
+                    'respondents' => $result->respondents,
+                    'eligible' => $result->eligible,
+                    'description' => 'Overall survey rating',
+                    'icon' => 'ri-secure-payment-line',
+                    'color' => 'bg-primary-subtle text-primary'
+                ];
+            });
+
+        $overall = User::where('users.is_active', 1)
+            ->leftJoin('survey_answers', function ($join) use ($id) {
+                $join->on('users.id', '=', 'survey_answers.user_id')
+                    ->where('survey_answers.survey_id', $id);
+            })
+            ->selectRaw("
+                COALESCE(SUM(survey_answers.rating), 0) AS score,
+                COUNT(survey_answers.id) AS total
+            ")
+            ->first();
+
+        $ratingPercentage = $overall->total
+            ? round(($overall->score / ($overall->total * 5)) * 100, 2)
+            : 0;
 
         return [
-            'answered' => SurveyAnswer::where('survey_id', $id)->distinct('user_id')->count('user_id'),
-            'active' => User::where('is_active',1)->count(),
+            'answered' => SurveyAnswer::where('survey_id', $id)
+                ->distinct('user_id')
+                ->count('user_id'),
+
+            'active' => User::where('is_active', 1)->count(),
+
             'rating' => $ratingPercentage . '%',
-            'statuses' => $statuses
+
+            'statuses' => $statuses,
         ];
     }
 
