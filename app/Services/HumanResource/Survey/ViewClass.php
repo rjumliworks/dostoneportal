@@ -80,134 +80,134 @@ class ViewClass
         ];
     }
 
-    public function question(){
+    public function question()
+    {
         $body = SurveyQuestion::leftJoin('survey_answers', 'survey_questions.id', '=', 'survey_answers.question_id')
-        ->selectRaw('
-            survey_questions.id, 
-            survey_questions.question as name, 
+        ->selectRaw("
+            survey_questions.id,
+            survey_questions.question AS name,
             COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
             COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
             COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
             COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
             COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-            COUNT(survey_answers.id) AS total
-        ')
+            COUNT(survey_answers.id) AS total,
+            COALESCE(SUM(survey_answers.rating),0) AS score,
+            ROUND(
+                COALESCE(SUM(survey_answers.rating),0) /
+                NULLIF(COUNT(survey_answers.id) * 5,0) * 100,
+                2
+            ) AS percentage
+        ")
         ->groupBy('survey_questions.id', 'survey_questions.question')
         ->get();
 
-        $footer = [
-            'dn' => $body->sum('dn'),
-            'n' => $body->sum('n'),
-            'ns' => $body->sum('ns'),
-            'y' => $body->sum('y'),
-            'dy' => $body->sum('dy'),
-            'total' => $body->sum('total'),
-        ];
-        return [
-            'body' => $body,
-            'footer' => $footer
-        ];
+        return $this->addSummary($body);
     }
 
-    public function station(){
-        $body = ListDropdown::where('classification','Station')// Start from list_dropdowns (station table)
-        ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.station_id') // Join user_organizations
-        ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id') // Join users
-        ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id') // Join survey_answers
-        ->leftJoin('survey_questions', 'survey_answers.question_id', '=', 'survey_questions.id') // Join survey_questions
-        ->selectRaw('
-            list_dropdowns.name as name, 
-            COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
-            COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
-            COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
-            COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
-            COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-            COUNT(survey_answers.id) AS total
-        ')
-        ->groupBy('list_dropdowns.name')
-        ->orderBy('list_dropdowns.name')
-        ->get();
-    
+    public function station()
+    {
+        $body = ListDropdown::where('classification', 'Station')
+            ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.station_id')
+            ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
+            ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
+            ->selectRaw("
+                list_dropdowns.name AS name,
+                COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
+                COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
+                COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
+                COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
+                COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
+                COUNT(survey_answers.id) AS total,
+                COALESCE(SUM(survey_answers.rating),0) AS score,
+                ROUND(
+                    COALESCE(SUM(survey_answers.rating),0) /
+                    NULLIF(COUNT(survey_answers.id) * 5,0) * 100,
+                    2
+                ) AS percentage
+            ")
+            ->groupBy('list_dropdowns.name')
+            ->orderBy('list_dropdowns.name')
+            ->get();
 
-        $footer = [
-            'dn' => $body->sum('dn'),
-            'n' => $body->sum('n'),
-            'ns' => $body->sum('ns'),
-            'y' => $body->sum('y'),
-            'dy' => $body->sum('dy'),
-            'total' => $body->sum('total'),
-        ];
-        return [
-            'body' => $body,
-            'footer' => $footer
-        ];
+        return $this->addSummary($body);
     }
 
-    public function division(){
-        $body = ListDropdown::where('classification','Division')// Start from list_dropdowns (station table)
-        ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.division_id') // Join user_organizations
-        ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id') // Join users
-        ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id') // Join survey_answers
-        ->leftJoin('survey_questions', 'survey_answers.question_id', '=', 'survey_questions.id') // Join survey_questions
-        ->selectRaw('
-            list_dropdowns.name as name, 
-            COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
-            COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
-            COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
-            COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
-            COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-            COUNT(survey_answers.id) AS total
-        ')
-        ->groupBy('list_dropdowns.name')
-        ->orderBy('list_dropdowns.name')
-        ->get();
-    
+    public function division()
+    {
+        $body = ListDropdown::where('classification', 'Division')
+            ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.division_id')
+            ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
+            ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
+            ->selectRaw("
+                list_dropdowns.name AS name,
+                COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
+                COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
+                COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
+                COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
+                COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
+                COUNT(survey_answers.id) AS total,
+                COALESCE(SUM(survey_answers.rating),0) AS score,
+                ROUND(
+                    COALESCE(SUM(survey_answers.rating),0) /
+                    NULLIF(COUNT(survey_answers.id) * 5,0) * 100,
+                    2
+                ) AS percentage
+            ")
+            ->groupBy('list_dropdowns.name')
+            ->orderBy('list_dropdowns.name')
+            ->get();
 
-        $footer = [
-            'dn' => $body->sum('dn'),
-            'n' => $body->sum('n'),
-            'ns' => $body->sum('ns'),
-            'y' => $body->sum('y'),
-            'dy' => $body->sum('dy'),
-            'total' => $body->sum('total'),
-        ];
-        return [
-            'body' => $body,
-            'footer' => $footer
-        ];
+        return $this->addSummary($body);
     }
 
-    public function unit($request){
-        $body = ListUnit::where('list_units.is_active',1)
-        ->leftJoin('user_organizations', 'list_units.id', '=', 'user_organizations.unit_id') 
-        ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id') 
-        ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id') 
-        ->leftJoin('survey_questions', 'survey_answers.question_id', '=', 'survey_questions.id')
-        ->when($request->division, function ($query, $division) {
-            $query->where('list_units.division_id',$division);
-        })
-        ->selectRaw('
-            list_units.name as name, 
-            COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
-            COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
-            COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
-            COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
-            COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
-            COUNT(survey_answers.id) AS total
-        ')
-        ->groupBy('list_units.name')
-        ->orderBy('list_units.name')
-        ->get();
-    
+    public function unit($request)
+    {
+        $body = ListUnit::where('list_units.is_active', 1)
+            ->leftJoin('user_organizations', 'list_units.id', '=', 'user_organizations.unit_id')
+            ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
+            ->leftJoin('survey_answers', 'users.id', '=', 'survey_answers.user_id')
+            ->when($request->division, function ($query, $division) {
+                $query->where('list_units.division_id', $division);
+            })
+            ->selectRaw("
+                list_units.name AS name,
+                COUNT(CASE WHEN survey_answers.rating = 1 THEN 1 END) AS dn,
+                COUNT(CASE WHEN survey_answers.rating = 2 THEN 1 END) AS n,
+                COUNT(CASE WHEN survey_answers.rating = 3 THEN 1 END) AS ns,
+                COUNT(CASE WHEN survey_answers.rating = 4 THEN 1 END) AS y,
+                COUNT(CASE WHEN survey_answers.rating = 5 THEN 1 END) AS dy,
+                COUNT(survey_answers.id) AS total,
+                COALESCE(SUM(survey_answers.rating),0) AS score,
+                ROUND(
+                    COALESCE(SUM(survey_answers.rating),0) /
+                    NULLIF(COUNT(survey_answers.id) * 5,0) * 100,
+                    2
+                ) AS percentage
+            ")
+            ->groupBy('list_units.name')
+            ->orderBy('list_units.name')
+            ->get();
 
+        return $this->addSummary($body);
+    }
+
+    private function addSummary($body)
+    {
         $footer = [
-            'dn' => $body->sum('dn'),
-            'n' => $body->sum('n'),
-            'ns' => $body->sum('ns'),
-            'y' => $body->sum('y'),
-            'dy' => $body->sum('dy'),
-            'total' => $body->sum('total'),
+            'dn'     => $body->sum('dn'),
+            'n'      => $body->sum('n'),
+            'ns'     => $body->sum('ns'),
+            'y'      => $body->sum('y'),
+            'dy'     => $body->sum('dy'),
+            'total'  => $body->sum('total'),
+            'score'  => $body->sum('score'),
         ];
+
+        $footer['percentage'] = $footer['total']
+            ? round(($footer['score'] / ($footer['total'] * 5)) * 100, 2)
+            : 0;
+
         return [
             'body' => $body,
             'footer' => $footer
