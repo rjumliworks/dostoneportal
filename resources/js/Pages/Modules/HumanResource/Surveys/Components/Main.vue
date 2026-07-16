@@ -58,7 +58,7 @@
                                 <td class="text-center">{{list.ns}}</td>
                                 <td class="text-center">{{list.y}}</td>
                                 <td class="text-center">{{list.dy}}</td>
-                                <td class="text-center fw-semibold">{{list.total}}</td>
+                                <td class="text-center fw-semibold">{{list.percentage}}%  <span class="text-muted fw-normal">({{list.respondents}}/{{ list.eligible }})</span></td>
                             </tr>
                         </tbody>
                         <tfoot class="bg-light tfoot-fixed">

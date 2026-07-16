@@ -1,0 +1,49 @@
+<template>
+    <div class="card-body bg-white border-bottom shadow-none">
+        <b-row class="mt-n3 mb-2 ms-n4 me-n4">
+            <b-col lg>
+                <div class="input-group mb-1">
+                    <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                    <input type="text"  placeholder="Search Venue" class="form-control" style="width: 30%;">
+                    <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
+                        <i class="ri-printer-fill search-icon"></i>
+                    </span>
+                    <b-button type="button" variant="primary" @click="openCreate">
+                        <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                    </b-button>
+                </div>
+            </b-col>
+        </b-row>
+    </div>
+    <div class="table-responsive table-card" style="height: calc(100vh - 330px);">
+        <table class="table table-nowrap align-middle mb-0">
+           
+            <thead class="bg-primary text-white">
+                <tr class="fs-10">
+                    <th style="width: 4%;"></th>
+                    <th style="width: 20%;">Name</th>
+                    <th class="">Question</th>
+                </tr>
+            </thead>
+            <tbody v-if="feedbacks.length > 0">
+                <tr v-for="(list,index) in feedbacks" v-bind:key="index" class="fs-12">
+                    <td>{{ index + 1 }}</td>
+                    <td>
+                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
+                    </td>
+                    <td>{{list.name}}</td>
+                </tr>
+            </tbody>
+            <tbody v-else>
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No records found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script>
+export default {
+    props: ['feedbacks'],
+}
+</script>

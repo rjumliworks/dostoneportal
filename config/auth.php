@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'participant' => [
+            'driver' => 'session',
+            'provider' => 'participants',
+        ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'participants',
+        ],
     ],
 
     /*
@@ -64,7 +72,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
+        'participants' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Participant::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

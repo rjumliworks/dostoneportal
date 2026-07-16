@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::domain('event.' . config('app.app_host'))->as('event.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);
+    Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
+     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
+});
+
 Route::domain('attendance.' . config('app.app_host'))->as('attendance.')->group(function () {
     Route::get('/', [App\Http\Controllers\Public\AttendanceController::class, 'index']);
     Route::post('/', [App\Http\Controllers\Public\AttendanceController::class, 'store']);
@@ -48,7 +54,12 @@ Route::middleware(['role:Asset Management Officer'])->group(function () {
 });
 
 Route::middleware(['role:Document Management Officer'])->group(function () {
-    Route::resource('/events', App\Http\Controllers\Trace\EventController::class);
+    Route::resource('/activities', App\Http\Controllers\Trace\EventController::class);
+});
+
+Route::middleware(['role:Event Manager'])->group(function () {
+    Route::resource('/events', App\Http\Controllers\Event\EventController::class);
+    Route::resource('/sessions', App\Http\Controllers\Event\SessionController::class);
 });
 
 Route::resource('/projects', App\Http\Controllers\Others\ProjectController::class);
