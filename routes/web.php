@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\VelzonRoutesController;
 use Illuminate\Support\Facades\Route;
-
+use App\Events\SessionEvent;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/broadcast-test', function () {
+    broadcast(new SessionEvent('Hello Reverb!','we'));
+
+    return 'Broadcast sent!';
+});
 
 Route::domain('event.' . config('app.app_host'))->as('event.')->group(function () {
     Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);

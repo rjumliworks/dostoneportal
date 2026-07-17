@@ -82,6 +82,9 @@ export default {
     },
     methods: {
         setupEchoListener() {
+            console.log(import.meta.env.VITE_REVERB_SCHEME);
+console.log(import.meta.env.VITE_REVERB_HOST);
+console.log(import.meta.env.VITE_REVERB_PORT);
             window.Echo.channel('session')
             .listen('SessionEvent', (event) => {
                 console.log(event);

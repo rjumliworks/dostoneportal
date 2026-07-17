@@ -13,6 +13,28 @@ use App\Http\Resources\Event\AttendanceResource;
 
 class UpdateClass
 {
+    public function session($request){
+        $data = EventSession::findOrFail($request->id);
+        $data->update([
+            'title'    => $request->title,
+            'venue_id' => $request->venue_id,
+        ]);
+
+        if ($data->detail) {
+            $data->detail->update([
+                'capacity'    => $request->capacity,
+                'description' => $request->description,
+            ]);
+        }
+
+        return [
+            'data' => $data,
+            'message' => 'Event status successfully updated.', 
+            'info' => "success"
+        ];
+
+    }
+
     public function status($request){
         $session_id = $request->id;
         $status_id = $request->status_id;

@@ -1,6 +1,6 @@
 <template>
     <b-col lg="12">
-        <b-card no-body>
+        <BCard no-body class="mt-n4 mx-n4">
             <div class="bg-success-subtle">
                 <b-card-body class="pb-0 px-4">
                      <b-row class="mb-3">
@@ -46,7 +46,7 @@
                     
                 </b-card-body>
             </div>
-        </b-card>
+        </BCard>
     </b-col>
     <Status ref="status"/>
 </template>

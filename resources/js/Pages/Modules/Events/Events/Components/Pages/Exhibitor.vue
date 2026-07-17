@@ -15,7 +15,7 @@
             </b-col>
         </b-row>
     </div>
-    <div class="table-responsive table-card" style="height: calc(100vh - 330px);">
+    <div class="table-responsive table-card" style="height: calc(100vh - 460px);">
         <table class="table table-nowrap align-middle mb-0">
             <thead class="bg-primary text-white thead-fixed">
                 <tr class="fs-10">

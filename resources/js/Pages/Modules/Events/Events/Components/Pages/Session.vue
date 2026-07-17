@@ -12,7 +12,7 @@
             </b-col>
         </b-row>
     </div>
-    <div class="table-responsive table-card" style="height: calc(100vh - 330px);">
+    <div class="table-responsive table-card" style="height: calc(100vh - 460px);">
         <table class="table table-nowrap align-middle mb-0">
             <thead class="bg-primary text-white thead-fixed">
                 <tr class="fs-10">
@@ -46,7 +46,7 @@
                         <i v-else class="ri-close-circle-fill text-danger fs-18" v-b-tooltip.hover title="Not Required"></i>
                     </td>
                     <td class="text-center">
-                        <span :class="'badge '+list.status.color+' '+list.status.type">{{list.status.name}}</span>
+                        <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
                     </td>
                      <td class="text-end">
                         <a :href="`/sessions/${list.reference}`" target="_blank">

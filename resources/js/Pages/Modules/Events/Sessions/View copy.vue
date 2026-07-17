@@ -1,7 +1,7 @@
 <template lang="">
 
     <Head title="Session" />
-    <!-- <div class="auth-page-wrapper d-flex min-vh-100">
+    <div class="auth-page-wrapper d-flex min-vh-100">
         <div class="auth-page-content">
             <Top :selected="session.data"/>
             <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
@@ -17,17 +17,7 @@
             </div>
         </div>
     </div>
-    <Message ref="message" /> -->
-    <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
-        <div class="w-100 p-4 pb-0" ref="box">
-            <BRow>
-                <Top :selected="session.data"/>
-                <BCol lg="12">
-                    <Main :selected="session.data"/>
-                </BCol>
-            </BRow>
-        </div>
-    </div>
+    <Message ref="message" />
 </template>
 <script>
     import Top from './Components/Top.vue';
@@ -37,7 +27,7 @@
     import Sidebar from './Components/Sidebar.vue';
     import PageHeader from '@/Shared/Components/PageHeader.vue';
     export default {
-       
+        layout: null,
         components: { PageHeader, simplebar, Top, Main, Message, Sidebar },
         props: ['session'],
     }

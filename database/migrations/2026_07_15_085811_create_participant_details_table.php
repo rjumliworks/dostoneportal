@@ -25,7 +25,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('sex_id'); 
             $table->foreign('sex_id')->references('id')->on('list_data')->restrictOnDelete();
             $table->string('avatar', 200)->default('avatar.jpg');
-            $table->string('signature', 200);
+            $table->string('signature', 200)->nullable();
             $table->unsignedBigInteger('participant_id');
             $table->foreign('participant_id')->references('id')->on('participants')->onDelete('cascade');
             $table->timestamps();

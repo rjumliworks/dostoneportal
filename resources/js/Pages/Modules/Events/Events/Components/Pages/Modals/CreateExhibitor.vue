@@ -11,7 +11,7 @@
                     <InputLabel for="due" value="Institution" :message="form.errors.institution"/>
                     <TextInput v-model="form.institution" type="text" class="form-control" placeholder="Please enter institution" @input="handleInput('institution')" :light="true"/>
                 </BCol>
-                <BCol lg="6" class="mt-0">
+                <BCol lg="12" class="mt-0">
                     <InputLabel for="role" value="Type" />
                     <Multiselect
                         v-model="form.type_id"
@@ -21,7 +21,7 @@
                         ref="multiselect2"
                         />
                 </BCol>
-                <BCol lg="6" class="mt-0">
+                <!-- <BCol lg="6" class="mt-0">
                     <InputLabel for="role" value="Area" />
                     <Multiselect
                         v-model="form.area"
@@ -31,7 +31,7 @@
                         placeholder="Select Area"
                         ref="multiselect2"
                         />
-                </BCol>
+                </BCol> -->
                 <BCol lg="12" class="mt-1">
                     <InputLabel for="due" value="Description" :message="form.errors.description"/>
                     <Textarea v-model="form.description" rows="4" type="text" class="form-control" placeholder="Please enter description" @input="handleInput('description')" :light="true"/>

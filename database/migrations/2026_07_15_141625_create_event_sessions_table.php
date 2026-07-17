@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreign('venue_id')->references('id')->on('event_venues')->onDelete('cascade');
             $table->unsignedInteger('event_id');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->unsignedTinyInteger('status_id')->default(16);
+            $table->unsignedTinyInteger('status_id')->default(48);
             $table->foreign('status_id')->references('id')->on('list_statuses')->onDelete('cascade');
             $table->timestamps();
         });

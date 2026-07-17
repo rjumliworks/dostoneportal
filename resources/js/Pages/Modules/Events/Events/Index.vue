@@ -66,8 +66,7 @@
                                 <th>Name</th>
                                 <th style="width: 8%;" class="text-center">Year</th>
                                 <th style="width: 8%;" class="text-center">Scope</th>
-                                <th style="width: 13%;" class="text-center">Start Date</th>
-                                <th style="width: 13%;" class="text-center">End Date</th>
+                                <th style="width: 13%;" class="text-center">Date</th>
                                 <th style="width: 7%;" class="text-center">Status</th>
                                 <th style="width: 6%;"></th>
                             </tr>
@@ -86,8 +85,7 @@
                                 </td>
                                 <td class="text-center">{{ list.year }}</td>
                                 <td class="text-center">{{ list.scope }}</td>
-                                <td class="text-center">{{ list.start }}</td>
-                                <td class="text-center">{{ list.end }}</td>
+                                <td class="text-center">{{ list.start }} - {{ list.end }}</td>
                                 <td class="text-center">
                                     <span v-if="list.is_active" class="badge bg-success">Active</span>
                                     <span v-else class="badge bg-danger">Inactive</span>

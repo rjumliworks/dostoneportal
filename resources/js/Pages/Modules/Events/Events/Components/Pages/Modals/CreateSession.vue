@@ -19,8 +19,8 @@
                     <InputLabel for="due" value="Description" :message="form.errors.description"/>
                     <Textarea v-model="form.description" type="text" class="form-control" placeholder="Please enter description" @input="handleInput('description')" :light="true"/>
                 </BCol>
-                <BCol lg="12" class="mt-1"><hr class="text-muted"/></BCol>
-                <BCol lg="12" class="mt-n2 mb-2">
+                <BCol lg="12" class="mt-1"  v-if="!editable"><hr class="text-muted"/></BCol>
+                <BCol lg="12" class="mt-n2 mb-2"  v-if="!editable">
                     <InputLabel for="role" value="Session Manager" />
                     <Multiselect
                         v-model="form.managers"
@@ -38,7 +38,7 @@
                 </BCol>
             </BRow>
         </form>
-        <form>
+        <form v-if="!editable">
             <BRow class="g-3">
                 <BCol lg="12" style="max-height: 250px; overflow: auto;"  id="my-modal-content2"> 
                     <div v-if="form.managers.length > 0" class="mt-1">
@@ -58,7 +58,7 @@
                 </BCol>
             </BRow>
         </form>
-        <form class="customform">
+        <form class="customform" v-if="!editable">
             <BRow class="g-3">
                 <BCol lg="12" class="mt-1"><hr class="text-muted"/></BCol>
                 <BCol :lg="(dateType) ? '6' : '12'" class="mt-n2">
@@ -89,7 +89,7 @@
                 </template>
             </BRow>
         </form>
-        <form v-if="dateType != 'Single Day' && dateType != null">
+        <form v-if="dateType != 'Single Day' && dateType != null && !editable">
             <BRow>
                 <BCol lg="12" class="mt-3">
                     <div class="mt-0 form-check fs-14">
@@ -247,9 +247,10 @@ export default {
         edit(data){
             this.editable = true;
             this.form.id = data.id;
-            this.form.name = data.name;
-            this.form.establishment = data.establishment;
-            this.form.address = data.address;
+            this.form.title = data.title;
+            this.form.venue_id = (data.venue) ? data.venue.id : null;
+            this.form.capacity = (data.detail) ? data.detail.capacity : null;
+            this.form.description = (data.detail) ? data.detail.description : null;
             this.showModal = true;
         },
         submit(){

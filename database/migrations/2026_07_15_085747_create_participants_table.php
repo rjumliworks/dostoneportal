@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('middlename');
             $table->string('suffix',10)->nullable();
             $table->boolean('is_completed')->default(0);
-            $table->timestamp('last_login_at');
+            $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
         });
     }
