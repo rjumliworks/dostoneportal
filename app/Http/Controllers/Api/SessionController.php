@@ -18,7 +18,7 @@ use App\Http\Resources\Api\AttendanceResource;
 use App\Http\Resources\Api\SessionResource;
 use App\Http\Resources\Api\SessionViewResource;
 use App\Http\Resources\Api\Data\QuestionResource;
-use App\Http\Resources\ParticipantListResource;
+use App\Http\Resources\Api\ParticipantListResource;
 use Illuminate\Support\Facades\Crypt;
 use App\Events\SessionEvent;
 
