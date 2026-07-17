@@ -12,16 +12,16 @@
                     </div>
                     <!-- <button type="button" @click="submit" class="btn btn-primary btn-sm mt-2 mb-3 float-end">Submit</button> -->
                     <div class="hstack gap-2 justify-content-center mt-4">
-                         <button @click="save(17)" class="btn btn-soft-success btn-md" type="button">
+                         <button @click="save(48)" class="btn btn-soft-success btn-md" type="button">
                             <div class="btn-content">Mark as Waiting</div>
                         </button>
-                        <button @click="save(18)" class="btn btn-soft-success btn-md" type="button">
+                        <button @click="save(49)" class="btn btn-soft-success btn-md" type="button">
                             <div class="btn-content">Mark as Open</div>
                         </button>
-                        <button @click="save(19)" class="btn btn-soft-success btn-md" type="button">
+                        <button @click="save(50)" class="btn btn-soft-success btn-md" type="button">
                             <div class="btn-content">Mark as Ongoing</div>
                         </button>
-                        <button @click="save(20)" class="btn btn-soft-success btn-md" type="button">
+                        <button @click="save(51)" class="btn btn-soft-success btn-md" type="button">
                             <div class="btn-content">Mark as Closed</div>
                         </button>
                     </div>
