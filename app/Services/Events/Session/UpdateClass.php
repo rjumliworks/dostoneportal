@@ -6,7 +6,7 @@ use Hashids\Hashids;
 use App\Models\Participant;
 use App\Models\EventSession;
 use App\Models\EventSessionParticipant;
-// use App\Events\SessionEvent;
+use App\Events\SessionEvent;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Resources\Event\AttendanceResource;
