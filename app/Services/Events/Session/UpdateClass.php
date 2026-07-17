@@ -43,7 +43,7 @@ class UpdateClass
         $data->status_id = $status_id;
         $data->save();
         $data = EventSession::with('status')->where('id',$session_id)->first();
-        // broadcast(new SessionEvent($data,'status'));
+        broadcast(new SessionEvent($data,'status'));
         return [
             'data' => $data->status,
             'message' => 'Event status successfully updated.', 
