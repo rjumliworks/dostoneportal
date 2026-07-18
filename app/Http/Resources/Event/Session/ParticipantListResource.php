@@ -14,6 +14,16 @@ class ParticipantListResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->participant->id,
+            'name' => $this->participant->name,
+            'email' => $this->participant->email,
+            'mobile' => $this->participant->mobile,
+            'affiliation' => $this->participant->detail->affiliation,
+            'designation' => $this->participant->detail->designation,
+            'status' => $this->status,
+            'attended_at' => $this->attended_at,
+            'created_at' => $this->created_at
+        ];
     }
 }

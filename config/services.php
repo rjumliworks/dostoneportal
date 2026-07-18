@@ -36,7 +36,8 @@ return [
         'bucket'    => env('AWS_BUCKET'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'ap-southeast-1'),
-        'collection_id' => env('REKOGNITION_COLLECTION_ID', 'dost_users'),
+        'collection_id' => env('REKOGNITION_COLLECTION_ID', 'dost9-users'),
+        'participant_id' => env('REKOGNITION_PARTICIPANT_ID', 'dost9-participants'),
     ],
 
     'google' => [

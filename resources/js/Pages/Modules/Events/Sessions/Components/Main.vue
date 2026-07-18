@@ -25,7 +25,10 @@
                                 <button class="nav-link fs-12 p-3" :class="(index == 0) ? 'active' : ''" 
                                     :id="menu+'-tab'" data-bs-toggle="pill" :data-bs-target="'#'+menu" 
                                     type="button" role="tab" :aria-controls="menu" aria-selected="true">
-                                    {{menu}}  {{ (index == 2) ? '('+selected.questions.length+')' : ''}} {{ (index == 1) ? '('+selected.participants.length+')' : ''}}
+                                    {{menu}}  
+                                    <span v-if="index == 2" class="badge bg-info ms-1 position-relative" style="top: -2px;">{{ selected.participants.length }}</span>
+                                    <span v-if="index == 3" class="badge bg-info ms-1 position-relative" style="top: -2px;">{{ selected.questions.length }}</span>
+                                    <span v-if="index == 4" class="badge bg-info ms-1 position-relative" style="top: -2px;">{{ selected.feedbacks.length }}</span>
                                 </button>
                             </li>
                         </ul>
@@ -39,12 +42,13 @@
                                 <div class="carousel-content">
                                     <transition mode="out-in">
                                         <div :key="index" class="tab-content">
-                                            <Overview v-if="menu == 'Overview'" />
+                                            <Overview :selected="selected" v-if="menu == 'Overview'" />
                                             <Activity :id="selected.id" :activities="selected.activities" :schedules="selected.schedules" v-else-if="menu == 'Activities'"/>
                                             <Participant :id="selected.key" :participants="selected.participants" v-else-if="menu == 'Participants'"/>
                                             <Certificate  v-else-if="menu == 'Certificates'"/>
                                             <Question :questions="selected.questions" v-else-if="menu == 'Questions'"/>
-                                            <Csf :feedbacks="selected.feedbacks" v-else-if="menu == 'Customer Satisfaction Feedback'"/>
+                                            <Csf :feedbacks="selected.feedbacks" v-else-if="menu == 'CSF'"/>
+                                         
                                         </div>
                                     </transition>
                                 </div>
@@ -71,7 +75,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             menus: [
-                'Overview','Participants','Questions','Activities','Customer Satisfaction Feedback'
+                'Overview','Activities','Participants','Questions','CSF'
             ],
             menu: 'Overview',
             index: null,

@@ -5,7 +5,7 @@ namespace App\Http\Resources\Event\Session;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class QuestionResource extends JsonResource
+class ParticipantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,11 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'question' => $this->question,
-            'is_answered' => $this->is_answered,
-            'participant' => new ParticipantResource($this->participant),
-            'created_at' => $this->created_at
+            'name' => $this->name,
+            'email' => $this->email,
+            'mobile' => $this->mobile,
+            'affiliation' => $this->detail->affiliation,
+            'designation' => $this->detail->designation
         ];
     }
 }

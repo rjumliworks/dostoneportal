@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use Hashids\Hashids;
 use App\Models\Participant;
+use App\Models\ParticipantFace;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Aws\Rekognition\RekognitionClient;
 
 class AvatarController extends Controller
 {
@@ -29,25 +31,60 @@ class AvatarController extends Controller
             $request->validate([
                 'image' => 'required|image|max:2048', // Assuming maximum file size is 2MB
             ]);
-           
+                $file = $request->file('image');
                 $participant = Participant::with('detail')->findOrFail($request->id);
 
                 // Delete old avatar if exists
-                if ($participant->detail->avatar) {
-                    Storage::disk('public')->delete($participant->detail->avatar);
-                }
-                $timestamp = time();
+                // if ($participant->detail->avatar) {
+                //     Storage::disk('public')->delete($participant->detail->avatar);
+                // }
                 $extension = $request->file('image')->getClientOriginalExtension();
-                $filename = $timestamp.$request->id . '.' . $extension;
-                $path = $request->file('image')->storeAs('images/avatars', $filename, 'public');
+                $filename = strtolower($participant->code). '.' . $extension;
+                $s3Path = $file->storeAs('oneportal/participants', $filename, 's3');
 
-                $participant->detail->avatar = $path;
+
+
+
+                $participant->detail->avatar = $s3Path;
                 $participant->detail->save();
+
+                try {
+                    $rekognition = new RekognitionClient([
+                        'version' => 'latest',
+                        'region'      => config('services.rekognition.region'),
+                        'credentials' => [
+                            'key'    => config('services.rekognition.key'),
+                            'secret' => config('services.rekognition.secret'),
+                        ],
+                    ]);
+
+                    $result = $rekognition->indexFaces([
+                        'CollectionId' => config('services.rekognition.participant_id'),
+                        'Image' => [
+                            'S3Object' => [
+                                'Bucket' => config('services.rekognition.bucket'),
+                                'Name' => $s3Path,
+                            ],
+                        ],
+                        'ExternalImageId' => (string) $participant->id, 
+                        'DetectionAttributes' => ['DEFAULT'],
+                    ]);
+                    foreach ($result['FaceRecords'] as $record) {
+                        ParticipantFace::create([
+                            'participant_id' => $participant->detail->id,
+                            'face_id' => $record['Face']['FaceId'],
+                            'image_id' => $record['Face']['ImageId'],
+                            'status' => 'active',
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Rekognition failed: '.$e->getMessage());
+                }
 
                 return response()->json([
                     'status'  => true,
                     'message' => 'Profile updated successfully',
-                    'data'    => asset('storage/'.$participant->detail->avatar)
+                    'data'    => $participant->detail->avatar
                 ]);
 
         }catch(\Throwable $th){

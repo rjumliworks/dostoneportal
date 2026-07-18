@@ -20,9 +20,12 @@
            
             <thead class="bg-primary text-white">
                 <tr class="fs-10">
-                    <th style="width: 4%;"></th>
-                    <th style="width: 20%;">Name</th>
-                    <th class="">Question</th>
+                    <th style="width: 3%;"></th>
+                    <th style="width: 15%;">Name</th>
+                    <th>Comment</th>
+                    <th class="text-center" style="width: 5%;">Rate</th>
+                    <th class="text-center" style="width: 10%;">Star</th>
+                    <th class="text-center" style="width: 10%;">Date</th>
                 </tr>
             </thead>
             <tbody v-if="feedbacks.length > 0">
@@ -31,7 +34,18 @@
                     <td>
                         <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
                     </td>
-                    <td>{{list.name}}</td>
+                    <td>{{list.comment}}</td>
+                    <td class="text-center">{{list.rate}}</td>
+                    <td class="text-center">
+                        <div class="fs-16 align-middle text-warning">
+                            <template v-for="i in 5" :key="i">
+                                <i v-if="list.rate >= i" class="ri-star-fill"></i>
+                                <i v-else-if="list.rate >= i - 0.5" class="ri-star-half-fill"></i>
+                                <i v-else class="ri-star-line"></i>
+                            </template>
+                        </div>
+                    </td>
+                    <td class="text-center">{{list.created_at}}</td>
                 </tr>
             </tbody>
             <tbody v-else>

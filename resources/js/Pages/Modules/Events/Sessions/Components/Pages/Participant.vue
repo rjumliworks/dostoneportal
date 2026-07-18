@@ -20,11 +20,12 @@
            
             <thead class="bg-primary text-white">
                 <tr class="fs-10">
-                    <th style="width: 4%;"></th>
+                    <th style="width: 3%;"></th>
                     <th>Name</th>
+                    <th style="width: 10%;" class="text-center">Mobile</th>
                     <th style="width: 20%;" class="text-center">Affiliation</th>
                     <th style="width: 20%;" class="text-center">Designation</th>
-                    <th style="width: 20%;" class="text-center">Attendance Record</th>
+                    <th style="width: 10%;" class="text-center">Attendance Record</th>
                     <th style="width: 10%;" class="text-center">Status</th>
                     <th style="width: 5%;" class="text-center"></th>
                 </tr>
@@ -33,14 +34,15 @@
                 <tr v-for="(list,index) in participants" v-bind:key="index" class="fs-12">
                     <td>{{ index + 1 }}</td>
                     <td>
-                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.participant.name}}</h5>
-                        <p class="fs-12 text-muted mb-0">{{list.participant.email }}</p>
+                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
+                        <p class="fs-12 text-muted mb-0">{{list.email }}</p>
                     </td>
-                    <td class="text-center">{{list.participant.affiliation}}</td>
-                    <td class="text-center">{{list.participant.designation}}</td>
-                    <td class="text-center">{{list.attended_at}}</td>
+                    <td class="text-center">{{list.mobile}}</td>
+                    <td class="text-center">{{list.affiliation}}</td>
+                    <td class="text-center">{{list.designation}}</td>
+                    <td class="text-center">{{ (list.attended_at) ? list.attended_at : '-'}}</td>
                     <td class="text-center">
-                        <span :class="'badge '+list.status.color+' '+list.status.type">{{list.status.name}}</span>
+                        <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
                     </td>
                     <td class="text-end">
                         <b-button @click="openView(list)" variant="primary" class="me-1" v-b-tooltip.hover title="View Participant" size="sm">

@@ -49,11 +49,11 @@
                         <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
                     </td>
                      <td class="text-end">
-                        <a :href="`/sessions/${list.reference}`" target="_blank">
+                        <Link :href="`/sessions/${list.reference}`" target="_blank">
                             <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                 <i class="ri-eye-fill align-bottom"></i>
                             </b-button>
-                        </a>
+                        </Link>
                         <b-button @click="openEdit(list)" class="me-1" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                             <i class="ri-pencil-fill align-bottom"></i>
                         </b-button>

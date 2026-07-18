@@ -18,7 +18,6 @@
                     </h1>
                     <!-- <p class="text-muted mb-2 fs-12">{{ selected.detail.description }}</p> -->
                 </div>
-
                 <!-- QR / Camera Box -->
                 <div class="col-lg-5" style="margin-top: 65px;">
                     <div class="text-center">
@@ -232,7 +231,6 @@ export default {
                 const fp = await FingerprintJS.load()
                 const result = await fp.get()
                 this.deviceId = result.visitorId
-                console.log(this.deviceId);
             } catch (e) {
                 console.error("Failed to load FingerprintJS:", e)
             }},
@@ -338,7 +336,7 @@ export default {
             formData.append('image', blob, 'capture.jpg');
             formData.append('type', type); 
             formData.append('device', this.deviceId); 
-            formData.append('code', this.code); 
+            formData.append('session_id', this.selected.id); 
             formData.append('option', 'dtr'); 
 
             try {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 
 class ParticipantDetail extends Model
@@ -20,9 +21,18 @@ class ParticipantDetail extends Model
             : null;
     }
 
+    public function getAvatarAttribute($value)
+    {
+        if ($value === 'noavatar.jpg') {
+            return asset('images/avatars/' . $value);
+        }
+
+        return Storage::disk('s3')->url($value);
+    }
+
     public function sex()
     {
-        return $this->belongsTo('App\Models\ListDropdown', 'sex_id', 'id');
+        return $this->belongsTo('App\Models\ListData', 'sex_id', 'id');
     }
 
     public function type()

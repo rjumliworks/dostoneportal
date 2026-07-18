@@ -11,6 +11,14 @@ class Participant extends Authenticatable
     use HasApiTokens;
     
     protected $guarded = [];
+    protected $appends = ['name'];
+
+    public function getNameAttribute()
+    {
+        $middleInitial = $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
+        $parts = [trim($this->lastname) . ',', trim($this->firstname), $middleInitial, $this->suffix];
+        return implode(' ', array_filter($parts));
+    }
 
     public function getAuthIdentifierName()
     {

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EventSessionQuestion extends Model
 {
     protected $fillable = [
-      'participant_id', 'session_id', 'question'
+      'participant_id', 'session_id', 'question', 'is_answered'
     ];
 
     public function participant()

@@ -79,6 +79,6 @@ class EventSession extends Model
 
     public function attendees()
     {
-        return $this->hasMany('App\Models\EventSessionParticipant', 'session_id')->where('status_id',8);
+        return $this->hasMany('App\Models\EventSessionParticipant', 'session_id')->where('status_id',54);
     } 
 }

@@ -13,7 +13,7 @@ class FeedbackResource extends JsonResource
             'rate' => $this->rate,
             'session_id' => $this->feedbackable_id,
             'comment' => $this->comment,
-            'name' => $this->participant->firstname.' '.$this->participant->lastname,
+            'name' => $this->participant->name,
             'avatar' => $this->participant->detail->avatar,
             'created_at' => $this->created_at 
         ];

@@ -79,14 +79,16 @@
             <tr>
                 <td style="border-right: none; border-left: none;"><span class="fw-semibold text-primary fs-12 ms-2">QR Code</span></td>
             </tr>
-            <td style="border-right: none; border-left: none;" class="text-center">
-                <img
-                    :src="selected.qr"
-                    alt="QR Code"
-                    style="width: 60%; height: auto; object-fit: contain; cursor: pointer;"
-                    @click="openImage(selected.qr)"
-                />
-            </td>
+            <tr>
+                <td style="border-right: none; border-left: none;" class="text-center">
+                    <img
+                        :src="selected.qr"
+                        alt="QR Code"
+                        style="width: 60%; height: auto; object-fit: contain; cursor: pointer;"
+                        @click="openImage(selected.qr)"
+                    />
+                </td>
+            </tr>
             <tr>
                 <td style="border-right: none; border-left: none;"><span class="fw-semibold text-primary fs-12 ms-2">Session Settings</span></td>
             </tr>

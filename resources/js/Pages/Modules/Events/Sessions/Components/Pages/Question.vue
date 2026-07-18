@@ -20,18 +20,25 @@
            
             <thead class="bg-primary text-white">
                 <tr class="fs-10">
-                    <th style="width: 4%;"></th>
-                    <th style="width: 20%;">Name</th>
+                    <th style="width: 3%;"></th>
+                    <th style="width: 15%;">Name</th>
                     <th class="">Question</th>
+                    <th style="width: 8%;" class="text-center">Status</th>
+                    <th style="width: 15%;" class="text-center">Date</th>
                 </tr>
             </thead>
             <tbody v-if="questions.length > 0">
                 <tr v-for="(list,index) in questions" v-bind:key="index" class="fs-12">
                     <td>{{ index + 1 }}</td>
                     <td>
-                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
+                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.participant.name}}</h5>
                     </td>
                     <td>{{list.question}}</td>
+                    <td class="text-center">
+                        <span v-if="list.is_answered" class="badge bg-success">Answered</span>
+                        <span v-else class="badge bg-danger">Not Answered</span>
+                    </td>
+                    <td class="text-center">{{list.created_at}}</td>
                 </tr>
             </tbody>
             <tbody v-else>

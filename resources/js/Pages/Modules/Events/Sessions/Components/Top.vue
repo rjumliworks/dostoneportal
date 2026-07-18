@@ -4,6 +4,13 @@
             <div class="bg-success-subtle">
                 <b-card-body class="pb-0 px-4">
                      <b-row class="mb-3">
+                        <div class="col-auto">
+                            <a :href="selected.qr" target="_blank" rel="noopener noreferrer">
+                                <div style="width: 50px; height: 50px;">
+                                    <img :src="selected.qr" alt="user-img" class="img-thumbnail">
+                                </div>
+                            </a>
+                        </div>
                         <b-col md>
                             <b-row class="align-items-center g-3">
                                 <b-col md>

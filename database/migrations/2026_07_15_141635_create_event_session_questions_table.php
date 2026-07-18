@@ -15,6 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->longText('question');
+            $table->boolean('is_answered')->default(0);
             $table->unsignedBigInteger('participant_id');
             $table->foreign('participant_id')->references('id')->on('participants')->onDelete('cascade');
             $table->unsignedInteger('session_id');

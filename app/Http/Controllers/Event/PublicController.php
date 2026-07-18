@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Event;
 
-use App\Models\User;
+use App\Models\Participant;
+use App\Models\EventSessionParticipant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Resources\UserResource;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\DefaultResource;
 
 class PublicController extends Controller
 {
@@ -14,7 +17,6 @@ class PublicController extends Controller
     }
 
     public function recognize(Request $request){
-        $type = $request->type;
         $request->validate(['image' => 'required|image']);
 
         $file = $request->file('image');
@@ -32,7 +34,7 @@ class PublicController extends Controller
 
         try {
             $matches = $rekognition->searchFacesByImage([
-                'CollectionId' => config('services.rekognition.collection_id'),
+                'CollectionId' => config('services.rekognition.participant_id'),
                 'Image' => [
                     'S3Object' => [
                         'Bucket' => config('services.rekognition.bucket'),
@@ -45,14 +47,10 @@ class PublicController extends Controller
 
             if (!empty($matches['FaceMatches'])) {
                 $externalId = $matches['FaceMatches'][0]['Face']['ExternalImageId'];
-                $user = User::find($externalId); // your user table
-                 $image = 'data:'.$request->file('image')->getMimeType().';base64,'.
-             base64_encode(file_get_contents($request->file('image')->getRealPath()));
-
-    return (new UserResource($user))
-        ->additional([
-            'captured_image' => $image
-        ]);
+                $user = Participant::find($externalId); // your user table
+                $image = 'data:'.$request->file('image')->getMimeType().';base64,'.base64_encode(file_get_contents($request->file('image')->getRealPath()));
+                $this->image($request,$user);
+                return (new DefaultResource($user))->additional(['captured_image' => $image]);
             } else {
                 return response()->json(['message' => 'No match found'], 404);
             }
@@ -61,23 +59,30 @@ class PublicController extends Controller
         }
     }
 
-     public function image($request)
+    public function image($request,$user)
     {
+        
         if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
             return response()->json(['error' => 'Invalid image upload.'], 422);
         }
 
         $file = $request->file('image');
         $extension = $file->getClientOriginalExtension();
-    
+  
         if (!in_array(strtolower($extension), ['jpg','jpeg','png'])) {
             return response()->json(['error' => 'Invalid image type.'], 422);
         }
 
         $filename = Str::random(10).'.'.$extension;
-        $path = 'images/visitors/'.$request->username.'/'.$filename;
-        Storage::disk('public')->putFileAs('images/visitors/'.$request->username, $file, $filename);
+        $path = 'images/participants/'.$user->code.'/'.$filename;
 
+        Storage::disk('public')->putFileAs('images/participants/'.$user->code, $file, $filename);
+        $data = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)
+        ->update([
+            'attended_at' => now(),
+            'image' =>  $path ,
+            'status_id' => 54
+        ]);
         return $path;
     }
 }

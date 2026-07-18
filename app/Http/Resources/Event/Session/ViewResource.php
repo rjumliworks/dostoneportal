@@ -22,8 +22,10 @@ class ViewResource extends JsonResource
         $result = (new Builder(
             writer: new PngWriter(),
             data: $url,
-            size: 200,
+            size: 500,
             margin: 5,
+            logoPath: public_path('images/qrlogo.png'),
+            logoResizeToWidth: 80
         ))->build();
 
         $qr = 'data:image/png;base64,' . base64_encode($result->getString());
@@ -40,7 +42,7 @@ class ViewResource extends JsonResource
             'detail' => $this->detail,
             'venue' => $this->venue,
             'activities' => $this->activities,
-            'managers' => $this->managers,
+            'managers' => ManagerResource::collection($this->managers),
             'participants' => ParticipantListResource::collection($this->participants),
             'attendees' => AttendanceResource::collection($this->attendees),
             'status' => $this->status,
