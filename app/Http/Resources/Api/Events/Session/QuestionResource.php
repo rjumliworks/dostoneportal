@@ -15,7 +15,7 @@ class QuestionResource extends JsonResource
             'participant_id' => $this->participant_id,
             'question' => $this->question,
             'is_answered' => $this->is_answered,
-            'avatar' => ($this->participant->detail->avatar != 'noavatar.jpg') ? $this->participant->detail->avatar : '/storage/images/avatars/'.$this->participant->detail->avatar,
+            'avatar' => $this->participant->detail->avatar,
             'name' => $this->participant->name,
             'created_at' => $this->created_at
         ];
