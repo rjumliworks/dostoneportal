@@ -1,19 +1,94 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Events;
 
-use Illuminate\Http\Request;
-use App\Events\SessionEvent;
 use App\Models\ListDropdown;
-use App\Models\EventExhibitor;
-use App\Models\ParticipantPoint;
 use Illuminate\Support\Facades\DB;
+use App\Models\ParticipantPoint;
+use App\Models\EventExhibitor;
 use App\Models\EventExhibitorVisitor;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Events\Exhibitor\FeedbackResource;
+use Illuminate\Http\Request;
+use App\Http\Resources\DefaultResource;
+use App\Http\Resources\Api\ExhibitorResource;
+use App\Http\Resources\Api\ExhibitorViewResource;
+use App\Events\SessionEvent;
 
 class ExhibitorController extends Controller
 {
+    public function index(Request $request)
+    {
+        $participantId = $request->participant_id;
+
+        $data = EventExhibitor::with('contact')
+            ->whereHas('event', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->with(['visitors' => function ($query) use ($participantId) {
+                $query->where('participant_id', $participantId);
+            }])
+            ->get()
+             ->map(function ($exhibitor) {
+                $visitor = $exhibitor->visitors->first();
+                $exhibitor->has_visited = $visitor ? true : false;
+                $exhibitor->has_voted = $visitor ? (bool) $visitor->has_voted : false;
+                unset($exhibitor->visitors); 
+                return $exhibitor;
+            });
+
+        return DefaultResource::collection($data);
+    }
+
+    public function view(Request $request, $id){
+        $participantId = $request->participant_id;
+
+        $data = EventExhibitor::with('contact','feedbackable.participant.detail')
+            ->withCount('visitors') // ✅ only gets the count, not full list
+            ->find($id);
+
+        if ($data) {
+            // Check if this participant has visited
+            $visitor = $data->visitors()
+                ->where('participant_id', $participantId)
+                ->first();
+
+            $data->has_visited = (bool) $visitor;
+            $data->has_voted   = $visitor ? (bool) $visitor->has_voted : false;
+            $data->feedback = $data->feedbackable
+                    ->where('participant_id', $participantId)
+                    ->first(); 
+            $data->feedbacks = $data->feedbackable;
+        }
+
+        return new ExhibitorViewResource($data);
+    }
+
+
+    public function attendance(Request $request)
+    {
+        return DB::transaction(function () use ($request) {
+            $visitor = EventExhibitorVisitor::where('participant_id', $request->participant_id)
+                ->where('exhibitor_id', $request->exhibitor_id)
+                ->first();
+
+            if ($visitor) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Attendance already recorded for this participant.'
+                ], 400);
+            }
+
+            $visitor = $this->recordAttendance($request->participant_id, $request->exhibitor_id);
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Attendance successfully recorded.',
+                'data'    => $visitor
+            ], 201);
+        });
+    }
+
+
     public function vote(Request $request)
     {
         return DB::transaction(function () use ($request) {
@@ -50,7 +125,7 @@ class ExhibitorController extends Controller
                         'participant_id'        => $request->participant_id,
                         'points'    => $engageable->points
                     ];
-                    broadcast(new SessionEvent($data, 'minus'));
+                    // broadcast(new SessionEvent($data, 'minus'));
                 }
             } else {
                 // 👍 Vote
@@ -71,7 +146,7 @@ class ExhibitorController extends Controller
                     'participant_id'        => $request->participant_id,
                     'points'    => $engage->others
                 ];
-                broadcast(new SessionEvent($data, 'plus'));
+                // broadcast(new SessionEvent($data, 'plus'));
             }
 
             // Broadcast update
@@ -80,7 +155,7 @@ class ExhibitorController extends Controller
                 'id'             => $request->exhibitor_id,
                 'status'         => $visitor->has_voted,
             ];
-            broadcast(new SessionEvent($data, 'vote'));
+            // broadcast(new SessionEvent($data, 'vote'));
 
             return response()->json([
                 'status'  => true,
@@ -90,57 +165,6 @@ class ExhibitorController extends Controller
                 'data'    => $visitor->has_voted,
             ], 200);
         });
-    }
-
-    public function feedback(Request $request){
-        $request->validate([
-            'exhibitor_id' => 'required|exists:event_exhibitors,id',
-            'participant_id' => 'required|exists:participants,id',
-            'comment' => 'required|string',
-            'questions' => 'required|array|min:1',
-            'questions.*.id' => 'required|integer|exists:event_csf_questions,id',
-            'questions.*.rating' => 'required|integer|min:1|max:5',
-        ]);
-
-        $exhibitor = EventExhibitor::where('id',$request->exhibitor_id)->first();
-        $ratings = collect($request->questions)->pluck('rating'); 
-        $entry = $exhibitor->feedbackable()->create([
-            'rate' => $ratings->avg(), 
-            'comment' => $request->comment,
-            'participant_id' => $request->participant_id
-        ]);
-        foreach($request->questions as $question){
-            $entry->ratings()->create([
-                'rating' => $question['rating'],
-                'question_id' => $question['id']
-            ]);
-        }
-        $entry->refresh();
-        if($entry) {
-            $engage = ListDropdown::find(70);
-            $point = ParticipantPoint::where('participant_id', $request->participant_id)->firstOrFail();
-
-            $entry->engageable()->create([
-                'points'   => $engage->others,
-                'type_id'  => $engage->id,
-                'point_id' => $point->id,
-            ]);
-
-            $point->points += $engage->others;
-            $point->save();
-
-            $data = [
-                'participant_id'        => $request->participant_id,
-                'points'    => $engage->others
-            ];
-            broadcast(new SessionEvent($data, 'plus'));
-        }
-        broadcast(new SessionEvent(new FeedbackResource($entry),'ex-rating'));
-        return response()->json([
-            'status' => true,
-            'message' => 'CSF submitted successfully',
-            'data' => new FeedbackResource($entry)
-        ], 200);
     }
 
     private function recordAttendance($participantId, $exhibitorId)

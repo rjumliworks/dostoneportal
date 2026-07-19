@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Events;
 
 use App\Models\Event;
 // use App\Models\Hotel;

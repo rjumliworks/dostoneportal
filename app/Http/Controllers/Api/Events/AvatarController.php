@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Events;
 
 use Hashids\Hashids;
 use App\Models\Participant;
