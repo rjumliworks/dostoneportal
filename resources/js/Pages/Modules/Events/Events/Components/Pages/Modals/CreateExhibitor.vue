@@ -106,14 +106,14 @@ export default {
         },
         submit(){
             if(this.editable){
-                this.form.put('/exhibitors/update',{
+                this.form.put('/exhibits/update',{
                     preserveScroll: true,
                     onSuccess: (response) => {
                         this.hide();
                     },
                 });
             }else{
-                this.form.post('/exhibitors',{
+                this.form.post('/exhibits',{
                     preserveScroll: true,
                     onSuccess: (response) => {
                         this.hide();

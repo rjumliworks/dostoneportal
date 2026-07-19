@@ -47,22 +47,9 @@ class SessionController extends Controller
     }
 
     public function show($id){
-        // return $this->view->view($id);
         return inertia('Modules/Events/Sessions/View',[
             'session' => $this->view->view($id),
         ]);
-        // switch(\Auth::user()->role){
-        //     case 'Administrator':
-        //         return inertia('Modules/Session/View',[
-        //             'session' => $this->view->view($id),
-        //         ]);
-        //     break;
-        //     case 'Session Manager':
-        //         return inertia('Modules/Session/Manager/View',[
-        //             'session' => $this->view->view($id),
-        //         ]);
-        //     break;
-        // }
     }
 
     public function store(SessionRequest $request){
