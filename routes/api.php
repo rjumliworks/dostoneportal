@@ -35,9 +35,9 @@ Route::get('/participant', function (Request $request) {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     
-    Route::get('/dashboard', [App\Http\Controllers\Api\DashboardController::class, 'index']);
+    Route::get('/dashboard', [App\Http\Controllers\Api\Events\DashboardController::class, 'index']);
 
-    Route::prefix('sessions')->controller(App\Http\Controllers\Api\SessionController::class)->group(function () {
+    Route::prefix('sessions')->controller(App\Http\Controllers\Api\Events\SessionController::class)->group(function () {
         Route::post('/attendance', 'attendance');
         Route::post('/question', 'question');
         Route::post('/registration', 'registration');
@@ -45,19 +45,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/feedback', 'feedback');
     });
 
-    Route::prefix('exhibitors')->controller(App\Http\Controllers\Api\ExhibitorController::class)->group(function () {
+    Route::prefix('exhibitors')->controller(App\Http\Controllers\Api\Events\ExhibitorController::class)->group(function () {
         Route::post('/attendance', 'attendance');
         Route::post('/vote', 'vote');
         Route::post('/review', 'review');
         Route::post('/feedback', 'feedback');
     });
 
-    Route::prefix('hotels')->controller(App\Http\Controllers\Api\HotelController::class)->group(function () {
+    Route::prefix('hotels')->controller(App\Http\Controllers\Api\Events\HotelController::class)->group(function () {
         Route::get('/', 'index');
     });
 
-    Route::post('/avatar', [App\Http\Controllers\Api\AvatarController::class, 'avatar']);
-    Route::post('/signature', [App\Http\Controllers\Api\AvatarController::class, 'signature']);
-    Route::post('/completed', [App\Http\Controllers\Api\AvatarController::class, 'completed']);
-    Route::post('/profile', [App\Http\Controllers\Api\ParticipantController::class, 'profile']);
+    Route::post('/avatar', [App\Http\Controllers\Api\Events\AvatarController::class, 'avatar']);
+    Route::post('/signature', [App\Http\Controllers\Api\Events\AvatarController::class, 'signature']);
+    Route::post('/completed', [App\Http\Controllers\Api\Events\AvatarController::class, 'completed']);
+    Route::post('/profile', [App\Http\Controllers\Api\Events\ParticipantController::class, 'profile']);
 });
