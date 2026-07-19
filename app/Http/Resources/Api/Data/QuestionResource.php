@@ -13,7 +13,7 @@ class QuestionResource extends JsonResource
             'id' => $this->participant_id,
             'session_id' => $this->session_id,
             'question' => $this->question,
-            'name' => $this->participant->firstname.' '.$this->participant->lastname,
+            'name' => $this->participant->name,
             'avatar' =>  ($this->participant->detail->avatar != 'noavatar.jpg') ? $this->participant->detail->avatar : asset('images/avatars/'.$this->participant->detail->avatar),
             'created_at' => $this->created_at 
         ];

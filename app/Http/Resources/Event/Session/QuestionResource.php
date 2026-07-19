@@ -16,6 +16,7 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'session_id' => $this->session_id,
             'question' => $this->question,
             'is_answered' => $this->is_answered,
             'participant' => new ParticipantResource($this->participant),
