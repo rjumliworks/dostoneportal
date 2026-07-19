@@ -50,7 +50,7 @@ class ExhibitorController extends Controller
                         'participant_id'        => $request->participant_id,
                         'points'    => $engageable->points
                     ];
-                    // broadcast(new SessionEvent($data, 'minus'));
+                    broadcast(new SessionEvent($data, 'minus'));
                 }
             } else {
                 // 👍 Vote
@@ -71,7 +71,7 @@ class ExhibitorController extends Controller
                     'participant_id'        => $request->participant_id,
                     'points'    => $engage->others
                 ];
-                // broadcast(new SessionEvent($data, 'plus'));
+                broadcast(new SessionEvent($data, 'plus'));
             }
 
             // Broadcast update
@@ -80,7 +80,7 @@ class ExhibitorController extends Controller
                 'id'             => $request->exhibitor_id,
                 'status'         => $visitor->has_voted,
             ];
-            // broadcast(new SessionEvent($data, 'vote'));
+            broadcast(new SessionEvent($data, 'vote'));
 
             return response()->json([
                 'status'  => true,
@@ -141,5 +141,30 @@ class ExhibitorController extends Controller
             'message' => 'CSF submitted successfully',
             'data' => new FeedbackResource($entry)
         ], 200);
+    }
+
+    private function recordAttendance($participantId, $exhibitorId)
+    {
+        $attendance = EventExhibitorVisitor::firstOrCreate(
+            [
+                'participant_id' => $participantId,
+                'exhibitor_id'   => $exhibitorId,
+            ]
+        );
+        if($attendance) {
+            $engage = ListDropdown::find(68);
+            $point = ParticipantPoint::where('participant_id', $participantId)->firstOrFail();
+
+            $attendance->engageable()->create([
+                'points'   => $engage->others,
+                'type_id'  => $engage->id,
+                'point_id' => $point->id,
+            ]);
+
+            $point->points += $engage->others;
+            $point->save();
+        }
+
+        return $attendance;
     }
 }
