@@ -10,6 +10,7 @@ use App\Models\ParticipantPoint;
 use Illuminate\Support\Facades\DB;
 use App\Models\EventExhibitorVisitor;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Events\Session\FeedbackResource;
 
 class ExhibitorController extends Controller
 {
