@@ -6,6 +6,7 @@ use App\Jobs\CertificateJob;
 use App\Events\SessionEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\EventSession;
 use App\Models\EventSessionQuestion;
 use App\Models\EventSessionParticipant;
 use App\Http\Resources\Api\Events\Session\FeedbackResource;
