@@ -98,7 +98,7 @@ class ExhibitorController extends Controller
             'participant_id' => 'required|exists:participants,id',
             'comment' => 'required|string',
             'questions' => 'required|array|min:1',
-            'questions.*.id' => 'required|integer|exists:csf_questions,id',
+            'questions.*.id' => 'required|integer|exists:event_csf_questions,id',
             'questions.*.rating' => 'required|integer|min:1|max:5',
         ]);
 
