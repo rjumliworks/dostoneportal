@@ -31,7 +31,7 @@
                 <tr v-for="(list,index) in questions" v-bind:key="index" class="fs-12">
                     <td>{{ index + 1 }}</td>
                     <td>
-                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.participant.name}}</h5>
+                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{(list.participant) ? list.participant.name : list.name}}</h5>
                     </td>
                     <td>{{list.question}}</td>
                     <td class="text-center">
