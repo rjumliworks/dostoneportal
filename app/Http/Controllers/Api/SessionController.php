@@ -27,7 +27,17 @@ class SessionController extends Controller
         ], 200);
     }
 
-
-    
+    public function cancel(Request $request){
+        $data = EventSessionParticipant::with('participant.detail')->where('participant_id',$request->participant_id)->where('session_id',$request->session_id)->first();
+        $old = $data;
+        $data->delete();
+        
+        broadcast(new SessionEvent(new ParticipantResource($old),'cancel'));
+        return response()->json([
+            'status' => true,
+            'message' => 'Registration cancelled successfully',
+            'data' => true
+        ], 200);
+    }
 
 }
