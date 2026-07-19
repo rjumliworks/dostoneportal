@@ -5,6 +5,7 @@ namespace App\Http\Resources\Api\Events\Session;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Api\Events\EventResource;
 
 class IndexResource extends JsonResource
 {
