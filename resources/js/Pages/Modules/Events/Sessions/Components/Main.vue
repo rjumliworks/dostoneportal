@@ -86,32 +86,30 @@ export default {
     },
     methods: {
         setupEchoListener() {
-            console.log(import.meta.env.VITE_REVERB_SCHEME);
-console.log(import.meta.env.VITE_REVERB_HOST);
-console.log(import.meta.env.VITE_REVERB_PORT);
             window.Echo.channel('session')
             .listen('SessionEvent', (event) => {
-                console.log(event);
-                switch(event.type){
-                    case 'question':
-                        this.selected.questions.unshift(event.data);
-                    break;
-                    case 'feedback':
-                        this.selected.feedbacks.unshift(event.data);
-                    break;
-                    case 'register':
-                        this.selected.participants.unshift(event.data);
-                    break;
-                    case 'cancel':
-                        const index = this.selected.participants.findIndex(p => p.participant.code === event.data.participant.code);
-                        if (index !== -1) {
-                            this.selected.participants.splice(index, 1);
-                        }
-                    break;
-                    case 'attendance':
-                        const index2 = this.selected.participants.findIndex(p => p.code === event.data.code);
-                        this.selected.participants[index2] = event.data;
-                    break;
+                if(this.selected.id == event.data.session_id){
+                    switch(event.type){
+                        case 'question':
+                            this.selected.questions.unshift(event.data);
+                        break;
+                        case 'feedback':
+                            this.selected.feedbacks.unshift(event.data);
+                        break;
+                        case 'register':
+                            this.selected.participants.unshift(event.data);
+                        break;
+                        case 'cancel':
+                            const index = this.selected.participants.findIndex(p => p.participant.code === event.data.participant.code);
+                            if (index !== -1) {
+                                this.selected.participants.splice(index, 1);
+                            }
+                        break;
+                        case 'attendance':
+                            const index2 = this.selected.participants.findIndex(p => p.code === event.data.code);
+                            this.selected.participants[index2] = event.data;
+                        break;
+                    }
                 }
             });
         },
