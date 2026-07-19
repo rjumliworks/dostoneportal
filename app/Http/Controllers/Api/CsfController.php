@@ -29,61 +29,6 @@ class CsfController extends Controller
         return DefaultResource::collection($data);
     }
 
-    // public function public(Request $request){
-    //     $validated = $request->validate([
-    //         'name' => 'nullable',
-    //         'email' => 'required',
-    //         'age' => 'required',
-    //         'sex' => 'required',
-    //         'comment' => 'required|string',
-    //         'questions' => 'required|array|min:1',
-    //         'questions.*.id' => 'required|integer|exists:csf_questions,id',
-    //         'questions.*.rating' => 'required|integer|min:1|max:5',
-    //     ]);
-
-    //     // $session = EventSession::where('id',$request->session_id)->first();
-    //     $ratings = collect($request->questions)->pluck('rating'); 
-    //     $pub = new PublicCsfEntry;
-    //     $pub->email = $request->email;
-    //     $pub->name = $request->name;
-    //     $pub->age = $request->age;
-    //     $pub->sex = $request->sex;
-    //     $pub->rate = round($ratings->avg(),1);
-    //     $pub->comment = $request->comment;
-    //     $pub->save();
-
-    //     foreach($request->questions as $question){
-    //         $pub->ratings()->create([
-    //             'rating' => $question['rating'],
-    //             'question_id' => $question['id']
-    //         ]);
-    //     }
-    //     $pub->refresh();
-    //     // broadcast(new SessionEvent($pub,'pub'));
-    //     // $this->certificate($request->session_id,$request->participant_id);
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'CSF submitted successfully',
-    //         'data' => $pub
-    //     ], 200);
-    // }
-
-    // public function fb(Request $request){
-        
-    //     $pub = new Testing;
-    //     $pub->email = $request->email;
-    //     $pub->save();
-
-
-    //     $pub->refresh();
-    // broadcast(new SessionEvent($pub,'pub'));
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Error',
-    //         'data' => $pub
-    //     ], 200);
-    // }
-
     public function session(Request $request){
         $validated = $request->validate([
             'session_id' => 'required|exists:event_sessions,id',
