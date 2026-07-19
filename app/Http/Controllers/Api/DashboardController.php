@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\DefaultResource;
 // use App\Http\Resources\Api\Data\HotelResource;
 use App\Http\Resources\Api\Events\Session\IndexResource as SessionResource;
-use App\Http\Resources\Api\Events\Exhibit\IndexResource as ExhibitorResource;
+use App\Http\Resources\Api\Events\Exhibitor\IndexResource as ExhibitorResource;
 
 class DashboardController extends Controller
 {
