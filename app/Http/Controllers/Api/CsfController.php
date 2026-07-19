@@ -97,7 +97,8 @@ class CsfController extends Controller
         $session = EventSession::where('id',$request->session_id)->first();
         $ratings = collect($request->questions)->pluck('rating'); 
         $entry = $session->feedbackable()->create([
-            'rate' => round($ratings->avg(),1),
+            'rate' => $ratings->avg(), 
+            // 'rate' => round($ratings->avg(),1),
             'comment' => $request->comment,
             'participant_id' => $request->participant_id
         ]);

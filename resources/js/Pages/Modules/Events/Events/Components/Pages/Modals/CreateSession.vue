@@ -4,11 +4,11 @@
             <BRow class="g-3">
         
                 <BCol lg="12" class="mt-3">
-                    <InputLabel for="due" value="Title" :message="form.errors.name"/>
+                    <InputLabel for="due" value="Title" :message="form.errors.title"/>
                     <TextInput v-model="form.title" type="text" class="form-control" placeholder="Please enter title" @input="handleInput('title')" :light="true"/>
                 </BCol>
                 <BCol lg="9" class="mt-0">
-                    <InputLabel for="role" value="Venue" />
+                    <InputLabel for="role" value="Venue" :message="form.errors.venue_id"/>
                     <Multiselect :options="venueOptions" v-model="form.venue_id" label="name" :message="form.errors.venue_id" placeholder="Select Venue" ref="multiselect2"/>
                 </BCol>
                 <BCol lg="3" class="mt-0">

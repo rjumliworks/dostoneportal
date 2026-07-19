@@ -10,6 +10,7 @@ use App\Services\Events\Session\SaveClass;
 use App\Services\Events\Session\UpdateClass;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Event\SessionRequest;
 
 class SessionController extends Controller
 {
@@ -64,7 +65,7 @@ class SessionController extends Controller
         // }
     }
 
-    public function store(Request $request){
+    public function store(SessionRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'session':

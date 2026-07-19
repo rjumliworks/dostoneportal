@@ -259,57 +259,50 @@
                     </div>
                 </div>
                 <div class="card-body bg-white rounded-bottom border-bottom">
-                    <p class="mb-0 text-primary fs-11 fw-semibold">Session Status</p>
+                    <p class="mb-0 text-primary fs-11 fw-semibold">Customer Satisfaction Feedback</p>
                 </div>
                 <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-570px + 100vh); overflow: auto;">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
-                        <li class="list-group-item px-0 mb-n2">
-                           <span :class="'badge fs-12 '+selected.status.bg">{{selected.status.name}}</span>
-                        </li>
-                    </ul>
-                    <hr class="text-muted">
-                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Session Venue</p>
-                    <hr class="text-muted mb-2">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
-                        <li class="list-group-item px-0">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 avatar-xs"><span
-                                        class="avatar-title bg-light p-1 rounded-circle"><i
-                                            class="ri-government-fill text-primary"></i></span></div>
-                                <div class="flex-grow-1 ms-2">
-                                    <h6 class="mb-0 fs-12">{{ selected.venue.name }}, {{ selected.venue.establishment }}</h6>
-                                    <p class="fs-11 mb-0 text-muted">Establishment</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item px-0">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 avatar-xs"><span
-                                        class="avatar-title bg-light p-1 rounded-circle"><i
-                                            class="ri-map-pin-fill text-primary"></i></span></div>
-                                <div class="flex-grow-1 ms-2">
-                                    <h6 class="mb-0 fs-12">{{ selected.venue.address }}</h6>
-                                    <p class="fs-11 mb-0 text-muted">Address</p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <hr class="text-muted">
-                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Session Manager/s</p>
-                    <hr class="text-muted mb-2">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3" style="cursor: pointer;">
-                        <li class="list-group-item px-0" v-for="(list,index) in selected.managers" v-bind:key="index">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 avatar-xs"><span
-                                        class="avatar-title bg-light p-1 rounded-circle"><i
-                                            class="ri-hand-coin-fill text-primary"></i></span></div>
-                                <div class="flex-grow-1 ms-2">
-                                    <h6 class="mb-0 fs-12">{{ list.name }}</h6>
-                                    <p class="fs-11 mb-0 text-muted">{{ list.type }}</p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    <table style="width:100%; border-collapse:collapse; margin: 0px 0; font-size:11px;">
+                        <tbody >
+                            <tr>
+                                <td rowspan="2" style="width:34%; border:1px solid #e9ebec; border-top:none; border-left:none; padding:10px; text-align:center; vertical-align:middle;">
+                                    <div class="text-primary" style="font-size:9px; font-weight:bold;">
+                                        OVERALL SATISFACTION
+                                    </div>
+                                    <div class="text-primary" style="font-size:20px; font-weight:bold; margin:2px 0;">
+                                    {{ overallSatisfaction }}
+                                    </div>
+                                    <div class="text-muted" style="font-size:9px;">
+                                        Participant Rating
+                                    </div>
+                                </td>
+                                <td style="width:22%; border:1px solid #e9ebec; border-top:none; padding:5px; text-align:center;">
+                                    <div class="text-muted" style="font-size:9px;">Participants</div>
+                                    <div style="font-size:13px; font-weight:bold;">
+                                        {{ this.selected.participants.length }}
+                                    </div>
+                                </td>
+                                <td style="width:22%; border:1px solid #e9ebec; border-top:none; padding:5px; text-align:center;">
+                                    <div class="text-muted" style="font-size:9px;">Respondents</div>
+                                    <div style="font-size:13px; font-weight:bold;">
+                                        {{ respondents }}
+                                    </div>
+                                </td>
+                                <td style="width:22%; border:1px solid #e9ebec; border-top:none; border-right:none;padding:5px; text-align:center;">
+                                    <div class="text-muted" style="font-size:9px;">Response Rate</div>
+                                    <div style="font-size:13px; font-weight:bold;">
+                                       {{ responseRate}}%
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted" colspan="3" style="border:1px solid #e9ebec; border-top:none; border-right:none; padding:5px; font-size: 8px;">
+                                    <strong>Summary:</strong>
+                                    2 out of 2 eligible employees completed the survey.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 
                 </div>
             </div>
@@ -399,6 +392,23 @@
                         ? ((answered / questions.length) * 100).toFixed(0)
                         : 0
                 };
+            },
+            respondents() {
+                return this.selected.feedbacks.length;
+            },
+            overallSatisfaction() {
+                if (!this.selected.feedbacks.length) return '0.00';
+
+                const total = this.selected.feedbacks.reduce((sum, feedback) => {
+                    return sum + Number(feedback.rate);
+                }, 0);
+
+                return (total / this.selected.feedbacks.length).toFixed(2);
+            },
+            responseRate() {
+                if (!this.selected.participants.length) return '0';
+
+                return ((this.respondents / this.selected.participants.length) * 100).toFixed(1);
             }
         },
         methods: {
