@@ -39,6 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/question', 'question');
         Route::post('/registration', 'registration');
         Route::post('/cancel', 'cancel');
+        Route::post('/feedback', 'feedback');
     });
 
     Route::prefix('exhibitors')->controller(App\Http\Controllers\Api\ExhibitorController::class)->group(function () {
@@ -53,7 +54,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('csf')->controller(App\Http\Controllers\Api\CsfController::class)->group(function () {
         Route::get('/', 'index');
-        Route::post('/session', 'session');
         Route::post('/exhibitor', 'exhibitor');
     });
 
