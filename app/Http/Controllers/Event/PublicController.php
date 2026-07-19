@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Event;
 
+use Carbon\Carbon;
 use App\Models\Participant;
 use App\Models\EventSessionParticipant;
 use App\Http\Controllers\Controller;
@@ -47,11 +48,37 @@ class PublicController extends Controller
 
             if (!empty($matches['FaceMatches'])) {
                 $externalId = $matches['FaceMatches'][0]['Face']['ExternalImageId'];
-                $user = Participant::find($externalId); // your user table
+                $user = Participant::with('detail')->find($externalId); // your user table
                 $image = 'data:'.$request->file('image')->getMimeType().';base64,'.base64_encode(file_get_contents($request->file('image')->getRealPath()));
                 $datetime =  now();
-                $this->image($request,$user,$datetime);
-                return (new DefaultResource($user))->additional(['captured_image' => $image, 'datetime' => $datetime]);
+                $attendance = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->whereNotNull('attended_at')->exists();
+                if($attendance){
+                    $data = [
+                        'name' => $user->name,
+                        'division' => $user->detail->affiliation
+                    ];
+                    return [
+                        'data' => $data,
+                        'message' => null, 
+                        'info' => 'Duplicate',
+                    ];
+                }else{
+                    $this->image($request,$user,$datetime);
+
+                    $data = [
+                        'name' => $user->name,
+                        'division' => $user->detail->affiliation,
+                        'avatar' => $user->detail->avatar,
+                        'capture' => $image,
+                        'datetime' => Carbon::parse($datetime)->format('F j, Y g:i A'),
+                    ];
+                    return [
+                        'data' => $data,
+                        'message' => null, 
+                        'info' => 'Success',
+                    ];
+                }
+                // return (new DefaultResource($user))->additional(['captured_image' => $image, 'datetime' => $datetime]);
             } else {
                 return response()->json(['message' => 'No match found'], 404);
             }
@@ -78,7 +105,7 @@ class PublicController extends Controller
         $path = 'images/participants/'.$user->code.'/'.$filename;
 
         Storage::disk('public')->putFileAs('images/participants/'.$user->code, $file, $filename);
-        $data = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)
+        EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)
         ->update([
             'attended_at' => $datetime,
             'image' =>  $path ,

@@ -1,5 +1,5 @@
 <template>
-    <div class="row g-3" style="height: calc(100vh - 424px);">
+    <div class="row g-3" style="height: calc(100vh - 408px);">
         <div class="col-lg-3">
             <div class="card bg-light-subtle shadow-none border">
                 <div class="card-header bg-light-subtle">
@@ -266,7 +266,7 @@
                         <tbody >
                             <tr>
                                 <td rowspan="2" style="width:34%; border:1px solid #e9ebec; border-top:none; border-left:none; padding:10px; text-align:center; vertical-align:middle;">
-                                    <div class="text-primary" style="font-size:9px; font-weight:bold;">
+                                    <div class="text-primary" style="font-size:10px; font-weight:bold;">
                                         OVERALL SATISFACTION
                                     </div>
                                     <div class="text-primary" style="font-size:20px; font-weight:bold; margin:2px 0;">
@@ -277,28 +277,29 @@
                                     </div>
                                 </td>
                                 <td style="width:22%; border:1px solid #e9ebec; border-top:none; padding:5px; text-align:center;">
-                                    <div class="text-muted" style="font-size:9px;">Participants</div>
-                                    <div style="font-size:13px; font-weight:bold;">
+                                    <div class="text-muted" style="font-size:10px;">Participants</div>
+                                    <div style="font-size:12px;">
                                         {{ this.selected.participants.length }}
                                     </div>
                                 </td>
                                 <td style="width:22%; border:1px solid #e9ebec; border-top:none; padding:5px; text-align:center;">
-                                    <div class="text-muted" style="font-size:9px;">Respondents</div>
-                                    <div style="font-size:13px; font-weight:bold;">
+                                    <div class="text-muted" style="font-size:10px;">Respondents</div>
+                                    <div style="font-size:12px;">
                                         {{ respondents }}
                                     </div>
                                 </td>
                                 <td style="width:22%; border:1px solid #e9ebec; border-top:none; border-right:none;padding:5px; text-align:center;">
-                                    <div class="text-muted" style="font-size:9px;">Response Rate</div>
-                                    <div style="font-size:13px; font-weight:bold;">
+                                    <div class="text-muted" style="font-size:10px;">Response Rate</div>
+                                    <div style="font-size:12px;">
                                        {{ responseRate}}%
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-muted" colspan="3" style="border:1px solid #e9ebec; border-top:none; border-right:none; padding:5px; font-size: 8px;">
-                                    <strong>Summary:</strong>
-                                    2 out of 2 eligible employees completed the survey.
+                                <td class="text-muted" colspan="3" style="border:1px solid #e9ebec; border-top:none; border-right:none; padding:8px; font-size: 8px;">
+                                    <div class="d-grid">
+                                        <button @click="openPrintCsf" class="btn btn-light btn-sm" type="button"><i class="ri-printer-fill me-1"></i>Print CSF</button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

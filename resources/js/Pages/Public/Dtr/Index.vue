@@ -127,7 +127,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                          <div v-else-if="status == 'Success'" class="d-flex w-100 justify-content-center align-items-center mb-2">
+                                        <div v-else-if="status == 'Success'" class="d-flex w-100 justify-content-center align-items-center mb-2">
                                             <div class="p-4 w-100 border rounded bg-danger-subtle">
                                                 <div class="d-flex" style="margin-bottom: -12px;">
                                                     <div class="flex-shrink-0 me-3">

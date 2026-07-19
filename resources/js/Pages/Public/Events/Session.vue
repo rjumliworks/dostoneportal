@@ -18,15 +18,12 @@
                     </h1>
                     <!-- <p class="text-muted mb-2 fs-12">{{ selected.detail.description }}</p> -->
                 </div>
-                <!-- QR / Camera Box -->
+
+
                 <div class="col-lg-5" style="margin-top: 65px;">
                     <div class="text-center">
                         <div class="position-relative d-inline-block" style="width:700px; height:400px;">
-                            <img src="/images/hands.png"
-                                 alt="Phone Frame"
-                                 class="img-fluid position-absolute"
-                                 style="top:-40%; left:0; width:100%;" />
-
+                            <img src="/images/hands.png" alt="Phone Frame" class="img-fluid position-absolute" style="top:-40%; left:0; width:100%;" />
                             <div class="position-absolute qr-box" style="top:60%; left:53.2%; transform:translate(-50%, -50%);">
                                 <div class="video-wrapper position-relative">
                                     <video
@@ -37,24 +34,19 @@
                                     </video>
                                     <div v-if="isScanning" class="scanner-overlay"></div>
                                 </div>
-                                <button
-                                    class="btn btn-lg fw-semibold btn-primary flex-fill m-3"
-                                   
-                                    @click="captureFrame"
-                                >
+                                <button class="btn btn-lg fw-semibold btn-primary flex-fill m-3" @click="captureFrame">
                                     <h5 class="mb-0 fs-15 fw-semibold text-uppercase text-white" style="font-size: 10.7px">
                                         SUBMIT 
                                     </h5>
                                     <p class="text-white fw-normal fs-10 mb-0">(Please click to submit the attendance)</p>
                                 </button>
                             </div>
-
                            
                         </div>
                     </div>
                 </div>
 
-                <!-- Attendance Table -->
+
                 <div class="col-lg-6 mt-4">
                     <div class="card bg-light-subtle shadow-none border">
                         <div class="card-header bg-light-subtle" style="height:120px;">
@@ -65,12 +57,8 @@
                                     <p class="mb-0 text-danger fs-11" v-else>Your attendance has already been recorded</p>
                                 </div>
                             </div>
-                           <div v-else-if="participant.avatar" class="pt-1 ps-1 profile-wrapper">
+                           <!-- <div v-if="participant.avatar" class="pt-1 ps-1 profile-wrapper">
                                 <div class="row align-items-center">
-                                    <!-- Captured Image -->
-                                    
-
-                                    <!-- Registered Profile -->
                                     <div class="col-auto text-center mt-n2">
                                         <img
                                             :src="participant.avatar"
@@ -80,7 +68,6 @@
                                         >
                                     </div>
 
-                                    <!-- User Info -->
                                     <div class="col">
                                         <p class="text-primary text-opacity-75 mb-1">
                                             Welcome, and thank you.
@@ -93,13 +80,44 @@
                                     </div>
 
                                     <div class="col-auto text-center mt-n2">
-            <img
-                :src="imagee"
-                alt="Captured"
-                class="rounded border"
-                style="width:100px;height:100px;object-fit:cover;"
-            >
-        </div>
+                                        <img 
+                                            :src="imagee"
+                                            alt="Captured"
+                                            class="rounded border"
+                                            style="width:100px;height:100px;object-fit:cover;"
+                                        >
+                                    </div>
+                                </div>
+                            </div> -->
+                             <div v-else-if="status == 'Success'" class="d-flex w-100 justify-content-center align-items-center mb-2">
+                                <div class="p-4 w-100 border rounded bg-success-subtle">
+                                    <div class="d-flex" style="margin-bottom: -12px;">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div style="height:2.5rem;width:2.5rem;">
+                                                <img :src="employee.avatar" alt="user-img" class="avatar-sm rounded-circle mt-n2">
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-0 fs-18 text-uppercase fw-semibold"><span class="text-body">{{employee.name}}</span></h5>
+                                            <p class="text-muted mb-n2 text-truncate-two-lines fs-12">{{employee.division}}</p>
+                                        </div>
+                                        <div class="flex-0 mb-n2">
+                                            <h5 class="mb-0 fs-18"><span class="text-body">{{employee.datetime}}</span></h5>
+                                            <p class="text-muted text-truncate-two-lines float-end fs-12">{{employee.datetype}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="status == 'Duplicate'" class="d-flex w-100 justify-content-center align-items-center mb-2">
+                                <div class="p-4 w-100 border rounded bg-warning text-center">
+                                    <p class="mb-0 text-white fw-bold fs-12">Duplicate attendance detected for <b v-if="employee" class="text-danger text-uppercase">{{ employee.name }}</b>.</p>
+                                    <p class="mb-0 text-white fs-11">The system has already logged this employee's time-in/time-out. No additional entry is needed.</p>
+                                </div>
+                            </div>
+                             <div v-else-if="status == 'Error'" class="d-flex w-100 justify-content-center align-items-center mb-2">
+                                <div class="p-4 w-100 border rounded bg-danger text-center">
+                                    <p class="mb-0 text-white fw-bold fs-12">Participant not registered in the session.</p>
+                                    <p class="mb-0 text-white fs-11">No matching participant was found based on the face data. Please register first.</p>
                                 </div>
                             </div>
                             <div v-else class="d-flex w-100 justify-content-center align-items-center">
@@ -136,7 +154,7 @@
                                         <tr class="fs-11">
                                             <th width="5%" class="text-center">#</th>
                                             <th>Name</th>
-                                            <!-- <th class="text-center">Time</th> -->
+                                            <th width="25%" class="text-center">Time</th>
                                         </tr>
                                     </thead>
                                     <tbody v-if="attendees.length">
@@ -145,7 +163,7 @@
                                             :class="['fs-12',{ 'fw-semibold bg-success-subtle': index === 0 }]">
                                             <td class="text-center">{{ index + 1 }}</td>
                                             <td>{{ list.name }}</td>
-                                            <!-- <td class="text-center">{{ list.attended_at }}</td> -->
+                                            <td class="text-center">{{ list.datetime }}</td>
                                         </tr>
                                     </tbody>
                                     <tbody v-else>
@@ -160,9 +178,10 @@
             </div>
         </div>
     </div>
-</template>
 <div :class="flashClass" class="flash-overlay"></div>
-  
+<audio ref="successBeep" src="/sounds/success.mp3"></audio>
+<audio ref="errorBuzz" src="/sounds/error.mp3"></audio>
+</template>
 <script>
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'  };
 const options1 = { hour12: false  };
@@ -173,6 +192,7 @@ export default {
     props: ['session'],
     data() {
         return {
+            currentUrl: window.location.origin,
             selected: this.session.data,
             participant: {},
             imagee: null,
@@ -343,17 +363,12 @@ export default {
                 this.isScanning = true;
                 const res = await axios.post('/recognize', formData); 
                 const data = res.data;
-                this.attendees.push(data.data);
-                this.participant = data.data;
-                this.imagee = data.captured_image;
+               
 
                 // Force Vue to detect change even if repeated status
-                this.status = null;
-                await this.$nextTick();
                 this.status = data.info;
-
-                // Update employee only if not an error
-                if (data.info === 'New' || data.info === 'Success' || data.info === 'Duplicate' || data.info === 'Disabled Overlap' || data.info === 'Disabled AM' || data.info === 'Wrong Station') {
+                
+                if (data.info === 'Success' || data.info === 'Duplicate') {
                     this.employee = data.data ? { ...data.data } : null;
                     this.user = this.employee;
 
@@ -363,19 +378,9 @@ export default {
                             this.speak("Duplicate attendance detected ")
                         }, 600)
                     };
-                    if(data.info == 'Disabled Overlap'){
-                        this.$refs.errorBuzz.play()
-                        setTimeout(() => {
-                            this.speak("You cannot time in because you have already timed out for this period.") 
-                        }, 600)
-                    }
-                    if(data.info == 'Disabled AM'){
-                        this.$refs.errorBuzz.play()
-                        setTimeout(() => {
-                            this.speak("You cannot time in because its already PM period.") 
-                        }, 600)
-                    }
                     if (data.info === 'New' || data.info === 'Success') {
+                         this.attendees.push(data.data);
+                this.participant = data.data;
                         // Add to the list only for new/success entries
                         this.$refs.successBeep.play();
                         setTimeout(() => {
@@ -383,19 +388,12 @@ export default {
                         }, 600)
                         this.lists = [this.employee, ...this.lists];
                     }
-                     if (data.info === 'Wrong Station') {
-                        // Add to the list only for new/success entries
-                        this.$refs.errorBuzz.play();
-                        setTimeout(() => {
-                            this.speak("Station mismatch detected. Kindly use the correct assigned station.")
-                        }, 600)
-                    }
                 }
                 this.resetStatusTimer();
             }catch (e) {
                 this.$refs.errorBuzz.play()
                 setTimeout(() => {
-                    this.speak("Employee not found.")
+                    this.speak("Participant not found.")
                 }, 600)
                 this.status = 'Error';
                 this.type = null;
