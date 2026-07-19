@@ -105,7 +105,7 @@ class ExhibitorController extends Controller
         $exhibitor = EventExhibitor::where('id',$request->exhibitor_id)->first();
         $ratings = collect($request->questions)->pluck('rating'); 
         $entry = $exhibitor->feedbackable()->create([
-            'rate' => round($ratings->avg(),1),
+            'rate' => $ratings->avg(), 
             'comment' => $request->comment,
             'participant_id' => $request->participant_id
         ]);
