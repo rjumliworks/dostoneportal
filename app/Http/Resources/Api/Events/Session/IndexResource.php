@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Events\Session;
 
+use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -11,7 +12,7 @@ class IndexResource extends JsonResource
     {
         $hashids = new Hashids('krad',10);
         $key = $hashids->encode($this->id);
-        
+
         return [
             'id' => $this->id,
             'key' => $key,
