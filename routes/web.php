@@ -20,7 +20,7 @@ Route::get('/broadcast-test', function () {
     return 'Broadcast sent!';
 });
 
-Route::domain('event.' . config('app.app_host'))->as('event.')->group(function () {
+Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(function () {
     Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
      Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
