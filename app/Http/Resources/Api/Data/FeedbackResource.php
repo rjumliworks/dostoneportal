@@ -15,7 +15,7 @@ class FeedbackResource extends JsonResource
             'participant_id' => $this->participant->id,
             'comment' => $this->comment,
             'name' => $this->participant->firstname.' '.$this->participant->lastname,
-            'avatar' =>  ($this->participant->detail->avatar != 'avatar.jpg') ? asset('storage/'.$this->participant->detail->avatar) : asset('images/avatars/'.$this->participant->detail->avatar),
+            'avatar' =>  ($this->participant->detail->avatar != 'noavatar.jpg') ? $this->participant->detail->avatar : asset('images/avatars/'.$this->participant->detail->avatar),
             'created_at' => $this->created_at 
         ];
     }
