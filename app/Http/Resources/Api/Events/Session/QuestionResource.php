@@ -1,20 +1,15 @@
 <?php
 
-namespace App\Http\Resources\Event\Session;
+namespace App\Http\Resources\Api\Events\Session;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return [
+         return [
             'id' => $this->id,
             'session_id' => $this->session_id,
             'participant_id' => $this->participant_id,
