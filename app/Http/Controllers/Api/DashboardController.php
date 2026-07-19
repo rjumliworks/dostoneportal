@@ -11,7 +11,6 @@ use App\Models\ParticipantPoint;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\DefaultResource;
-// use App\Http\Resources\Api\Data\HotelResource;
 use App\Http\Resources\Api\Events\Session\IndexResource as SessionResource;
 use App\Http\Resources\Api\Events\Exhibitor\IndexResource as ExhibitorResource;
 

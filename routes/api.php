@@ -34,6 +34,9 @@ Route::get('/participant', function (Request $request) {
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    
+    Route::get('/dashboard', [App\Http\Controllers\Api\DashboardController::class, 'index']);
+
     Route::prefix('sessions')->controller(App\Http\Controllers\Api\SessionController::class)->group(function () {
         Route::post('/attendance', 'attendance');
         Route::post('/question', 'question');
@@ -53,15 +56,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', 'index');
     });
 
-    Route::prefix('csf')->controller(App\Http\Controllers\Api\CsfController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/exhibitor', 'exhibitor');
-    });
-
     Route::post('/avatar', [App\Http\Controllers\Api\AvatarController::class, 'avatar']);
     Route::post('/signature', [App\Http\Controllers\Api\AvatarController::class, 'signature']);
     Route::post('/completed', [App\Http\Controllers\Api\AvatarController::class, 'completed']);
-    Route::get('/dashboard', [App\Http\Controllers\Api\DashboardController::class, 'index']);
-
     Route::post('/profile', [App\Http\Controllers\Api\ParticipantController::class, 'profile']);
 });
