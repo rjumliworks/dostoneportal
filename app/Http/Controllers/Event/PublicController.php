@@ -81,7 +81,7 @@ class PublicController extends Controller
         ->update([
             'attended_at' => now(),
             'image' =>  $path ,
-            'status_id' => 54
+            'status_id' => 53
         ]);
         return $path;
     }
