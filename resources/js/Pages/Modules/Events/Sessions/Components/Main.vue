@@ -96,6 +96,9 @@ console.log(import.meta.env.VITE_REVERB_PORT);
                     case 'question':
                         this.selected.questions.unshift(event.data);
                     break;
+                    case 'feedback':
+                        this.selected.feedbacks.unshift(event.data);
+                    break;
                     case 'register':
                         this.selected.participants.unshift(event.data);
                     break;

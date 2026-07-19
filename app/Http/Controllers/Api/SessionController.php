@@ -256,7 +256,7 @@ class SessionController extends Controller
         $old = $data;
         $data->delete();
         
-        broadcast(new SessionEvent(new ParticipantListResource($old),'cancel'));
+        broadcast(new SessionEvent(new ParticipantListResource($old),'feedback'));
         return response()->json([
             'status' => true,
             'message' => 'Registration cancelled successfully',
