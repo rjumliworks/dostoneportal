@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+use App\Events\SessionEvent;
 use App\Models\ListDropdown;
-use Illuminate\Support\Facades\DB;
-use App\Models\ParticipantPoint;
 use App\Models\EventExhibitor;
+use App\Models\ParticipantPoint;
+use Illuminate\Support\Facades\DB;
 use App\Models\EventExhibitorVisitor;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Resources\DefaultResource;
-use App\Http\Resources\Api\ExhibitorResource;
-use App\Http\Resources\Api\ExhibitorViewResource;
-use App\Events\SessionEvent;
 
 class ExhibitorController extends Controller
 {
@@ -92,5 +89,56 @@ class ExhibitorController extends Controller
                 'data'    => $visitor->has_voted,
             ], 200);
         });
+    }
+
+    public function feedback(Request $request){
+        $request->validate([
+            'exhibitor_id' => 'required|exists:event_exhibitors,id',
+            'participant_id' => 'required|exists:participants,id',
+            'comment' => 'required|string',
+            'questions' => 'required|array|min:1',
+            'questions.*.id' => 'required|integer|exists:csf_questions,id',
+            'questions.*.rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $exhibitor = EventExhibitor::where('id',$request->exhibitor_id)->first();
+        $ratings = collect($request->questions)->pluck('rating'); 
+        $entry = $exhibitor->feedbackable()->create([
+            'rate' => round($ratings->avg(),1),
+            'comment' => $request->comment,
+            'participant_id' => $request->participant_id
+        ]);
+        foreach($request->questions as $question){
+            $entry->ratings()->create([
+                'rating' => $question['rating'],
+                'question_id' => $question['id']
+            ]);
+        }
+        $entry->refresh();
+        if($entry) {
+            $engage = ListDropdown::find(70);
+            $point = ParticipantPoint::where('participant_id', $request->participant_id)->firstOrFail();
+
+            $entry->engageable()->create([
+                'points'   => $engage->others,
+                'type_id'  => $engage->id,
+                'point_id' => $point->id,
+            ]);
+
+            $point->points += $engage->others;
+            $point->save();
+
+            $data = [
+                'participant_id'        => $request->participant_id,
+                'points'    => $engage->others
+            ];
+            broadcast(new SessionEvent($data, 'plus'));
+        }
+        broadcast(new SessionEvent(new FeedbackResource($entry),'ex-rating'));
+        return response()->json([
+            'status' => true,
+            'message' => 'CSF submitted successfully',
+            'data' => new FeedbackResource($entry)
+        ], 200);
     }
 }
