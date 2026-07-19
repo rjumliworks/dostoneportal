@@ -49,8 +49,9 @@ class PublicController extends Controller
                 $externalId = $matches['FaceMatches'][0]['Face']['ExternalImageId'];
                 $user = Participant::find($externalId); // your user table
                 $image = 'data:'.$request->file('image')->getMimeType().';base64,'.base64_encode(file_get_contents($request->file('image')->getRealPath()));
-                $this->image($request,$user);
-                return (new DefaultResource($user))->additional(['captured_image' => $image]);
+                $datetime =  now();
+                $this->image($request,$user,$datetime);
+                return (new DefaultResource($user))->additional(['captured_image' => $image, 'datetime' => $datetime]);
             } else {
                 return response()->json(['message' => 'No match found'], 404);
             }
@@ -59,7 +60,7 @@ class PublicController extends Controller
         }
     }
 
-    public function image($request,$user)
+    public function image($request,$user,$datetime)
     {
         
         if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
@@ -79,7 +80,7 @@ class PublicController extends Controller
         Storage::disk('public')->putFileAs('images/participants/'.$user->code, $file, $filename);
         $data = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)
         ->update([
-            'attended_at' => now(),
+            'attended_at' => $datetime,
             'image' =>  $path ,
             'status_id' => 53
         ]);
