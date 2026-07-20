@@ -82,16 +82,32 @@
 
 <script>
 import simplebar from "simplebar-vue";
+import GLightbox from "glightbox";
+import "glightbox/dist/css/glightbox.min.css";
 export default {
-  components: { simplebar },
-  data() {
+    components: { simplebar },
+    data() {
         return {
             currentUrl: window.location.origin,
             showModal: false,
             selected: null,
         };
     },
+    mounted() {
+        this.initLightbox();
+    },
     methods: {
+         initLightbox() {
+            if (this.lightbox) {
+                this.lightbox.destroy(); // clean up old instance
+            }
+            this.lightbox = GLightbox({
+                selector: ".glightbox",
+                touchNavigation: true,
+                loop: true,
+                zoomable: true,
+            });
+        },
         show(data) {
             this.selected = data;
             this.showModal = true;
