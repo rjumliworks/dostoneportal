@@ -45,18 +45,9 @@
                         <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
                     </td>
                     <td class="text-end">
-                        <b-button @click="openView(list)" variant="primary" class="me-1" v-b-tooltip.hover title="View Participant" size="sm">
+                        <b-button @click="openView(list)" variant="success" class="me-1" v-b-tooltip.hover title="View Participant" size="sm">
                             <i class="ri-eye-fill align-bottom"></i>
                         </b-button>
-                        <!-- <b-button @click="openPrint1(list.code)" variant="primary" class="me-1" v-b-tooltip.hover title="Print Appreciation" size="sm">
-                            <i class="ri-eye-fill align-bottom"></i>
-                        </b-button> -->
-                        <!-- <b-button @click="openPrint2(list.code)" variant="primary" class="me-1" v-b-tooltip.hover title="Print Appearance" size="sm">
-                            <i class="ri-printer-fill align-bottom"></i>
-                        </b-button> -->
-                        <!-- <b-button @click="openEdit(list)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
-                            <i class="ri-pencil-fill align-bottom"></i>
-                        </b-button> -->
                     </td>
                 </tr>
             </tbody>
@@ -77,25 +68,8 @@ export default {
     components: { Pagination, Participant },
     props: ['participants','id'],
     methods: {
-        openCreate(){
-            this.$refs.create.show();
-        },
         openView(data){
             this.$refs.participant.show(data);
-        },
-        openEdit(list){
-            this.$refs.create.edit(list);
-        },
-        openPrint(){
-            window.open('/print?option=attendance&krdwrks='+this.id);
-        },
-        openPrint1(id){
-            // window.open('/print?option=session&type=appearance&krdwrks='+id);
-            window.open('/print?option=session&type=appreciation&krdwrks='+id);
-        },
-        openPrint2(id){
-            // window.open('/print?option=session&type=appearance&krdwrks='+id);
-            window.open('/print?option=session&type=appearance&krdwrks='+id);
         }
     }
 }
