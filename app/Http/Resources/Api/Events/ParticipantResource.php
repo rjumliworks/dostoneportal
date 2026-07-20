@@ -14,7 +14,7 @@ class ParticipantResource extends JsonResource
         $key = $hashids->encode($this->id);
 
         return [
-            'id' => $this->id,
+            'id' => $key,
             'code' => $this->code,
             'email' => $this->email,
             'contact_no' => $this->contact_no,
