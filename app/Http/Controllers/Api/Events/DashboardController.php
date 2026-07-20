@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Events;
 
+use Hashids\Hashids;
 use App\Models\Event;
 // use App\Models\Hotel;
 use App\Models\EventCsfQuestion;
@@ -17,8 +18,8 @@ use App\Http\Resources\Api\Events\Exhibitor\IndexResource as ExhibitorResource;
 class DashboardController extends Controller
 {
     public function index(Request $request)
-    {
-        $id = $request->user_id;
+    {   $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->user_id);
         return response()->json([
             'event'       => $this->event(),
             'points'      => $this->points($id),
