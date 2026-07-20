@@ -63,7 +63,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             menus: [
-                'Sessions','Exhibitors','Organizers','Venues','Highlights'
+                'Sessions','Exhibitors','Venues','Highlights'
             ],
             menu: 'Sessions',
             index: null,

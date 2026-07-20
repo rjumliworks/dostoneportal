@@ -10,9 +10,9 @@ class SaveClass
         $data = EventExhibitor::create(array_merge($request->all(),[
             'code' => $this->generateCode()
         ]));
-        if($data){
-            $data->contact()->create($request->except(['title','institution','description','area','is_active','event_id','option']));
-        }
+        // if($data){
+        //     $data->contact()->create($request->except(['title','institution','description','area','is_active','event_id','option']));
+        // }
         return [
             'data' => $data,
             'message' => 'Exhibitor successfully created.', 

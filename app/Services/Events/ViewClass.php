@@ -30,7 +30,17 @@ class ViewClass
   
         $data = new ViewResource(
             Event::with('venues')
-             ->with('exhibitors.contact')
+            ->with([
+                'exhibitors' => function ($query) {
+                    $query->with('contact')
+                        ->withCount([
+                            'visitors',
+                            'visitors as voted_count' => function ($q) {
+                                $q->where('has_voted', 1);
+                            }
+                        ]);
+                }
+            ])
             ->with('sessions.venue','sessions.detail','sessions.schedules','sessions.managers.user.profile')
             ->with('detail.region:code,name,region','detail.province:code,name','detail.municipality:code,name','detail.barangay:code,name')
             ->where('id',$key[0])->first()

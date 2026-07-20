@@ -36,7 +36,7 @@
                     <InputLabel for="due" value="Description" :message="form.errors.description"/>
                     <Textarea v-model="form.description" rows="4" type="text" class="form-control" placeholder="Please enter description" @input="handleInput('description')" :light="true"/>
                 </BCol>
-                <BCol lg="12" class="mt-1"><hr class="text-muted"/></BCol>
+                <!-- <BCol lg="12" class="mt-1"><hr class="text-muted"/></BCol>
                 <BCol lg="12" class="mt-n2">
                     <InputLabel for="due" value="Name" :message="form.errors.name"/>
                     <TextInput v-model="form.name" type="text" class="form-control" placeholder="Please enter name" @input="handleInput('name')" :light="true"/>
@@ -48,7 +48,7 @@
                 <BCol lg="6" class="mt-0">
                     <InputLabel for="due" value="Contact no." :message="form.errors.institution"/>
                     <TextInput v-model="form.contact_no" type="text" class="form-control" placeholder="Please enter contact no" @input="handleInput('contact_no')" :light="true"/>
-                </BCol>
+                </BCol> -->
             </BRow>
         </form>
        
@@ -79,9 +79,6 @@ export default {
                 type_id: null,
                 area: null,
                 description: null,
-                email: null,
-                contact_no: null,
-                name: null,
                 is_active: true,
                 event_id: this.id,
                 option: 'exhibitor'

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Event;
 
 use Carbon\Carbon;
 use App\Models\Participant;
+use App\Services\DropdownClass;
 use App\Models\EventSessionParticipant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,8 +14,28 @@ use App\Http\Resources\DefaultResource;
 
 class PublicController extends Controller
 {
+    protected DropdownClass $dropdown;
+
+    public function __construct(DropdownClass $dropdown){
+        $this->dropdown = $dropdown;
+    }
+
     public function index(){
-        return 'wew';
+        return inertia('Public/Events/Landing',[
+            'dropdowns' => [
+                'sexs' => $this->dropdown->dropdowns('Sex'),
+                'types' => $this->dropdown->dropdowns('Participant Type')
+            ],
+        ]);
+    }
+
+    public function registration(){
+        return inertia('Public/Events/Registration',[
+            'dropdowns' => [
+                'sexs' => $this->dropdown->dropdowns('Sex'),
+                'types' => $this->dropdown->dropdowns('Participant Type')
+            ],
+        ]);
     }
 
     public function recognize(Request $request){

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Model;
-
 class EventExhibitor extends Model
 {
     protected $fillable = [
@@ -17,9 +17,20 @@ class EventExhibitor extends Model
        'event_id'
     ];
 
+    protected $appends = ['reference'];
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
+
     public function feedbackable()
     {
         return $this->morphMany('App\Models\EventCsfEntry', 'feedbackable');
+    }
+
+    public function voters()
+    {
+        return $this->hasMany('App\Models\EventExhibitorVisitor', 'exhibitor_id')->where('has_voted', 1);
     }
 
     public function event()

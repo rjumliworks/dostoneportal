@@ -20,7 +20,7 @@
                 <div class="card-body bg-white rounded-bottom border-bottom">
                     <p class="mb-0 text-primary fs-11 fw-semibold">Session Status</p>
                 </div>
-                <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-570px + 100vh); overflow: auto;">
+                <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-557px + 100vh); overflow: auto;">
                     <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
                         <li class="list-group-item px-0 mb-n2">
                            <span :class="'badge fs-12 '+selected.status.bg">{{selected.status.name}}</span>
@@ -177,7 +177,7 @@
                                 </div>
                             </div>
                             <hr class="text-muted mb-n2"/>
-                            <div class="py-3">
+                            <div class="py-3" style="height: calc(100vh - 670px); overflow: auto;">
                                  <apexchart
                                 type="bar"
                                 height="200"
@@ -219,7 +219,7 @@
                                 </div>
                             </div>
                             <hr class="text-muted mb-n2"/>
-                            <div class="py-3">
+                            <div class="py-3" style="height: calc(100vh - 670px); overflow: auto;">
                                  <apexchart
                                 type="bar"
                                 height="200"
@@ -261,7 +261,7 @@
                 <div class="card-body bg-white rounded-bottom border-bottom">
                     <p class="mb-0 text-primary fs-11 fw-semibold">Customer Satisfaction Feedback</p>
                 </div>
-                <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-570px + 100vh); overflow: auto;">
+                <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-557px + 100vh); overflow: auto;">
                     <table style="width:100%; border-collapse:collapse; margin: 0px 0; font-size:11px;">
                         <tbody >
                             <tr>

@@ -60,7 +60,7 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/events" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Event/Events') }">
+                    :class="{'active': $page.component.startsWith('Modules/Events') }">
                     <i class="ri-calendar-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Events</span>
                     </Link>

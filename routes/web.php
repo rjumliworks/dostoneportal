@@ -1,6 +1,4 @@
 <?php
-
-use App\Http\Controllers\VelzonRoutesController;
 use Illuminate\Support\Facades\Route;
 use App\Events\SessionEvent;
 /*
@@ -22,8 +20,9 @@ Route::get('/broadcast-test', function () {
 
 Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(function () {
     Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);
+    Route::get('/registration', [App\Http\Controllers\Event\PublicController::class, 'registration']);
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
-     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
+    Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
 });
 
 Route::domain('attendance.' . config('app.app_host'))->as('attendance.')->group(function () {

@@ -35,20 +35,27 @@
                         <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.title}}</h5>
                         <p class="fs-12 text-muted mb-0">{{list.institution }}</p>
                     </td>
-                    <td class="text-center">0</td>
-                    <td class="text-center">0</td>
+                    <td class="text-center">{{ list.visitors }}</td>
+                    <td class="text-center">{{ list.votes }}</td>
                     <td class="text-center">
                         <span v-if="list.is_acive" class="badge text-white bg-success">Active</span>
                         <span v-else class="badge text-white bg-danger">Inactive</span>
                     </td>
                      <td class="text-end">
-                       
-                            <b-button @click="openPrint(list.code)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
+                        <Link :href="`/exhibits/${list.reference}`" target="_blank">
+                            <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
+                                <i class="ri-eye-fill align-bottom"></i>
+                            </b-button>
+                        </Link>
+                        <b-button @click="openEdit(list)" class="me-1" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
+                            <i class="ri-pencil-fill align-bottom"></i>
+                        </b-button>
+                            <!-- <b-button @click="openPrint(list.code)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                 <i class="ri-qr-code-fill align-bottom"></i>
                             </b-button>
                           <b-button @click="openPrintCsf(list)" variant="soft-danger" v-b-tooltip.hover title="Print" size="sm">
                             <i class="ri-printer-fill align-bottom"></i>
-                        </b-button>
+                        </b-button> -->
                         <!-- <b-button @click="openEdit(list)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                             <i class="ri-pencil-fill align-bottom"></i>
                         </b-button> -->

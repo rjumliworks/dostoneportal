@@ -57,9 +57,9 @@
                         <b-button @click="openEdit(list)" class="me-1" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                             <i class="ri-pencil-fill align-bottom"></i>
                         </b-button>
-                         <b-button @click="openPrint(list)" variant="soft-danger" v-b-tooltip.hover title="Print" size="sm">
+                         <!-- <b-button @click="openPrint(list)" variant="soft-danger" v-b-tooltip.hover title="Print" size="sm">
                             <i class="ri-printer-fill align-bottom"></i>
-                        </b-button>
+                        </b-button> -->
                     </td>
                 </tr>
             </tbody>

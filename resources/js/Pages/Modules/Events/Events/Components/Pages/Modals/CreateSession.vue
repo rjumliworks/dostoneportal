@@ -17,7 +17,7 @@
                 </BCol>
                 <BCol lg="12" class="mt-0">
                     <InputLabel for="due" value="Description" :message="form.errors.description"/>
-                    <Textarea v-model="form.description" type="text" class="form-control" placeholder="Please enter description" @input="handleInput('description')" :light="true"/>
+                    <Textarea v-model="form.description"  :rows="(editable) ? 7 : 3" type="text" class="form-control" placeholder="Please enter description" @input="handleInput('description')" :light="true"/>
                 </BCol>
                 <BCol lg="12" class="mt-1"  v-if="!editable"><hr class="text-muted"/></BCol>
                 <BCol lg="12" class="mt-n2 mb-2"  v-if="!editable">

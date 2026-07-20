@@ -21,7 +21,8 @@ class ExhibitController extends Controller
     }
 
     public function show($id){
-        return inertia('Modules/Exhibitor/View',[
+        // return $this->view->view($id);
+        return inertia('Modules/Events/Exhibits/View',[
             'exhibitor' => $this->view->view($id),
         ]);
     }
