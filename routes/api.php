@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Resources\Api\ParticipantResource;
+use App\Http\Resources\Api\Events\ParticipantResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,15 +16,10 @@ use App\Http\Resources\Api\ParticipantResource;
 */
 
 
-Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/verify', [App\Http\Controllers\Api\AuthController::class, 'verify']);
-Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
+Route::post('/login', [App\Http\Controllers\Api\Events\AuthController::class, 'login']);
+Route::post('/verify', [App\Http\Controllers\Api\Events\AuthController::class, 'verify']);
+Route::post('/register', [App\Http\Controllers\Api\Events\AuthController::class, 'register']);
 
-Route::prefix('csf')->controller(App\Http\Controllers\Api\CsfController::class)->group(function () {
-    Route::get('/questions', 'questions');
-    Route::post('/public', 'public');
-    Route::post('/fb', 'fb');
-});
 
 Route::get('/participant', function (Request $request) {
      return new ParticipantResource(
