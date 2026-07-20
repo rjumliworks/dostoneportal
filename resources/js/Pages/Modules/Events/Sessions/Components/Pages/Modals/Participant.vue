@@ -110,6 +110,9 @@ export default {
         },
         show(data) {
             this.selected = data;
+              this.$nextTick(() => {
+                this.initLightbox(); 
+            });
             this.showModal = true;
         },
         hide() {
