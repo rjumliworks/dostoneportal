@@ -60,6 +60,11 @@ class DashboardController extends Controller
                 $query->latest('created_at')->take(10);
             },
         ])
+        ->withCount([
+            'participants as participants_count' => function ($query) {
+                $query->where('status_id', '!=', 57);
+            }
+        ])
         ->whereHas('event',function ($query) {
             $query->where('is_active',1);
         })
