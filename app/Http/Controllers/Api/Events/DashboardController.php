@@ -71,7 +71,16 @@ class DashboardController extends Controller
             'feedbackable as has_feedback' => fn($q) =>
                 $q->where('participant_id', $id),
         ])
-        ->get();
+        ->get()
+        ->each(function ($session) {
+            $participant = $session->participants->first();
+
+            $session->is_approved = $session->is_exclusive
+                ? (bool) optional($participant)->is_approved
+                : true;
+
+            unset($session->participants);
+        });
         return SessionResource::collection($data);
     }
 

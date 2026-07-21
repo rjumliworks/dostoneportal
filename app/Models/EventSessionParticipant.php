@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EventSessionParticipant extends Model
 {
     protected $fillable = [
-      'participant_id', 'session_id', 'status_id','method_id','attended_at','image'
+      'participant_id', 'session_id', 'status_id','method_id','attended_at','image','is_approved'
     ];
 
     public function participant()

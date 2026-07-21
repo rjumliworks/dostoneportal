@@ -21,6 +21,7 @@ class SessionController extends Controller
             'status_id' => 52,
             'participant_id' => $request->participant_id,
             'session_id' => $request->session_id,
+            'is_approved' => ($request->is_exclusive) ? 0 : 1,
         ]);
         $data = EventSessionParticipant::with('participant.detail')->where('id',$data->id)->first();
         broadcast(new SessionEvent(new ParticipantResource($data),'register'));
