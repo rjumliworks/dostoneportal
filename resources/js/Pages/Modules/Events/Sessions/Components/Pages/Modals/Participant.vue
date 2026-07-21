@@ -2,7 +2,7 @@
 <b-modal
     v-if="selected"
     v-model="showModal"
-    style="--vz-modal-width: 600px;"
+    style="--vz-modal-width: 550px;"
     hide-footer
     header-class="p-3 bg-light"
     title="Participant Information"
@@ -11,16 +11,16 @@
     centered
     no-close-on-backdrop
     >
-    <div class="modal-body p-2">
+    <div class="modal-body p-0">
         <div>
-            <div class="text-center ">
+            <div class="text-center mt-n1">
                 <img
                     :src="selected.avatar"
                     class="rounded-circle img-thumbnail" style="width: 100px; height: auto;"
                     alt="Participant"
                 >
-                <h4 class="fs-15 mb-0 mt-2 text-primary text-uppercase fw-semibold">{{ selected.name }}</h4>
-                 <p class="text-muted fs-13 mb-0">{{selected.designation}}</p>
+                <h4 class="fs-14 mb-0 mt-2 text-primary text-uppercase fw-semibold">{{ selected.name }}</h4>
+                 <p class="text-muted fs-12 mb-0">{{selected.designation}}</p>
                 <hr class="text-muted"/>
             </div>
             <div class="row g-2">
@@ -65,27 +65,29 @@
                 </div>
             </div>
             <hr class="text-muted"/>
-            <!-- {{selected}} -->
-              <a v-if="selected.image" class="glightbox" :href="'/storage/' + selected.image">
-                    <b-button class="ms-1" variant="soft-success" v-b-tooltip.hover title="Set" size="sm">
-                        <i class="ri-image-fill align-bottom"></i>
-                    </b-button>
-                </a>
-            <div class="hstack gap-2 justify-content-center" v-if="selected.status.name == 'Pending'">
-                <button class="btn btn-success">Approved</button>
-                <button class="btn btn-soft-danger"><i class="ri-close-circle-fill align-bottom me-1"></i>Reject</button>
+            <a v-if="selected.image" class="glightbox" :href="'/storage/' + selected.image">
+                <b-button class="ms-1" variant="soft-success" v-b-tooltip.hover title="Set" size="sm">
+                    <i class="ri-image-fill align-bottom"></i>
+                </b-button>
+            </a>
+            <div class="d-grid gap-2" v-if="is_exclusive && selected.status.name == 'Pending'">
+                <button @click="openApproval('approve')" class="btn btn-success" type="button">Approved</button>
+                <button @click="openApproval('reject')" class="btn btn-soft-danger" type="button">Reject</button>
             </div>
         </div>
     </div>
 </b-modal>
+<Approval @success="updateParticipant" ref="approval"/>
 </template>
 
 <script>
+import Approval from './Confirm.vue';
 import simplebar from "simplebar-vue";
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
 export default {
-    components: { simplebar },
+    components: { simplebar, Approval },
+    props:['is_exclusive'],
     data() {
         return {
             currentUrl: window.location.origin,
@@ -107,6 +109,13 @@ export default {
                 loop: true,
                 zoomable: true,
             });
+        },
+        openApproval(data){
+            this.$refs.approval.show(this.selected.session_id,this.selected.participant_id,data);
+        },
+        updateParticipant(data){
+            console.log(data);
+            this.selected = data;
         },
         show(data) {
             this.selected = data;

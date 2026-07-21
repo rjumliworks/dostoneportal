@@ -24,6 +24,7 @@ class ParticipantResource extends JsonResource
             'designation' => $this->participant->detail->designation,
             'image' => $this->image,
             'status' => $this->status,
+            'is_approved' => $this->is_approved,
             'attended_at' => $this->attended_at,
             'created_at' => $this->created_at
         ];

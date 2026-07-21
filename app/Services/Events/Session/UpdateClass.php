@@ -10,9 +10,33 @@ use App\Events\SessionEvent;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Resources\Event\AttendanceResource;
+use App\Http\Resources\Api\Events\Session\ParticipantResource;
+use App\Http\Resources\Event\Session\ParticipantListResource;
 
 class UpdateClass
 {
+    public function participant($request){
+        $data = EventSessionParticipant::with('participant','status')
+        ->where('session_id',$request->session_id)
+        ->where('participant_id',$request->participant_id)->first();        
+        $data->status_id = $request->status_id;
+        $data->is_approved = $request->is_approved;
+        $data->save();
+        $data->refresh();
+        broadcast(new SessionEvent(new ParticipantResource($data),'approve'));
+        $message = match ($request->action) {
+            'approve' => 'Participant successfully approved.',
+            'reject' => 'Participant successfully rejected.',
+            default => 'Participant status successfully updated.',
+        };
+
+        return [
+            'data' => new ParticipantListResource($data),
+            'message' => $message,
+            'info' => 'success',
+        ];
+    }
+
     public function session($request){
         $data = EventSession::findOrFail($request->id);
         $data->update([

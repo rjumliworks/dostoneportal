@@ -44,7 +44,7 @@
                                         <div :key="index" class="tab-content">
                                             <Overview :selected="selected" v-if="menu == 'Overview'" />
                                             <Activity :id="selected.id" :activities="selected.activities" :schedules="selected.schedules" v-else-if="menu == 'Activities'"/>
-                                            <Participant :id="selected.key" :participants="selected.participants" v-else-if="menu == 'Participants'"/>
+                                            <Participant :id="selected.key" :is_exclusive="selected.is_exclusive" :participants="selected.participants" v-else-if="menu == 'Participants'"/>
                                             <Certificate  v-else-if="menu == 'Certificates'"/>
                                             <Question :questions="selected.questions" v-else-if="menu == 'Questions'"/>
                                             <Csf :feedbacks="selected.feedbacks" v-else-if="menu == 'CSF'"/>

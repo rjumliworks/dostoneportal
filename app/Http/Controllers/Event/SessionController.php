@@ -61,9 +61,6 @@ class SessionController extends Controller
                 case 'activity':
                     return $this->save->activity($request);
                 break;
-                case 'manager':
-                    return $this->save->manager($request);
-                break;
             }
         });
 
@@ -84,8 +81,8 @@ class SessionController extends Controller
                 case 'activity':
                     return $this->update->activity($request);
                 break;
-                case 'manager':
-                    return $this->update->manager($request);
+                case 'participant':
+                    return $this->update->participant($request);
                 break;
                 case 'attendance':
                     return $this->update->attendance($request);

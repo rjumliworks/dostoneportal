@@ -45,7 +45,7 @@
                         <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
                     </td>
                     <td class="text-end">
-                        <b-button @click="openView(list)" variant="success" class="me-1" v-b-tooltip.hover title="View Participant" size="sm">
+                        <b-button @click="openView(list,index)" variant="success" class="me-1" v-b-tooltip.hover title="View Participant" size="sm">
                             <i class="ri-eye-fill align-bottom"></i>
                         </b-button>
                     </td>
@@ -58,7 +58,7 @@
             </tbody>
         </table>
     </div>
-    <Participant ref="participant"/>
+    <Participant :is_exclusive="is_exclusive" ref="participant"/>
 </template>
 <script>
 import _ from 'lodash';
@@ -66,11 +66,17 @@ import Participant from './Modals/Participant.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { Pagination, Participant },
-    props: ['participants','id'],
-    methods: {
-        openView(data){
-            this.$refs.participant.show(data);
+    props: ['participants','id','is_exclusive'],
+    data(){
+        return {
+            index: null,
         }
+    },
+    methods: {
+        openView(data,index){
+            this.index = index;
+            this.$refs.participant.show(data);
+        },
     }
 }
 </script>
