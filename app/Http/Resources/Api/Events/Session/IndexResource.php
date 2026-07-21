@@ -36,7 +36,8 @@ class IndexResource extends JsonResource
             'link' => ($this->has_registration) ? base64_encode($key) : '',
             'has_registered' => $this->has_registered,
             'has_feedback' => $this->has_feedback,
-            'has_attended' => $this->has_attended
+            'has_attended' => $this->has_attended,
+            'is_approved' => $this->is_approved
         ];
     }
 }
