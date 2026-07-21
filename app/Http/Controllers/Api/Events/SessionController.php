@@ -25,6 +25,9 @@ class SessionController extends Controller
         ]);
         $data = EventSessionParticipant::with('participant.detail')->where('id',$data->id)->first();
         broadcast(new SessionEvent(new ParticipantResource($data),'register'));
+        if(!$request->is_exclusive){
+            broadcast(new SessionEvent(new ParticipantResource($data),'approve'));
+        }
         return response()->json([
             'status' => true,
             'message' => 'Registration submitted successfully',
