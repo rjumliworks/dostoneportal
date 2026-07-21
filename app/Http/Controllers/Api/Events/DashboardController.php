@@ -65,6 +65,12 @@ class DashboardController extends Controller
                 $query->where('status_id', '!=', 57);
             }
         ])
+        ->with([
+            'participants' => function ($query) use ($id) {
+                $query->where('participant_id', $id)
+                    ->with('status');
+            },
+        ])
         ->whereHas('event',function ($query) {
             $query->where('is_active',1);
         })
@@ -83,6 +89,8 @@ class DashboardController extends Controller
             $session->is_approved = $session->is_exclusive
                 ? (bool) optional($participant)->is_approved
                 : true;
+
+            $session->participant_status = optional($participant->status);
 
             unset($session->participants);
         });

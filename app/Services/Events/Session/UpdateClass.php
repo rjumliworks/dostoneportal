@@ -23,7 +23,11 @@ class UpdateClass
         $data->is_approved = $request->is_approved;
         $data->save();
         $data->refresh();
-        broadcast(new SessionEvent(new ParticipantResource($data),'approve'));
+        if($request->action == 'approve'){
+            broadcast(new SessionEvent(new ParticipantResource($data),'approve'));
+        }else{
+            broadcast(new SessionEvent(new ParticipantResource($data),'reject'));
+        }
         $message = match ($request->action) {
             'approve' => 'Participant successfully approved.',
             'reject' => 'Participant successfully rejected.',
