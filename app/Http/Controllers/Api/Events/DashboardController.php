@@ -89,7 +89,7 @@ class DashboardController extends Controller
             $session->is_approved = $session->is_exclusive
                 ? (bool) optional($participant)->is_approved
                 : true;
-            $session->test = $participant;
+            $session->test = $participant->status;
             unset($session->participants);
         });
         return SessionResource::collection($data);
