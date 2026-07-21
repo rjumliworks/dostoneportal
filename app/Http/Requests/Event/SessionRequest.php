@@ -22,7 +22,7 @@ class SessionRequest extends FormRequest
                     'description' => 'sometimes|required',
                     'dates' => 'sometimes|required|array|min:1',
                     'dates.*.date' => 'required|date_format:Y-m-d',
-                    'dates.*.timeOfDay' => 'required|in:AM,PM',
+                    'dates.*.timeOfDay' => 'required|in:AM,PM,Whole Day,Custom',
                 ];
             break;
             default: 
