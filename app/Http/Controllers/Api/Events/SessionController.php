@@ -18,7 +18,7 @@ class SessionController extends Controller
 {
     public function registration(Request $request){
         $data = EventSessionParticipant::create([
-            'status_id' => 52,
+            'status_id' => ($request->is_exclusive) ? 52 : 58,
             'participant_id' => $request->participant_id,
             'session_id' => $request->session_id,
             'is_approved' => ($request->is_exclusive) ? 0 : 1,
