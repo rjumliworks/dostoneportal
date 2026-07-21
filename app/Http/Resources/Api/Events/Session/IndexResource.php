@@ -38,7 +38,7 @@ class IndexResource extends JsonResource
             'has_feedback' => $this->has_feedback,
             'has_attended' => $this->has_attended,
             'is_approved' => $this->is_approved,
-            'count' => $this->participants_count
+            'registered' => $this->participants_count
         ];
     }
 }
