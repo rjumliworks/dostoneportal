@@ -122,16 +122,17 @@ export default {
         setupEchoListener() {
             window.Echo.channel('session')
             .listen('SessionEvent', (event) => {
-                switch(event.type){
-                    case 'plus-ex':
-                        const index = this.exhibitors.findIndex(p => p.id === event.data);
-                        this.exhibitors[index].visitors += 1;
-                    break;
-                    case 'minus-ex':
-                        const index2 = this.exhibitors.findIndex(p => p.id === event.data);
-                        this.exhibitors[index2].visitors -= 1;
-                    break;
-                }
+                console.log(event);
+                // switch(event.type){
+                //     case 'plus-ex':
+                //         const index = this.exhibitors.findIndex(p => p.id === event.data);
+                //         this.exhibitors[index].visitors += 1;
+                //     break;
+                //     case 'minus-ex':
+                //         const index2 = this.exhibitors.findIndex(p => p.id === event.data);
+                //         this.exhibitors[index2].visitors -= 1;
+                //     break;
+                // }
             });
         },
     }
