@@ -12,11 +12,6 @@ use App\Events\SessionEvent;
 |
 */
 
-Route::get('/broadcast-test', function () {
-    broadcast(new SessionEvent('Hello Reverb!','we'));
-
-    return 'Broadcast sent!';
-});
 
 Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(function () {
     Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);
@@ -91,14 +86,14 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
     Route::resource('/signatories', App\Http\Controllers\Executive\SignatoryController::class);
 
-    // Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
-    // Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);
-    // Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);
-    // Route::get('/rekognition/create', [App\Http\Controllers\Executive\RekognitionController::class, 'create']);
-    // Route::get('/rekognition/search', [App\Http\Controllers\Executive\RekognitionController::class, 'search']);
-    // Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
-    // Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
-    // Route::get('/rekognition/collection/{id}/face/{faceId}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
+    Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
+    Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);
+    Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);
+    Route::get('/rekognition/create', [App\Http\Controllers\Executive\RekognitionController::class, 'create']);
+    Route::get('/rekognition/search', [App\Http\Controllers\Executive\RekognitionController::class, 'search']);
+    Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
+    Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
+    Route::get('/rekognition/collection/{id}/face/{faceId}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
 });
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);

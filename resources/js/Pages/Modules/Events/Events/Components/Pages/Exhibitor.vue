@@ -15,6 +15,7 @@
             </b-col>
         </b-row>
     </div>
+    
     <div class="table-responsive table-card" style="height: calc(100vh - 460px);">
         <table class="table table-nowrap align-middle mb-0">
             <thead class="bg-primary text-white thead-fixed">
@@ -78,6 +79,9 @@ import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { Pagination, Create },
     props: ['id','exhibitors','types'],
+    mounted() {
+        this.setupEchoListener();
+    },
     methods: {
         openCreate(){
             this.$refs.create.show();
@@ -114,7 +118,22 @@ export default {
             return start === end
                 ? formatDate(start)
                 : `${formatDate(start)} - ${formatDate(end)}`;
-        }
+        },
+        setupEchoListener() {
+            window.Echo.channel('session')
+            .listen('SessionEvent', (event) => {
+                switch(event.type){
+                    case 'plus-ex':
+                        const index = this.exhibitors.findIndex(p => p.id === event.data);
+                        this.exhibitors[index].visitors += 1;
+                    break;
+                    case 'minus-ex':
+                        const index2 = this.exhibitors.findIndex(p => p.id === event.data);
+                        this.exhibitors[index2].visitors -= 1;
+                    break;
+                }
+            });
+        },
     }
 }
 </script>

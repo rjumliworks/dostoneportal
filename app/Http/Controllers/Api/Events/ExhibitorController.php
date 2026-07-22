@@ -24,6 +24,7 @@ class ExhibitorController extends Controller
             if (! $visitor) {
                 $visitor = $this->recordAttendance($request->participant_id, $request->exhibitor_id);
             }
+            
 
             $engage = ListDropdown::findOrFail(69);
             $point = ParticipantPoint::where('participant_id', $request->participant_id)->firstOrFail();
@@ -51,6 +52,7 @@ class ExhibitorController extends Controller
                         'points'    => $engageable->points
                     ];
                     broadcast(new SessionEvent($data, 'minus'));
+                    broadcast(new SessionEvent($request->exhibitor_id, 'minus-ex'));
                 }
             } else {
                 // 👍 Vote
@@ -72,6 +74,7 @@ class ExhibitorController extends Controller
                     'points'    => $engage->others
                 ];
                 broadcast(new SessionEvent($data, 'plus'));
+                broadcast(new SessionEvent($request->exhibitor_id, 'plus-ex'));
             }
 
             // Broadcast update

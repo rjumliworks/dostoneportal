@@ -83,28 +83,13 @@ export default {
         setupEchoListener() {
             window.Echo.channel('session')
             .listen('SessionEvent', (event) => {
-                console.log(event.data);
-                console.log(this.selected.id == event.data.session_id);
                 if(this.selected.id == event.data.session_id){
                     switch(event.type){
-                        case 'register':
-                            this.selected.participants.unshift(event.data);
+                        case 'minus-ex':
+                        
                         break;
-                        case 'cancel':
-                            const index = this.selected.participants.findIndex(p => p.participant_id === event.data.participant_id);
-                            if (index !== -1) {
-                                this.selected.participants.splice(index, 1);
-                            }
-                        break;
-                        case 'question':
-                            this.selected.questions.unshift(event.data);
-                        break;
-                        case 'feedback':
-                            this.selected.feedbacks.unshift(event.data);
-                        break;
-                        case 'attendance':
-                            const index2 = this.selected.participants.findIndex(p => p.code === event.data.code);
-                            this.selected.participants[index2] = event.data;
+                        case 'plus-ex':
+                        
                         break;
                     }
                 }
