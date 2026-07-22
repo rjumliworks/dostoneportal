@@ -77,7 +77,10 @@ class ExhibitorController extends Controller
                     'points'    => $engage->others
                 ];
                 broadcast(new SessionEvent($data, 'plus'));
-                broadcast(new SessionEvent(['id' => $request->exhibitor_id], 'plus-ex'));
+                $data2 = [
+                        'exhibitor_id'        => $request->exhibitor_id,
+                    ];
+                    broadcast(new SessionEvent($data2, 'minus-ex'));
             }
 
             // Broadcast update
