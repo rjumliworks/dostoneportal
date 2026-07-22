@@ -109,6 +109,10 @@ export default {
                             const index2 = this.selected.participants.findIndex(p => p.code === event.data.code);
                             this.selected.participants[index2] = event.data;
                         break;
+                        case 'datetime':
+                            const index3 = this.selected.participants.findIndex(p => p.participant_id === event.data.participant_id);
+                            this.selected.participants[index3] = event.data;
+                        break;
                     }
                 }
             });

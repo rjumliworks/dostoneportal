@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Event;
 
 use Carbon\Carbon;
+use App\Events\SessionEvent;
 use App\Models\Participant;
 use App\Services\DropdownClass;
 use App\Models\EventSessionParticipant;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\DefaultResource;
+use App\Http\Resources\Api\Events\Session\ParticipantResource;
 
 class PublicController extends Controller
 {
@@ -85,7 +87,8 @@ class PublicController extends Controller
                     ];
                 }else{
                     $this->image($request,$user,$datetime);
-
+                    $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
+                    broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
                     $data = [
                         'name' => $user->name,
                         'division' => $user->detail->affiliation,
