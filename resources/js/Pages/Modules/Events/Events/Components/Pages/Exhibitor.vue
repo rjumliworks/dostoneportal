@@ -123,15 +123,25 @@ export default {
             .listen('SessionEvent', (event) => {
 
                 switch(event.type){
-                    case 'plus-ex':
-                        console.log(event.data);
-                        const index = this.exhibitors.findIndex(p => p.id === event.data.exhibitor_id);
-                        this.exhibitors[index].votes += 1;
-                    break;
-                    case 'minus-ex':
-                        const index2 = this.exhibitors.findIndex(p => p.id === event.data.exhibitor_id);
-                        this.exhibitors[index2].votes -= 1;
-                    break;
+                  case 'plus-ex':
+    const index = this.exhibitors.findIndex(
+        p => Number(p.id) === Number(event.data.exhibitor_id)
+    );
+
+    if (index !== -1) {
+        this.exhibitors[index].votes++;
+    }
+    break;
+
+case 'minus-ex':
+    const index2 = this.exhibitors.findIndex(
+        p => Number(p.id) === Number(event.data.exhibitor_id)
+    );
+
+    if (index2 !== -1) {
+        this.exhibitors[index2].votes--;
+    }
+    break;
                 }
             });
         },
