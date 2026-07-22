@@ -80,7 +80,7 @@ class ExhibitorController extends Controller
                 $data2 = [
                         'exhibitor_id'        => $request->exhibitor_id,
                     ];
-                    broadcast(new SessionEvent($data2, 'minus-ex'));
+                    broadcast(new SessionEvent($data2, 'plus-ex'));
             }
 
             // Broadcast update
