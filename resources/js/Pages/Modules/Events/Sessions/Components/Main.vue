@@ -82,16 +82,12 @@ export default {
         }
     },
     mounted() {
-        console.log('Component mounted');
         this.setupEchoListener();
     },
     methods: {
         setupEchoListener() {
-            alert('wew');
             window.Echo.channel('session')
             .listen('SessionEvent', (event) => {
-                console.log(event.data);
-                console.log(this.selected.id == event.data.session_id);
                 if(this.selected.id == event.data.session_id){
                     switch(event.type){
                         case 'register':
