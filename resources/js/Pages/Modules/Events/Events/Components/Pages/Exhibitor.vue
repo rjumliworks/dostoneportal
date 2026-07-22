@@ -124,11 +124,11 @@ export default {
                 switch(event.type){
                     case 'plus-ex':
                         const index = this.exhibitors.findIndex(p => p.id === Number(event.data));
-                        this.exhibitors[index].votes += 1;
+                        this.exhibitors[index].votes++;
                     break;
                     case 'minus-ex':
                         const index2 = this.exhibitors.findIndex(p => p.id === Number(event.data));
-                        this.exhibitors[index2].votes -= 1;
+                        this.exhibitors[index2].votes--;
                     break;
                 }
             });
