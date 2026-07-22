@@ -82,10 +82,12 @@ export default {
         }
     },
     mounted() {
+        console.log('Component mounted');
         this.setupEchoListener();
     },
     methods: {
         setupEchoListener() {
+            alert('wew');
             window.Echo.channel('session')
             .listen('SessionEvent', (event) => {
                 console.log(event.data);
