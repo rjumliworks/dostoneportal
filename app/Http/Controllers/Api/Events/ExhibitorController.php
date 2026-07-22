@@ -52,7 +52,7 @@ class ExhibitorController extends Controller
                         'points'    => $engageable->points
                     ];
                     broadcast(new SessionEvent($data, 'minus'));
-                    broadcast(new SessionEvent($request->exhibitor_id, 'minus-ex'));
+                    broadcast(new SessionEvent(['id' => $request->exhibitor_id], 'minus-ex'));
                 }
             } else {
                 // 👍 Vote
@@ -74,7 +74,7 @@ class ExhibitorController extends Controller
                     'points'    => $engage->others
                 ];
                 broadcast(new SessionEvent($data, 'plus'));
-                broadcast(new SessionEvent($request->exhibitor_id, 'plus-ex'));
+                broadcast(new SessionEvent(['id' => $request->exhibitor_id], 'plus-ex'));
             }
 
             // Broadcast update
