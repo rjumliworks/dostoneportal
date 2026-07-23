@@ -8,6 +8,7 @@ use App\Models\ListStatus;
 use App\Models\EventCsfQuestion;
 use App\Models\EventSession;
 use App\Models\EventExhibitor;
+use App\Models\Participant;
 use App\Models\ParticipantPoint;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -27,8 +28,13 @@ class DashboardController extends Controller
             'exhibitors'  => $this->exhibitors($id),
             'csfs'        => $this->csfs(),
             'hotels'      => $this->hotels(),
-            'statuses'    => $this->statuses()
+            'statuses'    => $this->statuses(),
+            'participants'=> $this->participants()
         ]);
+    }
+
+    public function participants(){
+        return Participant::count();
     }
 
     public function statuses(){
