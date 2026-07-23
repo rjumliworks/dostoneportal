@@ -32,7 +32,7 @@ class DashboardController extends Controller
     }
 
     public function statuses(){
-        $statuses = ListStatus::withCount('sessions')->get();
+        $statuses = ListStatus::withCount('sessions')->where('classification','Session Status')->get();
         return $statuses;
     }
 
