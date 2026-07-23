@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ListStatus extends Model
 {
     use HasFactory;
+
+    public function sessions()
+    {
+        return $this->hasMany(EventSession::class, 'status_id');
+    }
 }

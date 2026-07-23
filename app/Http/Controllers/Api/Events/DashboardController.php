@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Events;
 
 use App\Models\Event;
 // use App\Models\Hotel;
+use App\Models\ListStatus;
 use App\Models\EventCsfQuestion;
 use App\Models\EventSession;
 use App\Models\EventExhibitor;
@@ -25,8 +26,14 @@ class DashboardController extends Controller
             'sessions'    => $this->sessions($id),
             'exhibitors'  => $this->exhibitors($id),
             'csfs'        => $this->csfs(),
-            'hotels'      => $this->hotels()
+            'hotels'      => $this->hotels(),
+            'statuses'    => $this->statuses()
         ]);
+    }
+
+    public function statuses(){
+        $statuses = ListStatus::withCount('sessions')->get();
+        return $statuses;
     }
 
     public function event(){
