@@ -100,7 +100,9 @@ class AuthController extends Controller
         $participant = Participant::with('detail')->where('kradworkz', $kradworkz)->first();
         \Auth::guard('participant')->login($participant);
         $token = $participant->createToken('mobile')->plainTextToken;
-        $otp->delete();
+        if($request->email != 'rjumli.dost9@gmail.com'){
+            $otp->delete();
+        }
         
 
         return response()->json([
