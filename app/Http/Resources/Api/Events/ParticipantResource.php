@@ -4,6 +4,8 @@ namespace App\Http\Resources\Api\Events;
 
 use Hashids\Hashids;
 use Illuminate\Http\Request;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ParticipantResource extends JsonResource
@@ -13,8 +15,20 @@ class ParticipantResource extends JsonResource
         $hashids = new Hashids('krad',10);
         $key = $hashids->encode($this->id);
 
+        $result = (new Builder(
+            writer: new PngWriter(),
+            data: $this->code,
+            size: 500,
+            margin: 5,
+            logoPath: public_path('images/qrlogo.png'),
+            logoResizeToWidth: 80
+        ))->build();
+
+        $qr = 'data:image/png;base64,' . base64_encode($result->getString());
+
         return [
             'id' => $this->id,
+            'qr' => $qr,
             'code' => $this->code,
             'email' => $this->email,
             'contact_no' => $this->mobile,
