@@ -2,15 +2,9 @@
 <section id="register" class="rstw-section">
     <div class="rstw-container rstw-reg">
         <div class="rstw-heading" data-aos="fade-up">
-            <span class="rstw-kicker">Pre-Registration</span>
-            <h1>Reserve your spot at RSTW 2026</h1>
-            <div class="rstw-reg__note" role="note">
-                <span class="rstw-reg__note-icon"><i class="ri-information-line"></i></span>
-                <div class="rstw-reg__note-body">
-                    <strong class="rstw-reg__note-title">This is a pre-registration form</strong>
-                    <span class="rstw-reg__note-text">Secure your slot early — final confirmation will be done on-site at the event.</span>
-                </div>
-            </div>
+            <span class="rstw-kicker">{{session.title}}</span>
+          
+         
             <p class="rstw-reg__sub">Fill out the form below. Make sure all details are accurate — we'll send a verification to your email.</p>
         </div>
 
@@ -106,8 +100,8 @@
                 </div>
                 <div class="rstw-field">
                     <label>Contact No.</label>
-                    <input type="text" inputmode="numeric" v-model="form.contact_no" placeholder="09XXXXXXXXX" maxlength="11" @keypress="onlyNumber" @input="onContactInput">
-                    <span v-if="form.errors.contact_no" class="rstw-form__error">{{ form.errors.contact_no }}</span>
+                    <input type="text" inputmode="numeric" v-model="form.mobile" placeholder="09XXXXXXXXX" maxlength="11" @keypress="onlyNumber" @input="onContactInput">
+                    <span v-if="form.errors.contact_no" class="rstw-form__error">{{ form.errors.mobile }}</span>
                 </div>
             </div>
 
@@ -187,9 +181,7 @@ import SignaturePad from 'vue3-signature-pad';
 export default {
     name: 'PreRegistrationForm',
     components: { Multiselect, SignaturePad },
-    props: {
-        dropdowns: { type: Object, required: true },
-    },
+    props: ['dropdowns','session'],
     data() {
         return {
             captchaUrl: '/captcha/flat?' + Date.now(),
@@ -203,7 +195,7 @@ export default {
                 lastname: null,
                 suffix: null,
                 email: null,
-                contact_no: null,
+                mobile: null,
                 birthdate: null,
                 sex_id: null,
                 designation: null,
@@ -211,7 +203,8 @@ export default {
                 signature: null,
                 photo: null,
                 captcha: null,
-                type_id: 16,
+                type_id: 196,
+                session_id: this.session.id,
                 check: false,
             }),
         };

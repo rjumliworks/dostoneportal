@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Event\Session;
 
+use Illuminate\Support\Facades\Crypt;
 use Hashids\Hashids;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -30,8 +31,23 @@ class ViewResource extends JsonResource
 
         $qr = 'data:image/png;base64,' . base64_encode($result->getString());
 
+
+        $encryptedKey = Crypt::encryptString($key);
+        $reg_link = 'https://rstw2026.dostoneportal.test/registration/'.$encryptedKey;
+        $result1 = (new Builder(
+            writer: new PngWriter(),
+            data: $reg_link,
+            size: 500,
+            margin: 5,
+            logoPath: public_path('images/qrlogo.png'),
+            logoResizeToWidth: 80
+        ))->build();
+        $reg_qr = 'data:image/png;base64,' . base64_encode($result1->getString());
+
         return [
             'qr' => $qr,
+            'reg_link' => $reg_link,
+            'reg_qr' => $reg_qr,
             'id' => $this->id,
             'key' => $key,
             'randomkey' => $randomkey,

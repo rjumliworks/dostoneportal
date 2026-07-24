@@ -21,15 +21,23 @@
                     <p class="mb-0 text-primary fs-11 fw-semibold">Session Status</p>
                 </div>
                 <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-557px + 100vh); overflow: auto;">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
-                        <li class="list-group-item px-0 mb-n2">
-                           <span :class="'badge fs-12 '+selected.status.bg">{{selected.status.name}}</span>
-                        </li>
-                    </ul>
-                    <hr class="text-muted">
-                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Session Information</p>
-                    <hr class="text-muted mb-2">
+                   
                     <ul class="list-group list-group-flush mb-n4 mt-n3 p-3">
+                        <li class="list-group-item px-0 mb-n2">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 avatar-xs">
+                                    <span class="avatar-title bg-light p-1 rounded-circle">
+                                        <i class="text-primary" :class="(selected.managers.length > 1) ? 'ri-team-fill' : 'ri-user-3-fill'"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <p class="fs-11 mb-0 text-muted">Status</p>
+                                    <h6 class="mb-0 fs-12">
+                                        <span :class="'badge fs-11 '+selected.status.bg">{{selected.status.name}}</span>
+                                    </h6>
+                                </div>
+                            </div>
+                        </li>
                         <li class="list-group-item px-0 mb-n2">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 avatar-xs">
@@ -60,9 +68,28 @@
                         </li>
                     </ul>
                     <hr class="text-muted">
-                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Session Manager/s</p>
+                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Registration Link</p>
                     <hr class="text-muted mb-2">
                     
+                    <div class="d-flex p-2">
+                        <div class="flex-shrink-0">
+                            <a :href="selected.qr" target="_blank" rel="noopener noreferrer">
+                                <div style="width: 55px; height: 55px;">
+                                    <img :src="selected.qr" alt="user-img" class="img-thumbnail">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="flex-grow-1 ms-2">
+                            <a
+                                :href="selected.reg_link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn mt-2 w-100 btn-primary"
+                            >
+                                Click here
+                            </a>
+                        </div>
+                    </div>
                 
                 </div>
             </div>

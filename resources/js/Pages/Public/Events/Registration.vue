@@ -15,13 +15,9 @@
         </header>
 
         <main class="rstw-regpage__main">
-            <PreRegistrationForm :dropdowns="dropdowns" />
+            <PreRegistrationForm :session="session" :dropdowns="dropdowns" />
         </main>
 
-        <footer class="rstw-regpage__foot">
-            <span>{{ new Date().getFullYear() }} © DOST-IX ICT</span>
-            <Link href="/privacy-policy">Privacy Policy</Link>
-        </footer>
     </div>
 </template>
 
@@ -32,7 +28,7 @@ import PreRegistrationForm from './Form.vue';
 export default {
     layout: null,
     components: { Head, Link, PreRegistrationForm },
-    props: ['dropdowns'],
+    props: ['dropdowns','session'],
 };
 </script>
 

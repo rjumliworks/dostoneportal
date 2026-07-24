@@ -4,12 +4,12 @@
             <b-col lg>
                 <div class="input-group mb-1">
                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                    <input type="text"  placeholder="Search Venue" class="form-control" style="width: 30%;">
-                    <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
+                    <input v-model="search" type="text"  placeholder="Search Name" class="form-control" style="width: 30%;">
+                    <!-- <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
                         <i class="ri-printer-fill search-icon"></i>
-                    </span>
+                    </span> -->
                     <b-button type="button" variant="primary" @click="openCreate">
-                        <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                        <i class="ri-add-circle-fill align-bottom me-1"></i> Search
                     </b-button>
                 </div>
             </b-col>
@@ -30,8 +30,8 @@
                     <th style="width: 5%;" class="text-center"></th>
                 </tr>
             </thead>
-            <tbody v-if="participants.length > 0">
-                <tr v-for="(list,index) in participants" v-bind:key="index" class="fs-12">
+            <tbody v-if="filteredParticipants.length > 0">
+                <tr v-for="(list,index) in filteredParticipants" v-bind:key="index" class="fs-12">
                     <td>{{ index + 1 }}</td>
                     <td>
                         <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
@@ -70,6 +70,20 @@ export default {
     data(){
         return {
             index: null,
+            search: ''
+        }
+    },
+     computed: {
+        filteredParticipants() {
+            if (!this.search.trim()) {
+                return this.participants;
+            }
+
+            const keyword = this.search.toLowerCase();
+
+            return this.participants.filter(participant =>
+                participant.name?.toLowerCase().includes(keyword)
+            );
         }
     },
     methods: {

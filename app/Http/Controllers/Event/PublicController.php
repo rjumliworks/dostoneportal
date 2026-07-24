@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Event;
 
+use Hashids\Hashids;
 use Carbon\Carbon;
 use App\Events\SessionEvent;
 use App\Models\Participant;
+use App\Models\EventSession;
 use App\Services\DropdownClass;
 use App\Models\EventSessionParticipant;
 use App\Http\Controllers\Controller;
@@ -13,6 +15,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\DefaultResource;
 use App\Http\Resources\Api\Events\Session\ParticipantResource;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class PublicController extends Controller
 {
@@ -25,14 +29,35 @@ class PublicController extends Controller
     public function index(){
         return inertia('Public/Events/Landing',[
             'dropdowns' => [
-                'sexs' => $this->dropdown->dropdowns('Sex'),
-                'types' => $this->dropdown->dropdowns('Participant Type')
+                'sexs' => $this->dropdown->datas('Sex'),
+                'types' => $this->dropdown->datas('Participant Type'),
             ],
         ]);
     }
 
     public function registration(){
         return inertia('Public/Events/Registration',[
+            'dropdowns' => [
+              'sexs' => $this->dropdown->datas('Sex'),
+                'types' => $this->dropdown->datas('Participant Type'),
+            ],
+        ]);
+    }
+
+    public function register($key){
+         try {
+            $decryptedKey = Crypt::decryptString(urldecode($key));
+
+            // Use $decryptedKey
+        } catch (DecryptException $e) {
+            abort(404); // or handle invalid/tampered keys
+        }
+
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($decryptedKey);
+
+        return inertia('Public/Events/Registration',[
+            'session' => EventSession::where('id',$id)->first(),
             'dropdowns' => [
                 'sexs' => $this->dropdown->dropdowns('Sex'),
                 'types' => $this->dropdown->dropdowns('Participant Type')
