@@ -58,6 +58,7 @@ return [
     'url' => env('APP_URL', 'http://127.0.0.1:8000/'),
     'app_host' => env('APP_HOST'),
     'asset_url' => env('ASSET_URL'),
+    'registration_url' => env('REGISTRATION_URL'),
 
     /*
     |--------------------------------------------------------------------------
