@@ -861,6 +861,11 @@ export default {
     background: #f8fafc;
     transition: border-color .2s, box-shadow .2s, background .2s, transform .2s;
     width: 100%;
+    /* .rstw-field is a flex column, and flex items default to min-width:auto —
+       iOS Safari's native input[type=date] has a wide intrinsic content size
+       (mm/dd/yyyy segments + icon) that ignores width:100% without this,
+       forcing the row/grid wider than the viewport on mobile. */
+    min-width: 0;
 }
 .rstw-field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a8b0bd'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 34px; }
 .rstw-field input::placeholder { color: #a8b0bd; }
@@ -897,7 +902,7 @@ export default {
     --ms-dropdown-border-color: #e4e8ef;
     --ms-dropdown-radius: 12px;
     --ms-max-height: 12.5rem;
-    --ms-option-font-size: 14px;
+    --ms-option-font-size: 16px;
     --ms-option-py: .55rem;
     --ms-option-bg-pointed: #eef2f7;
     --ms-option-color-pointed: var(--ink);
@@ -1565,5 +1570,8 @@ export default {
     .rstw-modal__body{ padding:14px 16px; }
     .rstw-modal__foot{ padding:12px 16px; flex-direction:column-reverse; }
     .rstw-modal__btn{ width:100%; }
+}
+.multiselect-wrapper {
+    min-height: 40px !important;
 }
 </style>
