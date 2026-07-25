@@ -855,7 +855,7 @@ export default {
     border: 1.5px solid #e4e8ef;
     border-radius: 12px;
     padding: 0 16px;
-    font-size: 15px;
+    font-size: 16px;
     background: #f8fafc;
     transition: border-color .2s, box-shadow .2s, background .2s, transform .2s;
     width: 100%;
@@ -880,7 +880,7 @@ export default {
 
 /* Multiselect themed to match the native inputs/selects */
 .rstw-field :deep(.multiselect) {
-    --ms-font-size: 15px;
+    --ms-font-size: 16px;
     --ms-line-height: 1.4;
     --ms-py: 0;
     --ms-px: 16px;
