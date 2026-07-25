@@ -20,6 +20,7 @@ class ParticipantResource extends JsonResource
             'name' => $this->participant->name,
             'email' => $this->participant->email,
             'mobile' => $this->participant->mobile,
+            'avatar' => $this->participant->detail->avatar,
             'affiliation' => $this->participant->detail->affiliation,
             'designation' => $this->participant->detail->designation,
             'image' => $this->image,

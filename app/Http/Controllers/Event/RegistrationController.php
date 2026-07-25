@@ -67,7 +67,10 @@ class RegistrationController extends Controller
                 }
                 
                 if($request->session_id){
-                    $data = EventSessionParticipant::with('participant.detail')->where('id',$participant->id)->first();
+                    $data = EventSessionParticipant::with('participant.detail')
+                        ->where('participant_id', $participant->id)
+                        ->where('session_id', $request->session_id)
+                        ->first();
                     broadcast(new SessionEvent(new ParticipantResource($data),'register'));
                 }
 
