@@ -75,7 +75,7 @@ class RegistrationController extends Controller
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
-                RegistrationJob::dispatch($request->email,$name)->onConnection('database');
+                RegistrationJob::dispatch($request->email,$name,$request->session_id)->onConnection('database');
             }
 
             return [

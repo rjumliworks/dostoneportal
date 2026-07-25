@@ -1,69 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Registration Successful</title>
 </head>
 
-<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#0d2c54;">
-    <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin:auto;">
-        <tr>
-            <td align="center" style="padding: 15px; color:#ffffff; font-size:14px;">
+<body style="margin: 0; padding: 0; background-color: #eef1f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
 
-            </td>
-        </tr>
-    </table>
-    <!-- Container -->
-    <table align="center" cellpadding="0" cellspacing="0" width="100%"
-        style="max-width: 600px; margin: auto; margin-top: 30px; background-color: #ffffff; border-radius: 10px;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
-            <td align="center" style="padding: 20px;">
-                <div style="text-align: center; margin-top: 25px; margin-bottom: 20px;">
-                    <img src="{{ asset('images/dost.png') }}" alt="tag"
-                        style="width: 80px; height: 80px; margin-right: 20px;">
-                    <img src="{{ asset('images/bagongpilipinas.png') }}" alt="tag" style="width: 80px; height: 80px;">
-                </div>
-            </td>
-        </tr>
+            <td align="center" style="padding: 32px 16px;">
 
-        <tr>
-            <td align="center" style="padding: 30px 20px 20px 20px;">
-                 <p style="margin:0; margin-bottom: 20px; font-size: 14px; color:#333;">
-                    Hi <b>{{$name}}</b>, your information has been submitted successfully. Thank you!
-                </p>
-                <p style="margin:0; margin-bottom: 20px; font-size: 14px; color:#333;">
-                    We’re excited to share that our <b>mobile app</b> will be released soon for both  
-                    <b>iOS</b> and <b>Android</b> devices.
-                </p>
-                <p style="margin:0; margin-bottom: 20px; font-size: 14px; color:#333;">
-                    As soon as the app is available, you can <b>log in using your registered email</b>  
-                    and <b>register for individual sessions</b> directly through the app.
-                </p>
-                <p style="margin:0; font-size: 14px; color:#333;">
-                    Please stay tuned for our next email announcing the release, and thank you for your patience!
-                </p>
-            </td>
-        </tr>
+                <!-- Email Card -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
+                    style="max-width: 480px; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(20,40,70,.08);">
 
-        <tr>
-            <td align="center"
-                style="padding: 20px; color:#888; text-align: center; font-size: 11px; color: #777; border-top: 1px solid #eee; background: #fafafa; border-radius: 10px;">
-                <p style="margin:0;">
-                    DOST-IX will never ask for sensitive information such as One-Time PIN (OTP) or passwords via email
-                    or SMS.
-                    Please do not entertain calls or messages asking for such information.
-                    This is a system-generated email. DO NOT reply to this message.
-                </p>
-            </td>
-        </tr>
-    </table>
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: #144C8D; border-bottom: 3px solid #F1A442; padding: 18px 28px;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td style="width: 36px; vertical-align: middle;">
+                                        <img src="{{ asset('images/logo-sm.png') }}" alt="DOST" width="30" height="30" style="display: block; width: 30px; height: 30px;">
+                                    </td>
+                                    <td style="vertical-align: middle; padding-left: 12px;">
+                                        <p style="margin: 0; color: rgba(255,255,255,.72); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;">
+                                            Department of Science and Technology &mdash; IX
+                                        </p>
+                                        <p style="margin: 2px 0 0; color: #ffffff; font-size: 14px; font-weight: 700;">
+                                            One<span style="color: #F1A442;">DOST</span>4U
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-    <!-- Footer -->
-    <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin:auto;">
-        <tr>
-            <td align="center" style="padding: 15px; color:#ffffff; font-size:14px;">
-                DOSTIX - ICT
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 32px 28px 24px;">
+                            <p style="margin: 0 0 4px; color: #144C8D; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;">
+                                Registration Confirmation
+                            </p>
+
+                            <h1 style="margin: 0 0 14px; color: #1a202c; font-size: 19px; font-weight: 700;">
+                                Thank you, {{ $name }}!
+                            </h1>
+
+                            @if ($session)
+                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 14px; line-height: 1.6;">
+                                    Your registration for <strong>{{ $session->title }}</strong> has been received
+                                    and is now pending review. You can also register for other sessions open to the
+                                    public &mdash; each session shows its own registration status on the mobile app.
+                                </p>
+
+                                <!-- Session Details -->
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                    <tr>
+                                        <td style="padding: 16px; background-color: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                            <p style="margin: 0 0 10px; color: #718096; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;">
+                                                Session Details
+                                            </p>
+                                            <p style="margin: 0 0 6px; color: #1a202c; font-size: 15px; font-weight: 700;">
+                                                {{ $session->title }}
+                                            </p>
+                                            @if ($session->schedules?->first()?->date)
+                                                <p style="margin: 0 0 2px; color: #4a5568; font-size: 13px;">
+                                                    {{ \Carbon\Carbon::parse($session->schedules->first()->date)->format('l, F j, Y') }}
+                                                </p>
+                                            @endif
+                                            @if ($session->venue?->establishment)
+                                                <p style="margin: 0; color: #4a5568; font-size: 13px;">
+                                                    {{ $session->venue->establishment }}
+                                                </p>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </table>
+                            @else
+                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 14px; line-height: 1.6;">
+                                    Your registration has been received. Open
+                                    <a href="https://mobile.dost9.ph" style="color: #144C8D; font-weight: 700; text-decoration: underline;">mobile.dost9.ph</a>
+                                    on your phone's browser to search for sessions and exhibits that fit your
+                                    interests &mdash; as long as they're open to the public, you can check if
+                                    registration is already open and sign up.
+                                </p>
+                            @endif
+                        </td>
+                    </tr>
+
+                    <!-- Security Notice -->
+                    <tr>
+                        <td style="padding: 16px 28px; background-color: #f7fafc; border-top: 1px solid #e2e8f0;">
+                            <p style="margin: 0; color: #718096; font-size: 12px; line-height: 1.6;">
+                                <strong style="color: #4a5568;">Security tip:</strong> DOST-IX will never ask for
+                                sensitive information such as your One-Time PIN (OTP) or password via email or SMS.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Footer -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 480px;">
+                    <tr>
+                        <td align="center" style="padding: 16px 12px;">
+                            <p style="margin: 0; color: #94a3b8; font-size: 11px; line-height: 1.6;">
+                                DOST Regional Office No. IX &middot; Pettit Barracks, Zamboanga City<br>
+                                This is an automated message, please do not reply.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
             </td>
         </tr>
     </table>

@@ -7,7 +7,8 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Mail\RegistrationSuccessful; 
+use App\Mail\RegistrationSuccessful;
+use App\Models\EventSession;
 use Illuminate\Support\Facades\Mail;
 
 class RegistrationJob implements ShouldQueue
@@ -16,15 +17,21 @@ class RegistrationJob implements ShouldQueue
 
     protected $email;
     protected $name;
+    protected $sessionId;
 
-    public function __construct($email, $name)
+    public function __construct($email, $name, $sessionId = null)
     {
         $this->email = $email;
         $this->name = $name;
+        $this->sessionId = $sessionId;
     }
 
     public function handle(): void
     {
-        Mail::to($this->email)->send(new RegistrationSuccessful($this->name));
+        $session = $this->sessionId
+            ? EventSession::with('venue', 'schedules')->find($this->sessionId)
+            : null;
+
+        Mail::to($this->email)->send(new RegistrationSuccessful($this->name, $session));
     }
 }

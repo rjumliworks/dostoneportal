@@ -104,4 +104,5 @@ Route::middleware(['role:Administrator'])->group(function () {
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
 Route::get('/mailing', [App\Http\Controllers\Public\InfoController::class, 'mailing']);
+Route::get('/mailing/test', [App\Http\Controllers\Public\InfoController::class, 'mailingTest']);
 require __DIR__.'/auth.php';
