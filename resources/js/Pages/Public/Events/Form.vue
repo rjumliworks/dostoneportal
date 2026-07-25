@@ -32,7 +32,7 @@
                 <img src="/images/2026/2026RSTW.png" alt="2026 RSTW" class="rstw-session__brand-img">
             </Link>
 
-            <div class="rstw-info__cols">
+            <div class="rstw-info__cols" v-if="session">
                 <div class="rstw-info__col">
                     <div class="rstw-info__item">
                         <span class="rstw-info__label">Session title:</span>
@@ -65,10 +65,16 @@
                         Important Reminder
                     </strong>
 
-                    <span class="rstw-reg__note-text">
+                    <span class="rstw-reg__note-text" v-if="session">
                         This pre-registration is valid only for the selected session.
                         Please register only if you intend to attend. Registration is
                         subject to review and confirmation through the system.
+                    </span>
+                    <span class="rstw-reg__note-text" v-else>
+                        This registers you into the system without booking a specific
+                        session. Once your registration is approved, you'll be able to
+                        register for individual sessions and exhibits anytime through
+                        the mobile app.
                     </span>
                 </div>
             </div>
@@ -453,7 +459,7 @@ export default {
                 type_id: 196,
                 check: false,
                 consent: false,
-                session_id: this.session.id
+                session_id: this.session?.id ?? null
             }),
         };
     },

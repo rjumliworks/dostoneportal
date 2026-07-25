@@ -16,7 +16,9 @@ use App\Events\SessionEvent;
 Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(function () {
     Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);
     Route::get('/registration', [App\Http\Controllers\Event\PublicController::class, 'registration']);
+    Route::get('/registration/success', [App\Http\Controllers\Event\PublicController::class, 'successGeneral'])->name('success.general');
     Route::get('/registration/{key}', [App\Http\Controllers\Event\PublicController::class, 'register']);
+    Route::get('/registration/{key}/success', [App\Http\Controllers\Event\PublicController::class, 'success'])->name('success');
     Route::get('/search', [App\Http\Controllers\Event\PublicController::class, 'search']);
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);

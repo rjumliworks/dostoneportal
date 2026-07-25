@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Event;
 
+use Hashids\Hashids;
 use App\Models\Participant;
 use App\Models\ParticipantDetail;
 use App\Models\ParticipantFace;
@@ -12,6 +13,7 @@ use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Crypt;
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
 use App\Http\Requests\Event\ParticipantRequest;
@@ -84,7 +86,19 @@ class RegistrationController extends Controller
             ]);
         }
 
-        return back()->with([
+        if (!$request->session_id) {
+            return redirect()->route('rstw2026.success.general')->with([
+                'data' => $result['data'],
+                'message' => $result['message'],
+                'info' => $result['info'],
+                'status' => $result['status'],
+            ]);
+        }
+
+        $hashids = new Hashids('krad',10);
+        $key = urlencode(Crypt::encryptString($hashids->encode($request->session_id)));
+
+        return redirect()->route('rstw2026.success', ['key' => $key])->with([
             'data' => $result['data'],
             'message' => $result['message'],
             'info' => $result['info'],

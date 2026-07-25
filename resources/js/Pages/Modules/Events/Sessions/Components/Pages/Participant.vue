@@ -37,7 +37,7 @@
                     </td>
                     <td>
                         <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
-                        <p class="fs-12 text-muted mb-0">{{list.affiliation}}</p>
+                        <p class="fs-12 text-muted mb-0">{{list.affiliation.name}}</p>
                     </td>
                     <td class="text-center">
                          <h5 class="fs-11 mb-0">{{list.email}}</h5>

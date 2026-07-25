@@ -20,7 +20,7 @@
                     <li><Link href="/accommodations" @click="menuOpen = false">Hotels</Link></li>
                     <li><a href="#contact" @click.prevent="scrollTo('contact')">Contact</a></li>
                     <li>
-                        <a href="#register" class="rstw-nav__cta" @click.prevent="scrollTo('register')">Register</a>
+                        <a href="/registration" target="_blank" rel="noopener" class="rstw-nav__cta">Register</a>
                     </li>
                 </ul>
             </div>
@@ -111,7 +111,7 @@
                 />
 
                 <div class="rstw-hero__actions" data-aos="fade-up" data-aos-delay="500">
-                    <a href="#register" class="rstw-btn rstw-btn--primary" @click.prevent="scrollTo('register')">Register Now</a>
+                    <a href="/registration" target="_blank" rel="noopener" class="rstw-btn rstw-btn--primary">Register Now</a>
                     <a href="#about" class="rstw-btn rstw-btn--ghost" @click.prevent="scrollTo('about')">Learn More</a>
                 </div>
             </div>
@@ -268,10 +268,6 @@
             </div>
         </section>
 
-        <!-- Register -->
-        <!-- Register (extracted to Partials/PreRegistrationForm.vue) -->
-        <PreRegistrationForm :dropdowns="dropdowns" />
-
         <!-- CTA -->
         <section class="rstw-cta">
             <div class="rstw-container rstw-cta__inner" data-aos="zoom-in">
@@ -290,7 +286,7 @@
                 </div>
 
                 <div class="rstw-cta__action">
-                    <a href="#register" class="rstw-btn rstw-btn--light rstw-cta__btn" @click.prevent="scrollTo('register')">
+                    <a href="/registration" target="_blank" rel="noopener" class="rstw-btn rstw-btn--light rstw-cta__btn">
                         Register Now <i class="ri-arrow-right-line"></i>
                     </a>
                     <span class="rstw-cta__note">Takes less than 2 minutes</span>
@@ -351,8 +347,8 @@
         </button>
 
         <!-- Floating countdown — always visible to visitors as they browse -->
-        <a href="#register" class="rstw-countbar" :class="{ 'is-visible': scrolled && timeLeft.total > 0 }"
-           @click.prevent="scrollTo('register')" aria-label="Countdown to RSTW 2026 — register now">
+        <a href="/registration" target="_blank" rel="noopener" class="rstw-countbar" :class="{ 'is-visible': scrolled && timeLeft.total > 0 }"
+           aria-label="Countdown to RSTW 2026 — register now">
             <span class="rstw-countbar__label"><i class="ri-timer-flash-line"></i> RSTW 2026 in</span>
             <span class="rstw-countbar__unit">{{ pad(timeLeft.days) }}<small>d</small></span>
             <span class="rstw-countbar__unit">{{ pad(timeLeft.hours) }}<small>h</small></span>
@@ -365,11 +361,8 @@
 <script>
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import PreRegistrationForm from './Form.vue';
-
 export default {
     layout: null,
-    components: { PreRegistrationForm },
     props: ['dropdowns'],
     data() {
         return {
