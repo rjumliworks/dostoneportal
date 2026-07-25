@@ -12,11 +12,13 @@ use App\Jobs\RegistrationJob;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Events\SessionEvent;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Crypt;
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
 use App\Http\Requests\Event\ParticipantRequest;
+use App\Http\Resources\Api\Events\Session\ParticipantResource;
 
 class RegistrationController extends Controller
 {
@@ -62,6 +64,11 @@ class RegistrationController extends Controller
 
                 if ($avatar_path) {
                     $this->indexFace($participant, $detail, $avatar_path);
+                }
+                
+                if($request->session_id){
+                    $data = EventSessionParticipant::with('participant.detail')->where('id',$participant->id)->first();
+                    broadcast(new SessionEvent(new ParticipantResource($data),'register'));
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
