@@ -32,7 +32,7 @@
                             </div>
                             <div class="flex-grow-1">
                                 <p class="text-muted mb-0 fs-12">Affiliation :</p>
-                                <h5 class="mb-0 fs-12">{{selected.affiliation}}</h5>
+                                <h5 class="mb-0 fs-12">{{selected.affiliation.name}}</h5>
                             </div>
                         </div>
                     </div>
