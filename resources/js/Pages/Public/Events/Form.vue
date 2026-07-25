@@ -772,9 +772,10 @@ export default {
         0 1px 3px rgba(11, 17, 32, .04),
         0 10px 24px rgba(11, 17, 32, .06),
         0 34px 60px rgba(11, 17, 32, .08);
-    overflow: hidden;
 }
-/* Slim brand accent along the top edge of the card */
+/* Slim brand accent along the top edge of the card. Rounded on its own
+   corners (rather than relying on overflow:hidden on .rstw-form) so it
+   doesn't clip the Affiliation dropdown when it opens near the card edge. */
 .rstw-form::before {
     content: '';
     position: absolute;
@@ -782,6 +783,7 @@ export default {
     left: 0;
     right: 0;
     height: 5px;
+    border-radius: 24px 24px 0 0;
     background: linear-gradient(90deg, var(--c-blue), var(--c-blue-2), var(--c-gold), var(--c-orange), var(--c-red));
 }
 /* Grouped section legends */
@@ -920,6 +922,20 @@ export default {
 }
 .rstw-field :deep(.multiselect-dropdown) {
     box-shadow: 0 10px 24px rgba(11, 17, 32, .10);
+    /* iOS Safari sometimes ignores z-index for -webkit-overflow-scrolling
+       layers; forcing a fresh stacking context here keeps the dropdown
+       above sibling content (e.g. the signature canvas) instead of under it. */
+    z-index: 60;
+}
+.rstw-field :deep(.multiselect.is-open) {
+    position: relative;
+    z-index: 60;
+}
+/* Lift the whole column above its sibling (e.g. Attestation) while the
+   Affiliation dropdown is open, so it can't be painted over on iOS. */
+.rstw-form__bottom-col:has(.multiselect.is-open) {
+    position: relative;
+    z-index: 5;
 }
 
 /* Submit button icon + processing spinner */
@@ -927,7 +943,10 @@ export default {
 .rstw-spin { display: inline-block; animation: rstwSpin 1s linear infinite; }
 
 /* Signature pad */
-.rstw-sign { position: relative; }
+/* z-index:0 forces its own stacking context — iOS Safari can otherwise
+   composite the <canvas> above other absolutely-positioned siblings
+   (like the Affiliation dropdown) regardless of source order/z-index. */
+.rstw-sign { position: relative; z-index: 0; }
 .rstw-sign__pad {
     width: 100% !important;
     height: 78px;
