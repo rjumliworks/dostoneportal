@@ -42,9 +42,6 @@ class AvatarController extends Controller
                 $filename = strtolower($participant->code). '.' . $extension;
                 $s3Path = $file->storeAs('oneportal/participants', $filename, 's3');
 
-
-
-
                 $participant->detail->avatar = $s3Path;
                 $participant->detail->save();
 

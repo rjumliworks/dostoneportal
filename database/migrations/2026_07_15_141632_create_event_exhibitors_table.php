@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title',150);
             $table->string('institution',250);
             $table->longText('description');
-            $table->string('area',250);
+            $table->string('area',250)->nullable();
             $table->boolean('is_active');
             $table->unsignedTinyInteger('type_id')->nullable();
             $table->foreign('type_id')->references('id')->on('list_dropdowns')->onDelete('cascade');

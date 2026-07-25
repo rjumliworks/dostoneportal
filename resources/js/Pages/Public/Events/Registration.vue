@@ -2,17 +2,7 @@
     <Head title="Registration — RSTW 2026" />
 
     <div class="rstw rstw-regpage">
-        <!-- Slim header: brand + way back to the landing page -->
-        <header class="rstw-regpage__bar">
-            <div class="rstw-regpage__bar-inner">
-                <Link href="/" class="rstw-regpage__brand">
-                    <img src="/images/2026/2026RSTW.png" alt="2026 RSTW" class="rstw-regpage__brand-img">
-                </Link>
-                <Link href="/" class="rstw-regpage__back">
-                    <i class="ri-arrow-left-line"></i> Back to home
-                </Link>
-            </div>
-        </header>
+     
 
         <main class="rstw-regpage__main">
             <PreRegistrationForm :session="session" :dropdowns="dropdowns" />

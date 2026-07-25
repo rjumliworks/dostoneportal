@@ -12,6 +12,7 @@ use App\Models\EventSessionParticipant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\ListName;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\DefaultResource;
 use App\Http\Resources\Api\Events\Session\ParticipantResource;
@@ -26,6 +27,24 @@ class PublicController extends Controller
         $this->dropdown = $dropdown;
     }
 
+    public function search(Request $request){
+        $keyword = $request->keyword;
+        $type = $request->type;
+
+        $data = ListName::where('name', 'LIKE', "%{$keyword}%")
+        ->where('type',$type)
+        ->where('is_active',1)
+        ->limit(20)
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+            ];
+        });
+        return $data;
+    }
+
+
     public function index(){
         return inertia('Public/Events/Landing',[
             'dropdowns' => [
@@ -38,7 +57,8 @@ class PublicController extends Controller
     public function registration(){
         return inertia('Public/Events/Registration',[
             'dropdowns' => [
-              'sexs' => $this->dropdown->datas('Sex'),
+                'suffixes' => $this->dropdown->datas('Suffix'),
+                'sexs' => $this->dropdown->datas('Sex'),
                 'types' => $this->dropdown->datas('Participant Type'),
             ],
         ]);
@@ -57,10 +77,11 @@ class PublicController extends Controller
         $id = $hashids->decode($decryptedKey);
 
         return inertia('Public/Events/Registration',[
-            'session' => EventSession::where('id',$id)->first(),
+            'session' => EventSession::with('venue','schedules')->where('id',$id)->first(),
             'dropdowns' => [
-                'sexs' => $this->dropdown->dropdowns('Sex'),
-                'types' => $this->dropdown->dropdowns('Participant Type')
+                'suffixes' => $this->dropdown->datas('Suffix'),
+                'sexs' => $this->dropdown->datas('Sex'),
+                'types' => $this->dropdown->datas('Participant Type'),
             ],
         ]);
     }
@@ -153,7 +174,7 @@ class PublicController extends Controller
         $filename = Str::random(10).'.'.$extension;
         $path = 'images/participants/'.$user->code.'/'.$filename;
 
-        Storage::disk('public')->putFileAs('images/participants/'.$user->code, $file, $filename);
+        Storage::disk('public')->putFileAs('participants/'.$user->code.'/attendance/', $file, $filename);
         EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)
         ->update([
             'attended_at' => $datetime,

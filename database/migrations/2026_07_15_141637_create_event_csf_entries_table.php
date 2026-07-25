@@ -21,6 +21,10 @@ return new class extends Migration
             $table->string('feedbackable_type'); 
             $table->unsignedBigInteger('participant_id');
             $table->foreign('participant_id')->references('id')->on('participants')->onDelete('cascade');
+            $table->unique(
+                ['participant_id', 'feedbackable_id', 'feedbackable_type'],
+                'ecsf_participant_feedback_unique'
+            );
             $table->timestamps();
         });
     }

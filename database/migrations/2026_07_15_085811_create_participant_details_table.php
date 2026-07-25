@@ -15,11 +15,13 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('designation',250)->nullable();
-            $table->string('affiliation',250)->nullable();
+            $table->string('others',250)->nullable();
             $table->date('birthdate')->nullable();
             $table->boolean('is_pwd')->default(0);
             $table->boolean('is_4ps')->default(0);
             $table->boolean('is_ip')->default(0);
+            $table->unsignedInteger('affiliation_id')->nullable();
+            $table->foreign('affiliation_id')->references('id')->on('list_names')->onDelete('cascade');
             $table->unsignedSmallInteger('type_id');
             $table->foreign('type_id')->references('id')->on('list_data')->restrictOnDelete();
             $table->unsignedSmallInteger('sex_id'); 

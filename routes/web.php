@@ -17,8 +17,11 @@ Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(func
     Route::get('/', [App\Http\Controllers\Event\PublicController::class, 'index']);
     Route::get('/registration', [App\Http\Controllers\Event\PublicController::class, 'registration']);
     Route::get('/registration/{key}', [App\Http\Controllers\Event\PublicController::class, 'register']);
+    Route::get('/search', [App\Http\Controllers\Event\PublicController::class, 'search']);
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
+    Route::post('/register', [App\Http\Controllers\Event\RegistrationController::class, 'store']);
+    
 });
 
 Route::domain('attendance.' . config('app.app_host'))->as('attendance.')->group(function () {

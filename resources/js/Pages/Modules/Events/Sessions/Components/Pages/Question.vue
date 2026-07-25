@@ -20,10 +20,9 @@
            
             <thead class="bg-primary text-white">
                 <tr class="fs-10">
-                    <th style="width: 3%;"></th>
-                    <th style="width: 15%;">Name</th>
-                    <th class="">Question</th>
-                    <th style="width: 8%;" class="text-center">Status</th>
+                    <th style="width: 4%;"></th>
+                    <th>Name</th>
+                    <th style="width: 15%;" class="text-center">Status</th>
                     <th style="width: 15%;" class="text-center">Date</th>
                 </tr>
             </thead>
@@ -32,13 +31,13 @@
                     <td>{{ index + 1 }}</td>
                     <td>
                         <h5 class="fs-12 mb-0 fw-semibold text-primary">{{(list.participant) ? list.participant.name : list.name}}</h5>
+                        <p class="fs-12 text-muted mb-0">{{list.question}}</p>
                     </td>
-                    <td>{{list.question}}</td>
                     <td class="text-center">
                         <span v-if="list.is_answered" class="badge bg-success">Answered</span>
                         <span v-else class="badge bg-danger">Not Answered</span>
                     </td>
-                    <td class="text-center">{{list.created_at}}</td>
+                    <td class="text-center fs-11">{{list.created_at}}</td>
                 </tr>
             </tbody>
             <tbody v-else>

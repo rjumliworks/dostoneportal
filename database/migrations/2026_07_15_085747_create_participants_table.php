@@ -22,7 +22,8 @@ return new class extends Migration
             $table->text('lastname');
             $table->text('firstname');
             $table->text('middlename');
-            $table->string('suffix',10)->nullable();
+            $table->unsignedSmallInteger('suffix_id')->nullable(); 
+            $table->foreign('suffix_id')->references('id')->on('list_data')->restrictOnDelete();
             $table->boolean('is_completed')->default(0);
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();

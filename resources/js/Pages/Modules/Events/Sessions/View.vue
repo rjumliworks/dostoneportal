@@ -22,7 +22,10 @@
         <div class="w-100 p-4 pb-0" ref="box">
             <BRow>
                 <Top :selected="session.data"/>
-                <BCol lg="12">
+                <BCol lg="4">
+                    <Sidebar :selected="session.data"/>
+                </BCol>
+                <BCol lg="8">
                     <Main :selected="session.data"/>
                 </BCol>
             </BRow>

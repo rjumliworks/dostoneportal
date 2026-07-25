@@ -16,6 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->datetime('attended_at')->nullable();
             $table->string('image')->nullable();
+            $table->boolean('is_approved')->default(0);
             $table->unsignedTinyInteger('method_id')->nullable();
             $table->foreign('method_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
             $table->unsignedTinyInteger('status_id');

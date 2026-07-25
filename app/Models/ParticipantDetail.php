@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class ParticipantDetail extends Model
 {
     protected $fillable = [
-        'designation','affiliation','birthdate','type_id','sex_id','avatar','signature','is_4ps','is_pwd','is_ip','is_completed'
+        'designation','affiliation_id','birthdate','others','type_id','sex_id','avatar','signature','is_4ps','is_pwd','is_ip','is_completed'
     ];
 
     protected $appends = ['age'];
@@ -27,12 +27,17 @@ class ParticipantDetail extends Model
             return asset('images/avatars/' . $value);
         }
 
-        return Storage::disk('s3')->url($value);
+        return Storage::disk('s3')->url($value) . '?v=' . ($this->updated_at?->timestamp ?? time());
     }
 
     public function sex()
     {
         return $this->belongsTo('App\Models\ListData', 'sex_id', 'id');
+    }
+
+    public function affiliation()
+    {
+        return $this->belongsTo('App\Models\ListName', 'affiliation_id', 'id');
     }
 
     public function type()

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('capacity');
             $table->integer('attendees')->default(0);
-            $table->string('description',250)->nullable();
+            $table->text('description')->nullable();
             $table->unsignedInteger('session_id');
             $table->foreign('session_id')->references('id')->on('event_sessions')->onDelete('cascade');
             $table->timestamps();

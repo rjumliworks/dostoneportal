@@ -1,0 +1,298 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+
+class EventSessionsTableSeeder extends Seeder
+{
+
+    /**
+     * Auto generated seed file
+     *
+     * @return void
+     */
+    public function run()
+    {
+        
+
+        \DB::table('event_sessions')->delete();
+        
+        \DB::table('event_sessions')->insert(array (
+            0 => 
+            array (
+                'id' => 1,
+                'code' => 'SES-072026-DOSTIX-0001',
+                'title' => 'Opening Ceremony',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 2,
+                'event_id' => 1,
+                'status_id' => 49,
+                'created_at' => '2026-07-18 22:51:39',
+                'updated_at' => '2026-07-23 12:47:36',
+            ),
+            1 => 
+            array (
+                'id' => 2,
+                'code' => 'SES-072026-DOSTIX-0002',
+                'title' => 'Press Conference',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 1,
+                'is_limited' => 1,
+                'has_registration' => 1,
+                'venue_id' => 3,
+                'event_id' => 1,
+                'status_id' => 51,
+                'created_at' => '2026-07-21 15:35:49',
+                'updated_at' => '2026-07-23 14:47:54',
+            ),
+            2 => 
+            array (
+                'id' => 3,
+                'code' => 'SES-072026-DOSTIX-0003',
+                'title' => 'DOST IX LGU : Forum on Science, Technology, and Innovation for Local Development',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 3,
+                'event_id' => 1,
+                'status_id' => 50,
+                'created_at' => '2026-07-21 23:07:43',
+                'updated_at' => '2026-07-23 12:48:10',
+            ),
+            3 => 
+            array (
+                'id' => 4,
+                'code' => 'SES-072026-DOSTIX-0004',
+                'title' => 'Demystifying the Harmonized Gender and Development Guidelines: Beyond Compliance, Creating Real Impact for VisMin Cluster',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 1,
+                'is_limited' => 1,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 49,
+                'created_at' => '2026-07-21 23:08:56',
+                'updated_at' => '2026-07-23 14:48:38',
+            ),
+            4 => 
+            array (
+                'id' => 5,
+                'code' => 'SES-072026-DOSTIX-0005',
+            'title' => 'Seminar on Blue Economy (Co-sponsored by PhilAASTI)',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 3,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:09:30',
+                'updated_at' => '2026-07-23 12:47:47',
+            ),
+            5 => 
+            array (
+                'id' => 6,
+                'code' => 'SES-072026-DOSTIX-0006',
+                'title' => 'Smart Agriculture for Sustainable Development: Regional Forum on Innovative and Climate-Resilient Agriculture Technologies',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:10:38',
+                'updated_at' => '2026-07-21 23:10:38',
+            ),
+            6 => 
+            array (
+                'id' => 7,
+                'code' => 'SES-072026-DOSTIX-0007',
+                'title' => 'F&N Talks: Food and Nutrition Innovations for Food Security and National Resilience',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 51,
+                'created_at' => '2026-07-21 23:11:25',
+                'updated_at' => '2026-07-23 15:03:52',
+            ),
+            7 => 
+            array (
+                'id' => 8,
+                'code' => 'SES-072026-DOSTIX-0008',
+                'title' => 'Training on Testing and Sealing of Weighing Instruments and Test Measures',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:12:07',
+                'updated_at' => '2026-07-21 23:12:07',
+            ),
+            8 => 
+            array (
+                'id' => 9,
+                'code' => 'SES-072026-DOSTIX-0009',
+                'title' => 'Safe and Sustainable Chemical Management',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:13:03',
+                'updated_at' => '2026-07-21 23:13:03',
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'code' => 'SES-072026-DOSTIX-0010',
+            'title' => 'R&D Symposium (hosted by WESMAARDEC)',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:13:47',
+                'updated_at' => '2026-07-21 23:13:47',
+            ),
+            10 => 
+            array (
+                'id' => 11,
+                'code' => 'SES-072026-DOSTIX-0011',
+            'title' => 'Technology Forum (hosted by WESMAARDEC)',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:14:06',
+                'updated_at' => '2026-07-21 23:14:06',
+            ),
+            11 => 
+            array (
+                'id' => 12,
+                'code' => 'SES-072026-DOSTIX-0012',
+                'title' => 'LIC-HA: Local Inventors\' Convention-Horizons and Advancement',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:14:49',
+                'updated_at' => '2026-07-21 23:14:49',
+            ),
+            12 => 
+            array (
+                'id' => 13,
+                'code' => 'SES-072026-DOSTIX-0013',
+                'title' => 'CyberSAFE MSMEs: Strengthening Digital Security and Business Resilience for DOST-SETUP assisted MSMEs',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:15:23',
+                'updated_at' => '2026-07-21 23:15:23',
+            ),
+            13 => 
+            array (
+                'id' => 14,
+                'code' => 'SES-072026-DOSTIX-0014',
+                'title' => 'Viewing of Science Centrum',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 2,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:15:51',
+                'updated_at' => '2026-07-21 23:15:51',
+            ),
+            14 => 
+            array (
+                'id' => 15,
+                'code' => 'SES-072026-DOSTIX-0015',
+                'title' => 'Science Trivia Powered by STARBOOKS',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 3,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:16:38',
+                'updated_at' => '2026-07-21 23:16:38',
+            ),
+            15 => 
+            array (
+                'id' => 16,
+                'code' => 'SES-072026-DOSTIX-0016',
+                'title' => 'End-User Training on VISSER',
+                'is_closed' => 0,
+                'is_whole_day' => 0,
+                'is_invitational' => 0,
+                'is_exclusive' => 0,
+                'is_limited' => 0,
+                'has_registration' => 1,
+                'venue_id' => 1,
+                'event_id' => 1,
+                'status_id' => 48,
+                'created_at' => '2026-07-21 23:17:03',
+                'updated_at' => '2026-07-21 23:17:03',
+            ),
+        ));
+        
+        
+    }
+}

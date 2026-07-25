@@ -22,24 +22,27 @@
                 <tr class="fs-10">
                     <th style="width: 3%;"></th>
                     <th>Name</th>
-                    <th style="width: 10%;" class="text-center">Mobile</th>
-                    <th style="width: 20%;" class="text-center">Affiliation</th>
-                    <th style="width: 20%;" class="text-center">Designation</th>
-                    <th style="width: 10%;" class="text-center">Attendance Record</th>
-                    <th style="width: 10%;" class="text-center">Status</th>
+                    <th style="width: 25%;" class="text-center">Contact</th>
+                    <th style="width: 12%;" class="text-center">Attendance Record</th>
+                    <th style="width: 12%;" class="text-center">Status</th>
                     <th style="width: 5%;" class="text-center"></th>
                 </tr>
             </thead>
             <tbody v-if="filteredParticipants.length > 0">
                 <tr v-for="(list,index) in filteredParticipants" v-bind:key="index" class="fs-12">
-                    <td>{{ index + 1 }}</td>
+                    <td class="text-center"> 
+                        <div class="avatar-xs">
+                            <img :src="list.avatar" class="rounded-circle avatar-xs" style="object-fit:cover;" alt="Avatar">
+                        </div>
+                    </td>
                     <td>
                         <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.name}}</h5>
-                        <p class="fs-12 text-muted mb-0">{{list.email }}</p>
+                        <p class="fs-12 text-muted mb-0">{{list.affiliation}}</p>
                     </td>
-                    <td class="text-center">{{list.mobile}}</td>
-                    <td class="text-center">{{list.affiliation}}</td>
-                    <td class="text-center">{{list.designation}}</td>
+                    <td class="text-center">
+                         <h5 class="fs-11 mb-0">{{list.email}}</h5>
+                        <p class="fs-11 text-muted mb-0">{{list.mobile }}</p>
+                    </td>
                     <td class="text-center">{{ (list.attended_at) ? list.attended_at : '-'}}</td>
                     <td class="text-center">
                         <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
