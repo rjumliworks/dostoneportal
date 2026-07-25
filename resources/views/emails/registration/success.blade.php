@@ -51,7 +51,7 @@
                             </h1>
 
                             @if ($session)
-                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1;">
+                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     Your registration for <strong>{{ $session->title }}</strong> has been received
                                     and is now pending review.
                                 </p>
@@ -80,14 +80,14 @@
                                     </tr>
                                 </table>
 
-                                <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1;">
+                                <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     You can also register for other sessions open to the public &mdash; each
                                     session shows its own registration status on the mobile app. Then, to view
                                     the status of your registration, visit the app through
                                     <a href="https://mobile.dost9.ph" style="color: #144C8D; font-weight: 700; text-decoration: underline;">mobile.dost9.ph</a>.
                                 </p>
                             @else
-                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 14px; line-height: 1;">
+                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 14px; line-height: 1.3;">
                                     Your registration has been received. Open
                                     <a href="https://mobile.dost9.ph" style="color: #144C8D; font-weight: 700; text-decoration: underline;">mobile.dost9.ph</a>
                                     on your phone's browser to search for sessions and exhibits that fit your
