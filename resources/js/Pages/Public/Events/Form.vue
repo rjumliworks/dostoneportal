@@ -250,7 +250,7 @@
                 >
             </div>
 
-            <div class="rstw-field" :class="{ 'has-error': form.errors.affiliation_id }">
+            <div class="rstw-field" :class="{ 'has-error': form.errors.affiliation_id }" style="margin-top: 3px;">
                 <label>Affiliation <span class="rstw-field__hint">(select Others if not on the list)</span></label>
                 <Multiselect
                     v-model="form.affiliation_id"
