@@ -33,7 +33,7 @@ class ViewResource extends JsonResource
 
 
         $encryptedKey = Crypt::encryptString($key);
-        $reg_link = 'https://rstw2026.dostoneportal.test/registration/'.$encryptedKey;
+        $reg_link = url("registration/{$encryptedKey}");
         $result1 = (new Builder(
             writer: new PngWriter(),
             data: $reg_link,
