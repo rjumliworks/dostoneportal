@@ -52,6 +52,17 @@ class EventVenuesTableSeeder extends Seeder
                 'created_at' => '2026-07-18 22:43:41',
                 'updated_at' => '2026-07-18 22:43:41',
             ),
+            3 => 
+            array (
+                'id' => 4,
+                'code' => 'VN-072026-DOSTIX-0004',
+                'name' => 'TBA',
+                'establishment' => 'Marcian Garden Hotel',
+                'address' => 'Governor Camins Avenue, Zamboanga City',
+                'event_id' => 1,
+                'created_at' => '2026-07-18 22:43:41',
+                'updated_at' => '2026-07-18 22:43:41',
+            ),
         ));
         
         

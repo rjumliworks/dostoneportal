@@ -22,7 +22,7 @@ class EventSessionDetailsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'capacity' => 500,
+                'capacity' => 450,
                 'attendees' => 0,
             'description' => 'The Opening Ceremony officially launches the Regional Science, Technology, and Innovation Week (RSTW) 2026, bringing together government leaders, researchers, innovators, educators, industry partners, students, and the public to celebrate the role of science, technology, and innovation in regional development. The ceremony marks the start of a series of exhibits, forums, technology demonstrations, and collaborative activities that showcase science-based solutions and strengthen partnerships for a smarter, more resilient, and sustainable future.',
                 'session_id' => 1,
