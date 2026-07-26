@@ -78,7 +78,7 @@ class PublicController extends Controller
         $id = $hashids->decode($decryptedKey);
 
         return inertia('Public/Events/Registration',[
-            'session' => EventSession::with('venue','schedules')->where('id',$id)->first(),
+            'session' => EventSession::with('venue','schedules','detail')->withCount('participants')->where('id',$id)->first(),
             'dropdowns' => [
                 'suffixes' => $this->dropdown->datas('Suffix'),
                 'sexs' => $this->dropdown->datas('Sex'),

@@ -21,3 +21,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('session', function () {
     return true;
 });
+
+Broadcast::channel('capacity', function () {
+    return true;
+});

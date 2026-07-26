@@ -36,7 +36,10 @@
                 <div class="rstw-info__col">
                     <div class="rstw-info__item">
                         <span class="rstw-info__label">Session title:</span>
-                        <span class="rstw-info__value">{{ session.title || '—' }}</span>
+                        <span class="rstw-info__value">
+                            {{ session.title || '—' }}
+                            <span v-if="sessionFull" class="rstw-info__badge">FULL</span>
+                        </span>
                     </div>
                     <div class="rstw-info__item">
                         <span class="rstw-info__label">Date:</span>
@@ -55,17 +58,24 @@
                 </div>
             </div>
 
-            <div class="rstw-reg__note" role="alert">
+            <div class="rstw-reg__note" role="alert" :class="{ 'rstw-reg__note--danger': sessionFull }">
                 <span class="rstw-reg__note-icon">
                     <i class="ri-alert-line"></i>
                 </span>
 
                 <div class="rstw-reg__note-body">
                     <strong class="rstw-reg__note-title">
-                        Important Reminder
+                        {{ sessionFull ? 'Session Full' : 'Important Reminder' }}
                     </strong>
 
-                    <span class="rstw-reg__note-text" v-if="session">
+                    <span class="rstw-reg__note-text" v-if="sessionFull">
+                        This session has already reached its maximum capacity and is
+                        now closed for registration. You may still continue below to
+                        register as a general participant — you'll be able to browse
+                        and register for other open sessions anytime through the
+                        mobile app.
+                    </span>
+                    <span class="rstw-reg__note-text" v-else-if="session">
                         This pre-registration is valid only for the selected session.
                         Please register only if you intend to attend. Registration is
                         subject to review and confirmation through the system.
@@ -442,6 +452,7 @@ export default {
             affiliations: [],
             affiliationKeyword: '',
             requirementModalMessage: null,
+            sessionFull: false,
             form: useForm({
                 firstname: null,
                 middlename: null,
@@ -670,6 +681,30 @@ export default {
                 },
             });
         },
+        setupEchoListener() {
+            if (!this.session) return;
+
+            window.Echo.channel('capacity')
+            .listen('CapacityEvent', (event) => {
+                // CapacityEvent broadcasts { count, session } where `session`
+                // is the session id (see App\Events\CapacityEvent), not
+                // `session_id` — matching the wrong key here would silently
+                // never fire.
+                if (this.session.id == event.session) {
+                    this.checkSessionCapacity(event.count);
+                }
+            });
+        },
+        checkSessionCapacity(count) {
+            const capacity = this.session?.detail?.capacity;
+            if (!capacity || this.sessionFull) return;
+
+            const registered = count ?? this.session.participants_count ?? 0;
+            if (registered >= capacity) {
+                this.sessionFull = true;
+                this.form.session_id = null;
+            }
+        },
     },
     mounted() {
         this.$nextTick(() => {
@@ -680,6 +715,8 @@ export default {
             }
         });
         window.addEventListener('resize', this.syncSignatureHeight);
+        this.checkSessionCapacity();
+        this.setupEchoListener();
     },
     beforeUnmount() {
         this.stopCamera();
@@ -1349,6 +1386,12 @@ export default {
     border-left-width:4px;
     text-align:left;
 }
+.rstw-reg__note--danger{
+    border-left-color:#dc2626;
+    background:#fef2f2;
+    border-color:rgba(220,38,38,.35);
+}
+.rstw-reg__note--danger .rstw-reg__note-icon{ background:#dc2626; }
 .rstw-card{
     display:flex;
     flex-direction:column;
@@ -1392,6 +1435,18 @@ export default {
     font-size:13.5px;
     font-weight:600;
     color:var(--ink);
+}
+.rstw-info__badge{
+    display:inline-block;
+    margin-left:6px;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.04em;
+    color:#fff;
+    background:#dc2626;
+    vertical-align:middle;
 }
 @media (max-width:640px){
     .rstw-info__cols{ grid-template-columns:1fr; }

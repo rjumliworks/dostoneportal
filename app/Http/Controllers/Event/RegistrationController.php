@@ -7,12 +7,14 @@ use App\Models\Participant;
 use App\Models\ParticipantDetail;
 use App\Models\ParticipantFace;
 use App\Models\EventSessionParticipant;
+use App\Models\EventSessionDetail;
 use App\Models\ListName;
 use App\Jobs\RegistrationJob;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Events\SessionEvent;
+use App\Events\CapacityEvent;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Crypt;
 use Aws\Rekognition\RekognitionClient;
@@ -31,6 +33,26 @@ class RegistrationController extends Controller
             ]));
 
             if ($participant) {
+                if ($request->session_id) {
+                    // Safety net against overbooking: the frontend already
+                    // switches to general registration once it sees capacity
+                    // reached via the CapacityEvent broadcast, but two
+                    // submissions racing at the last open slot could both
+                    // pass that client-side check. lockForUpdate() serializes
+                    // the count within this transaction so only one wins.
+                    $capacity = EventSessionDetail::where('session_id', $request->session_id)->value('capacity');
+
+                    if ($capacity) {
+                        $currentCount = EventSessionParticipant::where('session_id', $request->session_id)
+                            ->lockForUpdate()
+                            ->count();
+
+                        if ($currentCount >= $capacity) {
+                            $request->merge(['session_id' => null]);
+                        }
+                    }
+                }
+
                 if($request->session_id){
                     EventSessionParticipant::create([
                         'status_id' => 52,
@@ -72,6 +94,7 @@ class RegistrationController extends Controller
                         ->where('session_id', $request->session_id)
                         ->first();
                     broadcast(new SessionEvent(new ParticipantResource($data),'register'));
+                    broadcast(new CapacityEvent(EventSessionParticipant::where('session_id', $request->session_id)->count(),$request->session_id));
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
