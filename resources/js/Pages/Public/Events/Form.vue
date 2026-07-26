@@ -42,7 +42,7 @@
                         </span>
                     </div>
                     <div class="rstw-info__item">
-                        <span class="rstw-info__label">Date:</span>
+                        <span class="rstw-info__label">Date and Time:</span>
                         <span class="rstw-info__value">{{ sessionDate }}</span>
                     </div>
                 </div>
@@ -57,7 +57,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="rstw-reg__note" role="alert" :class="{ 'rstw-reg__note--danger': sessionFull }">
                 <span class="rstw-reg__note-icon">
                     <i class="ri-alert-line"></i>
@@ -518,11 +517,20 @@ export default {
             return [...results, { value: 'others', name: 'Others' }];
         },
         sessionDate() {
-            const raw = this.session?.schedules?.[0]?.date;
+            const schedule = this.session?.schedules?.[0];
+            const raw = schedule?.date;
             if (!raw) return '—';
             const date = new Date(raw);
-            if (isNaN(date)) return raw;
-            return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            let formatted = isNaN(date)
+                ? raw
+                : date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            const start = this.formatTime(schedule?.start_time);
+            const end = this.formatTime(schedule?.end_time);
+            if (start && end) {
+                formatted += ` - (${start} - ${end})`;
+            }
+            return formatted;
         },
         errorMessages() {
             return Object.values(this.form.errors).filter(Boolean);
@@ -599,6 +607,13 @@ export default {
         onlyNumber(e) {
             const char = String.fromCharCode(e.which ?? e.keyCode);
             if (!/[0-9]/.test(char)) e.preventDefault();
+        },
+        formatTime(time) {
+            if (!time) return null;
+            const [hours, minutes] = time.split(':');
+            const date = new Date();
+            date.setHours(Number(hours), Number(minutes), 0, 0);
+            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
         },
         onMobileInput() {
             this.form.mobile = (this.form.mobile || '').replace(/\D/g, '').slice(0, 11);
