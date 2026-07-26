@@ -1219,7 +1219,7 @@ export default {
 .rstw-photo__stage {
     position: relative;
     width: 100%;
-    max-width: 138px;
+    max-width: 180px;
     aspect-ratio: 1;
     border: 2px dashed #d7b9a0;
     border-radius: 50%;
