@@ -19,10 +19,12 @@ class ViewResource extends JsonResource
         $key = $hashids->encode($this->id);
         $randomkey = Str::random(10);
         
-        $url = $_SERVER['HTTP_HOST'].'/verification/'.$key;
+        $encryptedKey = Crypt::encryptString($key);
+        $reg_link = config('app.registration_url') . '/registration/' . $encryptedKey;
+
         $result = (new Builder(
             writer: new PngWriter(),
-            data: $url,
+            data: $reg_link,
             size: 500,
             margin: 5,
             logoPath: public_path('images/qrlogo.png'),
@@ -32,8 +34,6 @@ class ViewResource extends JsonResource
         $qr = 'data:image/png;base64,' . base64_encode($result->getString());
 
 
-        $encryptedKey = Crypt::encryptString($key);
-        $reg_link = config('app.registration_url') . '/registration/' . $encryptedKey;
         $result1 = (new Builder(
             writer: new PngWriter(),
             data: $reg_link,

@@ -280,7 +280,7 @@
             </div>
 
             <div class="rstw-field" :class="{ 'has-error': form.errors.affiliation_id }" style="margin-top: 3px;">
-                <label>Affiliation <span class="rstw-field__hint">(select Others if not on the list)</span></label>
+                <label>Affiliation <span class="rstw-field__hint">(Search affiliation on the list)</span></label>
                 <Multiselect
                     v-model="form.affiliation_id"
                     :options="affiliationOptions"
@@ -296,7 +296,7 @@
             </div>
 
             <div class="rstw-field" :class="{ 'has-error': form.errors.others }">
-                <label>Others</label>
+                <label>Others <span class="rstw-field__hint">(If not on the list)</span></label>
                 <input
                     type="text"
                     v-model="form.others"
@@ -485,7 +485,6 @@ import { useForm, Link, router } from '@inertiajs/vue3';
 import SignaturePad from 'vue3-signature-pad';
 import Multiselect from '@vueform/multiselect';
 import axios from 'axios';
-import _ from 'lodash';
 
 export default {
     name: 'PreRegistrationForm',
@@ -535,9 +534,14 @@ export default {
             return this.form.affiliation_id === 'others';
         },
         affiliationOptions() {
-            if (!this.affiliationKeyword) return [];
-            const results = this.affiliations.filter((opt) => opt.name !== 'Others');
-            return [...results, { value: 'others', name: 'Others' }];
+            const keyword = this.affiliationKeyword.trim().toLowerCase();
+            const results = this.affiliations
+                .filter((opt) => opt.name !== 'Others')
+                .filter((opt) => !keyword || opt.name.toLowerCase().includes(keyword));
+            // Others stays available regardless of what's typed — filtered
+            // client-side now that the full list loads once up front, so
+            // there's no server round-trip left to skip it on.
+            return [...results, { value: 'others', name: 'Others (if not on the list)' }];
         },
         sessionDate() {
             const schedule = this.session?.schedules?.[0];
@@ -590,20 +594,17 @@ export default {
                 this.clearError('others');
             }
         },
-        onAffiliationSearch: _.debounce(function (keyword) {
+        onAffiliationSearch(keyword) {
+            // Purely client-side now — the full list is already loaded, so
+            // typing just narrows affiliationOptions, no request involved.
             this.affiliationKeyword = keyword;
-            if (!keyword) {
-                this.affiliations = [];
-                return;
-            }
-            this.fetchAffiliation(keyword);
-        }, 300),
-        fetchAffiliation(code){
+        },
+        fetchAffiliation(){
             axios.get('/search',{
                 params: {
                     option: 'search',
                     type: 'Affiliation',
-                    keyword: code
+                    keyword: ''
                 }
             })
             .then(response => {
@@ -813,6 +814,7 @@ export default {
         window.addEventListener('resize', this.syncSignatureHeight);
         this.checkSessionCapacity();
         this.setupEchoListener();
+        this.fetchAffiliation();
     },
     beforeUnmount() {
         this.stopCamera();
@@ -1102,7 +1104,7 @@ export default {
 .rstw-field :deep(.multiselect-search),
 .rstw-field :deep(.multiselect-single-label),
 .rstw-field :deep(.multiselect-placeholder) {
-    font-size: 16px;
+    font-size: 13px;
 }
 .rstw-field :deep(.multiselect:hover) {
     border-color: #c7ccd6;
@@ -1120,6 +1122,19 @@ export default {
        layers; forcing a fresh stacking context here keeps the dropdown
        above sibling content (e.g. the signature canvas) instead of under it. */
     z-index: 60;
+}
+/* "Others" is always the last option appended in affiliationOptions — pin it
+   to the bottom of the scrollable list so it stays reachable without having
+   to scroll all the way through the search results first. */
+.rstw-field :deep(.multiselect-options .multiselect-option:last-child) {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    border-top: 1px solid #e4e8ef;
+    box-shadow: 0 -4px 8px rgba(11, 17, 32, .04);
+}
+.rstw-field :deep(.multiselect-options .multiselect-option:last-child:not(.is-pointed):not(.is-selected)) {
+    background: #fff;
 }
 .rstw-field :deep(.multiselect.is-open) {
     position: relative;

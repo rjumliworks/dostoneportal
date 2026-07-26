@@ -34,7 +34,7 @@ class PublicController extends Controller
         $data = ListName::where('name', 'LIKE', "%{$keyword}%")
         ->where('type',$type)
         ->where('is_active',1)
-        ->limit(20)
+        ->orderBy('name')
         ->get()->map(function ($item) {
             return [
                 'value' => $item->id,
