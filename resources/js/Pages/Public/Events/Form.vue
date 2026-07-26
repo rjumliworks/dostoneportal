@@ -57,17 +57,21 @@
                     </div>
                 </div>
             </div>
-            <div class="rstw-reg__note" role="alert" :class="{ 'rstw-reg__note--danger': sessionFull }">
+            <div class="rstw-reg__note" role="alert" :class="{ 'rstw-reg__note--danger': isPreregClosed || sessionFull }">
                 <span class="rstw-reg__note-icon">
                     <i class="ri-alert-line"></i>
                 </span>
 
                 <div class="rstw-reg__note-body">
                     <strong class="rstw-reg__note-title">
-                        {{ sessionFull ? 'Session Full' : 'Important Reminder' }}
+                        {{ isPreregClosed ? 'Registration Not Yet Open' : (sessionFull ? 'Session Full' : 'Important Reminder') }}
                     </strong>
 
-                    <span class="rstw-reg__note-text" v-if="sessionFull">
+                    <span class="rstw-reg__note-text" v-if="isPreregClosed">
+                        Pre-registration for this session hasn't opened yet. Please
+                        check back later, or follow updates through the mobile app.
+                    </span>
+                    <span class="rstw-reg__note-text" v-else-if="sessionFull">
                         {{ sessionFullMessage }}
                     </span>
                     <span class="rstw-reg__note-text" v-else-if="session">
@@ -88,6 +92,26 @@
 
 </div>
 
+        <div v-if="isPreregClosed" class="rstw-closed" data-aos="fade-up">
+            <div class="rstw-closed__icon"><i class="ri-time-line"></i></div>
+            <h3 class="rstw-closed__title">Pre-Registration Not Yet Open</h3>
+            <p class="rstw-closed__text">
+                Pre-registration for this session hasn't opened yet. Please check
+                back later, or follow updates through the mobile app once
+                registration begins. In the meantime, you can register as a
+                general participant and pick a specific session later.
+            </p>
+            <div class="rstw-closed__actions">
+                <Link href="/registration" class="rstw-btn rstw-btn--primary">
+                    <i class="ri-user-add-line"></i> Register Without a Session
+                </Link>
+                <Link href="/" class="rstw-btn rstw-btn--ghost">
+                    <i class="ri-home-4-line"></i> Back to Home
+                </Link>
+            </div>
+        </div>
+
+        <template v-else>
         <ul v-if="errorMessages.length" class="rstw-error-summary">
             <li v-for="(msg, key) in form.errors" :key="key" v-show="msg">{{ msg }}</li>
         </ul>
@@ -341,6 +365,7 @@
               </button>
           </div>
         </form>
+        </template>
     </div>
 
     <!-- Privacy Notice modal -->
@@ -503,6 +528,9 @@ export default {
         };
     },
     computed: {
+        isPreregClosed() {
+            return !!this.session && !this.session.is_prereg;
+        },
         isAffiliationOthers() {
             return this.form.affiliation_id === 'others';
         },
@@ -833,6 +861,12 @@ export default {
     color: #fff;
     box-shadow: 0 12px 30px rgba(226, 32, 50, .28);
 }
+.rstw-btn--ghost {
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid #e4e8ef;
+}
+.rstw-btn--ghost:hover { border-color: #c7ccd6; }
 @keyframes rstwSpin { to { transform: rotate(360deg); } }
 
 /* ---------- Registration form ---------- */
@@ -988,6 +1022,42 @@ export default {
 .rstw-form__error { color: #dc2626; font-size: 12px; margin-top: 6px; display: block; }
 .rstw-error-summary {
     display: none;
+}
+
+/* Pre-registration not yet open */
+.rstw-closed {
+    max-width: 1160px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 48px 32px;
+    background: #fff;
+    border: 1px solid rgba(11, 17, 32, .08);
+    border-radius: 24px;
+    box-shadow:
+        0 1px 3px rgba(11, 17, 32, .04),
+        0 10px 24px rgba(11, 17, 32, .06),
+        0 34px 60px rgba(11, 17, 32, .08);
+}
+.rstw-closed__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(220, 38, 38, .14), rgba(220, 38, 38, .06));
+    color: #dc2626;
+    font-size: 32px;
+}
+.rstw-closed__title { margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--ink); }
+.rstw-closed__text { margin: 0; max-width: 420px; font-size: 13.5px; line-height: 1.6; color: #4b5563; }
+.rstw-closed__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px; }
+@media (max-width: 480px) {
+    .rstw-closed__actions { flex-direction: column; width: 100%; max-width: 280px; }
+    .rstw-closed__actions .rstw-btn { text-align: center; }
 }
 
 /* Multiselect themed to match the native inputs/selects */

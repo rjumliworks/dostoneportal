@@ -6,6 +6,7 @@ use Hashids\Hashids;
 use App\Models\Participant;
 use App\Models\ParticipantDetail;
 use App\Models\ParticipantFace;
+use App\Models\EventSession;
 use App\Models\EventSessionParticipant;
 use App\Models\EventSessionDetail;
 use App\Models\ListName;
@@ -27,6 +28,13 @@ class RegistrationController extends Controller
     use HandlesTransaction;
 
     public function store(ParticipantRequest $request){
+        // The frontend already hides the form entirely when a session's
+        // pre-registration hasn't opened yet — this is just the server-side
+        // backstop against a stale page or a direct POST to /register.
+        if ($request->session_id && !EventSession::where('id', $request->session_id)->value('is_prereg')) {
+            return back()->withErrors(['avatar' => 'Pre-registration for this session is not yet open.']);
+        }
+
         // Captured by reference: HandlesTransaction::handleTransaction() only
         // passes through data/message/info/status from the callback's return
         // value, so this is how the redirect logic below finds out whether
