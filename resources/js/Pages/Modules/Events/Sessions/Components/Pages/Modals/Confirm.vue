@@ -17,29 +17,18 @@
                 <div class="avatar-sm mx-auto mb-3">
                     <div
                         class="avatar-title rounded-circle"
-                        :class="action === 'approve'
-                            ? 'bg-success-subtle text-success'
-                            : 'bg-danger-subtle text-danger'"
+                        :class="config.avatarClass"
                     >
-                        <i
-                            :class="action === 'approve'
-                                ? 'ri-checkbox-circle-line'
-                                : 'ri-close-circle-line'"
-                            class="fs-24"
-                        ></i>
+                        <i :class="config.icon" class="fs-24"></i>
                     </div>
                 </div>
 
                 <h4 class="fw-semibold fs-14">
-                    {{ action === 'approve'
-                        ? 'Approve Participant?'
-                        : 'Reject Participant?' }}
+                    {{ config.title }}
                 </h4>
 
                 <p class="text-muted fs-12 mb-4">
-                    {{ action === 'approve'
-                        ? 'Are you sure you want to approve this participant? They will be able to attend this exclusive session.'
-                        : 'Are you sure you want to reject this participant? They will not be allowed to attend this exclusive session.' }}
+                    {{ config.body }}
                 </p>
 
                 <div class="d-flex justify-content-center gap-2">
@@ -52,14 +41,10 @@
 
                     <button
                         class="btn"
-                        :class="action === 'approve'
-                            ? 'btn-success'
-                            : 'btn-danger'"
+                        :class="config.btnClass"
                         @click="save"
                     >
-                        {{ action === 'approve'
-                            ? 'Approve'
-                            : 'Reject' }}
+                        {{ config.btnLabel }}
                     </button>
                 </div>
 
@@ -87,16 +72,55 @@ export default {
             showModal: false
         }
     },
-    methods: { 
+    computed: {
+        config() {
+            const configs = {
+                approve: {
+                    avatarClass: 'bg-success-subtle text-success',
+                    icon: 'ri-checkbox-circle-line',
+                    title: 'Approve Participant?',
+                    body: 'Are you sure you want to approve this participant? They will be able to attend this exclusive session.',
+                    btnClass: 'btn-success',
+                    btnLabel: 'Approve',
+                },
+                reject: {
+                    avatarClass: 'bg-danger-subtle text-danger',
+                    icon: 'ri-close-circle-line',
+                    title: 'Reject Participant?',
+                    body: 'Are you sure you want to reject this participant? They will not be allowed to attend this exclusive session.',
+                    btnClass: 'btn-danger',
+                    btnLabel: 'Reject',
+                },
+                promote: {
+                    avatarClass: 'bg-primary-subtle text-primary',
+                    icon: 'ri-arrow-up-circle-line',
+                    title: 'Promote Participant?',
+                    body: 'Are you sure you want to promote this participant from the waitlist? They will be given a confirmed seat in this session.',
+                    btnClass: 'btn-primary',
+                    btnLabel: 'Promote',
+                },
+            };
+            return configs[this.action] || configs.reject;
+        },
+    },
+    methods: {
         show(session,participant,data){
             this.action = data;
             this.form.action = data;
-            this.form.is_approved = (data == 'approve') ? 1 : 0; 
-            this.form.status_id = (data == 'approve') ? 58 : 57; 
+            if (data === 'approve') {
+                this.form.is_approved = 1;
+                this.form.status_id = 58;
+            } else if (data === 'promote') {
+                this.form.is_approved = 0;
+                this.form.status_id = 52;
+            } else {
+                this.form.is_approved = 0;
+                this.form.status_id = 57;
+            }
             this.form.session_id = session;
             this.form.participant_id = participant;
             this.showModal = true;
-        }, 
+        },
         save(){
             this.form.put('/sessions/update',{
                 preserveScroll: true,

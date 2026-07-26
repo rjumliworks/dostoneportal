@@ -498,12 +498,7 @@ export default {
                 type_id: 196,
                 check: false,
                 consent: false,
-                session_id: this.session?.id ?? null,
-                // Stays set to the originally-opened session even if
-                // session_id gets nulled out due to capacity, so the backend
-                // can tell "always general" apart from "was full" and email
-                // the right message.
-                requested_session_id: this.session?.id ?? null
+                session_id: this.session?.id ?? null
             }),
         };
     },
@@ -536,7 +531,7 @@ export default {
             return Object.values(this.form.errors).filter(Boolean);
         },
         sessionFullMessage() {
-            return "This session has already reached its maximum capacity and is now closed for registration. You may still continue below to register as a general participant — you'll be able to browse and register for other open sessions anytime through the mobile app. Please check back through the mobile app for available slots, in case one opens up.";
+            return "This session has already reached its maximum capacity. You may still continue below to register — you'll be placed on the waitlist and offered a seat in the order you registered if a slot opens up. You can also browse and register for other open sessions anytime through the mobile app.";
         },
     },
     methods: {
@@ -770,10 +765,12 @@ export default {
             const capacity = this.session?.detail?.capacity;
             if (!capacity || this.sessionFull) return;
 
+            // Purely informational — the real session_id always gets
+            // submitted; the backend decides Pending vs Reserved (waitlist)
+            // once it re-checks capacity, and broadcasts the result back.
             const registered = count ?? this.session.participants_count ?? 0;
             if (registered >= capacity) {
                 this.sessionFull = true;
-                this.form.session_id = null;
             }
         },
     },

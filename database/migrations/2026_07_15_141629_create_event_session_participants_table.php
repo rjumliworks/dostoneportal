@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('event_session_participants', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->datetime('attended_at')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_approved')->default(0);

@@ -80,7 +80,7 @@ class PublicController extends Controller
         return inertia('Public/Events/Registration',[
             'session' => EventSession::with('venue','schedules','detail')
                 ->withCount(['participants' => function ($q) {
-                    $q->where('status_id', '!=', 57); // rejected
+                    $q->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES);
                 }])
                 ->where('id',$id)->first(),
             'dropdowns' => [

@@ -27,7 +27,13 @@ class RegistrationController extends Controller
     use HandlesTransaction;
 
     public function store(ParticipantRequest $request){
-        $result = $this->handleTransaction(function () use ($request) {
+        // Captured by reference: HandlesTransaction::handleTransaction() only
+        // passes through data/message/info/status from the callback's return
+        // value, so this is how the redirect logic below finds out whether
+        // the registration landed as Reserved.
+        $isReserved = false;
+
+        $result = $this->handleTransaction(function () use ($request, &$isReserved) {
             $participant = Participant::create(array_merge($request->except('avatar'), [
                 'code' => $this->generateCode()
             ]));
@@ -35,28 +41,31 @@ class RegistrationController extends Controller
             if ($participant) {
                 if ($request->session_id) {
                     // Safety net against overbooking: the frontend already
-                    // switches to general registration once it sees capacity
-                    // reached via the CapacityEvent broadcast, but two
-                    // submissions racing at the last open slot could both
-                    // pass that client-side check. lockForUpdate() serializes
-                    // the count within this transaction so only one wins.
+                    // flags sessionFull once it sees capacity reached via the
+                    // CapacityEvent broadcast, but two submissions racing at
+                    // the last open slot could both pass that client-side
+                    // check. lockForUpdate() serializes the count within this
+                    // transaction so only one gets the real seat — anyone
+                    // past capacity is registered as Reserved (waitlisted)
+                    // instead of a normal Pending seat, but stays tied to the
+                    // session either way.
                     $capacity = EventSessionDetail::where('session_id', $request->session_id)->value('capacity');
 
                     if ($capacity) {
                         $currentCount = EventSessionParticipant::where('session_id', $request->session_id)
-                            ->where('status_id', '!=', 57) // rejected
+                            ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
                             ->lockForUpdate()
                             ->count();
 
                         if ($currentCount >= $capacity) {
-                            $request->merge(['session_id' => null]);
+                            $isReserved = true;
                         }
                     }
                 }
 
                 if($request->session_id){
                     EventSessionParticipant::create([
-                        'status_id' => 52,
+                        'status_id' => $isReserved ? 60 : 52, // Reserved : Pending
                         'participant_id' => $participant->id,
                         'session_id' => $request->session_id,
                         'is_approved' => 0,
@@ -95,19 +104,17 @@ class RegistrationController extends Controller
                         ->where('session_id', $request->session_id)
                         ->first();
                     broadcast(new SessionEvent(new ParticipantResource($data),'register'));
-                    broadcast(new CapacityEvent(EventSessionParticipant::where('session_id', $request->session_id)->where('status_id', '!=', 57)->count(),$request->session_id));
+                    broadcast(new CapacityEvent(
+                        EventSessionParticipant::where('session_id', $request->session_id)
+                            ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+                            ->count(),
+                        $request->session_id
+                    ));
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
 
-                // requested_session_id stays set even after session_id gets
-                // nulled above for a full session, so the email can still
-                // show which session was requested and explain why the
-                // registration went through as general instead.
-                $wasFull = $request->requested_session_id && !$request->session_id;
-                $emailSessionId = $request->session_id ?: $request->requested_session_id;
-
-                RegistrationJob::dispatch($request->email,$name,$emailSessionId,$wasFull)->onConnection('database');
+                RegistrationJob::dispatch($request->email,$name,$request->session_id,$isReserved)->onConnection('database');
             }
 
             return [
@@ -134,6 +141,7 @@ class RegistrationController extends Controller
                 'message' => $result['message'],
                 'info' => $result['info'],
                 'status' => $result['status'],
+                'reserved' => false,
             ]);
         }
 
@@ -145,6 +153,7 @@ class RegistrationController extends Controller
             'message' => $result['message'],
             'info' => $result['info'],
             'status' => $result['status'],
+            'reserved' => $isReserved,
         ]);
     }
 

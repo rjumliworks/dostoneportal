@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventSessionParticipant extends Model
 {
+    // Rejected, Cancelled, Reserved — none of these occupy a real seat, so
+    // they're excluded wherever a session's registered count is checked
+    // against its capacity.
+    public const CAPACITY_EXCLUDED_STATUSES = [57, 59, 60];
+
     protected $fillable = [
       'date','participant_id', 'session_id', 'status_id','method_id','attended_at','image','is_approved'
     ];

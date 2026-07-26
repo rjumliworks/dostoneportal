@@ -23,14 +23,18 @@ class UpdateClass
         $data->is_approved = $request->is_approved;
         $data->save();
         $data->refresh();
-        if($request->action == 'approve'){
-            broadcast(new SessionEvent(new ParticipantResource($data),'approve'));
-        }else{
-            broadcast(new SessionEvent(new ParticipantResource($data),'reject'));
-        }
+
+        $broadcastType = match ($request->action) {
+            'approve' => 'approve',
+            'promote' => 'promote',
+            default => 'reject',
+        };
+        broadcast(new SessionEvent(new ParticipantResource($data), $broadcastType));
+
         $message = match ($request->action) {
             'approve' => 'Participant successfully approved.',
             'reject' => 'Participant successfully rejected.',
+            'promote' => 'Participant successfully promoted from the waitlist.',
             default => 'Participant status successfully updated.',
         };
 

@@ -53,9 +53,9 @@
                             @if ($wasFull)
                                 <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     The session you requested, <strong>{{ $session->title }}</strong>, had already
-                                    reached its maximum capacity, so it's now closed for registration. We've
-                                    registered you as a general participant instead &mdash; your registration
-                                    has been received and is now pending review.
+                                    reached its maximum capacity. You've been placed on the waitlist for this
+                                    session &mdash; if a slot opens up, waitlisted registrants are offered a seat
+                                    in the order they registered.
                                 </p>
                             @elseif ($session)
                                 <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
@@ -70,7 +70,7 @@
                                     <tr>
                                         <td style="padding: 16px; background-color: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
                                             <p style="margin: 0 0 10px; color: #718096; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;">
-                                                {{ $wasFull ? 'Requested Session (Full)' : 'Session Details' }}
+                                                {{ $wasFull ? 'Waitlisted Session' : 'Session Details' }}
                                             </p>
                                             <p style="margin: 0 0 6px; color: #1a202c; font-size: 15px; font-weight: 700;">
                                                 {{ $session->title }}
@@ -92,10 +92,10 @@
 
                             @if ($wasFull)
                                 <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">
-                                    Please check back through
+                                    You can check your waitlist status, or browse other sessions open to the
+                                    public, through
                                     <a href="https://mobile.dost9.ph" style="color: #144C8D; font-weight: 700; text-decoration: underline;">mobile.dost9.ph</a>
-                                    for available slots, in case one opens up, or browse other sessions open to
-                                    the public &mdash; each session shows its own registration status on the app.
+                                    &mdash; each session shows its own registration status on the app.
                                 </p>
                             @elseif ($session)
                                 <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">

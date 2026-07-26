@@ -74,6 +74,9 @@
                 <button @click="openApproval('approve')" class="btn btn-success" type="button">Approved</button>
                 <button @click="openApproval('reject')" class="btn btn-soft-danger" type="button">Reject</button>
             </div>
+            <div class="d-grid gap-2" v-if="selected.status.name == 'Reserved'">
+                <button @click="openApproval('promote')" class="btn btn-primary" type="button">Promote to Pending</button>
+            </div>
         </div>
     </div>
 </b-modal>

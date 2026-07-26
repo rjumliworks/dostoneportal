@@ -40,7 +40,13 @@
 
                                 <h2 class="rstw-success__title">Registration Successful!</h2>
 
-                                <p class="rstw-success__text" v-if="session">
+                                <p class="rstw-success__text" v-if="session && reserved">
+                                    Thank you, <strong>{{ participantName }}</strong>! <strong>{{ session.title || 'This session' }}</strong>
+                                    has already reached its maximum capacity, so you've been placed on the
+                                    waitlist — you'll be offered a seat in the order you registered if one
+                                    opens up.
+                                </p>
+                                <p class="rstw-success__text" v-else-if="session">
                                     Thank you, <strong>{{ participantName }}</strong>! Your registration
                                     for <strong>{{ session.title || 'this session' }}</strong><span v-if="sessionDate"> on {{ sessionDate }}</span><span v-if="session?.venue?.establishment"> at {{ session.venue.establishment }}</span>
                                     has been received.
@@ -58,7 +64,12 @@
                                         </span>
                                         <div class="rstw-success__note-body">
                                             <strong class="rstw-success__note-title">What happens next</strong>
-                                            <span class="rstw-success__note-text">
+                                            <span class="rstw-success__note-text" v-if="reserved">
+                                                Please check your email for waitlist updates. You can check
+                                                your status, or register for other sessions open to the
+                                                public, anytime through the mobile app.
+                                            </span>
+                                            <span class="rstw-success__note-text" v-else>
                                                 Please check your email for updates on the confirmation of
                                                 your registration. You can also register for other sessions
                                                 open to the public — each session shows its own registration
@@ -136,6 +147,9 @@ export default {
     computed: {
         participantName() {
             return usePage().props.flash?.data?.name || 'Registrant';
+        },
+        reserved() {
+            return !!usePage().props.flash?.reserved;
         },
         sessionDate() {
             const raw = this.session?.schedules?.[0]?.date;
