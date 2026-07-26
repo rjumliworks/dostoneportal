@@ -499,7 +499,12 @@ export default {
                 type_id: 196,
                 check: false,
                 consent: false,
-                session_id: this.session?.id ?? null
+                session_id: this.session?.id ?? null,
+                // Stays set to the originally-opened session even if
+                // session_id gets nulled out due to capacity, so the backend
+                // can tell "always general" apart from "was full" and email
+                // the right message.
+                requested_session_id: this.session?.id ?? null
             }),
         };
     },

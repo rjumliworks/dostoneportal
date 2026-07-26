@@ -98,7 +98,15 @@ class RegistrationController extends Controller
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
-                RegistrationJob::dispatch($request->email,$name,$request->session_id)->onConnection('database');
+
+                // requested_session_id stays set even after session_id gets
+                // nulled above for a full session, so the email can still
+                // show which session was requested and explain why the
+                // registration went through as general instead.
+                $wasFull = $request->requested_session_id && !$request->session_id;
+                $emailSessionId = $request->session_id ?: $request->requested_session_id;
+
+                RegistrationJob::dispatch($request->email,$name,$emailSessionId,$wasFull)->onConnection('database');
             }
 
             return [

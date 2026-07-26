@@ -15,20 +15,23 @@ class RegistrationSuccessful extends Mailable
 
     public $name;
     public $session;
+    public $wasFull;
 
-    public function __construct($name, $session = null)
+    public function __construct($name, $session = null, $wasFull = false)
     {
         $this->name = $name;
         $this->session = $session;
+        $this->wasFull = $wasFull;
     }
 
     public function build()
     {
-        return $this->subject('DOST-IX Registration Successful')
+        return $this->subject($this->wasFull ? 'DOST-IX Registration Successful — Session Full' : 'DOST-IX Registration Successful')
             ->view('emails.registration.success')
             ->with([
                 'name' => $this->name,
                 'session' => $this->session,
+                'wasFull' => $this->wasFull,
             ]);
     }
 }

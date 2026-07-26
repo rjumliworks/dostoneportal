@@ -50,18 +50,27 @@
                                 Thank you, {{ $name }}!
                             </h1>
 
-                            @if ($session)
+                            @if ($wasFull)
+                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
+                                    The session you requested, <strong>{{ $session->title }}</strong>, had already
+                                    reached its maximum capacity, so it's now closed for registration. We've
+                                    registered you as a general participant instead &mdash; your registration
+                                    has been received and is now pending review.
+                                </p>
+                            @elseif ($session)
                                 <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     Your registration for <strong>{{ $session->title }}</strong> has been received
                                     and is now pending review.
                                 </p>
+                            @endif
 
+                            @if ($session)
                                 <!-- Session Details -->
                                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                                     <tr>
                                         <td style="padding: 16px; background-color: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
                                             <p style="margin: 0 0 10px; color: #718096; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;">
-                                                Session Details
+                                                {{ $wasFull ? 'Requested Session (Full)' : 'Session Details' }}
                                             </p>
                                             <p style="margin: 0 0 6px; color: #1a202c; font-size: 15px; font-weight: 700;">
                                                 {{ $session->title }}
@@ -79,7 +88,16 @@
                                         </td>
                                     </tr>
                                 </table>
+                            @endif
 
+                            @if ($wasFull)
+                                <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">
+                                    Please check back through
+                                    <a href="https://mobile.dost9.ph" style="color: #144C8D; font-weight: 700; text-decoration: underline;">mobile.dost9.ph</a>
+                                    for available slots, in case one opens up, or browse other sessions open to
+                                    the public &mdash; each session shows its own registration status on the app.
+                                </p>
+                            @elseif ($session)
                                 <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     You can also register for other sessions open to the public &mdash; each
                                     session shows its own registration status on the mobile app. Then, to view
