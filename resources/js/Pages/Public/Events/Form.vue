@@ -910,10 +910,24 @@ export default {
     --ms-option-color-selected: #fff;
     --ms-option-bg-selected-pointed: var(--c-blue-2);
     --ms-option-color-selected-pointed: #fff;
+    /* min-height alone isn't enough — the vendor's own calc()-based
+       min-height (from font-size/line-height/py) still wins at ~37.5px.
+       Pin an explicit height so it matches the 40px native inputs exactly. */
     min-height: 40px;
+    height: 40px;
     border-color: var(--ms-border-color);
     background: #f8fafc;
     transition: border-color .2s, box-shadow .2s, background .2s, transform .2s;
+}
+/* Set directly (not just via --ms-font-size) so the actual search/label
+   elements can't fall back to the vendor's 1rem default under any
+   specificity or inheritance edge case — iOS Safari zooms on focus for
+   anything computing under 16px. */
+.rstw-field :deep(.multiselect),
+.rstw-field :deep(.multiselect-search),
+.rstw-field :deep(.multiselect-single-label),
+.rstw-field :deep(.multiselect-placeholder) {
+    font-size: 16px;
 }
 .rstw-field :deep(.multiselect:hover) {
     border-color: #c7ccd6;
@@ -1234,6 +1248,14 @@ export default {
     .rstw-sign__pad { height: 140px !important; }
     .rstw-form__bottom-col { margin-bottom: 16px; }
     .rstw-form__bottom-col:last-child { margin-bottom: 0; }
+    /* The 230px cap on these keeps them nicely narrow next to the aside's
+       photo circle on desktop, but on mobile the aside is full-width — let
+       them stretch to match the Personal Information fields' margins
+       instead of sitting stranded in a narrow centered column. */
+    .rstw-photo__warning,
+    .rstw-photo__actions {
+        max-width: none;
+    }
     .rstw-error-summary {
         display: block;
         margin: 0 0 14px;

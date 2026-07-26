@@ -2,7 +2,7 @@
 <html lang="en" data-theme="default" >
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <title inertia>DOST-IX</title>
         <meta name="description" content="Laboratory Information Management System">
         <meta name="keywords" content="DOST, LIMS, ONELAB">
