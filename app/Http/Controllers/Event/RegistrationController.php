@@ -35,7 +35,8 @@ class RegistrationController extends Controller
 
         $result = $this->handleTransaction(function () use ($request, &$isReserved) {
             $participant = Participant::create(array_merge($request->except('avatar'), [
-                'code' => $this->generateCode()
+                'code' => $this->generateCode(),
+                'is_completed' => 1
             ]));
 
             if ($participant) {
