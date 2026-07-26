@@ -69,11 +69,7 @@
                     </strong>
 
                     <span class="rstw-reg__note-text" v-if="sessionFull">
-                        This session has already reached its maximum capacity and is
-                        now closed for registration. You may still continue below to
-                        register as a general participant — you'll be able to browse
-                        and register for other open sessions anytime through the
-                        mobile app.
+                        {{ sessionFullMessage }}
                     </span>
                     <span class="rstw-reg__note-text" v-else-if="session">
                         This pre-registration is valid only for the selected session.
@@ -426,11 +422,42 @@
             </div>
         </div>
     </div>
+
+    <!-- Session full confirmation modal -->
+    <div v-if="showCapacityModal" class="rstw-modal" role="alertdialog" aria-modal="true" @click.self="cancelCapacityModal">
+        <div class="rstw-modal__card rstw-modal__card--sm">
+            <div class="rstw-modal__head rstw-modal__head--warning">
+                <h4 class="rstw-modal__title">
+                    <i class="ri-alert-line"></i>
+                    Session Full
+                </h4>
+                <button type="button" class="rstw-modal__close" @click="cancelCapacityModal" aria-label="Close">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+
+            <div class="rstw-modal__body rstw-modal__body--center">
+                <div class="rstw-modal__icon">
+                    <i class="ri-error-warning-fill"></i>
+                </div>
+                <p>{{ sessionFullMessage }}</p>
+            </div>
+
+            <div class="rstw-modal__foot">
+                <button type="button" class="rstw-modal__btn rstw-modal__btn--ghost" @click="cancelCapacityModal">
+                    Cancel
+                </button>
+                <button type="button" class="rstw-modal__btn rstw-modal__btn--primary" @click="confirmCapacityAndSubmit">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
 </section>
 </template>
 
 <script>
-import { useForm, Link } from '@inertiajs/vue3';
+import { useForm, Link, router } from '@inertiajs/vue3';
 import SignaturePad from 'vue3-signature-pad';
 import Multiselect from '@vueform/multiselect';
 import axios from 'axios';
@@ -453,6 +480,8 @@ export default {
             affiliationKeyword: '',
             requirementModalMessage: null,
             sessionFull: false,
+            showCapacityModal: false,
+            capacityConfirmed: false,
             form: useForm({
                 firstname: null,
                 middlename: null,
@@ -492,6 +521,9 @@ export default {
         },
         errorMessages() {
             return Object.values(this.form.errors).filter(Boolean);
+        },
+        sessionFullMessage() {
+            return "This session has already reached its maximum capacity and is now closed for registration. You may still continue below to register as a general participant — you'll be able to browse and register for other open sessions anytime through the mobile app. Please check back through the mobile app for available slots, in case one opens up.";
         },
     },
     methods: {
@@ -659,6 +691,15 @@ export default {
                 return;
             }
 
+            if (this.sessionFull && !this.capacityConfirmed) {
+                this.showCapacityModal = true;
+                return;
+            }
+
+            await this.finalizeSubmit();
+        },
+        async finalizeSubmit() {
+            const pad = this.$refs.signaturePad;
             const dataUrl = pad.toDataURL('image/png');
             const blob = await fetch(dataUrl).then(res => res.blob());
 
@@ -678,8 +719,18 @@ export default {
                     this.stopCamera();
                     this.avatarPreview = null;
                     this.form.avatar = null;
+                    this.capacityConfirmed = false;
                 },
             });
+        },
+        confirmCapacityAndSubmit() {
+            this.showCapacityModal = false;
+            this.capacityConfirmed = true;
+            this.finalizeSubmit();
+        },
+        cancelCapacityModal() {
+            this.showCapacityModal = false;
+            router.visit('/');
         },
         setupEchoListener() {
             if (!this.session) return;
