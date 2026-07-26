@@ -44,6 +44,7 @@ class RegistrationController extends Controller
 
                     if ($capacity) {
                         $currentCount = EventSessionParticipant::where('session_id', $request->session_id)
+                            ->where('status_id', '!=', 57) // rejected
                             ->lockForUpdate()
                             ->count();
 
@@ -94,7 +95,7 @@ class RegistrationController extends Controller
                         ->where('session_id', $request->session_id)
                         ->first();
                     broadcast(new SessionEvent(new ParticipantResource($data),'register'));
-                    broadcast(new CapacityEvent(EventSessionParticipant::where('session_id', $request->session_id)->count(),$request->session_id));
+                    broadcast(new CapacityEvent(EventSessionParticipant::where('session_id', $request->session_id)->where('status_id', '!=', 57)->count(),$request->session_id));
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
