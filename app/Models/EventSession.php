@@ -10,6 +10,7 @@ class EventSession extends Model
     protected $fillable = [
        'code',
        'title',
+       'is_prereg',
        'is_closed',
        'is_whole_day',
        'is_invitational',

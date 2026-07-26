@@ -16,6 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('title',250);
+            $table->boolean('is_prereg')->default(0);
             $table->boolean('is_closed')->default(0);
             $table->boolean('is_whole_day')->default(0);
             $table->boolean('is_invitational')->default(0); //invite only
