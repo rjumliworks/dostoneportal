@@ -51,21 +51,28 @@
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Event Management</span>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="$page.props.roles.includes('Event Manager')">
                     <Link href="/humanresource" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Trace/Dashboard') }">
                     <i class="ri-apps-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                     </Link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="$page.props.roles.includes('Event Manager')">
                     <Link href="/events" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Events') }">
                     <i class="ri-calendar-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Events</span>
                     </Link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="$page.props.roles.includes('Session Manager')">
+                    <Link href="/sessions" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Events/Sessions') }">
+                    <i class="ri-home-heart-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Sessions </span>
+                    </Link>
+                </li>
+                <li class="nav-item" v-if="$page.props.roles.includes('Event Manager')">
                     <Link href="/sessions" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Event/Participants') }">
                     <i class="ri-account-circle-fill"></i>

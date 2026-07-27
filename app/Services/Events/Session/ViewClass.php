@@ -36,6 +36,9 @@ class ViewClass
         $data = new ViewResource(
            EventSession::with([
                 'venue','detail','schedules',
+                'participants' => function ($q) {
+                    $q->orderBy('created_at', 'DESC');
+                },
                 'participants.participant.detail',
                 'participants.status',
                 'participants.participant.csfs' => function ($q) use ($key) {

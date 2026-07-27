@@ -18,7 +18,7 @@
                 <div class="card-body bg-white rounded-bottom border-bottom">
                     <p class="mb-0 text-primary fs-11 fw-semibold">Session Status</p>
                 </div>
-                <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(-557px + 100vh); overflow: auto;">
+                <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 388px); overflow: auto;">
                    
                     <ul class="list-group list-group-flush mb-n4 mt-n3 p-3">
                         <li class="list-group-item px-0 mb-n2">

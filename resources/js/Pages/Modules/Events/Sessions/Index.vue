@@ -1,5 +1,5 @@
 <template>
-<Head title="Events"/>
+<Head title="Sessions"/>
 <PageHeader title="List of Sessions" pageTitle="List" />
 <BRow>
     <div class="col-md-12">
@@ -27,7 +27,7 @@
                     <b-col lg>
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                            <input type="text" v-model="keyword" placeholder="Search Event" class="form-control" style="width: 70%;">
+                            <input type="text" v-model="keyword" placeholder="Search Session" class="form-control" style="width: 70%;">
                            
                             <!-- <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                 <i class="bx bx-refresh search-icon"></i>
@@ -45,7 +45,7 @@
                         <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                             <li class="nav-item">
                                 <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                <i class="ri-apps-2-line me-1 align-bottom"></i> All Documents
+                                <i class="ri-apps-2-line me-1 align-bottom"></i> All Sessions
                                 </BLink>
                             </li>
                         </ul>
@@ -63,8 +63,8 @@
                         <thead class="table-light thead-fixed">
                             <tr class="fs-11">
                                 <th style="width: 3%;"></th>
-                                <th>Name</th>
-                                <th style="width: 15%" class="text-center">Venue</th>
+                                <th>Title</th>
+                                <th style="width: 10%;" class="text-center">Participants</th>
                                 <th style="width: 15%;" class="text-center">Date</th>
                                 <th style="width: 7%;" class="text-center">Status</th>
                                 <th style="width: 6%;"></th>
@@ -72,23 +72,18 @@
                         </thead>
                         <tbody class="table-white fs-12">
                             <tr v-for="(list,index) in lists" v-bind:key="index">
-                                <td class="text-center"> 
-                                    <div class="avatar-xs chat-user-img online">
-                                        <img :src="list.avatar" alt="" class="avatar-xs rounded-circle">
-                                        <!-- <span v-if="list.is_active" class="user-status text-success"></span> -->
-                                    </div>
-                                </td>
+                                <td class="text-center">{{ index + 1 }}.</td>
                                 <td>
                                     <h5 class="fs-13 mb-0 fw-semibold text-primary text-uppercase">{{list.title}}</h5>
-                                    <p class="fs-12 text-muted mb-0">{{list.code}}</p>
+                                    <p class="fs-12 text-muted mb-0">{{list.venue.name}}, {{ list.venue.establishment }}</p>
                                 </td>
-                                <td class="text-center">{{ list.venue.name }}, {{ list.venue.establishment }}</td>
+                                <td class="text-center" v-if="!list.has_registration">{{list.participants.length}}</td>
+                                <td class="text-center" v-else>{{list.attendees.length}} / {{list.participants.length}}</td>
                                 <td class="text-center">
                                     {{dateRangeText(list.schedules)}}
                                 </td>
                                 <td class="text-center">
-                                    <span v-if="list.is_active" class="badge bg-success">Active</span>
-                                    <span v-else class="badge bg-danger">Inactive</span>
+                                    <span :class="'badge '+list.status.color+' '+list.status.bg">{{list.status.name}}</span>
                                 </td>
                                 <td class="text-end">
                                     <Link :href="`/sessions/${list.key}`" target="_blank">

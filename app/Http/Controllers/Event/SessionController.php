@@ -38,7 +38,7 @@ class SessionController extends Controller
                 return $this->print->attendance($request);
             break;
             default :
-            return inertia('Modules/Session/Index',[
+            return inertia('Modules/Events/Sessions/Index',[
                 'dropdowns' => [
                     'regions' => $this->dropdown->regions()
                 ]
