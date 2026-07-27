@@ -18,6 +18,7 @@ use App\Events\SessionEvent;
 use App\Events\CapacityEvent;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
 use App\Http\Requests\Event\ParticipantRequest;
@@ -291,7 +292,11 @@ class RegistrationController extends Controller
 
     private function generateCode(){
         $count = Participant::count();
-        $code = 'DOSTIX-'.date('m').date('Y').'-R9-'.str_pad(($count+1), 5, '0', STR_PAD_LEFT);  //$tsr_count+ remove since it will reset
+
+        do {
+            $code = 'DOSTIX-'.date('m').date('Y').'-R9-'.str_pad(($count+1), 5, '0', STR_PAD_LEFT).'-'.Str::upper(Str::random(6));
+        } while (Participant::where('code', $code)->exists());
+
         return $code;
     }
 }
