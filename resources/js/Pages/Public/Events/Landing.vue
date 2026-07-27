@@ -16,7 +16,7 @@
                     <li><a href="#about" @click.prevent="scrollTo('about')">About</a></li>
                     <li><a href="#pillars" @click.prevent="scrollTo('pillars')">Pillars</a></li>
                     <li><a href="#mobile-app" @click.prevent="scrollTo('mobile-app')">Mobile App</a></li>
-                    <li><Link href="/highlights" @click="menuOpen = false">Highlights</Link></li>
+                    <!-- <li><Link href="/highlights" @click="menuOpen = false">Highlights</Link></li> -->
                     <li><Link href="/accommodations" @click="menuOpen = false">Hotels</Link></li>
                     <li><a href="#contact" @click.prevent="scrollTo('contact')">Contact</a></li>
                     <li>
@@ -50,8 +50,11 @@
                     <img src="/images/2026/header_icons.png" alt="DOST Zamboanga Peninsula — OneDOST4U · Bagong Pilipinas · ASEAN Philippines 2026" class="rstw-org-logos" onerror="this.style.display='none'">
                 </div>
 
-                
-                <span style="margin-bottom: 35px;" class="rstw-hero__eyebrow" data-aos="fade-up" data-aos-delay="50">Regional Science, Technology, and Innovation Week</span>
+                <!-- <p class="rstw-hero__tagline" data-aos="fade-up">
+                    <span class="rstw-hero__tagline-fil">Siyensya, Teknolohiya, at Inobasyon</span>
+                    <span class="rstw-hero__tagline-sub">Kabalikat sa Matatag, Maginhawa, at Panatag na Kinabukasan</span>
+                </p> -->
+                <span class="rstw-hero__eyebrow" data-aos="fade-up" data-aos-delay="50">Regional Science, Technology, and Innovation Week</span>
 
                 <h1 class="rstw-hero__title" data-aos="fade-up" data-aos-delay="100">
                     <img
@@ -73,12 +76,12 @@
                     </span>
                 </h1>
 
-                <!-- <p class="rstw-hero__theme" data-aos="fade-up" data-aos-delay="200">
+                <p class="rstw-hero__theme" data-aos="fade-up" data-aos-delay="200">
                     <span class="rstw-hero__theme-lead"><b class="rstw-hero__theme-a">Science,</b> <b class="rstw-hero__theme-b">Technology,</b> &amp; <b class="rstw-hero__theme-a">Digital Innovation</b></span>
                     <span class="rstw-hero__theme-rest">Driving Food Security, Sustainable Energy, &amp; National Resilience</span>
-                </p> -->
+                </p>
 
-                <ul class="rstw-hero__meta" data-aos="fade-up" data-aos-delay="300" style="margin-bottom: 35px; margin-top: 35px;">
+                <ul class="rstw-hero__meta" data-aos="fade-up" data-aos-delay="300">
                     <li><i class="ri-map-pin-fill"></i> Zamboanga del Norte Convention and Sports Center</li>
                     <li><i class="ri-calendar-fill"></i> August 12–14, 2026</li>
                 </ul>
@@ -251,8 +254,7 @@
                     <div class="rstw-phone">
                         <div class="rstw-phone__notch"></div>
                         <div class="rstw-phone__screen">
-                            <span class="rstw-phone__badge">RSTW</span>
-                            <span class="rstw-phone__year">2026</span>
+                            <img src="/images/2026/2026RSTW.png" alt="RSTW 2026" class="rstw-phone__logo" onerror="this.style.display='none'">
                             <span class="rstw-phone__tag">Official Event App</span>
                         </div>
                     </div>
@@ -421,7 +423,7 @@
         </button>
 
         <!-- Downloadable app manual (teleports itself to <body>) -->
-        <!-- <AppManualModal :open="manualOpen" @close="manualOpen = false" /> -->
+        <AppManualModal :open="manualOpen" @close="manualOpen = false" />
 
         <!-- Floating countdown — always visible to visitors as they browse -->
         <Link href="/registration" class="rstw-countbar" :class="{ 'is-visible': scrolled && timeLeft.total > 0 }"
@@ -439,12 +441,11 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import PreRegistrationForm from './Form.vue';
-// import AppManualModal from './Partials/AppManualModal.vue';
-// import { GUIDES } from '../data/appManual.js';
+import AppManualModal from './AppManualModal.vue';
 
 export default {
     layout: null,
-    components: { PreRegistrationForm },
+    components: { PreRegistrationForm, AppManualModal },
     props: ['dropdowns'],
     data() {
         return {
@@ -470,7 +471,79 @@ export default {
             // ----- App user manual -----
             manualOpen: false,
             guideActive: 0,
-            guides: null,
+            // Guide steps kept inline so this section is self-contained in this
+            // one file (no external data module required for the tabs).
+            guides: [
+                {
+                    id: 'register',
+                    icon: 'ri-user-add-line',
+                    title: 'Quick & easy registration',
+                    time: 'about 3 minutes',
+                    intro: 'Pre-register before the event so your slot is reserved and your check-in photo is on file.',
+                    steps: [
+                        { title: 'Open the app and tap Register', text: 'Launch the RSTW 2026 app and choose "Register" on the welcome screen.' },
+                        { title: 'Fill in your details', text: 'Enter your name, email address, contact number, birth date, sex, designation, and affiliation.' },
+                        { title: 'Take your photo', text: 'Allow camera access, then capture a clear, well-lit photo of your face. This is what check-in will match against.' },
+                        { title: 'Sign and verify', text: 'Draw your signature, complete the security check, and accept the terms.' },
+                        { title: 'Login and Confirm your email', text: 'Sign in to the app with the email and password you registered with, then check that inbox, copy the verification code we sent, and enter it in the app to activate your account.' },
+                    ],
+                    tip: 'Register before you travel — on-site sign-ups take longer during peak hours.',
+                },
+                {
+                    id: 'checkin',
+                    icon: 'ri-user-received-line',
+                    title: 'Your face is your pass',
+                    time: 'under 10 seconds',
+                    intro: 'Your registration photo lets the entrance kiosk verify you without queuing at a desk.',
+                    steps: [
+                        { title: 'Head to the entrance kiosk', text: 'Look for the check-in counters at the venue entrance.' },
+                        { title: 'Face the camera', text: 'Stand within the marked area and look straight at the screen. Remove hats or sunglasses.' },
+                        { title: 'You are in', text: 'The kiosk matches your face to your registration photo, shows a green confirmation, and records your attendance — no badge or queue needed.' },
+                    ],
+                    tip: 'No signal? Check-in works offline — staff can also scan the QR code in your app.',
+                },
+                {
+                    id: 'sessions',
+                    icon: 'ri-calendar-check-line',
+                    title: 'Save your seat',
+                    time: 'about 30 seconds',
+                    intro: 'Browse the three-day programme in the app and reserve a place in the sessions you want to attend.',
+                    steps: [
+                        { title: 'Tap Sessions', text: 'Open the "Sessions" tab to see the full programme for all three days.' },
+                        { title: 'Find the session you want', text: 'Filter by day or topic, then tap a session to read its description, speaker, room, and schedule.' },
+                        { title: 'Tap Register', text: 'Choose "Register" on the session you want to attend. Seats are limited, so popular sessions fill early.' },
+                        { title: 'Check My Sessions', text: 'Your reserved sessions are listed under "My Sessions" with their times and rooms, ready for check-in on the day.' },
+                    ],
+                    tip: 'Register for sessions ahead of time — walk-in seats depend on remaining capacity.',
+                },
+                {
+                    id: 'survey',
+                    icon: 'ri-survey-line',
+                    title: 'Share feedback with the CSF survey',
+                    time: 'about 2 minutes',
+                    intro: 'The Client Satisfaction Feedback survey helps organisers improve future events.',
+                    steps: [
+                        { title: 'Open the survey prompt', text: 'After a session ends, the Client Satisfaction Feedback form appears in your notifications.' },
+                        { title: 'Rate your experience', text: 'Answer the rating questions about the session, venue, and organisers.' },
+                        { title: 'Add your comments', text: 'Leave suggestions in the open field — this is optional but genuinely read.' },
+                        { title: 'Submit', text: 'Tap "Submit". Completed surveys earn points toward your rewards total.' },
+                    ],
+                    tip: 'You can revisit any pending survey later from the "Feedback" tab.',
+                },
+                {
+                    id: 'points',
+                    icon: 'ri-medal-line',
+                    title: 'Earn points & rewards',
+                    time: 'ongoing',
+                    intro: 'Taking part across the three days builds a points balance you can redeem on site.',
+                    steps: [
+                        { title: 'Collect points as you go', text: 'Checking in, joining sessions, visiting exhibits, and completing surveys all add points.' },
+                        { title: 'Track your total', text: 'Open the "Points" tab to see your running balance and what earned it.' },
+                        { title: 'Claim at the rewards booth', text: 'Show your in-app QR code at the booth to redeem what you have earned.' },
+                    ],
+                    tip: 'Points reset at the end of the event, so redeem before you head home on the last day.',
+                },
+            ],
 
             cfDrag: { active: false, startX: 0, movedX: 0, which: '' },
             scrolled: false,
@@ -745,7 +818,7 @@ export default {
     font-weight: 800;
     letter-spacing: .5px;
 }
-.rstw-nav__brand-img { height: 34px; width: auto; display: block; }
+.rstw-nav__brand-img { height: 28px; width: auto; display: block; }
 .rstw-nav__badge {
     background: linear-gradient(135deg, var(--brand), var(--brand-2));
     color: #fff;
@@ -1171,13 +1244,13 @@ export default {
     justify-content: center;
     flex-wrap: wrap;
     gap: clamp(18px, 4vw, 44px);
-    max-width: 540px;
+    max-width: 600px;
     margin: 0 auto 20px;
 }
 .rstw-org-logos {
     width: auto;
     height: auto;
-    max-width: min(860px, 96%);
+    max-width: 100%;
     object-fit: contain;
     display: block;
     margin: 0 auto;
@@ -1226,7 +1299,7 @@ export default {
     text-transform: uppercase;
     color: var(--c-blue);
     background: rgba(255, 255, 255, .7);
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
 .rstw-hero__title {
     font-size: clamp(3.6rem, 12vw, 8.5rem);
@@ -1269,7 +1342,8 @@ export default {
     margin: 0 auto;
     width: auto;
     height: auto;
-    max-width: min(1000px, 90%);
+    /* cap only bites on wide screens; phones stay governed by the % */
+    max-width: min(840px, 90%);
     object-fit: contain;
     filter: drop-shadow(0 12px 26px rgba(33, 18, 21, .14));
 }
@@ -1411,6 +1485,8 @@ export default {
 }
 .rstw-heading { text-align: center; max-width: 620px; margin: 0 auto 56px; }
 .rstw-heading h2, .rstw-about__text h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin: 0 0 16px; letter-spacing: -.5px; }
+/* About headline runs long, so keep it a step smaller than other section titles */
+.rstw-about__text h2 { font-size: clamp(1.5rem, 3.2vw, 2.1rem); }
 
 .rstw-about { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
 .rstw-about__text p { color: #4b5563; line-height: 1.8; margin-bottom: 16px; }
@@ -1563,18 +1639,15 @@ export default {
     background: radial-gradient(circle, rgba(236, 134, 76, .38), transparent 70%);
     top: -40px;
 }
-.rstw-phone__badge {
+.rstw-phone__logo {
     position: relative;
     z-index: 2;
-    background: linear-gradient(135deg, var(--brand), var(--brand-2));
-    color: #fff;
-    font-weight: 800;
-    font-size: 30px;
-    letter-spacing: 1px;
-    padding: 8px 18px;
-    border-radius: 14px;
+    width: 74%;
+    max-width: 190px;
+    height: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .35));
 }
-.rstw-phone__year { position: relative; z-index: 2; font-size: 46px; font-weight: 800; color: var(--accent); line-height: 1; }
 .rstw-phone__tag { position: relative; z-index: 2; font-size: 13px; letter-spacing: 1px; color: rgba(255, 255, 255, .7); text-transform: uppercase; }
 
 
@@ -1975,10 +2048,15 @@ export default {
 
 @media (max-width: 640px) {
     .rstw-section { padding: 60px 18px; }
+    .rstw-nav__brand-img { height: 24px; }
     /* Extra top padding clears the fixed navbar so the DOST/ASEAN logos
        don't tuck under it. */
     .rstw-hero { padding: 96px 18px 36px; min-height: auto; align-items: flex-start; }
     .rstw-hero__orgs { margin-bottom: 16px; }
+    /* Larger RSTW wordmark on phones, with the logo strip matched to it so
+       their edges still line up (both are centred). */
+    .rstw-hero__wordmark-img { max-width: 94%; }
+    .rstw-org-logos { max-width: 94%; }
 
     /* Hero typography tuned for phones: larger theme text with looser line
        spacing so the two-line phrases read comfortably instead of cramped. */
@@ -1998,6 +2076,8 @@ export default {
     .rstw-hero__collab { display: none; }
     /* Filipino tagline — hidden on phones to tighten the hero */
     .rstw-hero__tagline { display: none; }
+    /* Theme phrase — hidden on phones to tighten the hero */
+    .rstw-hero__theme { display: none; }
     .rstw-app__stores { flex-direction: column; }
     .rstw-store { width: 100%; justify-content: center; }
     /* .rstw-btn is inline-block, so justify-content alone was a no-op —
