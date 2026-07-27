@@ -340,7 +340,7 @@
 
         <!-- Register -->
         <!-- Register (extracted to Partials/PreRegistrationForm.vue) -->
-        <PreRegistrationForm :dropdowns="dropdowns" />
+        <!-- <PreRegistrationForm :dropdowns="dropdowns" /> -->
 
         <!-- CTA -->
         <section class="rstw-cta">
