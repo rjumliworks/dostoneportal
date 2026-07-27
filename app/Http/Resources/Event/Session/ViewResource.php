@@ -21,6 +21,7 @@ class ViewResource extends JsonResource
         
         $encryptedKey = Crypt::encryptString($key);
         $reg_link = config('app.registration_url') . '/registration/' . $encryptedKey;
+        $attendance_link = config('app.registration_url') . '/session/' . $key;
 
         $result = (new Builder(
             writer: new PngWriter(),
@@ -46,6 +47,7 @@ class ViewResource extends JsonResource
 
         return [
             'qr' => $qr,
+            'attendance_link' => $attendance_link,
             'reg_link' => $reg_link,
             'reg_qr' => $reg_qr,
             'id' => $this->id,
@@ -65,6 +67,7 @@ class ViewResource extends JsonResource
             'questions' => QuestionResource::collection($this->questions),
             'event' => new EventResource($this->event),
             'is_closed' => ($this->is_closed) ? true : false,
+            'is_prereg' => ($this->is_prereg) ? true : false,
             'is_invitational' => ($this->is_invitational) ? true : false,
             'is_exclusive' => ($this->is_exclusive) ? true : false,
             'is_limited' => ($this->is_limited) ? true : false,

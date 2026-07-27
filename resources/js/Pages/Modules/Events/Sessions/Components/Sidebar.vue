@@ -66,7 +66,7 @@
                         </li>
                     </ul>
                     <hr class="text-muted">
-                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Registration Link</p>
+                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Links</p>
                     <hr class="text-muted mb-2">
                     
                     <div class="d-flex p-2">
@@ -79,16 +79,79 @@
                         </div>
                         <div class="flex-grow-1 ms-2">
                             <a
+                                :href="selected.attendance_link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn mt-2 w-100 btn-primary"
+                            >
+                                Attendance
+                            </a>
+                        </div>
+                        <div class="flex-grow-1 ms-2">
+                            <a
                                 :href="selected.reg_link"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="btn mt-2 w-100 btn-primary"
                             >
-                                Click here
+                                Registration
                             </a>
                         </div>
                     </div>
-                
+
+                    <hr class="text-muted mt-2">
+                    <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Settings</p>
+                    <hr class="text-muted mb-2">
+                    <div class="ms-n4 mb-2">
+                        <div class="d-flex align-items-start gap-3 mb-2">
+                            <div class="form-check form-switch form-switch-md">
+                                <input class="form-check-input mt-2 ms-3 me-n2" v-model="selected.is_prereg" type="checkbox" role="switch" id="isInvitational">
+                            </div>
+                            <div>
+                                <label class="form-check-label fs-11" for="isInvitational">Pre-Registration</label>
+                                <div class="form-text fs-10 mt-0">Allow pre-registration thru link</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3 mb-2">
+                            <div class="form-check form-switch form-switch-md">
+                                <input class="form-check-input mt-2 ms-3 me-n2" v-model="selected.is_invitational" type="checkbox" role="switch" id="isInvitational">
+                            </div>
+                            <div>
+                                <label class="form-check-label fs-11" for="isInvitational">By Invitation Only</label>
+                                <div class="form-text fs-10 mt-0">Only invited participants can register.</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mb-2">
+                            <div class="form-check form-switch form-switch-md">
+                                <input class="form-check-input mt-2 ms-3 me-n2" v-model="selected.is_exclusive" type="checkbox" role="switch" id="isExclusive">
+                            </div>
+                            <div>
+                                <label class="form-check-label fs-11" for="isExclusive">Exclusive Access</label>
+                                <div class="form-text fs-10 mt-0">Access is restricted to selected participants or groups.</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mb-2">
+                            <div class="form-check form-switch form-switch-md">
+                                <input class="form-check-input mt-2 ms-3 me-n2" v-model="selected.is_limited" type="checkbox" role="switch" id="isLimited">
+                            </div>
+                            <div>
+                                <label class="form-check-label fs-11" for="isLimited">Limited Slots</label>
+                                <div class="form-text fs-10 mt-0">Participant count is capped. First come, first served.</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mb-2">
+                            <div class="form-check form-switch form-switch-md">
+                                <input class="form-check-input mt-2 ms-3 me-n2" v-model="selected.has_registration" type="checkbox" role="switch" id="hasRegistration">
+                            </div>
+                            <div>
+                                <label class="form-check-label fs-11" for="hasRegistration">Requires Registration</label>
+                                <div class="form-text fs-10 mt-0">Participants must register before attending the event.</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
     

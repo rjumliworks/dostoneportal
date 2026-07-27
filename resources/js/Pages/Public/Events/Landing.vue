@@ -5,9 +5,9 @@
         <!-- Navbar -->
         <nav class="rstw-nav" :class="{ 'is-sticky': scrolled }" id="rstw-navbar">
             <div class="rstw-nav__inner">
-                <a href="/" class="rstw-nav__brand">
+                <!-- <a href="/" class="rstw-nav__brand">
                     <img src="/images/2026/2026RSTW.png" alt="2026 RSTW" class="rstw-nav__brand-img">
-                </a>
+                </a> -->
                 <button class="rstw-nav__toggle" type="button" @click="menuOpen = !menuOpen" aria-label="Menu">
                     <i class="mdi mdi-menu"></i>
                 </button>
@@ -15,12 +15,12 @@
                     <li><a href="#home" @click.prevent="scrollTo('home')">Home</a></li>
                     <li><a href="#about" @click.prevent="scrollTo('about')">About</a></li>
                     <li><a href="#pillars" @click.prevent="scrollTo('pillars')">Pillars</a></li>
-                    <li><a href="#mobile-app" @click.prevent="scrollTo('mobile-app')">App</a></li>
+                    <li><a href="#mobile-app" @click.prevent="scrollTo('mobile-app')">Mobile App</a></li>
                     <li><Link href="/highlights" @click="menuOpen = false">Highlights</Link></li>
                     <li><Link href="/accommodations" @click="menuOpen = false">Hotels</Link></li>
                     <li><a href="#contact" @click.prevent="scrollTo('contact')">Contact</a></li>
                     <li>
-                        <a href="/registration" target="_blank" rel="noopener" class="rstw-nav__cta">Register</a>
+                        <Link href="/registration" class="rstw-nav__cta" @click="menuOpen = false">Register</Link>
                     </li>
                 </ul>
             </div>
@@ -50,11 +50,8 @@
                     <img src="/images/2026/header_icons.png" alt="DOST Zamboanga Peninsula — OneDOST4U · Bagong Pilipinas · ASEAN Philippines 2026" class="rstw-org-logos" onerror="this.style.display='none'">
                 </div>
 
-                <p class="rstw-hero__tagline" data-aos="fade-up">
-                    <span class="rstw-hero__tagline-fil">Siyensya, Teknolohiya, at Inobasyon</span>
-                    <span class="rstw-hero__tagline-sub">Kabalikat sa Matatag, Maginhawa, at Panatag na Kinabukasan</span>
-                </p>
-                <span class="rstw-hero__eyebrow" data-aos="fade-up" data-aos-delay="50">Regional Science, Technology, and Innovation Week</span>
+                
+                <span style="margin-bottom: 35px;" class="rstw-hero__eyebrow" data-aos="fade-up" data-aos-delay="50">Regional Science, Technology, and Innovation Week</span>
 
                 <h1 class="rstw-hero__title" data-aos="fade-up" data-aos-delay="100">
                     <img
@@ -76,12 +73,12 @@
                     </span>
                 </h1>
 
-                <p class="rstw-hero__theme" data-aos="fade-up" data-aos-delay="200">
+                <!-- <p class="rstw-hero__theme" data-aos="fade-up" data-aos-delay="200">
                     <span class="rstw-hero__theme-lead"><b class="rstw-hero__theme-a">Science,</b> <b class="rstw-hero__theme-b">Technology,</b> &amp; <b class="rstw-hero__theme-a">Digital Innovation</b></span>
                     <span class="rstw-hero__theme-rest">Driving Food Security, Sustainable Energy, &amp; National Resilience</span>
-                </p>
+                </p> -->
 
-                <ul class="rstw-hero__meta" data-aos="fade-up" data-aos-delay="300">
+                <ul class="rstw-hero__meta" data-aos="fade-up" data-aos-delay="300" style="margin-bottom: 35px; margin-top: 35px;">
                     <li><i class="ri-map-pin-fill"></i> Zamboanga del Norte Convention and Sports Center</li>
                     <li><i class="ri-calendar-fill"></i> August 12–14, 2026</li>
                 </ul>
@@ -98,7 +95,7 @@
                 </div>
 
                 <!-- Partner / collaboration credits -->
-                <img
+                <!-- <img
                     src="/images/2026/collaboration.png"
                     class="rstw-hero__collab"
                     alt="In collaboration with Province of Zamboanga del Norte and DOST-TAPI. National Science, Technology, and Innovation Week — nstw.dost.gov.ph"
@@ -108,10 +105,10 @@
                     height="334"
                     data-aos="fade-up"
                     data-aos-delay="450"
-                />
+                /> -->
 
                 <div class="rstw-hero__actions" data-aos="fade-up" data-aos-delay="500">
-                    <a href="/registration" target="_blank" rel="noopener" class="rstw-btn rstw-btn--primary">Register Now</a>
+                    <Link href="/registration" class="rstw-btn rstw-btn--primary">Register Now</Link>
                     <a href="#about" class="rstw-btn rstw-btn--ghost" @click.prevent="scrollTo('about')">Learn More</a>
                 </div>
             </div>
@@ -166,8 +163,8 @@
         <section id="pillars" class="rstw-section rstw-section--muted">
             <div class="rstw-container">
                 <div class="rstw-heading" data-aos="fade-up">
-                    <span class="rstw-kicker">Science &middot; Technology &middot; Innovation</span>
-                    <h2>RSTW at a Glance</h2>
+                    <span class="rstw-kicker">DOST Pillars</span>
+                    <h2>Four Strategic Pillars</h2>
                 </div>
                 <div class="rstw-pillars">
                     <article v-for="(p, i) in pillarItems" :key="i" class="rstw-card" data-aos="fade-up" :data-aos-delay="i * 100">
@@ -216,12 +213,12 @@
                     <h2>Take RSTW 2026 with you</h2>
                     <p>Everything you need for RSTW 2026 in one app — register in minutes, check in hands-free,
                        scan into sessions, share your feedback, and collect points as you go.
-                       Now available on <strong>Android</strong> — the iOS version is coming soon.</p>
+                       Available now on <strong>Android</strong> and <strong>iOS</strong>.</p>
 
                     <ul class="rstw-app__features">
                         <li><i class="ri-user-add-line"></i> Quick &amp; easy registration</li>
-                        <li><i class="ri-user-received-line"></i> Hands-free check-in with face recognition</li>
-                        <li><i class="ri-qr-scan-2-line"></i> Scan session QR to join</li>
+                        <li><i class="ri-user-received-line"></i> Your face is your pass</li>
+                        <li><i class="ri-calendar-check-line"></i> Save your seat</li>
                         <li><i class="ri-survey-line"></i> Share feedback with the CSF survey</li>
                         <li><i class="ri-medal-line"></i> Earn points &amp; rewards</li>
                     </ul>
@@ -237,11 +234,16 @@
                             <i class="ri-google-play-fill"></i>
                             <span><small>GET IT ON</small>Google Play</span>
                         </a>
-                        <span class="rstw-store is-soon" role="button" aria-disabled="true">
+                        <a
+                            :href="appStoreUrl || null"
+                            :target="appStoreUrl ? '_blank' : null"
+                            rel="noopener"
+                            class="rstw-store"
+                            @click="!appStoreUrl && $event.preventDefault()"
+                        >
                             <i class="ri-apple-fill"></i>
                             <span><small>Download on the</small>App Store</span>
-                            <em class="rstw-store__soon">iOS soon</em>
-                        </span>
+                        </a>
                     </div>
                 </div>
 
@@ -266,7 +268,79 @@
                     </a>
                 </div>
             </div>
+
+            <!-- ── User manual: pick a task, follow the steps ── -->
+            <div class="rstw-container rstw-guide" data-aos="fade-up">
+                <div class="rstw-guide__head">
+                    <span class="rstw-kicker">User Manual</span>
+                    <h3>How to use the app</h3>
+                    <p>Choose a task to see the steps.</p>
+
+                    <button class="rstw-guide__book" type="button" @click="manualOpen = true">
+                        <i class="ri-book-open-line"></i>
+                        <span>Read the full manual</span>
+                        <em>PDF</em>
+                    </button>
+                </div>
+
+                <div class="rstw-guide__body">
+                    <!-- Task picker -->
+                    <div class="rstw-guide__tabs" role="tablist" aria-label="App tasks">
+                        <button
+                            v-for="(g, i) in guides"
+                            :key="g.id"
+                            :id="`guide-tab-${g.id}`"
+                            class="rstw-guide__tab"
+                            :class="{ 'is-active': guideActive === i }"
+                            role="tab"
+                            type="button"
+                            :aria-selected="guideActive === i"
+                            :aria-controls="`guide-panel-${g.id}`"
+                            @click="guideActive = i"
+                            @keydown="onGuideKey($event, i)"
+                        >
+                            <span class="rstw-guide__tab-icon"><i :class="g.icon"></i></span>
+                            <span class="rstw-guide__tab-text">
+                                <strong>{{ g.title }}</strong>
+                                <small>{{ g.steps.length }} steps · {{ g.time }}</small>
+                            </span>
+                            <i class="ri-arrow-right-s-line rstw-guide__tab-chev"></i>
+                        </button>
+                    </div>
+
+                    <!-- Steps for the active task -->
+                    <div
+                        v-for="(g, i) in guides"
+                        v-show="guideActive === i"
+                        :key="g.id"
+                        :id="`guide-panel-${g.id}`"
+                        class="rstw-guide__panel"
+                        role="tabpanel"
+                        :aria-labelledby="`guide-tab-${g.id}`"
+                        tabindex="0"
+                    >
+                        <ol class="rstw-guide__steps">
+                            <li v-for="(s, n) in g.steps" :key="n" class="rstw-guide__step">
+                                <span class="rstw-guide__num">{{ n + 1 }}</span>
+                                <div class="rstw-guide__step-body">
+                                    <strong>{{ s.title }}</strong>
+                                    <span>{{ s.text }}</span>
+                                </div>
+                            </li>
+                        </ol>
+
+                        <p v-if="g.tip" class="rstw-guide__tip">
+                            <i class="ri-lightbulb-flash-line"></i>
+                            <span><strong>Tip:</strong> {{ g.tip }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- Register -->
+        <!-- Register (extracted to Partials/PreRegistrationForm.vue) -->
+        <PreRegistrationForm :dropdowns="dropdowns" />
 
         <!-- CTA -->
         <section class="rstw-cta">
@@ -286,9 +360,9 @@
                 </div>
 
                 <div class="rstw-cta__action">
-                    <a href="/registration" target="_blank" rel="noopener" class="rstw-btn rstw-btn--light rstw-cta__btn">
+                    <Link href="/registration" class="rstw-btn rstw-btn--light rstw-cta__btn">
                         Register Now <i class="ri-arrow-right-line"></i>
-                    </a>
+                    </Link>
                     <span class="rstw-cta__note">Takes less than 2 minutes</span>
                 </div>
             </div>
@@ -346,23 +420,31 @@
             <i class="ri-arrow-up-line"></i>
         </button>
 
+        <!-- Downloadable app manual (teleports itself to <body>) -->
+        <!-- <AppManualModal :open="manualOpen" @close="manualOpen = false" /> -->
+
         <!-- Floating countdown — always visible to visitors as they browse -->
-        <a href="/registration" target="_blank" rel="noopener" class="rstw-countbar" :class="{ 'is-visible': scrolled && timeLeft.total > 0 }"
+        <Link href="/registration" class="rstw-countbar" :class="{ 'is-visible': scrolled && timeLeft.total > 0 }"
            aria-label="Countdown to RSTW 2026 — register now">
             <span class="rstw-countbar__label"><i class="ri-timer-flash-line"></i> RSTW 2026 in</span>
             <span class="rstw-countbar__unit">{{ pad(timeLeft.days) }}<small>d</small></span>
             <span class="rstw-countbar__unit">{{ pad(timeLeft.hours) }}<small>h</small></span>
             <span class="rstw-countbar__unit">{{ pad(timeLeft.minutes) }}<small>m</small></span>
             <span class="rstw-countbar__unit">{{ pad(timeLeft.seconds) }}<small>s</small></span>
-        </a>
+        </Link>
     </div>
 </template>
 
 <script>
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import PreRegistrationForm from './Form.vue';
+// import AppManualModal from './Partials/AppManualModal.vue';
+// import { GUIDES } from '../data/appManual.js';
+
 export default {
     layout: null,
+    components: { PreRegistrationForm },
     props: ['dropdowns'],
     data() {
         return {
@@ -378,16 +460,24 @@ export default {
             ],
             pillarActive: 0,
             pillarTimer: null,
+            // The four strategic pillars of DOST
             pillarItems: [
-                { icon: 'ri-flask-line', title: 'Science', text: 'Evidence-based knowledge and research that inform smarter decisions and stronger, more resilient communities.' },
-                { icon: 'ri-cpu-line', title: 'Technology', text: 'Practical tools and solutions transferred to local industries, MSMEs, and communities across the region.' },
-                { icon: 'ri-lightbulb-flash-line', title: 'Innovation', text: 'Fresh ideas turned into real impact — improving livelihoods and opening opportunities in the green economy.' },
+                { icon: 'ri-heart-pulse-line', title: 'Human Well-being', text: 'Improving the quality of life of Filipinos through STI — health, education, food security, disaster resilience, and social development.' },
+                { icon: 'ri-line-chart-line', title: 'Wealth Creation', text: 'Driving economic growth through innovation, entrepreneurship, and technology commercialization for industries, MSMEs, and startups.' },
+                { icon: 'ri-shield-check-line', title: 'Wealth Protection', text: 'Safeguarding people, communities, and national assets — disaster risk reduction, climate resilience, food safety, and cybersecurity.' },
+                { icon: 'ri-leaf-line', title: 'Sustainability', text: 'Ensuring STI delivers long-term value — clean energy, sustainable agriculture, circular economy, and responsible innovation.' },
             ],
+            // ----- App user manual -----
+            manualOpen: false,
+            guideActive: 0,
+            guides: null,
+
             cfDrag: { active: false, startX: 0, movedX: 0, which: '' },
             scrolled: false,
             menuOpen: false,
-            // Android is live; set this to the Play Store URL. iOS shows "coming soon".
+            // Store links — set these to the live listings once published.
             playStoreUrl: '',
+            appStoreUrl: '',
         };
     },
     methods: {
@@ -473,6 +563,26 @@ export default {
             clearInterval(this.triviaTimer);
             this.triviaTimer = setInterval(this.nextTrivia, 6000);
         },
+        /**
+         * Arrow-key navigation between manual tabs.
+         * ARIA tab lists are expected to move focus with the arrow keys; without
+         * this, keyboard users have to Tab through every task to reach the last.
+         */
+        onGuideKey(e, i) {
+            const n = this.guides.length;
+            let next = null;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = (i + 1) % n;
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = (i - 1 + n) % n;
+            if (e.key === 'Home') next = 0;
+            if (e.key === 'End') next = n - 1;
+            if (next === null) return;
+            e.preventDefault();
+            this.guideActive = next;
+            this.$nextTick(() => {
+                document.getElementById(`guide-tab-${this.guides[next].id}`)?.focus();
+            });
+        },
+
         scrollTo(id) {
             this.menuOpen = false;
             const el = document.getElementById(id);
@@ -784,6 +894,11 @@ export default {
     bottom: 0;
     background-position: right bottom;
 }
+/* Hide the hero side designs once the viewport is too narrow to keep them
+   clear of the centred content (same idea as the floaters above). */
+@media (max-width: 900px) {
+    .rstw-banner { display: none; }
+}
 
 /* ---- RSTW Trivia card ---- */
 .rstw-trivia__wrap { position: relative; max-width: 620px; margin: 0 auto; perspective: 1400px; }
@@ -1056,7 +1171,7 @@ export default {
     justify-content: center;
     flex-wrap: wrap;
     gap: clamp(18px, 4vw, 44px);
-    max-width: 860px;
+    max-width: 540px;
     margin: 0 auto 20px;
 }
 .rstw-org-logos {
@@ -1154,7 +1269,7 @@ export default {
     margin: 0 auto;
     width: auto;
     height: auto;
-    max-width: min(560px, 82%);
+    max-width: min(1000px, 90%);
     object-fit: contain;
     filter: drop-shadow(0 12px 26px rgba(33, 18, 21, .14));
 }
@@ -1323,7 +1438,7 @@ export default {
 .rstw-frame iframe { width: 100%; height: 100%; display: block; }
 
 /* ---------- Pillars ---------- */
-.rstw-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.rstw-pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 .rstw-card {
     position: relative;
     overflow: hidden;
@@ -1367,6 +1482,7 @@ export default {
 .rstw-pillars .rstw-card:nth-child(1) .rstw-card__icon { background: linear-gradient(135deg, var(--c-orange), var(--c-red-2)); }
 .rstw-pillars .rstw-card:nth-child(2) .rstw-card__icon { background: linear-gradient(135deg, var(--c-blue), var(--c-blue-2)); }
 .rstw-pillars .rstw-card:nth-child(3) .rstw-card__icon { background: linear-gradient(135deg, var(--c-red-2), var(--c-blue)); }
+.rstw-pillars .rstw-card:nth-child(4) .rstw-card__icon { background: linear-gradient(135deg, var(--c-gold), var(--c-orange)); }
 .rstw-card h3 { font-size: 1.4rem; font-weight: 700; margin: 0 0 10px; }
 .rstw-card p { color: #4b5563; line-height: 1.7; margin: 0; }
 
@@ -1400,22 +1516,6 @@ export default {
     transition: transform .2s, box-shadow .2s;
 }
 .rstw-store:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(33, 18, 21, .28); }
-.rstw-store.is-soon { position: relative; opacity: .6; cursor: not-allowed; }
-.rstw-store.is-soon:hover { transform: none; box-shadow: none; }
-.rstw-store__soon {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    font-style: normal;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .5px;
-    text-transform: uppercase;
-    color: var(--ink);
-    background: var(--accent);
-    padding: 2px 8px;
-    border-radius: 999px;
-}
 .rstw-store i { font-size: 30px; }
 .rstw-store span { display: flex; flex-direction: column; line-height: 1.15; font-weight: 700; font-size: 17px; }
 .rstw-store small { font-size: 10px; font-weight: 500; letter-spacing: .5px; text-transform: uppercase; opacity: .75; }
@@ -1477,6 +1577,169 @@ export default {
 .rstw-phone__year { position: relative; z-index: 2; font-size: 46px; font-weight: 800; color: var(--accent); line-height: 1; }
 .rstw-phone__tag { position: relative; z-index: 2; font-size: 13px; letter-spacing: 1px; color: rgba(255, 255, 255, .7); text-transform: uppercase; }
 
+
+/* ---------- App user manual ---------- */
+.rstw-guide { margin-top: 72px; }
+.rstw-guide__head { text-align: center; max-width: 560px; margin: 0 auto 32px; }
+.rstw-guide__head h3 {
+    margin: 0 0 8px;
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -.3px;
+}
+.rstw-guide__head p { margin: 0; color: #6b7280; font-size: 14px; }
+
+/* Opens the downloadable book edition */
+.rstw-guide__book {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 11px 14px 11px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(11, 17, 32, .12);
+    box-shadow: 0 6px 18px rgba(11, 17, 32, .07);
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.rstw-guide__book:hover {
+    transform: translateY(-2px);
+    border-color: rgba(226, 32, 50, .35);
+    box-shadow: 0 12px 26px rgba(11, 17, 32, .12);
+}
+.rstw-guide__book i { font-size: 18px; color: var(--brand); }
+.rstw-guide__book em {
+    font-style: normal;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--c-blue), var(--c-blue-2));
+}
+
+/* Task list beside the steps; collapses to stacked on narrow screens */
+.rstw-guide__body {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) 1fr;
+    gap: 28px;
+    align-items: start;
+}
+.rstw-guide__tabs { display: grid; gap: 10px; }
+
+.rstw-guide__tab {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid rgba(11, 17, 32, .09);
+    transition: background .25s, border-color .25s, transform .25s, box-shadow .25s;
+}
+.rstw-guide__tab:hover { transform: translateX(3px); background: #fff; }
+.rstw-guide__tab.is-active {
+    background: #fff;
+    border-color: rgba(20, 76, 141, .35);
+    box-shadow: 0 10px 26px rgba(11, 17, 32, .10);
+}
+.rstw-guide__tab-icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    font-size: 19px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--c-blue), var(--c-blue-2));
+    box-shadow: 0 6px 14px rgba(20, 76, 141, .28);
+    transition: background .25s;
+}
+.rstw-guide__tab.is-active .rstw-guide__tab-icon {
+    background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    box-shadow: 0 6px 14px rgba(226, 32, 50, .3);
+}
+.rstw-guide__tab-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rstw-guide__tab-text strong { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+.rstw-guide__tab-text small { font-size: 11.5px; color: #8a8f98; }
+.rstw-guide__tab-chev { margin-left: auto; font-size: 20px; color: #c2c7d0; transition: color .25s, transform .25s; }
+.rstw-guide__tab.is-active .rstw-guide__tab-chev { color: var(--brand); transform: translateX(3px); }
+
+/* Step panel */
+.rstw-guide__panel {
+    padding: 30px 30px 26px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(11, 17, 32, .08);
+    box-shadow: 0 20px 44px rgba(11, 17, 32, .07);
+}
+.rstw-guide__panel:focus-visible { outline: 2px solid var(--c-blue); outline-offset: 3px; }
+
+.rstw-guide__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rstw-guide__step {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    padding: 0 0 22px;
+}
+/* Connector line between step numbers */
+.rstw-guide__step::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 34px;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(rgba(20, 76, 141, .22), rgba(20, 76, 141, .04));
+}
+.rstw-guide__step:last-child { padding-bottom: 0; }
+.rstw-guide__step:last-child::before { display: none; }
+
+.rstw-guide__num {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--c-blue), var(--c-blue-3));
+    box-shadow: 0 4px 10px rgba(20, 76, 141, .25);
+}
+.rstw-guide__step-body { display: flex; flex-direction: column; gap: 4px; padding-top: 4px; }
+.rstw-guide__step-body strong { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.rstw-guide__step-body span { font-size: 13.5px; line-height: 1.65; color: #5b6472; }
+
+.rstw-guide__tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 24px 0 0;
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6b5b4d;
+    background: linear-gradient(135deg, rgba(255, 207, 46, .16), rgba(246, 179, 10, .07));
+    border: 1px solid rgba(246, 179, 10, .35);
+}
+.rstw-guide__tip i { font-size: 17px; color: var(--c-gold-2); flex-shrink: 0; }
+.rstw-guide__tip strong { color: var(--ink); }
+
+@media (max-width: 900px) {
+    .rstw-guide__body { grid-template-columns: 1fr; gap: 20px; }
+    .rstw-guide__tab-chev { display: none; }
+    .rstw-guide__panel { padding: 24px 20px 22px; }
+}
 
 /* ---------- CTA ---------- */
 .rstw-cta { padding: 24px; }
@@ -1668,6 +1931,8 @@ export default {
     .rstw-about { gap: 40px; }
     .rstw-app { gap: 40px; }
     .rstw-container { max-width: 900px; }
+    /* four pillars are too tight at this width — drop to a 2×2 grid */
+    .rstw-pillars { grid-template-columns: repeat(2, 1fr); }
     .rstw-motifs--right { transform: scale(.8); transform-origin: top right; opacity: .8; }
     .rstw-motifs--left { transform: scale(.7); transform-origin: bottom left; opacity: .55; }
 }
@@ -1710,17 +1975,49 @@ export default {
 
 @media (max-width: 640px) {
     .rstw-section { padding: 60px 18px; }
-    .rstw-hero { padding: 64px 18px 36px; min-height: auto; align-items: flex-start; }
-    .rstw-hero__meta { font-size: 14px; }
+    /* Extra top padding clears the fixed navbar so the DOST/ASEAN logos
+       don't tuck under it. */
+    .rstw-hero { padding: 96px 18px 36px; min-height: auto; align-items: flex-start; }
+    .rstw-hero__orgs { margin-bottom: 16px; }
+
+    /* Hero typography tuned for phones: larger theme text with looser line
+       spacing so the two-line phrases read comfortably instead of cramped. */
+    .rstw-hero__theme { margin-bottom: 20px; line-height: 1.5; }
+    .rstw-hero__theme-lead { font-size: 1.28rem; line-height: 1.35; }
+    .rstw-hero__theme-rest { font-size: 1.06rem; line-height: 1.45; margin-top: 8px; }
+    .rstw-hero__meta {
+        font-size: 14.5px;
+        line-height: 1.25;
+        gap: 6px 20px;
+        margin-bottom: 24px;
+    }
+    .rstw-hero__meta li { justify-content: center; line-height: 1.25; }
+    /* long uppercase string — shrink it so it stops eating two lines */
+    .rstw-hero__eyebrow { font-size: 11px; letter-spacing: 1px; padding: 6px 14px; line-height: 1.4; }
+    /* Wide collaboration strip becomes an unreadable sliver on phones — hide it */
+    .rstw-hero__collab { display: none; }
+    /* Filipino tagline — hidden on phones to tighten the hero */
+    .rstw-hero__tagline { display: none; }
     .rstw-app__stores { flex-direction: column; }
     .rstw-store { width: 100%; justify-content: center; }
-    .rstw-app__download { width: 100%; justify-content: center; }
+    /* .rstw-btn is inline-block, so justify-content alone was a no-op —
+       make it a real flex box so the icon + label centre together. */
+    .rstw-app__download {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
 }
 
 @media (max-width: 520px) {
-    .rstw-count { gap: 8px; }
-    .rstw-count__box { min-width: 68px; padding: 12px 6px; }
+    /* keep all four units on a single row: let the boxes shrink and share
+       the width instead of holding a min-width and wrapping */
+    .rstw-count { gap: 8px; flex-wrap: nowrap; }
+    .rstw-count__box { min-width: 0; flex: 1; padding: 12px 4px; }
     .rstw-count__box span { font-size: 1.6rem; }
+    .rstw-count__box small { font-size: 10px; letter-spacing: .3px; }
     .rstw-cta__inner { padding: 36px 26px; }
     .rstw-cta__action { align-items: stretch; width: 100%; }
     .rstw-cta__btn { justify-content: center; }
@@ -1732,7 +2029,11 @@ export default {
 /* Small phones — keep the big 3D wordmark from overflowing */
 @media (max-width: 400px) {
     .rstw-hero__title { font-size: clamp(2.6rem, 15vw, 3.4rem); }
-    .rstw-count { flex-wrap: wrap; }
+    .rstw-hero__eyebrow { font-size: 10px; letter-spacing: .6px; padding: 5px 12px; }
+    .rstw-count { gap: 6px; }
+    .rstw-count__box { padding: 10px 2px; }
+    .rstw-count__box span { font-size: 1.35rem; }
+    .rstw-count__box small { font-size: 9px; letter-spacing: 0; }
     .rstw-org__logo { height: 54px; }
     .rstw-org__seal { height: 60px; }
     .rstw-org__dost { font-size: 1.5rem; }
