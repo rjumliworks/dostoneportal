@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources\Event;
 
+use Illuminate\Support\Facades\Crypt;
+use Hashids\Hashids;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,8 +12,17 @@ class SessionResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $hashids = new Hashids('krad',10);
+        $key = $hashids->encode($this->id);
+        
+        $encryptedKey = Crypt::encryptString($key);
+        $reg_link = config('app.registration_url') . '/registration/' . $encryptedKey;
+        $attendance_link = config('app.registration_url') . '/session/' . $key;
+
         return [
             'id' => $this->id,
+            'registration' => $reg_link,
+            'attendance' => $attendance_link,
             'reference' => $this->reference,
             'code' => $this->code,
             'title' => $this->title,
