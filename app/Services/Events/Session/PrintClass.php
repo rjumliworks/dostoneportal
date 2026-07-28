@@ -122,6 +122,30 @@ class PrintClass
         return $pdf->stream(strtolower($data->title).'-attendance.pdf');
     }
 
+    public function participants($request){
+        $hashids = new Hashids('krad',10);
+        $key = $hashids->decode($request->id);
+
+        $data = EventSession::with([
+                'venue','schedules','event',
+                'participants' => function ($q) {
+                    $q->orderBy('created_at', 'DESC');
+                },
+                'participants.participant.detail',
+                'participants.status',
+            ])
+            ->where('id', $key[0])->first();
+
+        $array = [
+            'date' => $this->dateRangeText($data->schedules),
+            'printedAt' => now()->format('F j, Y g:i A'),
+            'data' => $data,
+        ];
+
+        $pdf = \PDF::loadView('prints.participants', $array)->setPaper('a4', 'landscape');
+        return $pdf->stream(strtolower($data->title).'-participants.pdf');
+    }
+
     private  function dateRangeText($schedules) {
         $start = $schedules[0]['date'];
         $end   = $schedules[0]['date'];

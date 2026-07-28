@@ -5,9 +5,9 @@
                 <div class="input-group mb-1">
                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                     <input v-model="search" type="text"  placeholder="Search Name" class="form-control" style="width: 30%;">
-                    <!-- <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
+                    <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
                         <i class="ri-printer-fill search-icon"></i>
-                    </span> -->
+                    </span>
                     <b-button type="button" variant="primary" @click="openCreate">
                         <i class="ri-add-circle-fill align-bottom me-1"></i> Search
                     </b-button>
@@ -93,6 +93,9 @@ export default {
         openView(data,index){
             this.index = index;
             this.$refs.participant.show(data);
+        },
+        openPrint(){
+            window.open('/sessions?option=participants&id='+this.id);
         },
     }
 }

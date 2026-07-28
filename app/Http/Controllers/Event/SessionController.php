@@ -37,6 +37,9 @@ class SessionController extends Controller
             case 'attendance':
                 return $this->print->attendance($request);
             break;
+            case 'participants':
+                return $this->print->participants($request);
+            break;
             default :
             return inertia('Modules/Events/Sessions/Index',[
                 'dropdowns' => [
