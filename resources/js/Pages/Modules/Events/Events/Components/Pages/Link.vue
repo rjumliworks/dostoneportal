@@ -14,9 +14,10 @@
             <thead class="bg-primary text-white">
                 <tr class="fs-10">
                     <th style="width: 4%;"></th>
-                    <th style="width: 22%;">Session</th>
-                    <th style="width: 37%;" class="text-center">Registration Link</th>
-                    <th style="width: 37%;" class="text-center">Attendance Link</th>
+                    <th style="width: 16%;">Session</th>
+                    <th class="text-center">Registration Link</th>
+                    <th class="text-center">VIP Link</th>
+                    <th class="text-center">Attendance Link</th>
                 </tr>
             </thead>
             <tbody v-if="filteredSessions.length > 0">
@@ -34,6 +35,24 @@
                                 @click="copyLink($event, index, 'registration')">
                                 <i :class="isCopied(index,'registration') ? 'ri-check-line' : 'ri-file-copy-line'"></i>
                             </b-button>
+                            <b-button type="button" variant="soft-secondary" v-b-tooltip.hover title="Open in new tab"
+                                @click="openLink(list.registration)">
+                                <i class="ri-external-link-line"></i>
+                            </b-button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" readonly :value="list.vip" @click="$event.target.select()">
+                            <b-button type="button" :variant="isCopied(index,'vip') ? 'success' : 'soft-primary'"
+                                v-b-tooltip.hover :title="isCopied(index,'vip') ? 'Copied!' : 'Copy'"
+                                @click="copyLink($event, index, 'vip')">
+                                <i :class="isCopied(index,'vip') ? 'ri-check-line' : 'ri-file-copy-line'"></i>
+                            </b-button>
+                            <b-button type="button" variant="soft-secondary" v-b-tooltip.hover title="Open in new tab"
+                                @click="openLink(list.vip)">
+                                <i class="ri-external-link-line"></i>
+                            </b-button>
                         </div>
                     </td>
                     <td>
@@ -44,13 +63,17 @@
                                 @click="copyLink($event, index, 'attendance')">
                                 <i :class="isCopied(index,'attendance') ? 'ri-check-line' : 'ri-file-copy-line'"></i>
                             </b-button>
+                            <b-button type="button" variant="soft-secondary" v-b-tooltip.hover title="Open in new tab"
+                                @click="openLink(list.attendance)">
+                                <i class="ri-external-link-line"></i>
+                            </b-button>
                         </div>
                     </td>
                 </tr>
             </tbody>
             <tbody v-else>
                 <tr>
-                    <td colspan="4" class="text-center text-muted">No records found.</td>
+                    <td colspan="5" class="text-center text-muted">No records found.</td>
                 </tr>
             </tbody>
         </table>
@@ -82,6 +105,10 @@ export default {
             setTimeout(() => {
                 if (this.copied === key) this.copied = null;
             }, 2000);
+        },
+        openLink(url){
+            if (!url) return;
+            window.open(url, '_blank', 'noopener');
         },
         copyLink(event, index, type){
             const input = event.target.closest('.input-group').querySelector('input');

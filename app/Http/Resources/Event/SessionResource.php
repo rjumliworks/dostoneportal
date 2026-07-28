@@ -16,6 +16,7 @@ class SessionResource extends JsonResource
         $key = $hashids->encode($this->id);
         
         $encryptedKey = Crypt::encryptString($key);
+        $vip_link = config('app.registration_url') . '/registration/bPZBcQqTBHnfTUMG4qPQvA/' . $encryptedKey;
         $reg_link = config('app.registration_url') . '/registration/' . $encryptedKey;
         $attendance_link = config('app.registration_url') . '/session/' . $key;
 
@@ -23,6 +24,7 @@ class SessionResource extends JsonResource
             'id' => $this->id,
             'registration' => $reg_link,
             'attendance' => $attendance_link,
+            'vip' => $vip_link,
             'reference' => $this->reference,
             'code' => $this->code,
             'title' => $this->title,
