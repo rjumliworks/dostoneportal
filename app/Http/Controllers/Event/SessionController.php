@@ -40,6 +40,9 @@ class SessionController extends Controller
             case 'participants':
                 return $this->print->participants($request);
             break;
+            case 'reservees':
+                return $this->print->reservees($request);
+            break;
             case 'links':
                 return $this->print->links($request);
             break;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Participants</title>
+    <title>{{ $type === 'reservees' ? 'Reservees' : 'Participants' }}</title>
     <style>
         html * {
             font-family: Arial, Helvetica, sans-serif;
@@ -41,11 +41,16 @@
     </style>
 </head>
 <body>
+    @php
+        $list = $type === 'reservees' ? $reservedList : $mainList;
+        $heading = $type === 'reservees' ? 'LIST OF RESERVED / WAITLISTED PARTICIPANTS' : 'LIST OF PARTICIPANTS';
+        $footerLabel = $type === 'reservees' ? 'Total Reservees' : 'Total Participants';
+    @endphp
     <div class="footer">
         <table style="border: hidden;">
             <tr>
                 <td style="border: hidden; width: 50%; text-align: left;">Printed on {{ $printedAt }}</td>
-                <td style="border: hidden; width: 50%; text-align: right;">Total Participants: {{ $data->participants->count() }}</td>
+                <td style="border: hidden; width: 50%; text-align: right;">{{ $footerLabel }}: {{ $list->count() }}</td>
             </tr>
         </table>
     </div>
@@ -68,7 +73,7 @@
                     </td>
                 </tr>
             </table>
-            <center style="margin-top: 8px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">LIST OF PARTICIPANTS</center>
+            <center style="margin-top: 8px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">{{ $heading }}</center>
             <center style="font-size: 11px; background-color: #097eeb; color:#fff; font-weight: bold; padding: 2px; text-transform: uppercase;">{{ $data->event->name ?? '' }}</center>
         </div>
 
@@ -89,7 +94,7 @@
             </tbody>
         </table>
 
-        <center style="margin-top: 15px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">PARTICIPANTS ({{ $mainList->count() }})</center>
+        <center style="margin-top: 15px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">{{ $type === 'reservees' ? 'RESERVED / WAITLISTED' : 'PARTICIPANTS' }} ({{ $list->count() }})</center>
         <table class="table" style="border: 1px solid black; margin-top: 5px;">
             <thead style="background-color:#c8c8c8;">
                 <tr>
@@ -103,38 +108,15 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($mainList as $item)
+                @forelse ($list as $item)
                     @include('prints.participants-row', ['item' => $item, 'index' => $loop->iteration])
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center;">No participants found.</td>
+                        <td colspan="7" style="text-align: center;">No {{ $type === 'reservees' ? 'reservees' : 'participants' }} found.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
-
-        @if ($reservedList->count() > 0)
-            <div style="page-break-before: always;"></div>
-            <center style="margin-top: 15px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">RESERVED / WAITLISTED ({{ $reservedList->count() }})</center>
-            <table class="table" style="border: 1px solid black; margin-top: 5px;">
-                <thead style="background-color:#c8c8c8;">
-                    <tr>
-                        <th width="4%">#</th>
-                        <th width="6%">PHOTO</th>
-                        <th width="17%">NAME</th>
-                        <th width="24%">AFFILIATION / DESIGNATION</th>
-                        <th width="21%">EMAIL / CONTACT NO.</th>
-                        <th width="14%">DATE REGISTERED</th>
-                        <th width="14%">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($reservedList as $item)
-                        @include('prints.participants-row', ['item' => $item, 'index' => $loop->iteration])
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
     </div>
 </body>
 </html>

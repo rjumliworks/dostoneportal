@@ -172,6 +172,92 @@ class RegistrationController extends Controller
         ]);
     }
 
+    /**
+     * Attach an already-registered participant (identified via the email-OTP
+     * flow, see Api\Events\AuthController::verify) to another session,
+     * without re-collecting their avatar/signature/details. Mirrors store()'s
+     * pre-reg and capacity/waitlist rules so a returning participant can't
+     * skip the waitlist that a first-time registrant would hit.
+     */
+    public function registerExisting(Request $request){
+        $request->validate([
+            'session_id' => 'required|exists:event_sessions,id',
+        ]);
+
+        $participant = $request->user();
+
+        if (!EventSession::where('id', $request->session_id)->value('is_prereg')) {
+            return response()->json(['status' => false, 'message' => 'Pre-registration for this session is not yet open.'], 422);
+        }
+
+        $alreadyRegistered = EventSessionParticipant::where('participant_id', $participant->id)
+            ->where('session_id', $request->session_id)
+            ->exists();
+
+        if ($alreadyRegistered) {
+            return response()->json(['status' => false, 'message' => 'You are already registered for this session.'], 422);
+        }
+
+        $isReserved = false;
+
+        $result = $this->handleTransaction(function () use ($request, $participant, &$isReserved) {
+            $capacity = EventSessionDetail::where('session_id', $request->session_id)->value('capacity');
+
+            if ($capacity) {
+                $currentCount = EventSessionParticipant::where('session_id', $request->session_id)
+                    ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+                    ->lockForUpdate()
+                    ->count();
+
+                if ($currentCount >= $capacity) {
+                    $isReserved = true;
+                }
+            }
+
+            EventSessionParticipant::create([
+                'status_id' => $isReserved ? 60 : 52, // Reserved : Pending
+                'participant_id' => $participant->id,
+                'session_id' => $request->session_id,
+                'is_approved' => 0,
+            ]);
+
+            $data = EventSessionParticipant::with('participant.detail')
+                ->where('participant_id', $participant->id)
+                ->where('session_id', $request->session_id)
+                ->first();
+            broadcast(new SessionEvent(new ParticipantResource($data), 'register'));
+            broadcast(new CapacityEvent(
+                EventSessionParticipant::where('session_id', $request->session_id)
+                    ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+                    ->count(),
+                $request->session_id
+            ));
+
+            $name = ucwords(strtolower($participant->firstname.' '.$participant->lastname));
+            RegistrationJob::dispatch($participant->email, $name, $request->session_id, $isReserved, false)->onConnection('database');
+
+            return [
+                'data' => $data,
+                'message' => 'Registration submitted successfully.',
+                'info' => 'Registration submitted successfully.',
+            ];
+        });
+
+        if (!$result['status']) {
+            $error = preg_replace('/^An unexpected error occurred:\s*/', '', $result['info'] ?? $result['message']);
+            return response()->json(['status' => false, 'message' => $error], 422);
+        }
+
+        $hashids = new Hashids('krad', 10);
+        $key = urlencode(Crypt::encryptString($hashids->encode($request->session_id)));
+
+        return response()->json([
+            'status' => true,
+            'reserved' => $isReserved,
+            'redirect' => route('rstw2026.success', ['key' => $key]),
+        ]);
+    }
+
     public function avatar(Request $request){
         try {
             $request->validate([

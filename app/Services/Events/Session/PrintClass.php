@@ -10,6 +10,7 @@ use App\Models\EventCsfQuestion;
 use App\Models\EventExhibitor;
 use App\Http\Resources\SessionViewResource;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
 
@@ -124,6 +125,20 @@ class PrintClass
     }
 
     public function participants($request){
+        return $this->printParticipantList($request, 'participants');
+    }
+
+    public function reservees($request){
+        return $this->printParticipantList($request, 'reservees');
+    }
+
+    // Participants and Reservees now print as separate PDFs (one per tab)
+    // instead of one combined document, so this only builds/renders the list
+    // the caller actually asked for.
+    private function printParticipantList($request, $type){
+        ini_set('memory_limit', '1G');
+        ini_set('max_execution_time', 0);
+
         $hashids = new Hashids('krad',10);
         $key = $hashids->decode($request->id);
 
@@ -137,12 +152,6 @@ class PrintClass
             ])
             ->where('id', $key[0])->first();
 
-        foreach ($data->participants as $item) {
-            if (!empty($item->participant->detail->avatar)) {
-                $item->participant->detail->avatar_base64 = $this->convertToBase64($item->participant->detail->avatar);
-            }
-        }
-
         $reservedList = $data->participants->filter(function ($item) {
             return optional($item->status)->name === 'Reserved';
         })->values();
@@ -151,16 +160,21 @@ class PrintClass
             return optional($item->status)->name === 'Reserved';
         })->values();
 
+        // Only fetch avatars for the list being printed, not the whole session.
+        $this->attachAvatarImages($type === 'reservees' ? $reservedList : $mainList);
+
         $array = [
             'date' => $this->dateRangeText($data->schedules),
             'printedAt' => now()->format('F j, Y g:i A'),
             'data' => $data,
             'mainList' => $mainList,
             'reservedList' => $reservedList,
+            'type' => $type,
         ];
 
         $pdf = \PDF::loadView('prints.participants', $array)->setPaper('a4', 'landscape');
-        return $pdf->stream(strtolower($data->title).'-participants.pdf');
+        $suffix = $type === 'reservees' ? 'reservees' : 'participants';
+        return $pdf->stream(strtolower($data->title).'-'.$suffix.'.pdf');
     }
 
     public function links($request){
@@ -210,6 +224,41 @@ class PrintClass
         return $start === $end
             ? $formatDate($start)
             : $formatDate($start) . " - " . $formatDate($end);
+    }
+
+    // Participant avatars are stored as full S3 URLs, so convertToBase64()
+    // falls through to a network fetch for every one of them. Fetching those
+    // one at a time (as the participants print used to) took well over a
+    // second per avatar and blew past PHP's execution time limit for
+    // sessions with 70+ registrants. Http::pool() fires them concurrently
+    // instead, so the wait is bounded by the slowest single request.
+    private function attachAvatarImages($participants)
+    {
+        $withAvatar = $participants->filter(fn ($item) => !empty($item->participant->detail->avatar));
+
+        $remote = $withAvatar->filter(fn ($item) => filter_var($item->participant->detail->avatar, FILTER_VALIDATE_URL));
+        $local = $withAvatar->reject(fn ($item) => filter_var($item->participant->detail->avatar, FILTER_VALIDATE_URL));
+
+        foreach ($local as $item) {
+            $item->participant->detail->avatar_base64 = $this->convertToBase64($item->participant->detail->avatar);
+        }
+
+        if ($remote->isEmpty()) {
+            return;
+        }
+
+        $responses = Http::pool(fn ($pool) => $remote->map(
+            fn ($item) => $pool->as($item->id)->timeout(15)->get($item->participant->detail->avatar)
+        )->all());
+
+        foreach ($remote as $item) {
+            $response = $responses[$item->id] ?? null;
+
+            if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
+                $mime = $response->header('Content-Type') ?: 'image/jpeg';
+                $item->participant->detail->avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($response->body());
+            }
+        }
     }
 
     private function convertToBase64($path)

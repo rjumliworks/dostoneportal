@@ -51,6 +51,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', 'index');
     });
 
+    Route::post('/sessions/register-existing', [App\Http\Controllers\Event\RegistrationController::class, 'registerExisting']);
+
     Route::post('/avatar', [App\Http\Controllers\Api\Events\AvatarController::class, 'avatar']);
     Route::post('/signature', [App\Http\Controllers\Api\Events\AvatarController::class, 'signature']);
     Route::post('/completed', [App\Http\Controllers\Api\Events\AvatarController::class, 'completed']);

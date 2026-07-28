@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Http\Requests\Api\ParticipantRequest;
+use App\Http\Resources\Api\Events\ParticipantResource;
 use App\Jobs\EmailJob;
 
 class AuthController extends Controller
@@ -108,7 +109,8 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'User Logged In Successfully',
-            'token' => $token
+            'token' => $token,
+            'participant' => new ParticipantResource($participant),
         ], 200);
     }
 

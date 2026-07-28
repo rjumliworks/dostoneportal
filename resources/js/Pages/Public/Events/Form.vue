@@ -368,6 +368,94 @@
         </template>
     </div>
 
+    <!-- Already-registered gate: lets a returning participant attach to this
+         session via email OTP instead of re-filling the whole form. -->
+    <div v-if="showAccountModal" class="rstw-modal" role="dialog" aria-modal="true">
+        <div class="rstw-modal__card rstw-modal__card--sm">
+            <div class="rstw-modal__head">
+                <h4 class="rstw-modal__title">
+                    <i class="ri-user-follow-line"></i>
+                    Already Registered?
+                </h4>
+            </div>
+
+            <div class="rstw-modal__body">
+                <template v-if="accountStep === 'ask'">
+                    <p>Do you already have an OneDOST4U account from a previous registration?</p>
+                    <div class="rstw-modal__foot">
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--ghost" @click="continueAsNewParticipant">
+                            No, I'm New
+                        </button>
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--primary" @click="chooseHasAccount">
+                            Yes, I Have One
+                        </button>
+                    </div>
+                </template>
+
+                <template v-else-if="accountStep === 'email'">
+                    <p>Enter your registered email address. We'll send a one-time code to verify it's you.</p>
+                    <div class="rstw-field">
+                        <label>Email Address</label>
+                        <input
+                            type="email"
+                            v-model="accountEmail"
+                            placeholder="you@email.com"
+                            @keyup.enter="requestAccountOtp"
+                        >
+                    </div>
+                    <p v-if="accountError" class="rstw-form__error">{{ accountError }}</p>
+                    <div class="rstw-modal__foot">
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--ghost" @click="backToAskAccount">
+                            Back
+                        </button>
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--primary" :disabled="accountBusy" @click="requestAccountOtp">
+                            {{ accountBusy ? 'Sending…' : 'Send Code' }}
+                        </button>
+                    </div>
+                </template>
+
+                <template v-else-if="accountStep === 'otp'">
+                    <p>Enter the 6-digit code we sent to <strong>{{ accountEmail }}</strong>.</p>
+                    <div class="rstw-field">
+                        <label>Verification Code</label>
+                        <input
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="6"
+                            v-model="accountCode"
+                            placeholder="123456"
+                            @keyup.enter="verifyAccountOtp"
+                        >
+                    </div>
+                    <p v-if="accountError" class="rstw-form__error">{{ accountError }}</p>
+                    <div class="rstw-modal__foot">
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--ghost" @click="resetAccountEmail">
+                            Use a Different Email
+                        </button>
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--primary" :disabled="accountBusy" @click="verifyAccountOtp">
+                            {{ accountBusy ? 'Verifying…' : 'Verify' }}
+                        </button>
+                    </div>
+                </template>
+
+                <template v-else-if="accountStep === 'confirm'">
+                    <p>Welcome back, <strong>{{ accountParticipant?.name }}</strong>! Register this account for:</p>
+                    <p><strong>{{ session?.title }}</strong></p>
+                    <p v-if="sessionFull" class="rstw-form__error">{{ sessionFullMessage }}</p>
+                    <p v-if="accountError" class="rstw-form__error">{{ accountError }}</p>
+                    <div class="rstw-modal__foot">
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--ghost" @click="resetAccountEmail">
+                            Not You?
+                        </button>
+                        <button type="button" class="rstw-modal__btn rstw-modal__btn--primary" :disabled="accountBusy" @click="submitExistingRegistration">
+                            {{ accountBusy ? 'Submitting…' : (sessionFull ? 'Join Waitlist' : 'Register for This Session') }}
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
     <!-- Privacy Notice modal -->
     <div v-if="showPrivacyModal" class="rstw-modal" role="dialog" aria-modal="true" @click.self="showPrivacyModal = false">
         <div class="rstw-modal__card">
@@ -505,6 +593,18 @@ export default {
             sessionFull: false,
             showCapacityModal: false,
             capacityConfirmed: false,
+            // "Already have an account?" gate — shown before the full form for
+            // session-specific links, so a returning participant can attach to
+            // another session via email OTP instead of re-filling everything.
+            showAccountModal: false,
+            accountStep: 'ask', // ask | email | otp | confirm
+            accountEmail: null,
+            accountCode: null,
+            accountToken: null,
+            accountParticipant: null,
+            accountBusy: false,
+            accountError: null,
+            accountResendAt: 0,
             form: useForm({
                 firstname: null,
                 middlename: null,
@@ -776,6 +876,83 @@ export default {
             this.showCapacityModal = false;
             router.visit('/');
         },
+        extractAccountError(err) {
+            const data = err?.response?.data;
+            if (!data) return 'Something went wrong. Please try again.';
+            if (data.message) return data.message;
+            const firstError = Object.values(data.errors || {})[0];
+            return Array.isArray(firstError) ? firstError[0] : 'Something went wrong. Please try again.';
+        },
+        chooseHasAccount() {
+            this.accountError = null;
+            this.accountStep = 'email';
+        },
+        continueAsNewParticipant() {
+            this.showAccountModal = false;
+        },
+        backToAskAccount() {
+            this.accountError = null;
+            this.accountStep = 'ask';
+        },
+        resetAccountEmail() {
+            this.accountError = null;
+            this.accountCode = null;
+            this.accountToken = null;
+            this.accountParticipant = null;
+            this.accountStep = 'email';
+        },
+        async requestAccountOtp() {
+            if (!this.accountEmail) {
+                this.accountError = 'Please enter your email address.';
+                return;
+            }
+            this.accountBusy = true;
+            this.accountError = null;
+            try {
+                await axios.post('/api/login', { email: this.accountEmail });
+                this.accountStep = 'otp';
+            } catch (err) {
+                this.accountError = this.extractAccountError(err);
+            } finally {
+                this.accountBusy = false;
+            }
+        },
+        async verifyAccountOtp() {
+            if (!this.accountCode) {
+                this.accountError = 'Please enter the code sent to your email.';
+                return;
+            }
+            this.accountBusy = true;
+            this.accountError = null;
+            try {
+                const { data } = await axios.post('/api/verify', {
+                    email: this.accountEmail,
+                    code: this.accountCode,
+                });
+                this.accountToken = data.token;
+                this.accountParticipant = data.participant;
+                this.accountStep = 'confirm';
+            } catch (err) {
+                this.accountError = this.extractAccountError(err);
+            } finally {
+                this.accountBusy = false;
+            }
+        },
+        async submitExistingRegistration() {
+            this.accountBusy = true;
+            this.accountError = null;
+            try {
+                const { data } = await axios.post(
+                    '/api/sessions/register-existing',
+                    { session_id: this.session.id },
+                    { headers: { Authorization: `Bearer ${this.accountToken}` } }
+                );
+                window.location.href = data.redirect;
+            } catch (err) {
+                this.accountError = this.extractAccountError(err);
+                this.accountBusy = false;
+            }
+        },
         setupEchoListener() {
             if (!this.session) return;
 
@@ -804,6 +981,11 @@ export default {
         },
     },
     mounted() {
+        // Only session-specific links benefit from "attach to another
+        // session" — the general no-session registration is a one-time signup.
+        if (this.session && !this.isPreregClosed) {
+            this.showAccountModal = true;
+        }
         this.$nextTick(() => {
             this.syncSignatureHeight();
             if (window.ResizeObserver && this.$refs.detailsColumn) {
