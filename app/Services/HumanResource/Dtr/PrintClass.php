@@ -157,7 +157,7 @@ class PrintClass
                     'is_with' => false
                 ];
                 continue;
-           }else if ($nonWorkingDays->contains($day)) {
+           }else if ($nonWorkingDays->contains($day) && $shift->division_id != 35) {
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
