@@ -197,7 +197,7 @@
                             <td>{{ $list['data']['pm_out'] ?? '' }}</td>
                             <td style="font-size: 9px;">
                                 {{
-                                    $list['data'] && $list['data']['total_minutes'] > 0
+                                    ($division_id != 35 && $list['data'] && $list['data']['total_minutes'] > 0)
                                         ? ( ($list['data']['undertime']['hours'] == 0) ? '' : $list['data']['undertime']['hours'] )
                                         : ''
                                 }}
@@ -380,12 +380,12 @@
                             <td style="font-size: 9px;">{{ ($list['data']) ? $list['data']['pm_out'] : '' }}</td>
                             <td style="font-size: 9px;">
                                 {{
-                                    $list['data'] && $list['data']['total_minutes'] > 0
+                                    ($division_id != 35 && $list['data'] && $list['data']['total_minutes'] > 0)
                                         ? ( ($list['data']['undertime']['hours'] == 0) ? '' : $list['data']['undertime']['hours'] )
                                         : ''
                                 }}
                             </td>
-                            <td style="font-size: 9px;">{{ ($list['data']) ? ($list['data']['total_minutes'] == 0) ? '' : $list['data']['undertime']['minutes'] : '' }}</td>
+                            <td style="font-size: 9px;">{{ ($division_id != 35 && $list['data']) ? ($list['data']['total_minutes'] == 0) ? '' : $list['data']['undertime']['minutes'] : '' }}</td>
                         @endif
                     @else 
                         <td style="background: rgba(128,128,128, .5)"></td>
@@ -572,12 +572,12 @@
                                 <td style="font-size: 9px;">{{ $list['data']['pm_out'] ?? '' }}</td>
                                 <td style="font-size: 9px;">
                                     {{
-                                        $list['data'] && $list['data']['total_minutes'] > 0
+                                        ($division_id != 35 && $list['data'] && $list['data']['total_minutes'] > 0)
                                             ? ( ($list['data']['undertime']['hours'] == 0) ? '' : $list['data']['undertime']['hours'] )
                                             : ''
                                     }}
                                 </td>
-                                <td style="font-size: 9px;">{{ ($list['data']) ? ($list['data']['total_minutes'] == 0) ? '' : $list['data']['undertime']['minutes'] : '' }}</td>
+                                <td style="font-size: 9px;">{{ ($division_id != 35 && $list['data']) ? ($list['data']['total_minutes'] == 0) ? '' : $list['data']['undertime']['minutes'] : '' }}</td>
                             @endif
                         @else 
                             <td style="background: rgba(128,128,128, .5)"></td>
