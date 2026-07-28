@@ -3,6 +3,7 @@
 namespace App\Services\Events\Session;
 
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\EventSession;
 use App\Models\EventCsfEntry;
 use App\Models\EventCsfQuestion;
@@ -160,6 +161,32 @@ class PrintClass
 
         $pdf = \PDF::loadView('prints.participants', $array)->setPaper('a4', 'landscape');
         return $pdf->stream(strtolower($data->title).'-participants.pdf');
+    }
+
+    public function links($request){
+        $ids = array_filter(explode(',', (string) $request->ids));
+        $sessions = EventSession::whereIn('id', $ids)->orderBy('title')->get();
+
+        $hashids = new Hashids('krad', 10);
+
+        $data = $sessions->map(function ($session) use ($hashids) {
+            $key = $hashids->encode($session->id);
+            $encryptedKey = Crypt::encryptString($key);
+
+            return [
+                'title' => $session->title,
+                'registration' => config('app.registration_url') . '/registration/' . $encryptedKey,
+                'vip' => config('app.registration_url') . '/registration/bPZBcQqTBHnfTUMG4qPQvA/' . $encryptedKey,
+                'attendance' => config('app.registration_url') . '/session/' . $key,
+            ];
+        });
+
+        $pdf = \PDF::loadView('prints.session-links', [
+            'sessions' => $data,
+            'printedAt' => now()->format('F j, Y g:i A'),
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('session-links.pdf');
     }
 
     private  function dateRangeText($schedules) {

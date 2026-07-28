@@ -5,6 +5,10 @@
                 <div class="input-group mb-1">
                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                     <input type="text" v-model="search" placeholder="Search Session" class="form-control" style="width: 30%;">
+                     
+                    <b-button type="button" variant="primary" @click="generateLinksPdf">
+                        <i class="ri-printer-fill search-icon me-1"></i> Generate Links
+                    </b-button>
                 </div>
             </b-col>
         </b-row>
@@ -109,6 +113,11 @@ export default {
         openLink(url){
             if (!url) return;
             window.open(url, '_blank', 'noopener');
+        },
+        generateLinksPdf(){
+            const ids = this.filteredSessions.map(list => list.id).join(',');
+            if (!ids) return;
+            window.open('/sessions?option=links&ids='+ids, '_blank', 'noopener');
         },
         copyLink(event, index, type){
             const input = event.target.closest('.input-group').querySelector('input');

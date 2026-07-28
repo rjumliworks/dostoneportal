@@ -66,12 +66,14 @@ class PublicController extends Controller
     }
 
     public function register($key){
-         try {
-            $decryptedKey = Crypt::decryptString(urldecode($key));
-
-            // Use $decryptedKey
+        try {
+            $decryptedKey = Crypt::decryptString($key);
         } catch (DecryptException $e) {
-            abort(404); // or handle invalid/tampered keys
+            try {
+                $decryptedKey = Crypt::decryptString(urldecode($key));
+            } catch (DecryptException $e) {
+                abort(404); // or handle invalid/tampered keys
+            }
         }
 
         $hashids = new Hashids('krad',10);
@@ -92,12 +94,14 @@ class PublicController extends Controller
     }
 
     public function registervip($key){
-         try {
-            $decryptedKey = Crypt::decryptString(urldecode($key));
-
-            // Use $decryptedKey
+        try {
+            $decryptedKey = Crypt::decryptString($key);
         } catch (DecryptException $e) {
-            abort(404); // or handle invalid/tampered keys
+            try {
+                $decryptedKey = Crypt::decryptString(urldecode($key));
+            } catch (DecryptException $e) {
+                abort(404); // or handle invalid/tampered keys
+            }
         }
 
         $hashids = new Hashids('krad',10);
@@ -120,9 +124,13 @@ class PublicController extends Controller
 
     public function success($key){
         try {
-            $decryptedKey = Crypt::decryptString(urldecode($key));
+            $decryptedKey = Crypt::decryptString($key);
         } catch (DecryptException $e) {
-            abort(404);
+            try {
+                $decryptedKey = Crypt::decryptString(urldecode($key));
+            } catch (DecryptException $e) {
+                abort(404);
+            }
         }
 
         $hashids = new Hashids('krad',10);

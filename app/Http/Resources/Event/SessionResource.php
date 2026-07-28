@@ -4,7 +4,6 @@ namespace App\Http\Resources\Event;
 
 use Illuminate\Support\Facades\Crypt;
 use Hashids\Hashids;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
