@@ -91,6 +91,33 @@ class PublicController extends Controller
         ]);
     }
 
+    public function registervip($key){
+         try {
+            $decryptedKey = Crypt::decryptString(urldecode($key));
+
+            // Use $decryptedKey
+        } catch (DecryptException $e) {
+            abort(404); // or handle invalid/tampered keys
+        }
+
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($decryptedKey);
+
+        return inertia('Public/Events/RegistrationVips',[
+            'session' => EventSession::with('venue','schedules','detail')
+                ->withCount(['participants' => function ($q) {
+                    $q->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES);
+                }])
+                ->where('id',$id)->first(),
+            'dropdowns' => [
+                'suffixes' => $this->dropdown->datas('Suffix'),
+                'sexs' => $this->dropdown->datas('Sex'),
+                'types' => $this->dropdown->datas('Participant Type'),
+            ],
+        ]);
+    }
+
+
     public function success($key){
         try {
             $decryptedKey = Crypt::decryptString(urldecode($key));
@@ -103,6 +130,7 @@ class PublicController extends Controller
 
         return inertia('Public/Events/Success',[
             'session' => EventSession::with('venue','schedules')->where('id',$id)->first(),
+            'isVip' => request()->routeIs('rstw2026.successvip'),
         ]);
     }
 

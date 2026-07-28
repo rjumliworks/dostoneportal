@@ -38,6 +38,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'ap-southeast-1'),
         'collection_id' => env('REKOGNITION_COLLECTION_ID', 'dost9-users'),
         'participant_id' => env('REKOGNITION_PARTICIPANT_ID', 'dost9-participants'),
+        'testparticipant_id' => env('REKOGNITION_TESTPARTICIPANT_ID', 'dost9-testparticipants'),
     ],
 
     'google' => [

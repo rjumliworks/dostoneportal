@@ -38,9 +38,15 @@
                                     <i class="ri-checkbox-circle-fill"></i>
                                 </div>
 
-                                <h2 class="rstw-success__title">Registration Successful!</h2>
+                                <h2 class="rstw-success__title">{{ isVip ? 'Registration Confirmed!' : 'Registration Successful!' }}</h2>
 
-                                <p class="rstw-success__text" v-if="session && reserved">
+                                <p class="rstw-success__text" v-if="isVip && session">
+                                    Thank you, <strong>{{ participantName }}</strong>! As our valued VIP guest,
+                                    your registration for <strong>{{ session.title || 'this session' }}</strong><span v-if="sessionDate"> on {{ sessionDate }}</span><span v-if="session?.venue?.establishment"> at {{ session.venue.establishment }}</span>
+                                    has been automatically confirmed — your seat is guaranteed, no further
+                                    review needed.
+                                </p>
+                                <p class="rstw-success__text" v-else-if="session && reserved">
                                     Thank you, <strong>{{ participantName }}</strong>! <strong>{{ session.title || 'This session' }}</strong>
                                     has already reached its maximum capacity, so you've been placed on the
                                     waitlist — you'll be offered a seat in the order you registered if one
@@ -64,7 +70,12 @@
                                         </span>
                                         <div class="rstw-success__note-body">
                                             <strong class="rstw-success__note-title">What happens next</strong>
-                                            <span class="rstw-success__note-text" v-if="reserved">
+                                            <span class="rstw-success__note-text" v-if="isVip">
+                                                Please check your email for your confirmation details. You may
+                                                view your registration anytime through the mobile app — should
+                                                your plans change, please let the organizers know ahead of time.
+                                            </span>
+                                            <span class="rstw-success__note-text" v-else-if="reserved">
                                                 Please check your email for waitlist updates. You can check
                                                 your status, or register for other sessions open to the
                                                 public, anytime through the mobile app.
@@ -143,7 +154,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 export default {
     layout: null,
     components: { Head, Link },
-    props: ['session'],
+    props: ['session', 'isVip'],
     computed: {
         participantName() {
             return usePage().props.flash?.data?.name || 'Registrant';

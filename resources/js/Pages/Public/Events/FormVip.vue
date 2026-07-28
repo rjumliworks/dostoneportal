@@ -75,9 +75,10 @@
                         {{ sessionFullMessage }}
                     </span>
                     <span class="rstw-reg__note-text" v-else-if="session">
-                        This pre-registration is valid only for the selected session.
-                        Please register only if you intend to attend. Registration is
-                        subject to review and confirmation through the system.
+                        As our valued VIP guest, this pre-registration is reserved
+                        exclusively for you for the selected session. Please register
+                        only if you intend to attend, as your registration is subject
+                        to review and confirmation through the system.
                     </span>
                     <span class="rstw-reg__note-text" v-else>
                         This registers you into the system without booking a specific
@@ -134,7 +135,7 @@
                                 playsinline
                                 muted
                             ></video>
-                            <img v-if="avatarPreview" :src="avatarPreview" alt="Captured avatar" class="rstw-photo__img">
+                            <img v-if="avatarPreview" :src="avatarPreview" alt="Your avatar" class="rstw-photo__img" :class="{ 'rstw-photo__img--mirrored': avatarSource === 'camera' }">
                             <span v-if="cameraOn && !avatarPreview" class="rstw-photo__live"><i class="ri-record-circle-fill"></i> Live</span>
                             <div v-if="cameraOn && !avatarPreview" class="rstw-photo__guide" aria-hidden="true"></div>
                             <div v-if="!cameraOn && !avatarPreview" class="rstw-photo__placeholder">
@@ -148,7 +149,7 @@
                             <i class="ri-close-circle-fill"></i> Avatar failed
                         </p>
                         <p v-else-if="avatarPreview" class="rstw-photo__caption rstw-photo__caption--ok">
-                            <i class="ri-checkbox-circle-fill"></i> Avatar captured
+                            <i class="ri-checkbox-circle-fill"></i> {{ avatarSource === 'upload' ? 'Photo uploaded' : 'Avatar captured' }}
                         </p>
                         <div v-if="form.errors.avatar" class="rstw-photo__warning rstw-photo__warning--danger">
                             <i class="ri-error-warning-line"></i>
@@ -163,14 +164,14 @@
                             </span>
                         </div>
                         <div class="rstw-photo__actions">
-                            <button
-                                v-if="!cameraOn && !avatarPreview"
-                                type="button"
-                                class="rstw-photo__btn"
-                                @click="startCamera"
-                            >
-                                <i class="ri-camera-line"></i> Open Camera
-                            </button>
+                            <template v-if="!cameraOn && !avatarPreview">
+                                <button type="button" class="rstw-photo__btn" @click="startCamera">
+                                    <i class="ri-camera-line"></i> Open Camera
+                                </button>
+                                <button type="button" class="rstw-photo__btn" @click="$refs.avatarFile.click()">
+                                    <i class="ri-upload-2-line"></i> Upload
+                                </button>
+                            </template>
                             <button
                                 v-if="cameraOn && !avatarPreview"
                                 type="button"
@@ -179,16 +180,26 @@
                             >
                                 <i class="ri-camera-fill"></i> Capture
                             </button>
-                            <button
-                                v-if="avatarPreview"
-                                type="button"
-                                class="rstw-photo__btn"
-                                @click="retakeAvatar"
-                            >
-                                <i class="ri-refresh-line"></i> Retake
-                            </button>
+                            <template v-if="avatarPreview">
+                                <!-- Retake only makes sense for a camera shot; an uploaded
+                                     photo is re-chosen with Re-upload instead. -->
+                                <button v-if="avatarSource !== 'upload'" type="button" class="rstw-photo__btn" @click="retakeAvatar">
+                                    <i class="ri-camera-line"></i> Retake
+                                </button>
+                                <button type="button" class="rstw-photo__btn" @click="$refs.avatarFile.click()">
+                                    <i class="ri-upload-2-line"></i> {{ avatarSource === 'upload' ? 'Re-upload' : 'Upload' }}
+                                </button>
+                            </template>
                         </div>
                     </div>
+                    <!-- Hidden picker for the Upload buttons -->
+                    <input
+                        ref="avatarFile"
+                        type="file"
+                        accept="image/*"
+                        class="rstw-photo__file"
+                        @change="onAvatarFile"
+                    >
                     <canvas ref="avatarCanvas" class="rstw-photo__canvas"></canvas>
                     <span v-if="cameraError" class="rstw-form__error">{{ cameraError }}</span>
                 </div>
@@ -487,6 +498,7 @@ import Multiselect from '@vueform/multiselect';
 import axios from 'axios';
 
 export default {
+    layout: null,
     name: 'PreRegistrationForm',
     components: { SignaturePad, Link, Multiselect },
     props: ['dropdowns','session'],
@@ -496,6 +508,7 @@ export default {
             cameraOn: false,
             cameraError: null,
             avatarPreview: null,
+            avatarSource: null,   // 'camera' | 'upload' — drives the success caption
             showPrivacyModal: false,
             signPadHeight: 126,
             detailsResizeObserver: null,
@@ -519,7 +532,7 @@ export default {
                 others: null,
                 signature: null,
                 avatar: null,
-                type_id: 196,
+                type_id: 198,
                 check: false,
                 consent: false,
                 session_id: this.session?.id ?? null
@@ -707,6 +720,7 @@ export default {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             this.avatarPreview = canvas.toDataURL('image/jpeg', 0.9);
+            this.avatarSource = 'camera';
             canvas.toBlob(
                 (blob) => {
                     this.form.avatar = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
@@ -719,9 +733,43 @@ export default {
         },
         retakeAvatar() {
             this.avatarPreview = null;
+            this.avatarSource = null;
             this.form.avatar = null;
             this.clearError('avatar');
             this.startCamera();
+        },
+        /**
+         * Use a photo the visitor picks from their device instead of the live
+         * camera — same end result: a preview and the File on `form.avatar`.
+         */
+        onAvatarFile(e) {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                this.cameraError = 'Please choose an image file.';
+                e.target.value = '';
+                return;
+            }
+            if (file.size > 8 * 1024 * 1024) {
+                this.cameraError = 'That image is too large — please pick a file under 8 MB.';
+                e.target.value = '';
+                return;
+            }
+
+            this.cameraError = null;
+            this.stopCamera();   // in case the camera was live when they uploaded
+
+            const reader = new FileReader();
+            reader.onload = () => { this.avatarPreview = reader.result; };
+            reader.readAsDataURL(file);
+
+            this.avatarSource = 'upload';
+            this.form.avatar = file;
+            this.clearError('avatar');
+
+            // Reset so picking the same file again still fires @change
+            e.target.value = '';
         },
         async submit() {
             this.form.clearErrors();
@@ -1226,8 +1274,8 @@ export default {
     background: #fffdf8;
     overflow: hidden;
     /* overflow + border-radius alone doesn't clip a transformed descendant
-       in Firefox (the scaleX(-1) flip on the video/img below creates its
-       own stacking context) — clip-path clips it reliably in every engine. */
+       in Firefox (the scaleX(-1) mirror below creates its own stacking
+       context) — clip-path clips it reliably in every engine. */
     clip-path: circle(50%);
     display: grid;
     place-items: center;
@@ -1255,12 +1303,25 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1);
+    /* bias the crop toward the upper area where faces usually sit, so a
+       portrait's head isn't cut off by the circular frame */
+    object-position: center 28%;
 }
+/* Live view is mirrored so it feels like a selfie. A camera capture keeps that
+   mirror on its preview; an uploaded photo is a normal image and must NOT be
+   flipped. */
+.rstw-photo__video { transform: scaleX(-1); }
+.rstw-photo__img--mirrored { transform: scaleX(-1); }
+
 .rstw-photo__img { animation: rstw-photo-in .35s ease; }
 @keyframes rstw-photo-in {
+    from { opacity: 0; transform: scale(1.04); }
+    to   { opacity: 1; transform: scale(1); }
+}
+.rstw-photo__img--mirrored.rstw-photo__img { animation: rstw-photo-in-mirror .35s ease; }
+@keyframes rstw-photo-in-mirror {
     from { opacity: 0; transform: scaleX(-1) scale(1.04); }
-    to { opacity: 1; transform: scaleX(-1) scale(1); }
+    to   { opacity: 1; transform: scaleX(-1) scale(1); }
 }
 /* Caption under the photo circle — helper text, or the success message once a
    photo is captured. Kept outside the circle so it never crowds the image. */
@@ -1347,20 +1408,22 @@ export default {
     color: #9a8574;
 }
 .rstw-photo__placeholder i { font-size: 52px; color: var(--brand); }
-.rstw-photo__actions { display: flex; justify-content: center; gap: 10px; width: 100%; max-width: 230px; margin: 0 auto; }
+.rstw-photo__actions { display: flex; justify-content: center; gap: 10px; width: 100%; max-width: 300px; margin: 16px auto 4px; }
 .rstw-photo__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;   /* keep "Open Camera" on one line */
     font-size: 14px;
     font-weight: 600;
     color: var(--brand);
     background: #fff;
     border: 1px solid #eadfce;
     border-radius: 10px;
-    padding: 9px 16px;
+    padding: 9px 12px;
     cursor: pointer;
     transition: background .2s, box-shadow .2s;
 }
@@ -1371,6 +1434,7 @@ export default {
     border-color: transparent;
 }
 .rstw-photo__canvas { display: none; }
+.rstw-photo__file { display: none; }
 @media (prefers-reduced-motion: reduce) {
     .rstw-photo__img { animation: none; }
     .rstw-photo__live i { animation: none; }

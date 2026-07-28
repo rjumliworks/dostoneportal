@@ -36,20 +36,25 @@ class RegistrationController extends Controller
             return back()->withErrors(['avatar' => 'Pre-registration for this session is not yet open.']);
         }
 
+        // VIP/Special Guest registrations (type_id 198) are exempt from the
+        // capacity waitlist and are auto-approved instead of landing as
+        // Pending — they get a guaranteed seat, not a slot in the queue.
+        $isVip = (int) $request->type_id === 198;
+
         // Captured by reference: HandlesTransaction::handleTransaction() only
         // passes through data/message/info/status from the callback's return
         // value, so this is how the redirect logic below finds out whether
         // the registration landed as Reserved.
         $isReserved = false;
 
-        $result = $this->handleTransaction(function () use ($request, &$isReserved) {
+        $result = $this->handleTransaction(function () use ($request, &$isReserved, $isVip) {
             $participant = Participant::create(array_merge($request->except('avatar'), [
                 'code' => $this->generateCode(),
                 'is_completed' => 1
             ]));
 
             if ($participant) {
-                if ($request->session_id) {
+                if ($request->session_id && !$isVip) {
                     // Safety net against overbooking: the frontend already
                     // flags sessionFull once it sees capacity reached via the
                     // CapacityEvent broadcast, but two submissions racing at
@@ -75,10 +80,10 @@ class RegistrationController extends Controller
 
                 if($request->session_id){
                     EventSessionParticipant::create([
-                        'status_id' => $isReserved ? 60 : 52, // Reserved : Pending
+                        'status_id' => $isVip ? 58 : ($isReserved ? 60 : 52), // Approved (VIP) : Reserved : Pending
                         'participant_id' => $participant->id,
                         'session_id' => $request->session_id,
-                        'is_approved' => 0,
+                        'is_approved' => $isVip ? 1 : 0,
                     ]);
                 }
                 $detail_data = $request->except('captcha', 'avatar', 'signature');
@@ -124,7 +129,7 @@ class RegistrationController extends Controller
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
 
-                RegistrationJob::dispatch($request->email,$name,$request->session_id,$isReserved)->onConnection('database');
+                RegistrationJob::dispatch($request->email,$name,$request->session_id,$isReserved,$isVip)->onConnection('database');
             }
 
             return [
@@ -158,7 +163,7 @@ class RegistrationController extends Controller
         $hashids = new Hashids('krad',10);
         $key = urlencode(Crypt::encryptString($hashids->encode($request->session_id)));
 
-        return redirect()->route('rstw2026.success', ['key' => $key])->with([
+        return redirect()->route($isVip ? 'rstw2026.successvip' : 'rstw2026.success', ['key' => $key])->with([
             'data' => $result['data'],
             'message' => $result['message'],
             'info' => $result['info'],

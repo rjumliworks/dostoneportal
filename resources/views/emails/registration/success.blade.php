@@ -46,11 +46,23 @@
                                 Registration Confirmation
                             </p>
 
+                            @if ($isVip)
+                                <p style="margin: 0 0 4px; display: inline-block; background-color: #F1A442; color: #1a202c; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 10px; border-radius: 999px;">
+                                    VIP / Special Guest
+                                </p>
+                            @endif
+
                             <h1 style="margin: 0 0 14px; color: #1a202c; font-size: 19px; font-weight: 700;">
                                 Thank you, {{ $name }}!
                             </h1>
 
-                            @if ($wasFull)
+                            @if ($isVip)
+                                <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
+                                    As our valued VIP guest, your registration for <strong>{{ $session->title }}</strong>
+                                    has been automatically confirmed &mdash; your seat is guaranteed and no further
+                                    review is needed. We look forward to having you.
+                                </p>
+                            @elseif ($wasFull)
                                 <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     The session you requested, <strong>{{ $session->title }}</strong>, had already
                                     reached its maximum capacity. You've been placed on the waitlist for this
@@ -70,7 +82,7 @@
                                     <tr>
                                         <td style="padding: 16px; background-color: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
                                             <p style="margin: 0 0 10px; color: #718096; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;">
-                                                {{ $wasFull ? 'Waitlisted Session' : 'Session Details' }}
+                                                {{ $isVip ? 'Confirmed Session' : ($wasFull ? 'Waitlisted Session' : 'Session Details') }}
                                             </p>
                                             <p style="margin: 0 0 6px; color: #1a202c; font-size: 15px; font-weight: 700;">
                                                 {{ $session->title }}
@@ -90,7 +102,13 @@
                                 </table>
                             @endif
 
-                            @if ($wasFull)
+                            @if ($isVip)
+                                <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">
+                                    You may view your registration details anytime through
+                                    <a href="https://mobile.dost9.ph" style="color: #144C8D; font-weight: 700; text-decoration: underline;">mobile.dost9.ph</a>.
+                                    Should your plans change, please let the organizers know ahead of time.
+                                </p>
+                            @elseif ($wasFull)
                                 <p style="margin: 20px 0 0; color: #4a5568; font-size: 12px; line-height: 1.3;">
                                     You can check your waitlist status, or browse other sessions open to the
                                     public, through

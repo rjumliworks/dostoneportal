@@ -19,13 +19,15 @@ class RegistrationJob implements ShouldQueue
     protected $name;
     protected $sessionId;
     protected $wasFull;
+    protected $isVip;
 
-    public function __construct($email, $name, $sessionId = null, $wasFull = false)
+    public function __construct($email, $name, $sessionId = null, $wasFull = false, $isVip = false)
     {
         $this->email = $email;
         $this->name = $name;
         $this->sessionId = $sessionId;
         $this->wasFull = $wasFull;
+        $this->isVip = $isVip;
     }
 
     public function handle(): void
@@ -34,6 +36,6 @@ class RegistrationJob implements ShouldQueue
             ? EventSession::with('venue', 'schedules')->find($this->sessionId)
             : null;
 
-        Mail::to($this->email)->send(new RegistrationSuccessful($this->name, $session, $this->wasFull));
+        Mail::to($this->email)->send(new RegistrationSuccessful($this->name, $session, $this->wasFull, $this->isVip));
     }
 }

@@ -18,6 +18,8 @@ Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(func
     Route::get('/registration', [App\Http\Controllers\Event\PublicController::class, 'registration']);
     Route::get('/registration/success', [App\Http\Controllers\Event\PublicController::class, 'successGeneral'])->name('success.general');
     Route::get('/registration/{key}', [App\Http\Controllers\Event\PublicController::class, 'register']);
+    Route::get('/registration/bPZBcQqTBHnfTUMG4qPQvA/{key}', [App\Http\Controllers\Event\PublicController::class, 'registervip']);
+    Route::get('/registration/bPZBcQqTBHnfTUMG4qPQvA/{key}/success', [App\Http\Controllers\Event\PublicController::class, 'success'])->name('successvip');
     Route::get('/registration/{key}/success', [App\Http\Controllers\Event\PublicController::class, 'success'])->name('success');
     Route::get('/search', [App\Http\Controllers\Event\PublicController::class, 'search']);
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
@@ -95,14 +97,14 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
     Route::resource('/signatories', App\Http\Controllers\Executive\SignatoryController::class);
 
-    // Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
-    // Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);
-    // Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);
-    // Route::get('/rekognition/create', [App\Http\Controllers\Executive\RekognitionController::class, 'create']);
-    // Route::get('/rekognition/search', [App\Http\Controllers\Executive\RekognitionController::class, 'search']);
-    // Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
-    // Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
-    // Route::get('/rekognition/collection/{id}/face/{faceId}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
+    Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
+    Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);
+    Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);
+    Route::get('/rekognition/create', [App\Http\Controllers\Executive\RekognitionController::class, 'create']);
+    Route::get('/rekognition/search', [App\Http\Controllers\Executive\RekognitionController::class, 'search']);
+    Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
+    Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
+    Route::get('/rekognition/collection/{id}/face/{faceId}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
 });
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
