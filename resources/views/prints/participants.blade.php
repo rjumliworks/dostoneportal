@@ -89,46 +89,52 @@
             </tbody>
         </table>
 
-        <table class="table" style="border: 1px solid black; margin-top: 15px;">
+        <center style="margin-top: 15px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">PARTICIPANTS ({{ $mainList->count() }})</center>
+        <table class="table" style="border: 1px solid black; margin-top: 5px;">
             <thead style="background-color:#c8c8c8;">
                 <tr>
                     <th width="4%">#</th>
-                    <th width="20%">NAME</th>
-                    <th width="26%">AFFILIATION / DESIGNATION</th>
-                    <th width="22%">EMAIL / CONTACT NO.</th>
+                    <th width="6%">PHOTO</th>
+                    <th width="17%">NAME</th>
+                    <th width="24%">AFFILIATION / DESIGNATION</th>
+                    <th width="21%">EMAIL / CONTACT NO.</th>
                     <th width="14%">DATE REGISTERED</th>
                     <th width="14%">STATUS</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($data->participants as $item)
-                    <tr style="text-align: center;">
-                        <td>{{ $loop->iteration }}</td>
-                        <td style="text-align: left;">{{ $item->participant->name ?? '' }}</td>
-                        <td style="text-align: center;">
-                            @php
-                                $affiliation = $item->participant->detail->affiliation ?? null;
-                                $affiliationName = ($affiliation && $affiliation->name === 'Others')
-                                    ? ($item->participant->detail->others ?? '')
-                                    : ($affiliation->name ?? '');
-                            @endphp
-                            {{ $affiliationName }}<br>
-                            <small style="color: gray;">{{ $item->participant->detail->designation ?? '' }}</small>
-                        </td>
-                        <td style="text-align: center;">
-                            {{ $item->participant->email ?? '' }}<br>
-                            <small style="color: gray;">{{ $item->participant->mobile ?? '' }}</small>
-                        </td>
-                        <td>{{ $item->created_at ?? '-' }}</td>
-                        <td>{{ $item->status->name ?? '-' }}</td>
-                    </tr>
+                @forelse ($mainList as $item)
+                    @include('prints.participants-row', ['item' => $item, 'index' => $loop->iteration])
                 @empty
                     <tr>
-                        <td colspan="6" style="text-align: center;">No participants found.</td>
+                        <td colspan="7" style="text-align: center;">No participants found.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+
+        @if ($reservedList->count() > 0)
+            <div style="page-break-before: always;"></div>
+            <center style="margin-top: 15px; font-size: 11px; color:#000; font-weight: bold; padding: 2px;">RESERVED / WAITLISTED ({{ $reservedList->count() }})</center>
+            <table class="table" style="border: 1px solid black; margin-top: 5px;">
+                <thead style="background-color:#c8c8c8;">
+                    <tr>
+                        <th width="4%">#</th>
+                        <th width="6%">PHOTO</th>
+                        <th width="17%">NAME</th>
+                        <th width="24%">AFFILIATION / DESIGNATION</th>
+                        <th width="21%">EMAIL / CONTACT NO.</th>
+                        <th width="14%">DATE REGISTERED</th>
+                        <th width="14%">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($reservedList as $item)
+                        @include('prints.participants-row', ['item' => $item, 'index' => $loop->iteration])
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
 </body>
 </html>

@@ -129,17 +129,33 @@ class PrintClass
         $data = EventSession::with([
                 'venue','schedules','event',
                 'participants' => function ($q) {
-                    $q->orderBy('created_at', 'DESC');
+                    $q->orderBy('created_at', 'ASC');
                 },
                 'participants.participant.detail',
                 'participants.status',
             ])
             ->where('id', $key[0])->first();
 
+        foreach ($data->participants as $item) {
+            if (!empty($item->participant->detail->avatar)) {
+                $item->participant->detail->avatar_base64 = $this->convertToBase64($item->participant->detail->avatar);
+            }
+        }
+
+        $reservedList = $data->participants->filter(function ($item) {
+            return optional($item->status)->name === 'Reserved';
+        })->values();
+
+        $mainList = $data->participants->reject(function ($item) {
+            return optional($item->status)->name === 'Reserved';
+        })->values();
+
         $array = [
             'date' => $this->dateRangeText($data->schedules),
             'printedAt' => now()->format('F j, Y g:i A'),
             'data' => $data,
+            'mainList' => $mainList,
+            'reservedList' => $reservedList,
         ];
 
         $pdf = \PDF::loadView('prints.participants', $array)->setPaper('a4', 'landscape');
