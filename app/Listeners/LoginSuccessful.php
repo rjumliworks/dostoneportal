@@ -20,6 +20,13 @@ class LoginSuccessful
     public function handle(Login $event): void
     {
         $user = $event->user;
+
+        if (!$user instanceof \App\Models\User) {
+            // authentication_logs.user_id is FK'd to the users table, so
+            // logins from other guards (e.g. participant) can't be logged here.
+            return;
+        }
+
         $user->last_login_at = now();
         $user->save();
         // $ip = $this->request->ip();
