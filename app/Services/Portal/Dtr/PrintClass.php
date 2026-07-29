@@ -287,7 +287,8 @@ class PrintClass
             'user' => $user,
             'month' => $month,
             'year' => $year,
-            'type' => $type_id
+            'type' => $type_id,
+            'division_id' => $shift->division_id
 
         ];
 
