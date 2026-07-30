@@ -186,11 +186,19 @@ class PublicController extends Controller
                 $user = Participant::with('detail')->find($externalId); // your user table
                 $image = 'data:'.$request->file('image')->getMimeType().';base64,'.base64_encode(file_get_contents($request->file('image')->getRealPath()));
                 $datetime =  now();
+
+                $isRegistered = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->exists();
+                if (!$isRegistered) {
+                    return response()->json(['message' => 'Participant not registered in this session'], 404);
+                }
+
                 $attendance = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->whereNotNull('attended_at')->exists();
                 if($attendance){
                     $data = [
                         'name' => $user->name,
-                        'division' => $user->detail->affiliation
+                        'division' => $user->detail->affiliation?->name === 'Others'
+                            ? $user->detail->others
+                            : $user->detail->affiliation?->name
                     ];
                     return [
                         'data' => $data,
@@ -199,11 +207,13 @@ class PublicController extends Controller
                     ];
                 }else{
                     $this->image($request,$user,$datetime);
-                    $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
-                    broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
+                    // $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
+                    // broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
                     $data = [
                         'name' => $user->name,
-                        'division' => $user->detail->affiliation,
+                        'affiliation' => $user->detail->affiliation?->name === 'Others'
+                            ? $user->detail->others
+                            : $user->detail->affiliation?->name,
                         'avatar' => $user->detail->avatar,
                         'capture' => $image,
                         'datetime' => Carbon::parse($datetime)->format('F j, Y g:i A'),

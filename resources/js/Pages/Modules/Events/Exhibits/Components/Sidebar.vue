@@ -49,7 +49,17 @@
                 </li>
             </ul>
             <hr class="text-muted"/>
-                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">Contact Details</p>
+                <div class="d-flex align-items-center justify-content-between ms-3 me-3">
+                    <div class="d-flex align-items-center gap-1">
+                        <button v-if="!selected.contact" type="button" class="btn btn-icon btn-sm btn-soft-primary rounded-circle" title="Add contact" @click="openContact()">
+                            <i class="ri-add-line"></i>
+                        </button>
+                        <p class="mb-0 text-primary fs-12 fw-semibold">Contact Details</p>
+                    </div>
+                    <button type="button" class="btn btn-icon btn-sm btn-soft-secondary rounded-circle" title="Open QR code to print" @click="openImage(selected.qr)">
+                        <i class="ri-qr-code-line"></i>
+                    </button>
+                </div>
             <hr class="text-muted mb-2"/>
             <ul v-if="selected.contact" class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3"  style="cursor: pointer;" @click="openSalary()">
                 <li class="list-group-item px-0">
@@ -94,9 +104,12 @@
             </ul>
         </div>
     </div>
+    <CreateContact ref="contact"/>
 </template>
 <script>
+import CreateContact from './Modals/CreateContact.vue';
 export default {
+    components: { CreateContact },
     props: ['selected'],
     computed: {
         dateRangeText() {
@@ -129,6 +142,9 @@ export default {
     methods: {
         openImage(qr) {
             window.open(qr, '_blank');
+        },
+        openContact() {
+            this.$refs.contact.show(this.selected.id);
         }
     }
 }

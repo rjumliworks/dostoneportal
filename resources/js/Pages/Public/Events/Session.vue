@@ -1,6 +1,6 @@
 <template>
     <Head :title="selected.title"/>
-    <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light position-relative overflow-hidden py-4">
+    <div class="session-page d-flex justify-content-center align-items-stretch vh-100 bg-light position-relative overflow-hidden" :style="pageHeight ? { height: pageHeight + 'px' } : null">
         <svg class="pillars-page-bg" viewBox="-900 -900 1800 1800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
             <path d="M 0 0 L -1400 0 A 1400 1400 0 0 1 0 -1400 Z" fill="#E8940C" opacity="0.035"/>
             <path d="M 0 0 L 0 -1400 A 1400 1400 0 0 1 1400 0 Z" fill="#274F79" opacity="0.035"/>
@@ -149,7 +149,7 @@
         </svg>
 
         <div class="session-layout position-relative">
-            <div class="session-header text-center mb-4">
+            <div class="session-header text-center mb-5">
                 <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
                     <img src="@assets/images/logos/logo-sm.png" alt="" class="avatar-xs">
                     <img src="@assets/images/logos/bagongpilipinas.png" alt="" class="avatar-xs">
@@ -161,7 +161,7 @@
 
             <div class="session-body">
                 <div class="session-camera-col">
-                    <div class="camera-stage">
+                    <div class="camera-stage" :style="cameraSize ? { height: cameraSize + 'px', width: cameraSize + 'px' } : null">
                         <div class="camera-ring" :class="'ring-' + ringState" :style="{ '--ring-color': ringColor }">
                             <div class="camera-circle">
                                 <video
@@ -170,6 +170,10 @@
                                     playsinline
                                     class="camera-circle-video">
                                 </video>
+
+                                <div class="camera-shutter" :class="{ 'shutter-open': faceDetected }">
+                                    <img src="@assets/images/logos/logo-sm.png" alt="" class="brand-spinner">
+                                </div>
 
                                 <div class="capture-flash" v-if="flashActive"></div>
 
@@ -184,6 +188,7 @@
                                 </div>
 
                                 <button
+                                    v-if="faceDetected"
                                     type="button"
                                     class="btn-scan-trigger"
                                     :disabled="isScanning"
@@ -194,10 +199,10 @@
                             </div>
                         </div>
                     </div>
-                    <p class="camera-hint text-center mt-3 mb-0">Position your face in the frame, then tap the camera to check in.</p>
+                    <!-- <p class="camera-hint text-center mt-3 mb-0">Position your face in the frame, then tap the camera to check in.</p> -->
                 </div>
 
-                <div class="session-info-col">
+                <div class="session-info-col" ref="infoCol">
                     <div class="status-card" :class="'status-card-' + (status || 'idle')">
                         <div v-if="status === 'Success'" class="d-flex align-items-center">
                             <div class="flex-shrink-0 me-3">
@@ -205,7 +210,7 @@
                             </div>
                             <div class="flex-grow-1">
                                 <h5 class="mb-0 fs-16 text-uppercase fw-semibold">{{ employee.name }}</h5>
-                                <p class="text-muted mb-0 fs-12">{{ employee.division }}</p>
+                                <p class="text-muted mb-0 fs-12">{{ employee.affiliation }}</p>
                             </div>
                             <div class="text-end">
                                 <h6 class="mb-0">{{ employee.datetime }}</h6>
@@ -245,17 +250,20 @@
                                 <table class="table table-nowrap align-middle mb-0">
                                     <thead class="bg-light thead-fixed">
                                         <tr class="fs-11">
-                                            <th width="10%" class="text-center">#</th>
+                                            <th width="8%"></th>
                                             <th>Name</th>
                                             <th width="30%" class="text-center">Time</th>
                                         </tr>
                                     </thead>
                                     <tbody v-if="attendees.length">
-                                        <tr v-for="(list, index) in attendees"
-                                            :key="index"
-                                            :class="['fs-12', { 'fw-semibold bg-success-subtle': index === 0 }]">
-                                            <td class="text-center">{{ index + 1 }}</td>
-                                            <td>{{ list.name }}</td>
+                                        <tr v-for="(list, index) in attendees" :key="index">
+                                            <td class="text-center">
+                                                <img :src="list.avatar" class="rounded-circle avatar-xs" style="object-fit:cover;" alt="Avatar">
+                                            </td>
+                                            <td>
+                                                <h5 class="fs-12 mb-0 fw-semibold">{{ list.name }}</h5>
+                                                <p class="fs-11 text-muted mb-0">{{ list.affiliation }}</p>
+                                            </td>
                                             <td class="text-center">{{ list.datetime }}</td>
                                         </tr>
                                     </tbody>
@@ -276,6 +284,7 @@
 </template>
 <script>
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import * as faceapi from 'face-api.js';
 
 // Same colors as the DOST pillar theme used elsewhere: Wealth Creation, Wealth Protection, Human Well Being, Sustainability
 const PILLAR_PALETTES = [
@@ -292,7 +301,7 @@ function randBetween(min, max) {
 // Randomly scattered, slow-drifting low-opacity pillar icons filling the full-page background,
 // covering whatever screen size renders them (preserveAspectRatio="slice" always covers the viewport).
 function generateFloatingShapes() {
-    const perQuadrant = 14;
+    const perQuadrant = 20;
     const iconCounts = [5, 5, 6, 6];
     const quadrants = [
         { quadrant: 1, signX: -1, signY: -1 },
@@ -310,8 +319,8 @@ function generateFloatingShapes() {
                 quadrant,
                 iconIndex: i % iconCount,
                 color: palette[Math.floor(randBetween(0, palette.length))],
-                x: signX * randBetween(60, 1300),
-                y: signY * randBetween(60, 1300),
+                x: signX * randBetween(60, 820),
+                y: signY * randBetween(60, 820),
                 rotate: randBetween(0, 360),
                 scale: randBetween(0.7, 1.6),
                 opacity: randBetween(0.14, 0.26),
@@ -333,21 +342,29 @@ export default {
             selected: this.session.data,
             employee: null,
             status: '',
+            captureFeedback: null,
             isScanning: false,
             flashActive: false,
             statusTimeout: null,
+            captureFeedbackTimeout: null,
             cameraStream: null,
             deviceId: null,
-            attendees: [],
-            floatingShapes: generateFloatingShapes()
+            attendees: this.session.data.attendees ?? [],
+            floatingShapes: generateFloatingShapes(),
+            pageHeight: null,
+            cameraSize: null,
+            faceDetected: false,
+            detectionRunning: false,
+            detectionTimeout: null,
+            missedFrames: 0
         };
     },
     computed: {
         ringState() {
             if (this.isScanning) return 'running';
-            if (this.status === 'Success') return 'success';
-            if (this.status === 'Duplicate') return 'duplicate';
-            if (this.status === 'Error') return 'error';
+            if (this.captureFeedback === 'Success') return 'success';
+            if (this.captureFeedback === 'Duplicate') return 'duplicate';
+            if (this.captureFeedback === 'Error') return 'error';
             return 'idle';
         },
         ringColor() {
@@ -361,8 +378,18 @@ export default {
         }
     },
     mounted() {
-        this.initDeviceId();
-        this.initCamera();
+        this.pageHeight = window.innerHeight;
+        this.$nextTick(async () => {
+            this.lockCameraSize();
+            this.initDeviceId();
+            try {
+                await this.initCamera();
+                await this.loadModels();
+                this.startDetectionLoop();
+            } catch (e) {
+                console.error('Failed to start camera/face detection:', e);
+            }
+        });
         this.keepAliveInterval = setInterval(() => {
             axios.get('/keep-alive');
         }, 1000 * 60 * 30);
@@ -372,11 +399,25 @@ export default {
         if (this.statusTimeout) {
             clearTimeout(this.statusTimeout);
         }
+        if (this.captureFeedbackTimeout) {
+            clearTimeout(this.captureFeedbackTimeout);
+        }
+        this.detectionRunning = false;
+        if (this.detectionTimeout) {
+            clearTimeout(this.detectionTimeout);
+        }
         if (this.cameraStream) {
             this.cameraStream.getTracks().forEach(track => track.stop());
         }
     },
     methods: {
+        lockCameraSize() {
+            const infoCol = this.$refs.infoCol;
+            if (!infoCol) return;
+            const heightBudget = infoCol.offsetHeight * 0.7;
+            const widthBudget = window.innerWidth * 0.38;
+            this.cameraSize = Math.max(140, Math.min(heightBudget, widthBudget));
+        },
         async initDeviceId() {
             try {
                 const fp = await FingerprintJS.load();
@@ -386,7 +427,7 @@ export default {
                 console.error('Failed to load FingerprintJS:', e);
             }
         },
-        resetStatusTimer() {
+        resetStatusTimer(duration = 8000) {
             if (this.statusTimeout) {
                 clearTimeout(this.statusTimeout);
             }
@@ -394,11 +435,57 @@ export default {
                 this.status = null;
                 this.employee = null;
                 this.statusTimeout = null;
-            }, 15000);
+            }, duration);
+        },
+        resetCaptureFeedback(duration = 2000) {
+            if (this.captureFeedbackTimeout) {
+                clearTimeout(this.captureFeedbackTimeout);
+            }
+            this.captureFeedbackTimeout = setTimeout(() => {
+                this.captureFeedback = null;
+                this.captureFeedbackTimeout = null;
+            }, duration);
         },
         async initCamera() {
             this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
             this.$refs.video.srcObject = this.cameraStream;
+        },
+        async loadModels() {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+        },
+        startDetectionLoop() {
+            const detectorOptions = new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 });
+            const missesBeforeClose = 8;
+            this.detectionRunning = true;
+
+            const runDetection = async () => {
+                if (!this.detectionRunning) return;
+
+                try {
+                    const video = this.$refs.video;
+                    if (video && video.readyState === 4) {
+                        const result = await faceapi.detectSingleFace(video, detectorOptions);
+
+                        if (result) {
+                            this.missedFrames = 0;
+                            this.faceDetected = true;
+                        } else {
+                            this.missedFrames++;
+                            if (this.missedFrames >= missesBeforeClose) {
+                                this.faceDetected = false;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Face detection tick failed:', e);
+                } finally {
+                    if (this.detectionRunning) {
+                        this.detectionTimeout = setTimeout(runDetection, 150);
+                    }
+                }
+            };
+
+            runDetection();
         },
         async captureFrame() {
             if (this.isScanning) return;
@@ -429,6 +516,8 @@ export default {
                 const data = res.data;
 
                 this.status = data.info;
+                this.captureFeedback = data.info;
+                this.resetCaptureFeedback();
 
                 if (data.info === 'Success' || data.info === 'Duplicate') {
                     this.employee = data.data ? { ...data.data } : null;
@@ -455,7 +544,9 @@ export default {
                     this.speak('Participant not found.');
                 }, 600);
                 this.status = 'Error';
-                this.resetStatusTimer();
+                this.captureFeedback = 'Error';
+                this.resetCaptureFeedback();
+                this.resetStatusTimer(2000);
             } finally {
                 this.isScanning = false;
             }
@@ -470,6 +561,12 @@ export default {
 </script>
 
 <style scoped>
+@property --fill-percent {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%;
+}
+
 .pillars-page-bg {
     position: absolute;
     inset: 0;
@@ -479,11 +576,25 @@ export default {
     pointer-events: none;
 }
 
+.session-page {
+    padding: 1in 1.5rem;
+    box-sizing: border-box;
+}
+
+@media (min-width: 1920px) {
+    .session-page {
+        padding: 1.5in 1.5rem;
+    }
+}
+
 .session-layout {
     z-index: 1;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;
     padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .session-title {
@@ -505,16 +616,25 @@ export default {
 
 .session-body {
     display: flex;
+    flex: 1;
+    min-height: 0;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: center;
-    gap: 3rem;
+    gap: 5rem;
+}
+
+@media (min-width: 900px) {
+    .session-body {
+        flex-wrap: nowrap;
+    }
 }
 
 .session-camera-col {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 
@@ -525,13 +645,16 @@ export default {
 }
 
 .camera-stage {
-    width: 380px;
-    height: 380px;
+    height: 70%;
+    aspect-ratio: 1 / 1;
+    min-height: 140px;
+    min-width: 140px;
+    max-height: 38vw;
 }
 
 .camera-ring {
-    width: 380px;
-    height: 380px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -541,20 +664,24 @@ export default {
 }
 
 .camera-ring.ring-running {
-    background: conic-gradient(var(--ring-color, #2E5C8A) 0deg 34deg, #e9ecef 34deg 360deg);
-    animation: ring-spin 1.1s linear infinite;
+    background: conic-gradient(var(--ring-color, #2E5C8A) var(--fill-percent, 0%), #e9ecef var(--fill-percent, 0%) 100%);
+    animation: ring-fill 1.4s ease-in-out infinite;
 }
 
-@keyframes ring-spin {
-    to {
-        transform: rotate(360deg);
+@keyframes ring-fill {
+    0% {
+        --fill-percent: 0%;
+    }
+    100% {
+        --fill-percent: 100%;
     }
 }
 
 .camera-circle {
     position: relative;
-    width: 352px;
-    height: 352px;
+    box-sizing: border-box;
+    width: 92%;
+    height: 92%;
     border-radius: 50%;
     overflow: hidden;
     border: 4px solid #ffffff;
@@ -566,6 +693,36 @@ export default {
     height: 100%;
     object-fit: cover;
     transform: scaleX(-1);
+}
+
+.camera-shutter {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f3f5;
+    color: #adb5bd;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.brand-spinner {
+    width: 40%;
+    height: 40%;
+    object-fit: contain;
+    animation: brand-spin 3s linear infinite;
+}
+
+@keyframes brand-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.shutter-open {
+    transform: scale(1.2);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .capture-flash {
@@ -647,7 +804,9 @@ export default {
 
 .session-info-col {
     width: 100%;
-    max-width: 620px;
+    max-width: 860px;
+    min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -659,6 +818,7 @@ export default {
     background-color: #f1f3f5;
     border: 1px solid #e9ecef;
     min-height: 84px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -698,12 +858,17 @@ export default {
     border: 1px solid #e9ecef;
     border-radius: 0.75rem;
     overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .attendees-card-header {
     padding: 0.9rem 1.1rem;
     background-color: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
+    flex-shrink: 0;
 }
 
 .attendees-icon {
@@ -720,10 +885,15 @@ export default {
 
 .attendees-card-body {
     padding: 0;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .attendees-table-wrap {
-    max-height: 460px;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
 }

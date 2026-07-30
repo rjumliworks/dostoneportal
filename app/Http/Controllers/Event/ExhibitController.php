@@ -33,6 +33,9 @@ class ExhibitController extends Controller
                 case 'exhibitor':
                     return $this->save->exhibitor($request);
                 break;
+                case 'contact':
+                    return $this->save->contact($request);
+                break;
             }
         });
 

@@ -3,6 +3,7 @@
 namespace App\Services\Events\Exhibit;
 
 use App\Models\EventExhibitor;
+use App\Models\EventExhibitorContact;
 
 class SaveClass
 {
@@ -15,8 +16,20 @@ class SaveClass
         // }
         return [
             'data' => $data,
-            'message' => 'Exhibitor successfully created.', 
+            'message' => 'Exhibitor successfully created.',
             'info' => "Great job! Your event is now active and ready for participants."
+        ];
+    }
+
+    public function contact($request){
+        $data = EventExhibitorContact::updateOrCreate(
+            ['exhibitor_id' => $request->exhibitor_id],
+            $request->only(['name', 'email', 'contact_no'])
+        );
+        return [
+            'data' => $data,
+            'message' => 'Contact successfully added.',
+            'info' => 'The exhibitor contact details have been saved.'
         ];
     }
 

@@ -14,6 +14,15 @@ class AttendanceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $detail = $this->participant->detail;
+
+        return [
+            'name' => $this->participant->name,
+            'avatar' => $detail?->avatar,
+            'affiliation' => $detail?->affiliation?->name === 'Others'
+                ? $detail->others
+                : $detail?->affiliation?->name,
+            'datetime' => $this->attended_at,
+        ];
     }
 }

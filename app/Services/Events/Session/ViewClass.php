@@ -48,7 +48,7 @@ class ViewClass
                 'attendees' => function ($q) {
                     $q->orderBy('attended_at', 'DESC');
                 },
-                'attendees.participant',
+                'attendees.participant.detail.affiliation',
                 'status','activities.speaker',
                 'managers.user:id','managers.user.profile:user_id,firstname,lastname,middlename,suffix_id',
                 'event.detail.region:code,name,region',
