@@ -60,7 +60,7 @@
                 </li>
                 <li class="nav-item" v-if="$page.props.roles.includes('Event Manager')">
                     <Link href="/events" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Events') }">
+                    :class="{ active: $page.url === '/events' }">
                     <i class="ri-calendar-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Events</span>
                     </Link>
@@ -73,8 +73,8 @@
                     </Link>
                 </li>
                 <li class="nav-item" v-if="$page.props.roles.includes('Event Manager')">
-                    <Link href="/sessions" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Event/Participants') }">
+                    <Link href="/participants" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Events/Participants') }">
                     <i class="ri-account-circle-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Participants</span>
                     </Link>

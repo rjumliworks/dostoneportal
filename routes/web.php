@@ -70,6 +70,7 @@ Route::middleware(['role:Document Management Officer'])->group(function () {
 Route::middleware(['role:Event Manager'])->group(function () {
     Route::resource('/events', App\Http\Controllers\Event\EventController::class);
     Route::resource('/exhibits', App\Http\Controllers\Event\ExhibitController::class);
+    Route::resource('/participants', App\Http\Controllers\Event\ParticipantController::class);
 });
 
 Route::middleware(['role:Event Manager,Session Manager'])->group(function () {

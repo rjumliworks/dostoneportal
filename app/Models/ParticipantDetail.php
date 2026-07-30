@@ -42,7 +42,7 @@ class ParticipantDetail extends Model
 
     public function type()
     {
-        return $this->belongsTo('App\Models\ListDropdown', 'type_id', 'id');
+        return $this->belongsTo('App\Models\ListData', 'type_id', 'id');
     }
 
     public function setDesignationAttribute($value)

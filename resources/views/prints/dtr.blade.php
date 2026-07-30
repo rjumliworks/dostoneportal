@@ -158,11 +158,11 @@
                             @elseif($isInGroup)
                                 {{-- Skip cell because it's already merged above --}}
                             @else
-                                @if($list['data'] == 'HOLIDAY')
+                                @if($division_id != 35 && $list['data'] == 'HOLIDAY')
                                     <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
-                                @elseif($list['data'] == 'WORK SUSPENDED')
+                                @elseif($division_id != 35 && $list['data'] == 'WORK SUSPENDED')
                                     <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
@@ -341,11 +341,11 @@
                             @elseif($isInGroup)
                                 {{-- Skip cell because it's already merged above --}}
                             @else
-                                @if($list['data'] == 'HOLIDAY')
+                                @if($division_id != 35 && $list['data'] == 'HOLIDAY')
                                     <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
-                                @elseif($list['data'] == 'WORK SUSPENDED')
+                                @elseif($division_id != 35 && $list['data'] == 'WORK SUSPENDED')
                                     <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
@@ -533,11 +533,11 @@
                                 @elseif($isInGroup)
                                     {{-- Skip cell because it's already merged above --}}
                                 @else
-                                    @if($list['data'] == 'HOLIDAY')
+                                    @if($division_id != 35 && $list['data'] == 'HOLIDAY')
                                         <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                             {{$list['title']}}
                                         </td>
-                                    @elseif($list['data'] == 'WORK SUSPENDED')
+                                    @elseif($division_id != 35 && $list['data'] == 'WORK SUSPENDED')
                                         <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
                                             {{$list['title']}}
                                         </td>
