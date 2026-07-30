@@ -23,7 +23,8 @@ class ViewResource extends JsonResource
             size: 800,
             margin: 5,
             logoPath: public_path('images/qrlogo.png'),
-            logoResizeToWidth: 80
+            logoResizeToWidth: 80,
+            labelText: $this->title
         ))->build();
 
         return [
