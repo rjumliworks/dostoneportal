@@ -25,6 +25,7 @@ Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(func
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
     Route::post('/register', [App\Http\Controllers\Event\RegistrationController::class, 'store']);
+    Route::get('/opening', [App\Http\Controllers\Event\PublicController::class, 'opening']);
     
 });
 

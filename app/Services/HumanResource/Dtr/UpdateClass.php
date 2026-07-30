@@ -155,6 +155,29 @@ class UpdateClass
         ];
     }
 
+    public function recheck($request){
+        $dtr = Dtr::where('id',$request->id)->first();
+
+        if(!$dtr){
+            return [
+                'data' => null,
+                'message' => 'DTR not found.',
+                'info' => 'DTR not found.',
+            ];
+        }
+
+        Artisan::call('dtr', ['id' => $dtr->id]);
+
+        $data = new IndexResource(Dtr::with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname,suffix_id')
+        ->where('id',$request->id)->first());
+
+        return [
+            'data' => $data,
+            'message' => 'DTR rechecked successfully.',
+            'info' => 'Your dtr was rechecked already.',
+        ];
+    }
+
     public function computeLateMinutes($date,$type,$time,$in = null)
     {
         $date = Carbon::parse($date);

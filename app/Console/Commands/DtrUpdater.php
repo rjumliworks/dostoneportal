@@ -188,7 +188,7 @@ class DtrUpdater extends Command
                             $adjustedOut = Carbon::parse($shift->out_time)->startOfMinute();
 
                             
-                            if (!$date->isMonday() && $dtr->am_in_at) {
+                            if ($dtr->am_in_at) {
 
                                 $am_in_at = json_decode($dtr->am_in_at);
 

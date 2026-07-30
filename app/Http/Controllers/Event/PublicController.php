@@ -27,6 +27,10 @@ class PublicController extends Controller
         $this->dropdown = $dropdown;
     }
 
+    public function opening(){
+        return inertia('Public/Events/Opening');
+    }
+
     public function search(Request $request){
         $keyword = $request->keyword;
         $type = $request->type;

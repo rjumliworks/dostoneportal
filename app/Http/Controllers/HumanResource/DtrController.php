@@ -64,6 +64,9 @@ class DtrController extends Controller
                 case 'add':
                     return $this->update->add($request);
                 break;
+                case 'recheck':
+                    return $this->update->recheck($request);
+                break;
             }
         });
 

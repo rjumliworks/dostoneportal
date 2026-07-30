@@ -155,12 +155,16 @@
         </form>
           <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Close</b-button>
+            <b-button v-if="selected && !isToday(selected.date)" @click="recheck()" variant="warning" :disabled="recheckForm.processing" block>
+                <i class="bx bx-refresh align-bottom"></i> Recheck / Fix
+            </b-button>
         </template>
     </b-modal>
     <Time @update="updateData" ref="time"/>
     <Edit @update="updateData" ref="edit"/>
 </template>
 <script>
+import { useForm } from '@inertiajs/vue3';
 import Edit from './Edit.vue';
 import Time from './Time.vue';
 import GLightbox from "glightbox";
@@ -172,7 +176,11 @@ export default {
             currentUrl: window.location.origin,
             selected: null,
             type: null,
-            showModal: false
+            showModal: false,
+            recheckForm: useForm({
+                id: null,
+                option: 'recheck'
+            })
         }
     },
     mounted() {
@@ -204,6 +212,25 @@ export default {
         openTime(id,type){
             this.type = type;
             this.$refs.time.show(id,type);
+        },
+        isToday(dateString) {
+            const today = new Date();
+            const date = new Date(dateString);
+            return (
+                date.getFullYear() === today.getFullYear() &&
+                date.getMonth() === today.getMonth() &&
+                date.getDate() === today.getDate()
+            );
+        },
+        recheck(){
+            this.recheckForm.id = this.selected.id;
+            this.recheckForm.put('/dtrs/update', {
+                preserveScroll: true,
+                onSuccess: (response) => {
+                    this.selected = response.props.flash.data.data;
+                    this.$emit('update', this.selected);
+                },
+            });
         },
         updateData(data){
             this.$emit('update',data);
