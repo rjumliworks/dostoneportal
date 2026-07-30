@@ -18,6 +18,8 @@ use App\Http\Resources\DefaultResource;
 use App\Http\Resources\Api\Events\Session\ParticipantResource;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class PublicController extends Controller
 {
@@ -29,6 +31,19 @@ class PublicController extends Controller
 
     public function opening(){
         return inertia('Public/Events/Opening');
+    }
+
+    public function qrcode(){
+        $result = (new Builder(
+            writer: new PngWriter(),
+            data: config('app.registration_url') . '/registration',
+            size: 800,
+            margin: 10,
+            logoPath: public_path('images/qrlogo.png'),
+            logoResizeToWidth: 100
+        ))->build();
+
+        return response($result->getString())->header('Content-Type', $result->getMimeType());
     }
 
     public function search(Request $request){

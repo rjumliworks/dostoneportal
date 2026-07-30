@@ -26,7 +26,8 @@ Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(func
     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
     Route::post('/register', [App\Http\Controllers\Event\RegistrationController::class, 'store']);
     Route::get('/opening', [App\Http\Controllers\Event\PublicController::class, 'opening']);
-    
+    Route::get('/qrcode', [App\Http\Controllers\Event\PublicController::class, 'qrcode']);
+
 });
 
 Route::domain('attendance.' . config('app.app_host'))->as('attendance.')->group(function () {
