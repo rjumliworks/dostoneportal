@@ -30,6 +30,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search by code" class="form-control" style="width: 20%;">
+                                <Multiselect class="white" style="width: 20%;" :options="registrationOptions" v-model="filter.registration" label="name" :searchable="false" placeholder="Select Registration Type" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -67,9 +68,10 @@
                                     <th style="width: 3%;"></th>
                                     <th>Name</th>
                                     <th style="width: 12%;" class="text-center">Contact No.</th>
-                                    <th style="width: 17%;" class="text-center">Email</th>
-                                    <th style="width: 10%;" class="text-center">Status</th>
-                                    <th style="width: 10%;" class="text-center">Registered</th>
+                                    <th style="width: 15%;" class="text-center">Email</th>
+                                    <th style="width: 8%;" class="text-center">Sessions</th>
+                                    <th style="width: 9%;" class="text-center">Status</th>
+                                    <th style="width: 15%;" class="text-center">Registered</th>
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
@@ -82,10 +84,11 @@
                                     </td>
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary text-uppercase">{{list.name}}</h5>
-                                        <p class="fs-12 text-muted mb-0">{{ list.affiliation?.name }}</p>
+                                        <p class="fs-12 text-muted mb-0" :class="{ 'text-capitalize': list.affiliation?.name === 'Others' }">{{ list.affiliation?.name === 'Others' ? list.others : list.affiliation?.name }}</p>
                                     </td>
                                     <td class="text-center">{{ list.mobile }}</td>
                                     <td class="text-center">{{ list.email }}</td>
+                                    <td class="text-center">{{ list.sessions_count || '-' }}</td>
                                     <td class="text-center">
                                         <span class="badge" :class="list.is_completed ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'">{{ list.is_completed ? 'Completed' : 'Pending' }}</span>
                                     </td>
@@ -105,10 +108,11 @@
 </template>
 <script>
 import _ from 'lodash';
+import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination },
+    components: { PageHeader, Pagination, Multiselect },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -118,8 +122,13 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                type: null
+                type: null,
+                registration: null
             },
+            registrationOptions: [
+                { value: 'regular', name: 'Regular Registration (no sessions)' },
+                { value: 'session', name: 'Session Registration (with sessions)' }
+            ],
             index: null,
             selectedRow: null
         }
@@ -127,6 +136,9 @@ export default {
     watch: {
         "filter.keyword"(newVal){
             this.checkSearchStr(newVal);
+        },
+        "filter.registration"(){
+            this.fetch();
         }
     },
     created(){
@@ -142,6 +154,7 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     type: this.filter.type,
+                    registration: this.filter.registration,
                     count: 10,
                     option: 'list'
                 }
@@ -163,6 +176,7 @@ export default {
         refresh(){
             this.filter.keyword = null;
             this.filter.type = null;
+            this.filter.registration = null;
             this.index = null;
             this.fetch();
         },

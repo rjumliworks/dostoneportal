@@ -21,7 +21,7 @@ class ViewClass
     }
 
     public function list($request){
-        $query = Participant::with(['detail.type','detail.affiliation']);
+        $query = Participant::with(['detail.type','detail.affiliation'])->withCount('sessions');
 
         // firstname/lastname/email are encrypted at rest (see Participant's set*Attribute
         // mutators), so they can't be matched with a SQL LIKE - keyword search is limited
@@ -32,6 +32,14 @@ class ViewClass
 
         $query->when($request->type, function ($query, $type) {
             $query->whereHas('detail', fn($q) => $q->where('type_id', $type));
+        });
+
+        $query->when($request->registration, function ($query, $registration) {
+            if ($registration === 'regular') {
+                $query->doesntHave('sessions');
+            } elseif ($registration === 'session') {
+                $query->has('sessions');
+            }
         });
 
         $query->orderBy('created_at', 'DESC');

@@ -18,7 +18,9 @@ class ListResource extends JsonResource
             'mobile' => $this->mobile,
             'type' => $this->detail?->type,
             'affiliation' => $this->detail?->affiliation,
+            'others' => $this->detail?->others,
             'is_completed' => $this->detail?->is_completed,
+            'sessions_count' => $this->sessions_count,
             'created_at' => $this->created_at,
         ];
     }
