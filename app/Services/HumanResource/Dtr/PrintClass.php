@@ -146,7 +146,7 @@ class PrintClass
             ->map(fn ($day) => $dayNames[$day])
             ->values();
 
-             if($holidayToday){
+             if($holidayToday && $shift->division_id != 35){
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
@@ -193,7 +193,7 @@ class PrintClass
                     'travel_group' => $obToday->id
                 ];
                 continue;
-            }else if($suspensionToday){
+            }else if($suspensionToday && $shift->division_id != 35){
                 $data = Dtr::whereDate('date', $date)
                     ->where('user_id', $user_id)
                     ->first();
