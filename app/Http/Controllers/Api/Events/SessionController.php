@@ -11,6 +11,7 @@ use App\Models\Participant;
 use App\Models\EventSession;
 use App\Models\EventSessionQuestion;
 use App\Models\EventSessionParticipant;
+use App\Http\Resources\Api\AttendanceResource;
 use App\Http\Resources\Api\Events\Session\FeedbackResource;
 use App\Http\Resources\Api\Events\Session\QuestionResource;
 use App\Http\Resources\Api\Events\Session\ParticipantResource;
@@ -184,7 +185,16 @@ class SessionController extends Controller
         }else{
             $randomkey = substr($request->session, -10);
             $cipher = substr($request->session, 0, -10);
-            $code = Crypt::decrypt($cipher);
+
+            try {
+                $code = Crypt::decrypt($cipher);
+            } catch (\Exception) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid or expired QR code.'
+                ], 400);
+            }
+
             $session_id = EventSession::where('code', $code)->value('id');
 
             if (!$session_id) {
