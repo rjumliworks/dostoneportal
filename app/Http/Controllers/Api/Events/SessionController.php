@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Participant;
 use App\Models\EventSession;
 use App\Models\EventExhibitor;
+use App\Models\EventExhibitorVisitor;
 use App\Models\EventSessionQuestion;
 use App\Models\EventSessionParticipant;
 use App\Http\Resources\Api\AttendanceResource;
