@@ -7,6 +7,7 @@ use App\Jobs\CertificateJob;
 use App\Events\SessionEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ListDropdown;
 use App\Models\Participant;
 use App\Models\EventSession;
 use App\Models\EventExhibitor;
@@ -155,7 +156,7 @@ class SessionController extends Controller
                 $new->exhibitor_id = $ex->id;
 
                 if($new->save()){
-                    $engage = Dropdown::findOrFail(26);
+                    $engage = ListDropdown::findOrFail(68);
                     $point = ParticipantPoint::where('participant_id', $request->participant_id)->firstOrFail();
 
                     $new->update([
