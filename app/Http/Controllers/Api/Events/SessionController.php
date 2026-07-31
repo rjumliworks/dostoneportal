@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\Events;
 
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Aws\Rekognition\RekognitionClient;
 use App\Jobs\CertificateJob;
 use App\Events\SessionEvent;
 use Illuminate\Http\Request;
@@ -152,9 +155,25 @@ class SessionController extends Controller
                     'message' => 'You are not a registered participant.'
                 ], 400);
             }else{
+                $verify = $this->verifyFace($request, $participant);
+                if (!$verify['ok']) {
+                    $data = [
+                        'participant_id' => $request->participant_id,
+                        'name' => $participant->firstname.' '.$participant->lastname,
+                        'type' => 'not',
+                        'message' => $this->faceVerificationMessage($verify['reason'])
+                    ];
+                    broadcast(new SessionEvent($data,'exhibit_visit'));
+                    return response()->json([
+                        'status' => false,
+                        'message' => $this->faceVerificationMessage($verify['reason'])
+                    ], 422);
+                }
+
                 $new = new EventExhibitorVisitor;
                 $new->participant_id = $request->participant_id;
                 $new->exhibitor_id = $ex->id;
+                $new->image = $verify['path'];
 
                 if($new->save()){
                     $engage = ListDropdown::findOrFail(68);
@@ -233,30 +252,39 @@ class SessionController extends Controller
             }
 
             if ($attendance->attended_at) {
-                if(!$request->image){
-                    $participant = Participant::select('id','firstname','lastname')->where('id',$request->participant_id)->first();
-                    $data = [
-                        'participant_id' => $request->participant_id,
-                        'name' => $participant->firstname.' '.$participant->lastname,
-                        'type' => 'already',
-                        'message' => 'Your attendance has already been recorded'
-                    ];
-                    broadcast(new SessionEvent($data,'attendance-error',$randomkey));
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Attendance already recorded for this participant.'
-                    ], 400);
-                }
+                $participant = Participant::select('id','firstname','lastname')->where('id',$request->participant_id)->first();
+                $data = [
+                    'participant_id' => $request->participant_id,
+                    'name' => $participant->firstname.' '.$participant->lastname,
+                    'type' => 'already',
+                    'message' => 'Your attendance has already been recorded'
+                ];
+                broadcast(new SessionEvent($data,'attendance-error',$randomkey));
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Attendance already recorded for this participant.'
+                ], 400);
             }
 
-            if($request->image){
-                $path = $this->image($request);
-                $attendance->image = $path;
+            $participant = Participant::select('id','firstname','lastname')->where('id',$request->participant_id)->first();
+            $verify = $this->verifyFace($request, $participant);
+            if (!$verify['ok']) {
+                $data = [
+                    'participant_id' => $request->participant_id,
+                    'name' => $participant->firstname.' '.$participant->lastname,
+                    'type' => 'not',
+                    'message' => $this->faceVerificationMessage($verify['reason'])
+                ];
+                broadcast(new SessionEvent($data,'attendance-error',$randomkey));
+                return response()->json([
+                    'status' => false,
+                    'message' => $this->faceVerificationMessage($verify['reason'])
+                ], 422);
             }
-            if(!$attendance->attended_at){
-                $attendance->attended_at = now();
-                $attendance->status_id = 8;
-            }
+
+            $attendance->image = $verify['path'];
+            $attendance->attended_at = now();
+            $attendance->status_id = 8;
 
             if ($attendance->save()) {
                 $latest = EventSessionParticipant::with('participant.detail','session')->where('session_id', $session_id)
@@ -275,6 +303,74 @@ class SessionController extends Controller
                 'message' => 'Failed to record attendance. Please try again.'
             ], 500);
         }
+    }
+
+    /**
+     * Confirms the selfie captured right after a QR scan actually belongs to
+     * the logged-in participant, not just whoever is holding the phone —
+     * searches the Rekognition collection built at registration time and
+     * requires the top match's ExternalImageId to equal the claimed
+     * participant_id. On success the photo is persisted to the public disk
+     * and its path returned for the caller to store alongside the
+     * attendance/visit record.
+     */
+    private function verifyFace(Request $request, ?Participant $participant): array
+    {
+        $request->validate(['image' => 'required|image']);
+
+        if (!$participant) {
+            return ['ok' => false, 'reason' => 'no_participant'];
+        }
+
+        $file = $request->file('image');
+        $tempFilename = uniqid().'.'.$file->getClientOriginalExtension();
+        $s3Path = $file->storeAs('oneportal/temp', $tempFilename, 's3');
+
+        $rekognition = new RekognitionClient([
+            'version'     => 'latest',
+            'region'      => config('services.rekognition.region'),
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        try {
+            $matches = $rekognition->searchFacesByImage([
+                'CollectionId' => config('services.rekognition.participant_id'),
+                'Image' => [
+                    'S3Object' => [
+                        'Bucket' => config('services.rekognition.bucket'),
+                        'Name' => $s3Path,
+                    ],
+                ],
+                'FaceMatchThreshold' => 90,
+                'MaxFaces' => 1,
+            ]);
+        } catch (\Exception $e) {
+            return ['ok' => false, 'reason' => 'no_face'];
+        }
+
+        $match = $matches['FaceMatches'][0] ?? null;
+        if (!$match || (string) $match['Face']['ExternalImageId'] !== (string) $participant->id) {
+            return ['ok' => false, 'reason' => 'mismatch'];
+        }
+
+        $filename = Str::random(10).'.'.$file->getClientOriginalExtension();
+        $relativePath = 'participants/'.$participant->id.'/attendance/'.$filename;
+        Storage::disk('public')->putFileAs('participants/'.$participant->id.'/attendance/', $file, $filename);
+
+        return ['ok' => true, 'path' => $relativePath];
+    }
+
+    private function faceVerificationMessage(string $reason): string
+    {
+        return match ($reason) {
+            'no_face' => 'No face was detected in the photo. Please make sure your face is clearly visible and try again.',
+            'mismatch' => 'The face in the photo does not match your account. Please try again with your own face clearly visible.',
+            'no_participant' => 'Participant not found.',
+            default => 'Face verification failed. Please try again.',
+        };
     }
 
 }

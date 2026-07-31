@@ -10,7 +10,8 @@ class EventExhibitorVisitor extends Model
        'has_voted',
        'voted_at',
        'exhibitor_id',
-       'participant_id'
+       'participant_id',
+       'image'
     ];
 
     public function engageable()
