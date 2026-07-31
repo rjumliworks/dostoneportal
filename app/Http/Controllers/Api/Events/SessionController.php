@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\Events;
 
+use Illuminate\Support\Facades\Crypt;
 use App\Jobs\CertificateJob;
 use App\Events\SessionEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Participant;
 use App\Models\EventSession;
 use App\Models\EventSessionQuestion;
 use App\Models\EventSessionParticipant;
