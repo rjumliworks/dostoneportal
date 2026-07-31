@@ -31,7 +31,7 @@ class Participant extends Authenticatable
     }
 
     protected $fillable = [
-        'email','kradworkz','mobile','firstname','lastname','middlename','suffix','avatar', 'code', 'kradworkz','mobile_hash'
+        'email','kradworkz','mobile','firstname','lastname','middlename','suffix','avatar', 'code', 'kradworkz','mobile_hash','is_completed'
     ];
 
     protected $hidden = [
