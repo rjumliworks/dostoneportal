@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Api\Events\DashboardController::class, 'index']);
 
     Route::prefix('sessions')->controller(App\Http\Controllers\Api\Events\SessionController::class)->group(function () {
+        Route::post('/attendance/check', 'checkAttendance');
         Route::post('/attendance', 'attendance');
         Route::post('/question', 'question');
         Route::post('/registration', 'registration');

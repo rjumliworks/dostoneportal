@@ -122,8 +122,75 @@ class SessionController extends Controller
         CertificateJob::dispatch($data->participant->email, $array,$pdfContent1, $pdfContent2)->onConnection('database');
     }
 
+    /**
+     * Read-only pre-check run right after a QR scan, before the mobile app
+     * opens the face-confirm camera — lets the frontend skip the selfie step
+     * entirely when the participant already visited/attended, instead of
+     * only discovering that after they've gone through face verification.
+     */
+    public function checkAttendance(Request $request)
+    {
+        $sessionCode = $request->session;
+
+        try {
+            $aa = Crypt::decryptString($sessionCode);
+            $ex = EventExhibitor::where('code', $aa)->first();
+        } catch (\Exception $e) {
+            $ex = null;
+        }
+
+        if ($ex) {
+            $already = EventExhibitorVisitor::where('exhibitor_id', $ex->id)
+                ->where('participant_id', $request->participant_id)
+                ->exists();
+
+            return response()->json([
+                'status' => true,
+                'already' => $already,
+                'message' => $already ? 'You already visited the exhibitor.' : null,
+            ]);
+        }
+
+        $cipher = substr($sessionCode, 0, -10);
+
+        try {
+            $code = Crypt::decrypt($cipher);
+        } catch (\Exception) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid or expired QR code.'
+            ], 400);
+        }
+
+        $session_id = EventSession::where('code', $code)->value('id');
+
+        if (!$session_id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Session not found.'
+            ], 404);
+        }
+
+        $attendance = EventSessionParticipant::where('participant_id', $request->participant_id)
+            ->where('session_id', $session_id)
+            ->first();
+
+        if (!$attendance) {
+            return response()->json([
+                'status' => false,
+                'message' => 'You are not a registered participant.'
+            ], 400);
+        }
+
+        return response()->json([
+            'status' => true,
+            'already' => (bool) $attendance->attended_at,
+            'message' => $attendance->attended_at ? 'Attendance already recorded for this participant.' : null,
+        ]);
+    }
+
     public function attendance(Request $request)
-    {   
+    {
         $sessionCode = $request->session;
         $participant = Participant::select('id','firstname','lastname')
                     ->where('id', $request->participant_id)
