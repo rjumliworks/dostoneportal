@@ -122,7 +122,12 @@ class SessionController extends Controller
                     ->where('id', $request->participant_id)
                     ->first();
         try {
-            $aa = Crypt::decrypt($sessionCode); // only works if it was encrypted cleanly
+            // The exhibitor QR is generated with Crypt::encryptString() (see
+            // App\Http\Resources\Event\Exhibitor\ViewResource), which skips
+            // PHP serialization — must be reversed with decryptString(), not
+            // plain decrypt() (which tries to unserialize the result and
+            // fails on a plain code string).
+            $aa = Crypt::decryptString($sessionCode);
             $ex = EventExhibitor::where('code', $aa)->first();
         } catch (\Exception $e) {
             $ex = null;
