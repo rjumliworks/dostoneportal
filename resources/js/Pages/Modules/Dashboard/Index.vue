@@ -355,11 +355,8 @@
                             </div>
                             <div class="flex-shrink-0">
                                 <div class="d-flex gap-1 align-items-center my-n2">
-        
-                                            <i class="ri-calendar-2-line"></i> 
-
+                                    <i class="ri-calendar-2-line"></i> 
                                     <span class="text-muted fw-normal fs-12"> {{ currentMonth }}</span>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -370,19 +367,19 @@
                             <div class="col-6 col-sm-4">
                                 <div class="p-3 border border-dashed border-start-0">
                                     <h5 class="mb-1">{{ attendance[0] }}</h5>
-                                    <p class="text-muted mb-0">Incomplete</p>
+                                    <p class="text-muted mb-0 fs-12">Incomplete</p>
                                 </div>
                             </div>
                             <div class="col-6 col-sm-4">
                                 <div class="p-3 border border-dashed border-start-0">
                                     <h5 class="mb-1">{{ attendance[1] }}</h5>
-                                    <p class="text-muted mb-0">Lates</p>
+                                    <p class="text-muted mb-0 fs-12">Lates</p>
                                 </div>
                             </div>
                             <div class="col-6 col-sm-4">
                                 <div class="p-3 border border-dashed border-start-0 border-end-0">
                                     <h5 class="mb-1">{{ attendance[2] }}</h5>
-                                    <p class="text-muted mb-0">Absences</p>
+                                    <p class="text-muted mb-0 fs-12">Absences</p>
                                 </div>
                             </div>
                         </div>

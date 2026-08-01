@@ -11,9 +11,7 @@ class OrganizationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'avatar' => ($this?->user?->profile && $this?->user?->profile->avatar && $this?->user?->profile->avatar !== 'noavatar.jpg')
-            ? asset('storage/' . $this?->user->profile->avatar) 
-            : asset('images/avatars/avatar.jpg'), 
+            'avatar' => $this?->user?->profile?->avatar ?? asset('images/avatars/avatar.jpg'),
             'order' => $this->order,
             'designation' => $this->designation->name,
             'assigned' => $this->assigned,

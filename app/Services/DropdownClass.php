@@ -436,9 +436,7 @@ class DropdownClass
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,
                 'type' => $item->organization->type->name,
-                 'avatar' => ($item->profile && $item->profile->avatar && $item->profile->avatar !== 'noavatar.jpg')
-                ? asset('storage/' . $item->profile->avatar) 
-                : asset('images/avatars/avatar.jpg'), 
+                 'avatar' => $item->profile?->avatar ?? asset('images/avatars/avatar.jpg'),
             ];
         });
         return $data;
