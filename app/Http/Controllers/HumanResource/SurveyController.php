@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\HumanResource;
 
+use App\Models\Survey;
 use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Services\HumanResource\Survey\SaveClass;
 use App\Services\HumanResource\Survey\ViewClass;
 
@@ -52,6 +54,19 @@ class SurveyController extends Controller
     }
 
     public function store(Request $request){
+        if($request->option === 'survey'){
+            $request->validate([
+                'year' => ['required', 'digits:4'],
+                'semester_id' => ['required', 'exists:list_dropdowns,id'],
+            ]);
+
+            if(Survey::where('year', $request->year)->where('semester_id', $request->semester_id)->exists()){
+                throw ValidationException::withMessages([
+                    'year' => 'A survey for this year and semester already exists.',
+                ]);
+            }
+        }
+
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'survey':

@@ -9,7 +9,17 @@ use App\Http\Resources\HumanResource\Survey\IndexResource;
 class SaveClass
 {
     public function store($request){
-        $data = Survey::create(array_merge($request->all(), ['user_id' => \Auth::user()->id, 'reports' => json_encode([])]));
+        $isActive = (bool) $request->is_active;
+
+        if($isActive){
+            Survey::where('is_active', 1)->update(['is_active' => 0]);
+        }
+
+        $data = Survey::create(array_merge($request->all(), [
+            'user_id' => \Auth::user()->id,
+            'reports' => json_encode([]),
+            'is_active' => $isActive,
+        ]));
         $data = Survey::with('semester')->withCount('answers')->where('id',$data->id)->first();
         return [
             'data' => new IndexResource($data),
