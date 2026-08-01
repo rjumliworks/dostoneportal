@@ -609,42 +609,50 @@ For your information.</p>
                         </div>
                     </div>
                     <div class="cards border-bottom shadow-none" no-body style="height: 170px;">
-                        <div v-if="loadingWhereabouts" 
+                        <div v-if="loadingWhereabouts"
                             class="d-flex flex-column justify-content-center align-items-center h-100">
-                            
+
                             <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
                             <p class="mt-2 fs-11 text-muted mb-0">Loading attendance...</p>
                         </div>
-                       
-                        <ul v-else class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
-   
+
+                        <simplebar v-else style="max-height: 170px; overflow-x: hidden;">
+                        <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+
                             <li
                                 class="list-group-item px-0"
-                                v-for="(users, status) in groupedAttendance"
-                                :key="status"
+                                v-for="group in whereaboutsGroups"
+                                :key="group.key"
                             >
                                 <div class="d-flex align-items-center justify-content-between">
 
                                     <!-- LEFT SIDE: STATUS -->
                                     <div class="flex-grow-1 ms-2">
-                                        <h6 class="fs-12 mb-0">
-                                            {{ status }}
+                                        <h6 class="fs-12 mb-0 d-flex align-items-center">
+                                            <i :class="['align-middle me-1', group.meta.icon, 'text-' + group.meta.color]"></i>
+                                            {{ group.status }}
                                         </h6>
+                                        <p v-if="group.station" class="text-muted fs-10 mb-0">{{ group.station }}</p>
                                     </div>
 
                                     <!-- RIGHT SIDE: AVATARS -->
                                     <div class="flex-shrink-0 text-end">
-                                        <div class="avatar-group d-flex align-items-center">
+                                        <div
+                                            v-if="group.users.length"
+                                            class="avatar-group d-flex align-items-center"
+                                            style="cursor: pointer;"
+                                            @click="openWhereaboutsModal(group)"
+                                        >
 
-                                            <!-- FIRST 10 USERS -->
+                                            <!-- FIRST 6 USERS -->
                                             <a
-                                                v-for="user in users.slice(0, 10)"
+                                                v-for="user in group.users.slice(0, 6)"
                                                 :key="user.user_id"
                                                 href="javascript:void(0);"
                                                 class="avatar-group-item material-shadow"
-                                               
+
                                                 :title="user.name"
-                                                v-b-tooltip.hover 
+                                                v-b-tooltip.hover
                                             >
                                                 <div class="avatar-xxs">
                                                     <img
@@ -658,26 +666,28 @@ For your information.</p>
                                                 </div>
                                             </a>
 
-                                            <!-- + REMAINING -->
+                                            <!-- TOTAL COUNT / SHOW ALL -->
                                             <a
-                                                v-if="users.length > 10"
                                                 class="avatar-group-item material-shadow"
+                                                v-b-tooltip.hover
+                                                title="Show all"
                                             >
                                                 <div class="avatar-xxs">
-                                                    <span class="avatar-title rounded-circle bg-info text-white fs-10">
-                                                        {{ users.length - 10 }}
+                                                    <span :class="['avatar-title rounded-circle text-white fs-10', 'bg-' + group.meta.color]">
+                                                        {{ group.users.length }}
                                                     </span>
                                                 </div>
                                             </a>
 
                                         </div>
+                                        <span v-else class="text-muted fs-11">None</span>
                                     </div>
 
                                 </div>
                             </li>
 
                         </ul>
-                        
+                        </simplebar>
 
                     </div>
                 </div>
@@ -776,33 +786,39 @@ For your information.</p>
                                 <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Birthdays</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Celebrating employees with birthdays this month</p>
                             </div>
+                            <div v-if="birthdays.length" class="flex-shrink-0">
+                                <span class="badge bg-danger-subtle text-danger fs-10">{{ birthdays.length }}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="cards border-bottom shadow-none" no-body style="height: 250px;">
-                        <ul class="list-group list-group-flush border-dashed mb-n4 mt-0 p-3">
-                            <li v-if="nearestBirthday" class="list-group-item bg-danger-subtle mb-2 rounded">
+                        <div v-if="!nearestBirthdays.length" class="d-flex align-items-center justify-content-center h-100">
+                            <p class="text-muted fs-11 mb-0">No more birthdays this month.</p>
+                        </div>
+                        <ul v-else class="list-group list-group-flush border-dashed mb-n4 mt-0 p-3">
+                            <li v-for="person in nearestBirthdays" :key="'nearest-' + person.id" class="list-group-item bg-danger-subtle mb-2 rounded">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0 me-3">
-                                        <img :src="nearestBirthday.avatar" alt="" class="rounded-circle avatar-xs">
+                                        <img :src="person.avatar" alt="" class="rounded-circle avatar-xs">
                                     </div>
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0 fs-12">{{ nearestBirthday.fullname }}</h6>
-                                        <p class="text-muted mb-0 fs-11">{{ new Date(nearestBirthday.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p>
+                                        <h6 class="mb-0 fs-12">{{ person.fullname }}</h6>
+                                        <p class="text-muted mb-0 fs-11">{{ isNearestToday ? 'Today' : new Date(person.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p>
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <i class="ri-hearts-fill fs-24 text-danger"></i>
+                                        <span v-if="isNearestToday" class="badge bg-danger fs-10">Today</span>
+                                        <i v-else class="ri-hearts-fill fs-24 text-danger"></i>
                                     </div>
                                 </div>
                             </li>
-                            <simplebar style="height: 150px; overflow: auto;">
-                                <li class="list-group-item px-0 border-0 border-bottom" v-for="(list,index) in sortedBirthdays" v-bind:key="index">
+                            <simplebar v-if="remainingBirthdays.length" style="height: 150px; overflow: auto;">
+                                <li class="list-group-item px-0 border-0 border-bottom" v-for="list in remainingBirthdays" :key="list.id">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 me-3">
                                             <img :src="list.avatar" alt="" class="rounded-circle avatar-xxs">
                                         </div>
                                         <div class="flex-grow-1">
                                             <h6 class="mb-0 fs-12">{{ list.fullname }}</h6>
-                                            <!-- <p class="text-muted mb-0 fs-11">{{ new Date(list.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p> -->
                                         </div>
                                         <div class="flex-shrink-0">
                                             <p class="text-muted mb-0 fs-11">{{ new Date(list.birthdate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) }}</p>
@@ -817,12 +833,25 @@ For your information.</p>
         </div>
 
     </BRow>
+
+    <Whereabouts ref="whereaboutsModal" />
 </template>
 <script>
 import simplebar from "simplebar-vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
+import Whereabouts from './Modals/Whereabouts.vue';
+
+const WHEREABOUTS_ORDER = ['Present', 'Absent', 'OB/On Travel', 'Suspension', 'Holiday'];
+const WHEREABOUTS_META = {
+    'Present': { icon: 'ri-checkbox-circle-fill', color: 'success' },
+    'Absent': { icon: 'ri-close-circle-fill', color: 'danger' },
+    'OB/On Travel': { icon: 'ri-flight-takeoff-line', color: 'info' },
+    'Holiday': { icon: 'ri-calendar-event-fill', color: 'warning' },
+    'Suspension': { icon: 'ri-alert-fill', color: 'primary' },
+};
+
 export default {
-    components: { PageHeader, simplebar },
+    components: { PageHeader, simplebar, Whereabouts },
     props: ['birthdays','dtr','designations', 'attendance','whereabouts'],
     data(){
         return {
@@ -831,46 +860,57 @@ export default {
         }
     },
     computed: {
-        sortedBirthdays() {
-            return [...this.birthdays].sort((a, b) => {
-                const today = new Date();
+        // birthdays are already scoped to the current month by the backend; only the day-of-month matters here.
+        // birthdays earlier than today are already "done" and dropped entirely rather than pushed to the bottom.
+        upcomingBirthdays() {
+            const todayDate = new Date().getDate();
+            return [...this.birthdays]
+                .filter(person => new Date(person.birthdate).getDate() >= todayDate)
+                .sort((a, b) => new Date(a.birthdate).getDate() - new Date(b.birthdate).getDate());
+        },
+        // everyone sharing the nearest upcoming day (today if anyone's birthday is today, otherwise the next date this month)
+        nearestBirthdays() {
+            if (!this.upcomingBirthdays.length) return [];
+            const nearestDay = new Date(this.upcomingBirthdays[0].birthdate).getDate();
+            return this.upcomingBirthdays.filter(person => new Date(person.birthdate).getDate() === nearestDay);
+        },
+        isNearestToday() {
+            return this.nearestBirthdays.length > 0
+                && new Date(this.nearestBirthdays[0].birthdate).getDate() === new Date().getDate();
+        },
+        // everyone after the nearest day, shown below so they're not duplicated in the highlighted section above
+        remainingBirthdays() {
+            if (!this.nearestBirthdays.length) return [];
+            const nearestDay = new Date(this.nearestBirthdays[0].birthdate).getDate();
+            return this.upcomingBirthdays.filter(person => new Date(person.birthdate).getDate() !== nearestDay);
+        },
+        whereaboutsGroups() {
+            const groups = {};
 
-                const getNextBirthday = (birthdate) => {
-                    const date = new Date(birthdate);
-
-                    const next = new Date(
-                        today.getFullYear(),
-                        date.getMonth(),
-                        date.getDate()
-                    );
-
-                    if (next < today) {
-                        next.setFullYear(today.getFullYear() + 1);
-                    }
-
-                    return next;
-                };
-
-                return getNextBirthday(a.birthdate) - getNextBirthday(b.birthdate);
+            // Present / Absent are always shown, even with 0 members (e.g. on a full holiday/suspension)
+            ['Present', 'Absent'].forEach(status => {
+                groups[status] = { key: status, status, station: null, users: [] };
             });
-        },
-        nearestBirthday() {
-            return this.sortedBirthdays.length
-                ? this.sortedBirthdays[0]
-                : null;
-        },
-        groupedAttendance() {
-            return this.whereabouts.reduce((groups, item) => {
 
-                if (!groups[item.status]) {
-                    groups[item.status] = [];
+            this.whereabouts.forEach(item => {
+                const key = item.station ? `${item.status}|${item.station}` : item.status;
+
+                if (!groups[key]) {
+                    groups[key] = { key, status: item.status, station: item.station, users: [] };
                 }
 
-                groups[item.status].push(item);
+                groups[key].users.push(item);
+            });
 
-                return groups;
-
-            }, {});
+            return Object.values(groups)
+                .map(group => ({
+                    ...group,
+                    meta: WHEREABOUTS_META[group.status] || { icon: 'ri-user-3-fill', color: 'secondary' },
+                }))
+                .sort((a, b) => {
+                    const order = WHEREABOUTS_ORDER.indexOf(a.status) - WHEREABOUTS_ORDER.indexOf(b.status);
+                    return order !== 0 ? order : (a.station || '').localeCompare(b.station || '');
+                });
         },
         currentMonth() {
             return new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -894,6 +934,9 @@ export default {
             .finally(() => {
                 this.loadingWhereabouts = false;
             });
+        },
+        openWhereaboutsModal(group){
+            this.$refs.whereaboutsModal.show(group);
         },
     }
 }

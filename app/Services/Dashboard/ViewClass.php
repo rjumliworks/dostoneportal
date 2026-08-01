@@ -208,18 +208,54 @@ class ViewClass
     }
 
     public function whereabouts(){
-        $date = Carbon::today()->toDateString();
-        $users = User::with([
-            'dtrs' => function ($q) use ($date) {
-                $q->whereDate('date', $date);
+        $today = Carbon::today();
+        $date = $today->toDateString();
+
+        $users = User::whereHas('profile')
+            ->with([
+                'profile:id,user_id,firstname,middlename,lastname,suffix_id,avatar',
+                'profile.suffix:id,name',
+                'organization:id,user_id,station_id,shift_id',
+                'organization.station:id,name',
+                'organization.shift.times',
+                'dtrs' => function ($q) use ($date) {
+                    $q->whereDate('date', $date);
+                }
+            ])->get();
+
+        // reused overlap check: a schedule/request-date range that covers today
+        $dateOverlap = function ($q) use ($date) {
+            $q->whereDate('start', '<=', $date)->whereDate('end', '>=', $date);
+        };
+
+        // stations affected by an event today, split into station-specific vs station-agnostic (applies to everyone)
+        $mapStations = function ($schedules) {
+            $ids = [];
+            $any = $schedules->isNotEmpty();
+
+            foreach ($schedules as $schedule) {
+                foreach ($schedule->stations as $pivot) {
+                    if ($pivot->station) {
+                        $ids[$pivot->station_id] = $pivot->station->name;
+                    }
+                }
             }
-        ])->get();
+
+            return ['ids' => $ids, 'any' => $any];
+        };
+
+        // HOLIDAYS today, with the stations they apply to
+        $holidays = $mapStations(
+            Schedule::where('event_id', 1)->where($dateOverlap)->with('stations.station:id,name')->get(['id', 'start', 'end'])
+        );
+
+        // WORK SUSPENSIONS today, with the stations they apply to
+        $suspensions = $mapStations(
+            Schedule::where('event_id', 2)->where($dateOverlap)->with('stations.station:id,name')->get(['id', 'start', 'end'])
+        );
 
         $travels = Request::where('type_id', 156)
-            ->whereHas('dates', function ($q) use ($date) {
-                $q ->whereDate('start', '<=', $date)
-                ->whereDate('end', '>=', $date);
-            })
+            ->whereHas('dates', $dateOverlap)
             ->with('tags')
             ->get()
             ->pluck('tags.*.user_id')
@@ -228,41 +264,74 @@ class ViewClass
             ->flip();
 
         $business = Request::where('type_id', 192)
-             ->whereHas('dates', function ($q) use ($date) {
-                $q ->whereDate('start', '<=', $date)
-                ->whereDate('end', '>=', $date);
-            })
+            ->whereHas('dates', $dateOverlap)
             ->with('tags')
             ->get()
             ->pluck('tags.*.user_id')
             ->flatten()
             ->unique()
             ->flip();
-            
 
-            $result = [];
+        $result = [];
 
-            foreach ($users as $user) {
+        foreach ($users as $user) {
 
-                $hasDtr = $user->dtrs->isNotEmpty();
+            $stationId = $user->organization->station_id ?? null;
+            $stationName = $user->organization->station->name ?? null;
+            $hasDtr = $user->dtrs->isNotEmpty();
+            $station = null;
 
-                if ($travels->has($user->id) || $business->has($user->id)) {
-                    $status = 'Official Travel';
-                }
-                elseif ($hasDtr) {
-                    $status = 'Present';
-                }
-                else {
-                    $status = 'Absent';
-                }
-
-                $result[] = [
-                    'user_id' => $user->id,
-                    'name' => $user->profile->fullname,
-                    'avatar' => $user->profile?->avatar,
-                    'status' => $status,
-                ];
+            // a station-suspension/holiday only applies to users assigned to that station;
+            // users with no assigned station fall under any station-agnostic event for the day
+            if ($stationId ? isset($suspensions['ids'][$stationId]) : $suspensions['any']) {
+                $status = 'Suspension';
+                $station = $stationName;
             }
-            return $result;
+            elseif ($stationId ? isset($holidays['ids'][$stationId]) : $holidays['any']) {
+                $status = 'Holiday';
+                $station = $stationName;
+            }
+            elseif ($travels->has($user->id) || $business->has($user->id)) {
+                $status = 'OB/On Travel';
+            }
+            elseif ($hasDtr) {
+                $status = 'Present';
+            }
+            elseif (!$this->isWorkingDay($user->organization, $today)) {
+                // not required to work today per their shift schedule - don't count as absent
+                continue;
+            }
+            else {
+                $status = 'Absent';
+            }
+
+            $result[] = [
+                'user_id' => $user->id,
+                'name' => $user->profile->fullname,
+                'avatar' => $user->profile?->avatar,
+                'status' => $status,
+                'station' => $station,
+            ];
+        }
+
+        return $result;
+    }
+
+    // whether $date is a working day per the user's shift schedule (shift_times.days), falling back to Mon-Fri if no shift is set
+    private function isWorkingDay($organization, Carbon $date): bool
+    {
+        $workingDays = collect();
+
+        if ($organization && $organization->shift) {
+            $workingDays = $organization->shift->times
+                ->pluck('days')
+                ->flatMap(fn($days) => explode(',', $days))
+                ->map(fn($d) => (int) $d)
+                ->unique();
+        }
+
+        return $workingDays->isNotEmpty()
+            ? $workingDays->contains((int) $date->format('N'))
+            : !$date->isWeekend();
     }
 }
