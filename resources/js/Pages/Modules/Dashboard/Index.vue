@@ -351,15 +351,14 @@
                     <div class="card-header bg-light-subtle">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-13">Attendance Overview</h5>
+                                <h5 class="mb-0 fs-12">Attendance Overview </h5>
                             </div>
                             <div class="flex-shrink-0">
                                 <div class="d-flex gap-1 align-items-center my-n2">
-                                    <button type="button" class="btn avatar-xs p-0 favourite-btn material-shadow-none active">
-                                        <span class="avatar-title bg-transparent fs-15">
-                                            <i class="ri-star-fill"></i>
-                                        </span>
-                                    </button>
+        
+                                            <i class="ri-calendar-2-line"></i> 
+
+                                    <span class="text-muted fw-normal fs-12"> {{ currentMonth }}</span>
                                     
                                 </div>
                             </div>
@@ -872,6 +871,9 @@ export default {
                 return groups;
 
             }, {});
+        },
+        currentMonth() {
+            return new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
         }
     },
     created(){

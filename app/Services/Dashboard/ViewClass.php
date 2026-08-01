@@ -10,6 +10,7 @@ use App\Models\OrgChart;
 use App\Models\UserProfile;
 use App\Models\Schedule;
 use App\Models\Request;
+use App\Models\UserOrganization;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\HumanResource\Dtr\IndexResource;
 use App\Http\Resources\Executive\Signatory\ListResource;
@@ -53,32 +54,75 @@ class ViewClass
         $start = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $end   = Carbon::createFromDate($year, $month, 1)->endOfMonth();
 
-        $dtrDates = Dtr::where('user_id', $user_id)
-        ->whereBetween('date', [$start, $end])
-        ->pluck('date')
-        ->flip();
+        $organization = UserOrganization::with('shift.times')->where('user_id', $user_id)->first();
+        $station_id = $organization->station_id ?? null;
 
-        $holidays = Schedule::where('event_id', 31)
-        ->where(function ($q) use ($start, $end) {
+        $dtrs = Dtr::where('user_id', $user_id)
+            ->whereBetween('date', [$start, $end])
+            ->get();
+
+        $dtrsByDate = $dtrs->keyBy('date');
+
+        // reused overlap check: schedule/request-date range overlaps the month, including ranges that span across it
+        $dateOverlap = function ($q) use ($start, $end) {
             $q->whereBetween('start', [$start, $end])
-            ->orWhereBetween('end', [$start, $end]);
-        })
-        ->get()
-        ->flatMap(function ($holiday) use ($start, $end) {
-            $from = Carbon::parse($holiday->start)->max($start);
-            $to   = Carbon::parse($holiday->end ?? $holiday->start)->min($end);
+            ->orWhereBetween('end', [$start, $end])
+            ->orWhere(function ($q2) use ($start, $end) {
+                $q2->where('start', '<', $start)->where('end', '>', $end);
+            });
+        };
 
-            return CarbonPeriod::create($from, $to)
-                ->map(fn($d) => $d->toDateString());
-        })
-        ->flip();
+        $expandRange = function ($schedules, array &$dates) use ($start, $end) {
+            foreach ($schedules as $schedule) {
+                $from = Carbon::parse($schedule->start)->max($start);
+                $to   = Carbon::parse($schedule->end ?? $schedule->start)->min($end);
 
+                foreach (CarbonPeriod::create($from, $to) as $d) {
+                    $dates[$d->toDateString()] = true;
+                }
+            }
+        };
+
+        // HOLIDAYS, scoped to the user's station via schedule_stations
+        $holidayDates = [];
+        $expandRange(
+            Schedule::where('event_id', 1)
+                ->when($station_id, fn($q) => $q->whereHas('stations', fn($q2) => $q2->where('station_id', $station_id)))
+                ->where($dateOverlap)
+                ->get(['start', 'end']),
+            $holidayDates
+        );
+
+        // WORK SUSPENSIONS, scoped to the user's station via schedule_stations
+        $suspensionDates = [];
+        $expandRange(
+            Schedule::where('event_id', 2)
+                ->when($station_id, fn($q) => $q->whereHas('stations', fn($q2) => $q2->where('station_id', $station_id)))
+                ->where($dateOverlap)
+                ->get(['start', 'end']),
+            $suspensionDates
+        );
+
+        // INCOMPLETE: any of the 4 punch columns is empty/null, excluding halfdays and station-suspended dates
+        $incomplete = $dtrs->filter(function ($dtr) use ($suspensionDates) {
+            if ($dtr->is_halfday == 1) return false;
+            if (isset($suspensionDates[$dtr->date])) return false;
+
+            return $dtr->am_in_at === null || $dtr->am_out_at === null || $dtr->pm_in_at === null || $dtr->pm_out_at === null;
+        })->count();
+
+        // LATE: tardiness or undertime minutes not equal to zero, excluding station-suspended dates
+        $late = $dtrs->filter(function ($dtr) use ($suspensionDates) {
+            if (isset($suspensionDates[$dtr->date])) return false;
+
+            return $dtr->tardiness > 0 || $dtr->undertime > 0;
+        })->count();
+
+        // OFFICIAL TRAVEL
+        $travelDates = [];
         $travels = Request::where('type_id', 156)
             ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-            ->whereHas('dates', function ($q) use ($start, $end) {
-                $q->whereBetween('start', [$start, $end])
-                ->orWhereBetween('end', [$start, $end]);
-            })
+            ->whereHas('dates', $dateOverlap)
             ->with('dates')
             ->get();
 
@@ -88,19 +132,16 @@ class ViewClass
                 $to   = Carbon::parse($date->end ?? $date->start)->min($end);
 
                 foreach (CarbonPeriod::create($from, $to) as $d) {
-                    $travelDays[$d->toDateString()] = true;
+                    $travelDates[$d->toDateString()] = true;
                 }
             }
         }
 
-        $businessDays = [];
-
+        // OFFICIAL BUSINESS
+        $businessDates = [];
         $obs = Request::where('type_id', 192)
             ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-            ->whereHas('dates', function ($q) use ($start, $end) {
-                $q->whereBetween('start', [$start, $end])
-                ->orWhereBetween('end', [$start, $end]);
-            })
+            ->whereHas('dates', $dateOverlap)
             ->with('dates')
             ->get();
 
@@ -110,42 +151,58 @@ class ViewClass
                 $to   = Carbon::parse($date->end ?? $date->start)->min($end);
 
                 foreach (CarbonPeriod::create($from, $to) as $d) {
-                    $businessDays[$d->toDateString()] = true;
+                    $businessDates[$d->toDateString()] = true;
                 }
             }
         }
 
-        $absences = 0;
+        // WORKING DAYS: based on the user's shift (shift_times.days), falling back to Mon-Fri if no shift is set
+        $workingDays = collect();
+        if ($organization && $organization->shift) {
+            $workingDays = $organization->shift->times
+                ->pluck('days')
+                ->flatMap(fn($days) => explode(',', $days))
+                ->map(fn($d) => (int) $d)
+                ->unique();
+        }
 
+        $absences = 0;
         $period = CarbonPeriod::create($start, $end);
 
-foreach ($period as $date) {
-    $dateStr = $date->toDateString();
+        foreach ($period as $date) {
+            $dateStr = $date->toDateString();
 
-    // skip future days (still in month)
-    if ($date->greaterThan(now())) continue;
+            // skip future days (still in month)
+            if ($date->greaterThan(now())) continue;
 
-    // skip weekends
-    if ($date->isWeekend()) continue;
+            // skip non-working days per the user's shift schedule
+            $isWorkingDay = $workingDays->isNotEmpty()
+                ? $workingDays->contains((int) $date->format('N'))
+                : !$date->isWeekend();
+            if (!$isWorkingDay) continue;
 
-    // skip holidays
-    if (isset($holidays[$dateStr])) continue;
+            // skip holidays / suspensions
+            if (isset($holidayDates[$dateStr])) continue;
+            if (isset($suspensionDates[$dateStr])) continue;
 
-    // skip travel
-    if (isset($travelDays[$dateStr])) continue;
+            // skip travel / official business
+            if (isset($travelDates[$dateStr])) continue;
+            if (isset($businessDates[$dateStr])) continue;
 
-    // skip business
-    if (isset($businessDays[$dateStr])) continue;
+            $dtr = $dtrsByDate->get($dateStr);
 
-    // ABSENT if no DTR
-    if (!isset($dtrDates[$dateStr])) {
-        $absences++;
-    }
-}
+            if (!$dtr) {
+                // ABSENT the whole day: no DTR record at all
+                $absences += 1;
+            } elseif ($dtr->is_halfday == 1) {
+                // ABSENT half a day
+                $absences += 0.5;
+            }
+        }
 
         return [
-            Dtr::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->where('is_completed',0)->count(),
-            Dtr::where('user_id', Auth::id())->whereMonth('created_at', date('m'))->where(function ($q) { $q->where('tardiness', '>', 0)->orWhere('undertime', '>', 0); })->count(),
+            $incomplete,
+            $late,
             $absences
         ];
     }
