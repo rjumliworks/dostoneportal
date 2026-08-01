@@ -28,7 +28,7 @@
                 </div>
             </div>
             <hr class="text-muted"/>
-                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">Employement Status Rating</p>
+                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">Employment Status Rating</p>
             <hr class="text-muted mb-2"/>
             <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
                 <li class="list-group-item px-0" v-for="(list,index) in counts.statuses" v-bind:key="index" style="cursor: pointer;">
@@ -46,16 +46,56 @@
                             <h6 class="mt-2 fs-11">{{list.count}} <span class="text-muted fw-normal">({{list.respondents}}/{{ list.eligible }})</span></h6>
                         </div>
                     </div>
+
+                    <div v-if="list.not_submitted && list.not_submitted.length" class="d-flex align-items-center justify-content-between mt-2 ps-1">
+                        <span class="text-danger fs-10 text-uppercase fw-semibold">Not submitted</span>
+                        <div class="avatar-group d-flex align-items-center" style="cursor: pointer;" @click.stop="openNotSubmitted(list)">
+                            <a
+                                v-for="user in list.not_submitted.slice(0, 6)"
+                                :key="user.id"
+                                href="javascript:void(0);"
+                                class="avatar-group-item material-shadow"
+                                :title="user.name"
+                                v-b-tooltip.hover
+                            >
+                                <div class="avatar-xxs">
+                                    <img
+                                        v-if="user.avatar"
+                                        :src="user.avatar"
+                                        class="avatar-img rounded-circle"
+                                    />
+                                    <div v-else class="avatar-img rounded-circle bg-danger">
+                                        {{ user.name.charAt(0) }}
+                                    </div>
+                                </div>
+                            </a>
+                            <a
+                                class="avatar-group-item material-shadow"
+                                v-b-tooltip.hover
+                                title="Show all"
+                            >
+                                <div class="avatar-xxs">
+                                    <span class="avatar-title rounded-circle bg-danger text-white fs-10">
+                                        {{ list.not_submitted.length }}
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </li>
             </ul>
             <div class="mt-auto p-3">
                 <button type="button" @click="openPrint()" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#composemodal"><i class="ri-printer-fill me-2"></i>Print Morale Survey</button>
             </div>
         </div>
+
+        <NotSubmitted ref="notSubmittedModal" />
     </div>
 </template>
 <script>
+import NotSubmitted from './Modals/NotSubmitted.vue';
 export default {
+    components: { NotSubmitted },
     props: ['survey','counts'],
     data(){
         return {
@@ -73,6 +113,25 @@ export default {
         openPrint(){
             window.open('/surveys?option=print&id='+this.survey.reference);
         },
+        openNotSubmitted(list){
+            this.$refs.notSubmittedModal.show(list.name, list.not_submitted);
+        },
     }
 }
 </script>
+<style scoped>
+.avatar-xxs {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    position: relative;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+</style>

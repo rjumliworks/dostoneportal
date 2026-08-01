@@ -72,6 +72,25 @@ class ViewClass
                     ? round(($result->score / ($result->total * 5)) * 100, 2)
                     : 0;
 
+                $notSubmitted = User::where('users.is_active', 1)
+                    ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
+                    ->where('user_organizations.type_id', $item->id)
+                    ->whereNotExists(function ($query) use ($id) {
+                        $query->selectRaw(1)
+                            ->from('survey_answers')
+                            ->whereColumn('survey_answers.user_id', 'users.id')
+                            ->where('survey_answers.survey_id', $id);
+                    })
+                    ->select('users.id')
+                    ->with('profile:user_id,firstname,middlename,lastname,suffix_id,avatar')
+                    ->get()
+                    ->map(fn($user) => [
+                        'id' => $user->id,
+                        'name' => $user->profile->fullname,
+                        'avatar' => $user->profile?->avatar,
+                    ])
+                    ->values();
+
                 return [
                     'name' => $item->name,
                     'count' => $ratingPercentage . '%',
@@ -79,7 +98,8 @@ class ViewClass
                     'eligible' => $result->eligible,
                     'description' => 'Overall survey rating',
                     'icon' => 'ri-secure-payment-line',
-                    'color' => 'bg-primary-subtle text-primary'
+                    'color' => 'bg-primary-subtle text-primary',
+                    'not_submitted' => $notSubmitted,
                 ];
             });
 

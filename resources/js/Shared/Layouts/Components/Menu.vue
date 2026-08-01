@@ -93,7 +93,7 @@
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link href="/events" class="nav-link menu-link"
+                    <Link href="/activities" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Trace/Events') }">
                     <i class="ri-calendar-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Activities</span>
