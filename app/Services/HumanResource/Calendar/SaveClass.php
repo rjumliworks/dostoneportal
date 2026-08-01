@@ -46,8 +46,8 @@ class SaveClass
         }
 
         return [
-            'data' => $data,
-            'message' => 'Schedule creation was successful!', 
+            'data' => $data->id,
+            'message' => 'Schedule creation was successful!',
             'info' => "You've successfully created the new event."
         ];
     }
@@ -74,7 +74,8 @@ class SaveClass
             }
         }
 
-        $data = Schedule::where('id',$request->id)->update([
+        $data = Schedule::findOrFail($request->id);
+        $data->update([
             'title' => $request->title,
             'description' => $request->description,
             'venue' => $request->venue,
@@ -84,9 +85,16 @@ class SaveClass
             'user_id' => \Auth::user()->id
         ]);
 
+        $data->stations()->delete();
+        foreach(($request->stations ?? []) as $station){
+            $data->stations()->create([
+                'station_id' => $station
+            ]);
+        }
+
         return [
-            'data' => $data,
-            'message' => 'Schedule updated successful!', 
+            'data' => $data->id,
+            'message' => 'Schedule updated successful!',
             'info' => "You've successfully updated the new event."
         ];
     }

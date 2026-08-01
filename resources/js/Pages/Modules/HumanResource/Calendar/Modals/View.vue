@@ -105,26 +105,30 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label>Start Date</label>
-                            <flat-pickr ref="datepicker" 
-                                placeholder="Select date & time" 
-                                v-model="form.start" 
+                            <flat-pickr ref="datepicker"
+                                placeholder="Select date & time"
+                                v-model="form.start"
                                 :config="timeConfig"
                                 class="form-control flatpickr-input" id="caledate">
                             </flat-pickr>
                         </div>
                         <div class="col-md-6">
                             <label>End Date</label>
-                            <flat-pickr ref="datepicker" 
-                                placeholder="Select date & time" 
-                                v-model="form.end" 
+                            <flat-pickr ref="datepicker"
+                                placeholder="Select date & time"
+                                v-model="form.end"
                                 :config="timeConfig"
                                 class="form-control flatpickr-input" id="caledate">
                             </flat-pickr>
                         </div>
                     </div>
                 </BCol>
+                <BCol lg="12" class="mt-3">
+                    <InputLabel for="name" value="Station" :message="form.errors.stations"/>
+                    <Multiselect :options="stations" mode="tags" label="name" v-model="form.stations" placeholder="Select Station" @input="handleInput('stations')"/>
+                </BCol>
             </BRow>
-        </form> 
+        </form>
     </template>
     <template v-slot:footer>
         <b-button @click="hide()" variant="light" block>Close</b-button>
@@ -140,10 +144,13 @@
 import _ from 'lodash';
 import { useForm } from '@inertiajs/vue3';
 import flatPickr from "vue-flatpickr-component";
+import Multiselect from "@vueform/multiselect";
+import "@vueform/multiselect/themes/default.css";
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
-    components: { InputLabel, TextInput, flatPickr },
+    components: { InputLabel, TextInput, flatPickr, Multiselect },
+    props: ['stations'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -158,7 +165,8 @@ export default {
                 end: null,
                 description: null,
                 venue: null,
-                is_allday: null
+                is_allday: null,
+                stations: []
             }),
             config: {
                 enableTime: false,
@@ -184,7 +192,7 @@ export default {
             this.showModal = true;
         },
         submit(){
-            this.form.put('/calendars/update',{
+            this.form.put(`/calendar/${this.form.id}`,{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.form.reset();
@@ -200,6 +208,7 @@ export default {
             this.form.title = this.selected.extendedProps.full_title;
             this.form.description = this.selected.extendedProps.description;
             this.form.is_allday = (this.selected.extendedProps.is_allday) ? true : false;
+            this.form.stations = (this.selected.extendedProps.stations || []).map(list => list.station_id);
             if(this.form.is_allday){
                 this.form.date = this.selected.extendedProps.s_date+' to '+this.selected.extendedProps.e_date;
             }else{
@@ -210,7 +219,7 @@ export default {
         },
         deleteEvent(id){
             if (confirm("Are you sure you want to delete this event?")) {
-                this.$inertia.delete(`/calendars/${id}`, {
+                this.$inertia.delete(`/calendar/${id}`, {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.$emit('message', true); // Emit a success message or reload event list

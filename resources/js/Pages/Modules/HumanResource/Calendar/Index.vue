@@ -108,7 +108,7 @@
         </div>
     </b-row>
     <Create :events="dropdowns.events" :stations="dropdowns.stations" @message="fetch()" ref="create"/>
-    <View @message="fetch()" ref="view"/>
+    <View :stations="dropdowns.stations" @message="fetch()" ref="view"/>
     <Tsr ref="tsr"/>
 </template>
 <script>
