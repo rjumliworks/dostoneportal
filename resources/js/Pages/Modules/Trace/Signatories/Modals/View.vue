@@ -9,7 +9,8 @@
                             <img :src="selected.avatar" alt="" id="candidate-img" class="img-thumbnail avatar-sm rounded-circle shadow-none">
                         </div>
         
-                        <h5 v-if="selected.user" class="fs-13 mb-0 text-primary">{{selected.user.name}}</h5>
+                        <h5 v-if="selected.is_oic" class="fs-13 mb-0 text-primary">{{selected.oic.name}}</h5>
+                        <h5 v-else-if="selected.user" class="fs-13 mb-0 text-primary">{{selected.user.name}}</h5>
                         <h5 v-else class="fs-13 text-warning mb-0">Not Assigned</h5>
                         <p class="fs-12 text-muted mb-0">{{selected.designation}}</p>
 
@@ -25,7 +26,7 @@
                                     <i class="ri-mark-pen-fill"></i>
                                 </span>
                             </button>
-                            <Link :href="`/key-officials/${selected.designation}`">
+                            <Link :href="`/signatories/${selected.reference}`">
                                 <button type="button" class="btn avatar-xs p-0 material-shadow-none" v-b-tooltip.hover title="View">
                                     <span class="avatar-title rounded-circle bg-light text-body">
                                         <i class="ri-dribbble-fill"></i>
@@ -53,11 +54,11 @@
                 </div>
                 <hr class="text-muted"/>
             </div>
-            <BCol lg="12" v-if="selected.signatory.schedules.length == 0">
+            <BCol lg="12" v-if="!selected.signatory || selected.signatory.schedules.length == 0">
                 <div @click="openSignatory()" style="cursor: pointer;" class="alert alert-light alert-dismissible bg-light text-body alert-label-icon fade show material-shadow" role="alert">
                     <i class="ri-mark-pen-fill label-icon"></i>No signatory assigned (using default)
                 </div>
-            </BCol>  
+            </BCol>
             <BCol v-else lg="12" style="margin-bottom: -100px;">
                 <div class="table-responsive">
                     <table class="table align-middle table-striped table-centered mb-n5">
@@ -75,11 +76,11 @@
                             }">
                                 <td class="text-center"> 
                                     <div class="avatar-xs chat-user-img online">
-                                        <img :src="list.user.avatar" alt="" class="avatar-xs rounded-circle">
+                                        <img :src="list.user?.avatar" alt="" class="avatar-xs rounded-circle">
                                     </div>
                                 </td>
                                 <td>
-                                    <h5 class="fs-12 mt-1 mb-0 fw-semibold text-primary text-uppercase">{{list.user.name}}</h5>
+                                    <h5 class="fs-12 mt-1 mb-0 fw-semibold text-primary text-uppercase">{{list.user?.name}}</h5>
                                     <p class="fs-12 text-muted mb-0">{{list.start_at}} - {{list.end_at}}</p>
                                 </td>
                                 <td class="text-center">

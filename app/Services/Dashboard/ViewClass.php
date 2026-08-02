@@ -13,7 +13,7 @@ use App\Models\Request;
 use App\Models\UserOrganization;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\HumanResource\Dtr\IndexResource;
-use App\Http\Resources\Executive\Signatory\ListResource;
+use App\Http\Resources\Trace\Signatory\ListResource;
 
 class ViewClass
 {

@@ -23,6 +23,7 @@ class EventRequest extends FormRequest
             'audience_id' => 'sometimes|required|integer',
             'date' => 'sometimes|required',
             'is_host' => 'sometimes|required',
+            'is_managed' => 'sometimes|required|boolean',
             'time' => 'sometimes|required',
             'address' => 'sometimes|string|max:200',
             'region_code' => 'sometimes|required',

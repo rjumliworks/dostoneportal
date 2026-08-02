@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\OrgChart;
 use App\Mail\AccountActivationCode;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Resources\Executive\Signatory\DesignationResource;
+use App\Http\Resources\Trace\Signatory\DesignationResource;
 
 class InfoController extends Controller
 {

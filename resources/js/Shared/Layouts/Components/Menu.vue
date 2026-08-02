@@ -93,6 +93,13 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/signatories" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Trace/Signatories') }">
+                    <i class="ri-mark-pen-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Signatories</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <Link href="/activities" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Trace/Events') }">
                     <i class="ri-calendar-fill"></i>

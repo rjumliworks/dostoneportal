@@ -95,7 +95,7 @@
                                         <b-button @click="openEdit(list,index)" variant="soft-warning" class="me-1" v-b-tooltip.hover title="Edit" size="sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
                                         </b-button>
-                                        <Link :href="`/events/${list.link}`">
+                                        <Link :href="`/activities/${list.link}`">
                                             <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
                                             </b-button>
@@ -162,7 +162,7 @@ export default {
             this.fetch();
         }, 300),
         fetch(page_url){
-            page_url = page_url || '/events';
+            page_url = page_url || '/activities';
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,

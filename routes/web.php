@@ -65,6 +65,8 @@ Route::middleware(['role:Asset Management Officer'])->group(function () {
 
 Route::middleware(['role:Document Management Officer'])->group(function () {
     Route::resource('/activities', App\Http\Controllers\Trace\EventController::class);
+    Route::resource('/signatories', App\Http\Controllers\Trace\SignatoryController::class);
+
 });
 
 Route::middleware(['role:Event Manager'])->group(function () {
@@ -98,8 +100,6 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);
     Route::resource('/shifts', App\Http\Controllers\Executive\ShiftController::class);
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
-    Route::resource('/signatories', App\Http\Controllers\Executive\SignatoryController::class);
-
     // Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
     // Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);
     // Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Executive;
+namespace App\Http\Controllers\Trace;
 
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
-use App\Services\Executive\Signatory\SaveClass;
-use App\Services\Executive\Signatory\ViewClass;
+use App\Services\Trace\Signatory\SaveClass;
+use App\Services\Trace\Signatory\ViewClass;
 use App\Http\Requests\Executive\SignatoryRequest;
 
 class SignatoryController extends Controller
 {
-    use HandlesTransaction;
+     use HandlesTransaction;
 
     public $view, $save, $dropdown;
 
@@ -28,7 +28,7 @@ class SignatoryController extends Controller
                 return [];
             break;
             default:
-                return inertia('Modules/System/Signatories/Index',[
+                return inertia('Modules/Trace/Signatories/Index',[
                     'designations' => $this->view->designations()
                 ]); 
         }   
@@ -51,6 +51,12 @@ class SignatoryController extends Controller
             'message' => $result['message'],
             'info' => $result['info'],
             'status' => $result['status'],
+        ]);
+    }
+
+    public function show($code){
+        return inertia('Modules/Trace/Signatories/View',[
+            'selected' => $this->view->designation($code),
         ]);
     }
 }

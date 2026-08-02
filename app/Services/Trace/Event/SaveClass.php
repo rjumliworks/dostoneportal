@@ -3,6 +3,7 @@
 namespace App\Services\Trace\Event;
 
 use Carbon\Carbon;
+use App\Models\Event;
 use App\Models\Request;
 use App\Models\RequestReport;
 
@@ -68,12 +69,18 @@ class SaveClass
             $eventData = [
                 'title' => $request->title,
                 'is_host' => $request->is_host,
+                'is_managed' => $request->is_managed,
                 'mode_id' => $request->mode_id,
                 'type_id' => $request->type_id,
                 'audience_id' => $request->audience_id,
                 'status_id' => 26
             ];
             $data->event()->create($eventData);
+
+            if ($request->is_managed) {
+                $this->createManagedEvent($request);
+            }
+
             $this->report($data->id);
         }
 
@@ -82,6 +89,41 @@ class SaveClass
             'message' => 'Event created Successfully', 
             'info' => "Your travel schedule has been submitted. Keep an eye on your notifications for any approvals or updates."
         ];
+    }
+
+    private function createManagedEvent($request){
+        $dates = array_column($request->dates, 'date');
+        $start = min($dates);
+        $end = max($dates);
+
+        $event = Event::create([
+            'code' => $this->generateEventCode(),
+            'name' => $request->title,
+            'year' => date('Y', strtotime($start)),
+            'start' => $start,
+            'end' => $end,
+            'is_active' => true,
+            'user_id' => \Auth::user()->id,
+        ]);
+
+        $event->detail()->create([
+            'description' => $request->purpose,
+            'venue' => $request->address,
+            'address' => $request->address,
+            'region_code' => $request->region_code,
+            'province_code' => $request->province_code,
+            'municipality_code' => $request->municipality_code,
+            'barangay_code' => $request->barangay_code,
+            'longitude' => $request->longitude,
+            'latitude' => $request->latitude,
+        ]);
+
+        return $event;
+    }
+
+    private function generateEventCode(){
+        $count = Event::count();
+        return 'EVENT-'.date('m').date('Y').'-DOSTIX-'.str_pad(($count+1), 4, '0', STR_PAD_LEFT);
     }
 
     public function report($id){

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Executive\Signatory;
+namespace App\Http\Resources\Trace\Signatory;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -11,7 +11,7 @@ class ProfileResource extends JsonResource
     {
         return [
             'avatar' => $this->profile?->avatar ?? asset('images/avatars/avatar.jpg'),
-            'name' => $this->profile->name
+            'name' => $this->profile?->name ?? $this->username
         ];
     }
 }

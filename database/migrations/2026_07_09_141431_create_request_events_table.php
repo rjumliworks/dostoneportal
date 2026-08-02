@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->text('title');
             $table->boolean('is_host')->default(true);
-            $table->boolean('is_managed')->default(0);
+            $table->boolean('is_managed')->nullable();
             $table->unsignedTinyInteger('status_id');
             $table->foreign('status_id')->references('id')->on('list_statuses')->onDelete('cascade');
             $table->unsignedSmallInteger('audience_id');

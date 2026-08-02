@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Executive\Signatory;
+namespace App\Http\Resources\Trace\Signatory;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

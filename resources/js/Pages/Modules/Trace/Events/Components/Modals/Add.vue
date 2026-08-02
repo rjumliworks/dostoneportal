@@ -132,7 +132,7 @@ export default {
             this.search();
         }, 500),
         search(){
-            axios.get('/events', {
+            axios.get('/activities', {
                 params: {
                     keyword: this.keyword,
                     start: this.start,
@@ -156,7 +156,7 @@ export default {
             document.getElementById("search-options").focus();
         }, 
         submit(){
-            this.form.post('/events',{
+            this.form.post('/activities',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.hide();

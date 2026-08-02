@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Executive\Signatory;
+namespace App\Services\Trace\Signatory;
 
 use App\Models\OrgChart;
 use App\Models\OrgSignatory;

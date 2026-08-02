@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 // Schedule::command('signatory:update')->weekdays()->dailyAt('20:00');
-Schedule::command('dtr:finalize')->weekdays()->dailyAt('22:00');
+Schedule::command('dtr:finalize')->weekdays()->dailyAt('20:00');
+Schedule::command('signatory:update')->weekdays()->dailyAt('23:00');

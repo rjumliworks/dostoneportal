@@ -107,6 +107,24 @@
                                 </div>
                             </div>
                         </BCol>
+                        <BCol lg="12"><hr class="text-muted mb-n3 mt-n2"/></BCol>
+                        <BCol lg="8" style="margin-top: 13px; margin-bottom: -12px;" class="fs-12" :class="(form.errors.is_managed) ? 'text-danger' : ''">Does this activity need to be managed? (e.g. attendance, registration)</BCol>
+                        <BCol lg="4" style="margin-top: 13px; margin-bottom: -12px;">
+                        <div class="row">
+                                <div class="col-md-6">
+                                    <div class="custom-control custom-radio mb-3">
+                                        <input type="radio" id="customRadio3" class="custom-control-input me-2" @input="handleInput('is_managed')" :value="true" v-model="form.is_managed">
+                                        <label class="custom-control-label fw-normal fs-12" for="customRadio3">Yes</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="custom-control custom-radio mb-3">
+                                        <input type="radio" id="customRadio4" class="custom-control-input me-2" @input="handleInput('is_managed')" :value="false" v-model="form.is_managed">
+                                        <label class="custom-control-label fw-normal fs-12" for="customRadio4">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </BCol>
                         <BCol lg="12"><hr class="text-muted mt-n2"/></BCol>
                     </BRow>
                 </BCol>
@@ -148,6 +166,7 @@ export default {
                 dates: [],
                 date_type: null,
                 is_host: null,
+                is_managed: null,
                 address: null,
                 region_code: null,
                 province_code: null,
@@ -270,7 +289,7 @@ export default {
         submit(){
             this.form.date = this.date;
             this.form.date_type = this.dateType;
-            this.form.post('/events',{
+            this.form.post('/activities',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('update',true);

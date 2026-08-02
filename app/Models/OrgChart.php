@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
@@ -10,7 +11,13 @@ class OrgChart extends Model
 {
     use LogsActivity;
 
+    protected $appends = ['reference'];
     protected $fillable = ['user_id','oic_id','is_oic','is_active'];
+
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
 
     public function user()
     {
