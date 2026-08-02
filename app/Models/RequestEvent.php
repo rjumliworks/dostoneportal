@@ -13,7 +13,8 @@ class RequestEvent extends Model
         'mode_id',
         'type_id',
         'request_id',
-        'is_host'
+        'is_host',
+        'is_managed'
     ];
 
     protected $appends = ['created_ago'];
