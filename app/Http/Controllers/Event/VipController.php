@@ -189,7 +189,7 @@ class VipController extends Controller
                 $data = [
                     'name' => $user->name,
                     'affiliation' => $user->affiliation,
-                    'capture' => $image,
+                    // 'capture' => $image,
                     'datetime' => Carbon::parse($datetime)->format('F j, Y g:i A'),
                 ];
 
