@@ -25,3 +25,7 @@ Broadcast::channel('session', function () {
 Broadcast::channel('capacity', function () {
     return true;
 });
+
+Broadcast::channel('vip', function () {
+    return true;
+});

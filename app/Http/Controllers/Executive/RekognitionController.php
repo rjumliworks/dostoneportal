@@ -54,7 +54,7 @@ class RekognitionController extends Controller
             ]);
 
             $result = $rekognition->createCollection([
-                'CollectionId' => 'dost9-testparticipants',
+                'CollectionId' => 'dost9-vip',
             ]);
 
             return response()->json([

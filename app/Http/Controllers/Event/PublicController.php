@@ -222,8 +222,8 @@ class PublicController extends Controller
                     ];
                 }else{
                     $this->image($request,$user,$datetime);
-                    // $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
-                    // broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
+                    $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
+                    broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
                     $data = [
                         'name' => $user->name,
                         'affiliation' => $user->detail->affiliation?->name === 'Others'
@@ -274,4 +274,6 @@ class PublicController extends Controller
         ]);
         return $path;
     }
+
+    
 }

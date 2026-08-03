@@ -39,6 +39,7 @@ return [
         'collection_id' => env('REKOGNITION_COLLECTION_ID', 'dost9-users'),
         'participant_id' => env('REKOGNITION_PARTICIPANT_ID', 'dost9-participants'),
         'testparticipant_id' => env('REKOGNITION_TESTPARTICIPANT_ID', 'dost9-testparticipants'),
+        'vip_id' => env('REKOGNITION_VIP_ID', 'dost9-vip'),
     ],
 
     'google' => [

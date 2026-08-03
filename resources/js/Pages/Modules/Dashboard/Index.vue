@@ -240,65 +240,7 @@
                     </div>
                 </div>
 
-               
-
-                
             </div>
-                <!-- <div class="row g-3" id="folderlist-data">
-                    <div class="col-xxl-3 col-6 folder-card">
-                        <div class="card bg-white shadow-none" id="folder-1">
-                            <div class="card-body">
-                        
-                                <div class="text-center">
-                                    <div class="mb-2">
-                                        <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
-                                    </div>
-                                    <h6 class="fs-16 folder-name">File Server</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-6 folder-card">
-                        <div class="card bg-white shadow-none" id="folder-1">
-                            <div class="card-body">
-                        
-                                <div class="text-center">
-                                    <div class="mb-2">
-                                        <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
-                                    </div>
-                                    <h6 class="fs-16 folder-name">Media Files</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-6 folder-card">
-                        <div class="card bg-white shadow-none" id="folder-1">
-                            <div class="card-body">
-                        
-                                <div class="text-center">
-                                    <div class="mb-2">
-                                        <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
-                                    </div>
-                                    <h6 class="fs-16 folder-name">Employees</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xxl-3 col-6 folder-card">
-                        <div class="card bg-white shadow-none" id="folder-1">
-                            <div class="card-body">
-                        
-                                <div class="text-center">
-                                    <div class="mb-2">
-                                        <i class="ri-folder-2-fill align-bottom text-warning display-5"></i>
-                                    </div>
-                                    <h6 class="fs-16 folder-name">Files</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div> -->
             
         </div>
 
@@ -443,10 +385,72 @@
             <simplebar style="height: calc(100vh - 445px); overflow: auto;">
                 <div class="row mt-0">
 
-                    <div class="col-xxl-12 col-sm-6 project-card">
+                    <div class="col-xxl-12 col-sm-6 project-card mb-n2">
+                        <div class="card shadow-none border" style="border-radius: 10px;">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-xs">
+                                            <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
+                                                <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <button type="button" class="form-control rounded-pill bg-light-subtle border text-start text-muted fs-13 py-2" @click="openCreatePost()">
+                                            What's on your mind, {{ firstName }}?
+                                        </button>
+                                    </div>
+                                    <div class="flex-shrink-0 d-flex align-items-center gap-1">
+                                        <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Live video" @click="openCreatePost('video')">
+                                            <i class="ri-vidicon-fill text-danger fs-16"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Photo/video" @click="openCreatePost('photo')">
+                                            <i class="ri-image-2-fill text-success fs-16"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Feeling/activity" @click="openCreatePost('feeling')">
+                                            <i class="ri-emotion-happy-fill text-warning fs-16"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xxl-12 col-sm-6 project-card" v-for="post in myPosts" :key="post.id">
                         <div class="card card-height-100">
                             <div class="card-body">
-                                <div class="bookmark-icon position-absolute top-0 end-0 p-3"> 
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-xs">
+                                            <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
+                                                <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="fs-13 fw-semibold mb-0">{{ $page.props.user.data.name }}s</h6>
+                                        <p class="fs-11 text-muted mb-0">Just now</p>
+                                    </div>
+                                </div>
+                                <p v-if="post.content" class="fs-13 mt-3 mb-0" style="white-space: pre-wrap;">{{ post.content }}</p>
+                                <div v-if="post.images.length" class="row g-1 mt-2">
+                                    <div class="col-6" v-for="(img, idx) in post.images" :key="idx">
+                                        <img :src="img" alt="" class="img-fluid rounded w-100" style="height: 160px; object-fit: cover;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer border-top border-top-dashed mb-n2 fs-12">
+                                <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 0</p>
+                                <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart-outline text-danger align-middle"></i> 0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xxl-12 col-sm-6 project-card">
+                        <div class="card card-height-100" style="border-radius: 10px;">
+                            <div class="card-body">
+                                <div class="bookmark-icon position-absolute top-0 end-0 p-3">
                                     <BButton variant="link" class="btn-icon" @click="toggleLike(list)" data-bs-toggle="button" aria-pressed="true">
                                         <i class="mdi mdi-cards-heart fs-16"></i>
                                     </BButton>
@@ -478,14 +482,14 @@
                                             <p class="fs-12 text-muted text-truncate-two-lines mb-3">This announcement is currently a placeholder and not yet finalized. Content is under development.</p>
                                         </div>
                                     </div>
-                                  
+
                                 </div>
 
                             </div>
-                              <div class="card-footer border-top border-top-dashed mb-n2 fs-12" style="cursor: pointer;" @click="openView(list)">
-                            <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 2</p>
-                            <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart text-danger align-middle"></i> 5</p>
-                        </div>
+                            <div class="card-footer border-top border-top-dashed mb-n2 fs-12" style="cursor: pointer; border-radius: 10px;" @click="openView(list)">
+                                <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 2</p>
+                                <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart text-danger align-middle"></i> 5</p>
+                            </div>
                         </div>
                     </div>
 
@@ -688,7 +692,7 @@ For your information.</p>
 
                     </div>
                 </div>
-                <div class="card shadow-none border mt-n1">
+                <div class="card shadow-none border mt-n2">
                     <div class="card-header bg-light-subtle">
                         <div class="d-flex mb-n3">
                             <div class="flex-shrink-0 me-3 mt-1">
@@ -832,11 +836,13 @@ For your information.</p>
     </BRow>
 
     <Whereabouts ref="whereaboutsModal" />
+    <CreatePost ref="createPostModal" @posted="handleNewPost" />
 </template>
 <script>
 import simplebar from "simplebar-vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Whereabouts from './Modals/Whereabouts.vue';
+import CreatePost from './Modals/CreatePost.vue';
 
 const WHEREABOUTS_ORDER = ['Present', 'Absent', 'OB/On Travel', 'Suspension', 'Holiday'];
 const WHEREABOUTS_META = {
@@ -848,15 +854,19 @@ const WHEREABOUTS_META = {
 };
 
 export default {
-    components: { PageHeader, simplebar, Whereabouts },
+    components: { PageHeader, simplebar, Whereabouts, CreatePost },
     props: ['birthdays','dtr','designations', 'attendance','whereabouts'],
     data(){
         return {
             whereabouts: [],
-             loadingWhereabouts: false
+             loadingWhereabouts: false,
+             myPosts: []
         }
     },
     computed: {
+        firstName() {
+            return this.$page.props.user.data.name?.split(' ')[0] ?? '';
+        },
         // birthdays are already scoped to the current month by the backend; only the day-of-month matters here.
         // birthdays earlier than today are already "done" and dropped entirely rather than pushed to the bottom.
         upcomingBirthdays() {
@@ -934,6 +944,12 @@ export default {
         },
         openWhereaboutsModal(group){
             this.$refs.whereaboutsModal.show(group);
+        },
+        openCreatePost(mode = null){
+            this.$refs.createPostModal.show(mode);
+        },
+        handleNewPost(post){
+            this.myPosts.unshift(post);
         },
     }
 }

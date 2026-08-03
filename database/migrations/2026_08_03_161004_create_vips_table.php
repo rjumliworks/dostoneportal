@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('name');
             $table->text('designation');
             $table->text('affiliation');
+            $table->string('avatar', 200)->default('avatar.jpg');
             $table->string('face_id')->unique();
             $table->string('image_id')->unique();
             $table->timestamps();
