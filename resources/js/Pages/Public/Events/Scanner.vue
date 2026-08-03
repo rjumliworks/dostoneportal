@@ -331,6 +331,8 @@ const FIREWORKS_PALETTE = [
     '#4C9A5B', '#3D8149', '#78C187'
 ];
 
+const FIREWORKS_SHOW_DURATION = 10000;
+
 // A few shades per pillar (matching its icon colors in the SVG), used to tint the floating background icons
 const PILLAR_PALETTES = [
     ['#F4A623', '#E8940C', '#FFC857', '#D98C0F'],
@@ -431,6 +433,56 @@ class FireworkParticle {
     }
     get dead() {
         return this.alpha <= 0;
+    }
+}
+
+// A shell that launches outward from the camera ring on a straight trail and
+// bursts into a FireworkParticle explosion once it reaches its target distance -
+// the "rocket" half of an aerial firework, as opposed to FireworkParticle's burst half.
+class FireworkRocket {
+    constructor(x, y, angle, distance, color) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
+        this.color = color;
+        this.distance = distance;
+        this.traveled = 0;
+        this.speed = randBetween(9, 13);
+        this.vx = Math.cos(angle) * this.speed;
+        this.vy = Math.sin(angle) * this.speed;
+        this.trail = [];
+    }
+    update() {
+        this.trail.push({ x: this.x, y: this.y, alpha: 1 });
+        if (this.trail.length > 14) this.trail.shift();
+        this.trail.forEach(t => { t.alpha -= 0.09; });
+
+        this.x += this.vx;
+        this.y += this.vy;
+        this.traveled += this.speed;
+    }
+    draw(ctx) {
+        ctx.save();
+        this.trail.forEach(t => {
+            if (t.alpha <= 0) return;
+            ctx.globalAlpha = t.alpha;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    get burst() {
+        return this.traveled >= this.distance;
     }
 }
 
@@ -549,6 +601,9 @@ export default {
                 this.finishRingSweep('#34d399', 'success');
                 this.hasScanned = true;
                 this.launchFireworks();
+                setTimeout(() => {
+                    this.hasScanned = false;
+                }, FIREWORKS_SHOW_DURATION);
             } catch (err) {
                 console.error('Scan check failed:', err);
                 this.lastScan = null;
@@ -591,9 +646,8 @@ export default {
         getFireworksCanvas() {
             const canvas = this.$refs.fireworksCanvas;
             if (!this._fireworksSized) {
-                const rect = this.$refs.cameraStage.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = rect.height;
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
                 this._fireworksSized = true;
             }
             return canvas;
@@ -602,15 +656,30 @@ export default {
             if (this._fireworksLoopRunning) return;
             this._fireworksLoopRunning = true;
             this._fireworksParticles = this._fireworksParticles || [];
+            this._fireworksRockets = this._fireworksRockets || [];
             const ctx = canvas.getContext('2d');
 
             const animate = () => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                this._fireworksRockets.forEach(r => r.update());
+                this._fireworksRockets.forEach(r => r.draw(ctx));
+
+                // Any rocket that reached its target distance detonates into a
+                // radial spark burst right where its trail ends.
+                this._fireworksRockets.filter(r => r.burst).forEach(r => {
+                    const sparkCount = randBetween(45, 70);
+                    for (let i = 0; i < sparkCount; i++) {
+                        this._fireworksParticles.push(new FireworkParticle(r.x, r.y, r.color, 1.5, 5));
+                    }
+                });
+                this._fireworksRockets = this._fireworksRockets.filter(r => !r.burst);
+
                 this._fireworksParticles.forEach(p => p.update());
                 this._fireworksParticles.forEach(p => p.draw(ctx));
                 this._fireworksParticles = this._fireworksParticles.filter(p => !p.dead);
 
-                if (this._fireworksParticles.length > 0 || (this._fireworksActiveSpawns || 0) > 0) {
+                if (this._fireworksParticles.length > 0 || this._fireworksRockets.length > 0 || (this._fireworksActiveSpawns || 0) > 0) {
                     requestAnimationFrame(animate);
                 } else {
                     this._fireworksLoopRunning = false;
@@ -618,50 +687,58 @@ export default {
             };
             requestAnimationFrame(animate);
         },
-        // Big omnidirectional celebration on a successful scan
+        // Aerial-fireworks celebration on a successful scan: shells launch from the
+        // camera ring toward random points scattered across the whole screen, each
+        // trailing behind it, and burst into a spark explosion on arrival. Runs as
+        // a ~10s show of staggered waves rather than one instant burst.
         launchFireworks() {
             if (this.fireworksRunning) return;
             this.fireworksRunning = true;
 
             const canvas = this.getFireworksCanvas();
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const startRadius = (canvas.width / 2) * 0.55;
+            const stageRect = this.$refs.cameraStage.getBoundingClientRect();
+            const centerX = stageRect.left + stageRect.width / 2;
+            const centerY = stageRect.top + stageRect.height / 2;
+            const launchRadius = Math.min(canvas.width, canvas.height) * 0.12;
 
             this._fireworksParticles = this._fireworksParticles || [];
+            this._fireworksRockets = this._fireworksRockets || [];
             this._fireworksActiveSpawns = (this._fireworksActiveSpawns || 0) + 1;
 
-            const launchRoundBurst = (big) => {
+            const launchRocket = () => {
                 const color = FIREWORKS_PALETTE[Math.floor(randBetween(0, FIREWORKS_PALETTE.length))];
-                const count = big ? randBetween(90, 130) : randBetween(35, 55);
-                for (let i = 0; i < count; i++) {
-                    const a = randBetween(0, Math.PI * 2);
-                    const sx = centerX + Math.cos(a) * startRadius * 0.3;
-                    const sy = centerY + Math.sin(a) * startRadius * 0.3;
-                    this._fireworksParticles.push(new FireworkParticle(sx, sy, color, big ? 2.5 : 1.8, big ? 8 : 6));
+                // A random point anywhere on screen (with a small margin so bursts
+                // don't detonate right at the edge) - this is what makes the show
+                // cover the whole viewport instead of just the area around the ring.
+                const targetX = randBetween(canvas.width * 0.06, canvas.width * 0.94);
+                const targetY = randBetween(canvas.height * 0.08, canvas.height * 0.85);
+                const angle = Math.atan2(targetY - centerY, targetX - centerX);
+                const distance = Math.hypot(targetX - centerX, targetY - centerY);
+                const sx = centerX + Math.cos(angle) * launchRadius;
+                const sy = centerY + Math.sin(angle) * launchRadius;
+
+                this._fireworksRockets.push(new FireworkRocket(sx, sy, angle, distance, color));
+            };
+
+            const launchWave = () => {
+                const rocketCount = Math.floor(randBetween(4, 7));
+                for (let i = 0; i < rocketCount; i++) {
+                    setTimeout(launchRocket, i * randBetween(40, 120));
                 }
             };
 
             this.ensureFireworksLoop(canvas);
 
-            // Big celebratory multi-burst right away, like completing all 5 pillars
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => launchRoundBurst(true), i * 220);
+            // Waves of shells spread out across a ~10s show
+            const waveCount = 14;
+            for (let i = 0; i < waveCount; i++) {
+                setTimeout(launchWave, i * 650 + randBetween(0, 200));
             }
-
-            // Gentle ambient bursts to fill out the celebration
-            const burstInterval = setInterval(() => {
-                if (Math.random() < 0.7) launchRoundBurst(false);
-            }, 700);
-
-            setTimeout(() => {
-                clearInterval(burstInterval);
-            }, 4000);
 
             setTimeout(() => {
                 this._fireworksActiveSpawns = Math.max(0, this._fireworksActiveSpawns - 1);
                 this.fireworksRunning = false;
-            }, 5000);
+            }, FIREWORKS_SHOW_DURATION);
         },
     }
 }
@@ -706,11 +783,11 @@ export default {
 }
 
 .fireworks-canvas {
-    position: absolute;
+    position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
     pointer-events: none;
 }
 
