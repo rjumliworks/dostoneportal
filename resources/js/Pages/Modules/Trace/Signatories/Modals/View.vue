@@ -29,7 +29,7 @@
                             <Link :href="`/signatories/${selected.reference}`">
                                 <button type="button" class="btn avatar-xs p-0 material-shadow-none" v-b-tooltip.hover title="View">
                                     <span class="avatar-title rounded-circle bg-light text-body">
-                                        <i class="ri-dribbble-fill"></i>
+                                        <i class="ri-eye-fill"></i>
                                     </span>
                                 </button>
                             </Link>
@@ -54,7 +54,7 @@
                 </div>
                 <hr class="text-muted"/>
             </div>
-            <BCol lg="12" v-if="!selected.signatory || selected.signatory.schedules.length == 0">
+            <BCol lg="12" v-if="!selected.schedules || selected.schedules.length == 0">
                 <div @click="openSignatory()" style="cursor: pointer;" class="alert alert-light alert-dismissible bg-light text-body alert-label-icon fade show material-shadow" role="alert">
                     <i class="ri-mark-pen-fill label-icon"></i>No signatory assigned (using default)
                 </div>
@@ -71,7 +71,7 @@
                             </tr>
                         </thead>
                         <tbody class="table-white fs-12">
-                            <tr v-for="(list,index) in selected.signatory.schedules" v-bind:key="index" @click="selectRow(index)" :class="{
+                            <tr v-for="(list,index) in selected.schedules" v-bind:key="index" :class="{
                                 'bg-success-subtle': list.is_ongoing === 1
                             }">
                                 <td class="text-center"> 

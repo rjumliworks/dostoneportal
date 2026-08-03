@@ -221,7 +221,11 @@ class ViewClass
                 'dtrs' => function ($q) use ($date) {
                     $q->whereDate('date', $date);
                 }
-            ])->get();
+            ])
+            ->whereHas('organization', function ($query) {
+                $query->where('status_id',2);
+            })
+            ->get();
 
         // reused overlap check: a schedule/request-date range that covers today
         $dateOverlap = function ($q) use ($date) {

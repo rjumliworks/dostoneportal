@@ -4,11 +4,24 @@ namespace App\Services\Trace\Signatory;
 
 use Hashids\Hashids;
 use App\Models\OrgChart;
+use App\Models\OrgSignatorySchedule;
 use App\Http\Resources\Trace\Signatory\ViewResource;
 use App\Http\Resources\Trace\Signatory\DesignationResource;
+use App\Http\Resources\Trace\Signatory\ScheduleResource;
 
 class ViewClass
 {
+    public function list($request){
+        $data = OrgSignatorySchedule::with([
+            'user:id,email,username',
+            'user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
+        ])
+        ->where('signatory_id', $request->signatory_id)
+        ->orderBy('start_at', 'desc')
+        ->paginate($request->count);
+        return ScheduleResource::collection($data);
+    }
+
     public function designations(){
         $data = OrgChart::with('designation','assigned')
         ->with([
@@ -24,10 +37,10 @@ class ViewClass
                       'user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
                   ]);
             },
-            'designationable.user:id,email,username',
-            'designationable.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
-            'designationable.oic:id,email,username',
-            'designationable.oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar'
+            // 'designationable.user:id,email,username',
+            // 'designationable.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
+            // 'designationable.oic:id,email,username',
+            // 'designationable.oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar'
         ])
         ->with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar','oic:id,email,username','oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar')
         ->orderBy('order','ASC')
@@ -50,10 +63,12 @@ class ViewClass
                       'user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
                   ]);
             },
-            'designationable.user:id,email,username',
-            'designationable.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
-            'designationable.oic:id,email,username',
-            'designationable.oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar'
+            // 'designationable.oicHistory.user:id,email,username',
+            // 'designationable.oicHistory.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
+            // 'designationable.user:id,email,username',
+            // 'designationable.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
+            // 'designationable.oic:id,email,username',
+            // 'designationable.oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar'
         ])
         ->with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar','oic:id,email,username','oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar')
         ->orderBy('order','ASC')

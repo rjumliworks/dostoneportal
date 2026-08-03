@@ -25,6 +25,14 @@ class OrgSignatory extends Model
 
     public function schedules()
     {
-        return $this->hasMany('App\Models\OrgSignatorySchedule', 'signatory_id');
+        return $this->hasMany('App\Models\OrgSignatorySchedule', 'signatory_id')
+            ->orderBy('start_at', 'desc');
+    }
+
+    public function oicHistory()
+    {
+        return $this->hasMany('App\Models\OrgSignatorySchedule', 'signatory_id')
+            ->where('is_designated', 1)
+            ->orderBy('start_at', 'desc');
     }
 }

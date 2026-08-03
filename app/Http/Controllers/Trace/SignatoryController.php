@@ -25,7 +25,7 @@ class SignatoryController extends Controller
     public function index(Request $request){
         switch($request->option){
             case 'list':
-                return [];
+                return $this->view->list($request);
             break;
             default:
                 return inertia('Modules/Trace/Signatories/Index',[

@@ -22,7 +22,8 @@ class DesignationResource extends JsonResource
             'oic' => $this->oic ? new ProfileResource($this->oic) : null,
             'is_oic' => $this->is_oic,
             'is_active' => $this->is_active,
-            'signatory' => $this->designationable ? new SignatoryResource($this->designationable) : null,
+            'signatory_id' => $this->designationable?->id,
+            'schedules' => ScheduleResource::collection($this->designationable->schedules),
             'updated_at' => $this->updated_at
         ];
     }
