@@ -15,9 +15,11 @@
                 </div>
                 <div class="flex-shrink-0">
                     <div class="mt-1">
-                        <button @click="openView()" class="btn btn-sm btn-soft-success me-1" type="button" data-original-title="View All">
-                            <i class="ri-eye-fill align-bottom"></i>
-                        </button>
+                        <Link :href="`/absences`">
+                            <button class="btn btn-sm btn-soft-success me-1" type="button" data-original-title="View All">
+                                <i class="ri-eye-fill align-bottom"></i>
+                            </button>
+                        </Link>
                         <button class="btn btn-sm btn-soft-info" type="button" data-original-title="View PDF">
                             <i class="ri-printer-fill align-bottom"></i>
                         </button>
@@ -59,11 +61,6 @@ export default {
     data(){
         return {
             sort: null,
-        }
-    },
-    methods: {
-        openView(){
-            this.$refs.tsr.show();
         }
     }
 }

@@ -88,6 +88,8 @@ Route::resource('/budgets', App\Http\Controllers\Others\BudgetController::class)
 
 Route::middleware(['role:Human Resource Officer'])->group(function () {
     Route::resource('/humanresource', App\Http\Controllers\HumanResource\DashboardController::class);
+    Route::get('/tardiness', [App\Http\Controllers\HumanResource\DashboardController::class, 'tardiness']);
+    Route::get('/absences', [App\Http\Controllers\HumanResource\DashboardController::class, 'absences']);
     Route::resource('/employees', App\Http\Controllers\HumanResource\EmployeeController::class);
     Route::resource('/dtrs', App\Http\Controllers\HumanResource\DtrController::class);
     Route::resource('/calendar', App\Http\Controllers\HumanResource\CalendarController::class);

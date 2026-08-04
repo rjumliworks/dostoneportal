@@ -13,71 +13,21 @@ class TopClass
 {
     public function absences($request)
     {
-        $year  = $request->year ?? date('Y');
-        $monthName = $request->month ?? date('F');
-        $month = date('m', strtotime($monthName));
+        [$startOfMonth, $endOfMonth] = $this->monthRange($request);
+        $today = Carbon::today();
+        $scheduledDays = $this->scheduledDays($startOfMonth, $endOfMonth);
 
-        // 1️⃣ Working days (Mon–Fri)
-        $startOfMonth = Carbon::create($year, $month, 1)->startOfMonth();
-        $endOfMonth   = Carbon::create($year, $month, 1)->endOfMonth();
-
-        $workingDays = collect(CarbonPeriod::create($startOfMonth, $endOfMonth))
-            ->filter(fn ($date) => !$date->isWeekend())
-            ->map(fn ($date) => $date->toDateString())
-            ->values();
-        $today = Carbon::today()->toDateString();
-        $workingDays = $workingDays
-        ->filter(fn ($date) => $date <= $today)
-        ->values();
-
-        // 2️⃣ Schedules within the month
-        $schedules = Schedule::where(function ($q) use ($startOfMonth, $endOfMonth) {
-            $q->whereBetween('start', [$startOfMonth, $endOfMonth])
-            ->orWhereBetween('end', [$startOfMonth, $endOfMonth])
-            ->orWhere(function ($q) use ($startOfMonth, $endOfMonth) {
-                $q->where('start', '<=', $startOfMonth)
-                    ->where('end', '>=', $endOfMonth);
-            });
-        })->get();
-
-        // 3️⃣ Expand schedule ranges into actual dates
-        $scheduledDays = collect();
-
-        foreach ($schedules as $schedule) {
-            $start = Carbon::parse($schedule->start);
-            $end   = $schedule->end
-                ? Carbon::parse($schedule->end)
-                : $start;
-
-            $scheduledDays = $scheduledDays->merge(
-                collect(CarbonPeriod::create($start, $end))
-                    ->map(fn ($d) => $d->toDateString())
-            );
-        }
-
-        // 4️⃣ Remove scheduled days from working days
-        $effectiveWorkingDays = $workingDays
-            ->diff($scheduledDays)
-            ->values();
-
-        // 5️⃣ Users
-        $users = User::with('profile')
+        $users = User::with(['profile', 'organization.shift.times', 'dtrs' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth]);
+            }])
             ->whereHas('organization', function ($q) {
-                // org condition
+                $q->where('type_id', 16)->where('status_id', 2);
             })
             ->get();
 
-        // 6️⃣ Compute absences
-        $usersWithAbsences = $users->map(function ($user) use ($effectiveWorkingDays) {
-
-            $presentDays = $user->dtrs()
-                ->whereIn('date', $effectiveWorkingDays)
-                ->pluck('date')
-                ->toArray();
-
-            $absentCount = $effectiveWorkingDays
-                ->diff($presentDays)
-                ->count();
+        // Compute absences: no DTR entry on a working day = 1 absence, is_halfday = 0.5 absence
+        $usersWithAbsences = $users->map(function ($user) use ($startOfMonth, $endOfMonth, $today, $scheduledDays) {
+            $absentCount = $this->userAbsenceCount($user, $startOfMonth, $endOfMonth, $today, $scheduledDays);
 
             if ($absentCount > 0) {
                 $user->absences_count = $absentCount;
@@ -94,67 +44,22 @@ class TopClass
 
     public function lates($request)
     {
-        $year  = $request->year ?? date('Y');
-        $monthName = $request->month ?? date('F');
-        $month = date('m', strtotime($monthName));
+        [$startOfMonth, $endOfMonth] = $this->monthRange($request);
 
-        // 1️⃣ Working days (Mon–Fri)
-        $startOfMonth = Carbon::create($year, $month, 1)->startOfMonth();
-        $endOfMonth   = Carbon::create($year, $month, 1)->endOfMonth();
-
-        $workingDays = collect(CarbonPeriod::create($startOfMonth, $endOfMonth))
-            ->filter(fn ($date) => !$date->isWeekend())
-            ->map(fn ($date) => $date->toDateString())
-            ->values();
-        $today = Carbon::today()->toDateString();
-        $workingDays = $workingDays
-        ->filter(fn ($date) => $date <= $today)
-        ->values();
-
-        // 2️⃣ Schedules within the month
-        $schedules = Schedule::where(function ($q) use ($startOfMonth, $endOfMonth) {
-            $q->whereBetween('start', [$startOfMonth, $endOfMonth])
-            ->orWhereBetween('end', [$startOfMonth, $endOfMonth])
-            ->orWhere(function ($q) use ($startOfMonth, $endOfMonth) {
-                $q->where('start', '<=', $startOfMonth)
-                    ->where('end', '>=', $endOfMonth);
-            });
-        })->get();
-
-        // 3️⃣ Expand schedule ranges into actual dates
-        $scheduledDays = collect();
-
-        foreach ($schedules as $schedule) {
-            $start = Carbon::parse($schedule->start);
-            $end   = $schedule->end
-                ? Carbon::parse($schedule->end)
-                : $start;
-
-            $scheduledDays = $scheduledDays->merge(
-                collect(CarbonPeriod::create($start, $end))
-                    ->map(fn ($d) => $d->toDateString())
-            );
-        }
-
-        // 4️⃣ Remove scheduled days from working days
-        $effectiveWorkingDays = $workingDays
-            ->diff($scheduledDays)
-            ->values();
-
-        // 5️⃣ Users
+        // Users (Regular type, Active status only)
         $users = User::with('profile')
             ->whereHas('organization', function ($q) {
-                // org condition
+                $q->where('type_id', 16)->where('status_id', 2);
             })
             ->get();
 
-        // 6️⃣ Compute absences
-        $usersWithLates = $users->map(function ($user) use ($effectiveWorkingDays) {
+        // Compute lates: DTR tardiness/undertime not zero
+        $usersWithLates = $users->map(function ($user) use ($startOfMonth, $endOfMonth) {
             $lateCount = $user->dtrs()
-                ->whereIn('date', $effectiveWorkingDays)
+                ->whereBetween('date', [$startOfMonth, $endOfMonth])
                 ->where(function ($q) {
-                    $q->where('tardiness', '>', 0)
-                    ->orWhere('undertime', '>', 0);
+                    $q->where('tardiness', '!=', 0)
+                    ->orWhere('undertime', '!=', 0);
                 })
                 ->count(); // 1 per DTR
 
@@ -169,5 +74,188 @@ class TopClass
         ->values();
 
         return $usersWithLates;
+    }
+
+    public function tardinessReport($request)
+    {
+        [$startOfMonth, $endOfMonth] = $this->monthRange($request);
+
+        // Users (Regular type, Active status only) with monthly undertime/tardiness totals
+        $users = User::with(['profile', 'organization.division'])
+            ->whereHas('organization', function ($q) {
+                $q->where('type_id', 16)->where('status_id', 2);
+            })
+            ->withSum(['dtrs as undertime_minutes' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth]);
+            }], 'undertime')
+            ->withSum(['dtrs as tardiness_minutes' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth]);
+            }], 'tardiness')
+            ->withCount(['dtrs as occurrences' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth])
+                    ->where(function ($q2) {
+                        $q2->where('tardiness', '!=', 0)
+                        ->orWhere('undertime', '!=', 0);
+                    });
+            }])
+            ->get();
+
+        return $users
+            ->map(function ($user) {
+                $undertime = (int) $user->undertime_minutes;
+                $tardiness = (int) $user->tardiness_minutes;
+
+                return [
+                    'user_id' => $user->id,
+                    'name' => $user->profile->name ?? '',
+                    'division' => $user->organization->division->name ?? 'Unassigned',
+                    'undertime' => $undertime,
+                    'tardiness' => $tardiness,
+                    'total' => $undertime + $tardiness,
+                    'occurrences' => (int) $user->occurrences,
+                ];
+            })
+            ->groupBy('division')
+            ->sortKeys()
+            ->map(function ($users, $division) {
+                return [
+                    'division' => $division,
+                    'users' => $users->sortBy([
+                        ['occurrences', 'desc'],
+                        ['name', 'asc'],
+                    ])->values(),
+                ];
+            })
+            ->values();
+    }
+
+    public function absencesReport($request)
+    {
+        [$startOfMonth, $endOfMonth] = $this->monthRange($request);
+        $today = Carbon::today();
+        $scheduledDays = $this->scheduledDays($startOfMonth, $endOfMonth);
+
+        // Users (Regular type, Active status only) with monthly absence totals
+        $users = User::with(['profile', 'organization.shift.times', 'organization.division', 'dtrs' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth]);
+            }])
+            ->whereHas('organization', function ($q) {
+                $q->where('type_id', 16)->where('status_id', 2);
+            })
+            ->get();
+
+        return $users
+            ->map(function ($user) use ($startOfMonth, $endOfMonth, $today, $scheduledDays) {
+                $absences = $this->userAbsenceCount($user, $startOfMonth, $endOfMonth, $today, $scheduledDays);
+
+                return [
+                    'user_id' => $user->id,
+                    'name' => $user->profile->name ?? '',
+                    'division' => $user->organization->division->name ?? 'Unassigned',
+                    'absences' => $absences,
+                    'total' => $absences,
+                ];
+            })
+            ->groupBy('division')
+            ->sortKeys()
+            ->map(function ($users, $division) {
+                return [
+                    'division' => $division,
+                    'users' => $users->sortBy([
+                        ['absences', 'desc'],
+                        ['name', 'asc'],
+                    ])->values(),
+                ];
+            })
+            ->values();
+    }
+
+    // Carbon start/end of the requested (or current) month
+    private function monthRange($request)
+    {
+        $year  = $request->year ?? date('Y');
+        $monthName = $request->month ?? date('F');
+        $month = date('m', strtotime($monthName));
+
+        return [
+            Carbon::create($year, $month, 1)->startOfMonth(),
+            Carbon::create($year, $month, 1)->endOfMonth(),
+        ];
+    }
+
+    // dates covered by any Schedule (holiday/suspension/etc.) within the range, flipped for isset() lookups
+    private function scheduledDays($startOfMonth, $endOfMonth)
+    {
+        $schedules = Schedule::where(function ($q) use ($startOfMonth, $endOfMonth) {
+            $q->whereBetween('start', [$startOfMonth, $endOfMonth])
+            ->orWhereBetween('end', [$startOfMonth, $endOfMonth])
+            ->orWhere(function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->where('start', '<=', $startOfMonth)
+                    ->where('end', '>=', $endOfMonth);
+            });
+        })->get();
+
+        $scheduledDays = collect();
+
+        foreach ($schedules as $schedule) {
+            $start = Carbon::parse($schedule->start);
+            $end   = $schedule->end
+                ? Carbon::parse($schedule->end)
+                : $start;
+
+            $scheduledDays = $scheduledDays->merge(
+                collect(CarbonPeriod::create($start, $end))
+                    ->map(fn ($d) => $d->toDateString())
+            );
+        }
+
+        return $scheduledDays->flip();
+    }
+
+    // no DTR entry on a working day = 1 absence, is_halfday = 0.5 absence
+    private function userAbsenceCount($user, $startOfMonth, $endOfMonth, $today, $scheduledDays)
+    {
+        // working days per the user's shift schedule, falling back to Mon-Fri if no shift is set
+        $workingDays = collect();
+        if ($user->organization && $user->organization->shift) {
+            $workingDays = $user->organization->shift->times
+                ->pluck('days')
+                ->flatMap(fn ($days) => explode(',', $days))
+                ->map(fn ($d) => (int) $d)
+                ->unique();
+        }
+
+        $dtrsByDate = $user->dtrs->keyBy('date');
+        $absentCount = 0;
+
+        foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $date) {
+            if ($date->greaterThan($today)) {
+                continue;
+            }
+
+            $isWorkingDay = $workingDays->isNotEmpty()
+                ? $workingDays->contains((int) $date->format('N'))
+                : !$date->isWeekend();
+            if (!$isWorkingDay) {
+                continue;
+            }
+
+            $dateStr = $date->toDateString();
+            if (isset($scheduledDays[$dateStr])) {
+                continue;
+            }
+
+            $dtr = $dtrsByDate->get($dateStr);
+
+            if (!$dtr) {
+                // no entry / not in the office: absent the whole day
+                $absentCount += 1;
+            } elseif ($dtr->is_halfday == 1) {
+                // half day
+                $absentCount += 0.5;
+            }
+        }
+
+        return $absentCount;
     }
 }

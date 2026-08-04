@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $this->top = $top;
     }
 
-     public function index(Request $request){
+    public function index(Request $request){
         switch($request->option){
             case 'lists':
                 return [];
@@ -42,5 +42,31 @@ class DashboardController extends Controller
                     'divisions' => $this->dropdown->dropdowns('Division')
                ]);
         }   
+    }
+
+    public function tardiness(Request $request){
+        switch($request->option){
+            case 'list':
+                return $this->top->tardinessReport($request);
+            break;
+            default:
+                return inertia('Modules/HumanResource/Dashboard/Tardiness',[
+                    'years' => $this->dashboard->years(),
+                    'divisions' => $this->dropdown->dropdowns('Division')
+                ]);
+        }
+    }
+
+    public function absences(Request $request){
+        switch($request->option){
+            case 'list':
+                return $this->top->absencesReport($request);
+            break;
+            default:
+                return inertia('Modules/HumanResource/Dashboard/Absences',[
+                    'years' => $this->dashboard->years(),
+                    'divisions' => $this->dropdown->dropdowns('Division')
+                ]);
+        }
     }
 }
