@@ -196,13 +196,19 @@
                             <td>{{ $list['data']['pm_in'] ?? '' }}</td>
                             <td>{{ $list['data']['pm_out'] ?? '' }}</td>
                             <td style="font-size: 9px;">
-                                {{
+                                {{-- {{
+                                    ($division_id != 35 && $list['data'] && $list['data']['total_minutes'] > 0)
+                                        ? ( ($list['data']['undertime']['hours'] == 0) ? '' : $list['data']['undertime']['hours'] )
+                                        : ''
+                                }} --}}
+                              
+                                    {{
                                     ($division_id != 35 && $list['data'] && $list['data']['total_minutes'] > 0)
                                         ? ( ($list['data']['undertime']['hours'] == 0) ? '' : $list['data']['undertime']['hours'] )
                                         : ''
                                 }}
                             </td>
-                            <td></td>
+                            <td style="font-size: 9px;">{{ ($division_id != 35 && $list['data']) ? ($list['data']['total_minutes'] == 0) ? '' : $list['data']['undertime']['minutes'] : '' }}</td>
                         @endif
                 </tr>
                 @endforeach
