@@ -166,12 +166,15 @@ class DtrUpdater extends Command
                             $officialStart = Carbon::parse($shift->in_time)->startOfMinute();
 
                             $computedTardiness = 0;
+                      
 
                             if ($time->gt($officialStart)) {
                                 $computedTardiness = $officialStart->diffInMinutes($time);
                             }
+                            
 
                             $tardiness += $computedTardiness;
+                            
 
                             $pm_in_at->minutes = $computedTardiness;
 
@@ -267,7 +270,7 @@ class DtrUpdater extends Command
                     $updates['is_completed'] = 0;
                 }
 
-               
+
                 $updates['tardiness'] = $tardiness;
                 $updates['undertime'] = $undertime;
                 $updates['shift_id'] =  $shift_id;

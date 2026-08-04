@@ -8,6 +8,7 @@ use App\Models\EventSession;
 use App\Models\EventCsfEntry;
 use App\Models\EventCsfQuestion;
 use App\Models\EventExhibitor;
+use App\Models\ListStatus;
 use App\Http\Resources\SessionViewResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
@@ -160,6 +161,16 @@ class PrintClass
             return optional($item->status)->name === 'Reserved';
         })->values();
 
+        $statusName = null;
+
+        if ($type === 'participants' && $request->filled('status')) {
+            $mainList = $mainList->filter(function ($item) use ($request) {
+                return optional($item->status)->id == $request->status;
+            })->values();
+
+            $statusName = optional(ListStatus::find($request->status))->name;
+        }
+
         // Only fetch avatars for the list being printed, not the whole session.
         $this->attachAvatarImages($type === 'reservees' ? $reservedList : $mainList);
 
@@ -170,6 +181,7 @@ class PrintClass
             'mainList' => $mainList,
             'reservedList' => $reservedList,
             'type' => $type,
+            'statusName' => $statusName,
         ];
 
         $pdf = \PDF::loadView('prints.participants', $array)->setPaper('a4', 'landscape');

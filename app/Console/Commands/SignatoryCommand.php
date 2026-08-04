@@ -12,8 +12,8 @@ class SignatoryCommand extends Command
 
     public function handle()
     {
-        $schedules = OrgSignatorySchedule::whereDate('end_at', today())
-        ->where('end_at', '<=', now())
+        $schedules = OrgSignatorySchedule::
+        where('end_at', '<=', now())
         ->where('is_completed', 0)
         ->where('is_ongoing', 1)
         ->with('signatory')
@@ -41,18 +41,6 @@ class SignatoryCommand extends Command
                 'is_ongoing'   => 0,
                 'is_completed' => 1,
             ]);
-            // $signatory = $schedule->signatory;
-            // $parent    = $signatory?->designationable;
-
-            // if ($schedule->signatory) {
-            //     $schedule->signatory->update([
-            //         'oic_id' => null,
-            //     ]);
-            // }
-            // $schedule->update([
-            //     'is_ongoing'   => 0,
-            //     'is_completed' => 1,
-            // ]);
         }
 
     }

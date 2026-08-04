@@ -45,7 +45,7 @@
                                         <div :key="index" class="tab-content">
                                             <Overview :selected="selected" v-if="menu == 'Overview'" />
                                             <Activity :id="selected.id" :activities="selected.activities" :schedules="selected.schedules" v-else-if="menu == 'Activities'"/>
-                                            <Participant :id="selected.key" :is_exclusive="selected.is_exclusive" :participants="registeredParticipants" v-else-if="menu == 'Participants'"/>
+                                            <Participant :statuses="statuses" :id="selected.key" :is_exclusive="selected.is_exclusive" :participants="registeredParticipants" v-else-if="menu == 'Participants'"/>
                                             <Reservee :id="selected.key" :is_exclusive="selected.is_exclusive" :participants="reservedParticipants" v-else-if="menu == 'Reservees'"/>
                                             <Certificate  v-else-if="menu == 'Certificates'"/>
                                             <Question :questions="selected.questions" v-else-if="menu == 'Questions'"/>
@@ -73,7 +73,7 @@ import Reservee from './Pages/Reservee.vue';
 import Certificate from './Pages/Certificate.vue';
 export default {
     components: { Activity, Participant, Reservee, Certificate, Overview, Question, Csf },
-    props:['selected'],
+    props:['selected','statuses'],
     data(){
         return {
             currentUrl: window.location.origin,

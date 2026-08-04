@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 520px;" header-class="p-3 bg-light" title="Create post" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 720px;" header-class="p-3 bg-light" title="Create post" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div>
             <div class="d-flex align-items-center mb-3">
                 <div class="flex-shrink-0 me-2">
@@ -17,14 +17,21 @@
                 </div>
             </div>
 
-            <textarea
-                v-model="content"
-                class="form-control border-0 fs-16 mb-3 p-0"
-                style="resize: none; box-shadow: none;"
-                :placeholder="`What's on your mind, ${firstName}?`"
-                rows="4"
+            <input
+                type="text"
+                v-model="title"
+                class="form-control fs-16 mb-2"
+                placeholder="Title"
                 autofocus
-            ></textarea>
+            >
+
+            <div class="mb-3">
+                <ckeditor
+                    :editor="editor"
+                    v-model="content"
+                    :config="editorConfig"
+                ></ckeditor>
+            </div>
 
             <div v-if="images.length" class="row g-2 mb-3">
                 <div class="col-4" v-for="(img, idx) in images" :key="idx">
@@ -46,7 +53,7 @@
                     <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Photo/video" @click="triggerFile">
                         <i class="ri-image-2-fill text-success fs-18"></i>
                     </button>
-                    <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Coming soon" disabled>
+                    <!-- <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Coming soon" disabled>
                         <i class="ri-user-add-fill text-primary fs-18"></i>
                     </button>
                     <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Coming soon" disabled>
@@ -54,7 +61,7 @@
                     </button>
                     <button type="button" class="btn btn-icon btn-sm rounded-circle" title="Coming soon" disabled>
                         <i class="ri-map-pin-fill text-danger fs-18"></i>
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -66,12 +73,23 @@
     </b-modal>
 </template>
 <script>
+import { Ckeditor } from '@ckeditor/ckeditor5-vue';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 export default {
+    components: {
+        Ckeditor,
+    },
     data(){
         return {
             showModal: false,
+            title: '',
             content: '',
             images: [],
+            editor: ClassicEditor,
+            editorConfig: {
+                licenseKey: 'GPL',
+            },
         }
     },
     computed: {
@@ -79,11 +97,13 @@ export default {
             return this.$page.props.user.data.name?.split(' ')[0] ?? '';
         },
         canPost(){
-            return this.content.trim().length > 0 || this.images.length > 0;
+            const hasContent = this.content.replace(/<[^>]*>/g, '').trim().length > 0;
+            return this.title.trim().length > 0 || hasContent || this.images.length > 0;
         }
     },
     methods: {
         show(mode = null){
+            this.title = '';
             this.content = '';
             this.images = [];
             this.showModal = true;
@@ -113,7 +133,8 @@ export default {
             if (!this.canPost) return;
             this.$emit('posted', {
                 id: Date.now(),
-                content: this.content.trim(),
+                title: this.title.trim(),
+                content: this.content,
                 images: [...this.images],
             });
             this.hide();

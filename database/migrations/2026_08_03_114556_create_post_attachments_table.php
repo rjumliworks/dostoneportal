@@ -12,7 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_attachments', function (Blueprint $table) {
-            $table->id();
+            $table->engine = 'InnoDB';
+            $table->increments('id');
+            $table->string('path');
+            $table->string('mime_type', 100);
+            $table->unsignedBigInteger('size');
+            $table->string('text')->nullable();
+            $table->json('meta')->nullable();
+            $table->enum('kind', ['image','video']);
+            $table->unsignedBigInteger('post_id');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->timestamps();
         });
     }

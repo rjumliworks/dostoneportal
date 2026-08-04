@@ -26,7 +26,7 @@
                     <Sidebar :selected="session.data"/>
                 </BCol>
                 <BCol lg="8">
-                    <Main :selected="session.data"/>
+                    <Main :selected="session.data" :statuses="statuses"/>
                 </BCol>
             </BRow>
         </div>
@@ -42,7 +42,7 @@
     export default {
        
         components: { PageHeader, simplebar, Top, Main, Message, Sidebar },
-        props: ['session'],
+        props: ['session','statuses'],
     }
 </script>
 <style scoped>

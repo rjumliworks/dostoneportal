@@ -58,6 +58,7 @@ class SessionController extends Controller
     public function show($id){
         return inertia('Modules/Events/Sessions/View',[
             'session' => $this->view->view($id),
+            'statuses' => $this->dropdown->statuses('Attendance'),
         ]);
     }
 
@@ -113,6 +114,7 @@ class SessionController extends Controller
     public function view($key){
         return inertia('Public/Events/Session',[
             'session' => $this->view->view($key),
+            'statuses' => $this->dropdown->statuses('Attendance'),
         ]);
     }
 }

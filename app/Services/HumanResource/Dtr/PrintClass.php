@@ -294,6 +294,7 @@ class PrintClass
             'division_id' => $shift->division_id
         ];
 
+
         $pdf = \PDF::loadView('prints.dtr',$array)->setPaper('a4', 'portrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF();

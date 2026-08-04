@@ -44,6 +44,7 @@
     @php
         $list = $type === 'reservees' ? $reservedList : $mainList;
         $heading = $type === 'reservees' ? 'LIST OF RESERVED / WAITLISTED PARTICIPANTS' : 'LIST OF PARTICIPANTS';
+        $heading .= ($type !== 'reservees' && !empty($statusName)) ? ' - ' . strtoupper($statusName) : '';
         $footerLabel = $type === 'reservees' ? 'Total Reservees' : 'Total Participants';
     @endphp
     <div class="footer">

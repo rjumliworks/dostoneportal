@@ -15,6 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('code')->unique();
+            $table->string('number')->nullable();
             $table->string('title',150);
             $table->longText('content');
             $table->boolean('is_commentable')->default(true);
