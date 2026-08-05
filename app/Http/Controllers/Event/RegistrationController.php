@@ -112,20 +112,6 @@ class RegistrationController extends Controller
                 if ($avatar_path) {
                     $this->indexFace($participant, $detail, $avatar_path);
                 }
-                
-                if($request->session_id){
-                    $data = EventSessionParticipant::with('participant.detail')
-                        ->where('participant_id', $participant->id)
-                        ->where('session_id', $request->session_id)
-                        ->first();
-                    broadcast(new SessionEvent(new ParticipantResource($data),'register'));
-                    broadcast(new CapacityEvent(
-                        EventSessionParticipant::where('session_id', $request->session_id)
-                            ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
-                            ->count(),
-                        $request->session_id
-                    ));
-                }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
 
@@ -148,6 +134,28 @@ class RegistrationController extends Controller
                 'info' => $result['info'],
                 'status' => $result['status'],
             ]);
+        }
+
+        // Broadcasting runs after the transaction has committed. QUEUE_CONNECTION
+        // is sync and neither event overrides its connection, so these dispatch
+        // synchronously to Reverb — doing that inside the transaction meant a
+        // Reverb hiccup would roll back the just-created participant while the
+        // face indexFace() already registered in Rekognition stayed indexed
+        // (AWS has no rollback), leaving an orphaned face that later blocked
+        // legitimate registrants as "already registered to another participant".
+        if ($request->session_id) {
+            $participant = $result['data'];
+            $sessionParticipant = EventSessionParticipant::with('participant.detail')
+                ->where('participant_id', $participant->id)
+                ->where('session_id', $request->session_id)
+                ->first();
+            broadcast(new SessionEvent(new ParticipantResource($sessionParticipant), 'register'));
+            broadcast(new CapacityEvent(
+                EventSessionParticipant::where('session_id', $request->session_id)
+                    ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+                    ->count(),
+                $request->session_id
+            ));
         }
 
         if (!$request->session_id) {

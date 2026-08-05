@@ -190,10 +190,11 @@ class RekognitionController extends Controller
 
                 foreach ($result['Faces'] as $face) {
                     $faces[] = [
-                        'face_id'    => $face['FaceId'],
-                        'image_id'   => $face['ImageId'] ?? null,
-                        'confidence' => $face['Confidence'] ?? null,
-                        'created_at' => $face['CreatedTimestamp'] ?? null,
+                        'face_id'           => $face['FaceId'],
+                        'image_id'          => $face['ImageId'] ?? null,
+                        'external_image_id' => $face['ExternalImageId'] ?? null,
+                        'confidence'        => $face['Confidence'] ?? null,
+                        'created_at'        => $face['CreatedTimestamp'] ?? null,
                     ];
                 }
 
@@ -201,10 +202,34 @@ class RekognitionController extends Controller
 
             } while ($nextToken);
 
+            // external_image_id is the participant id set at IndexFaces time
+            // (see RegistrationController::indexFace) — more than one face_id
+            // under the same external_image_id means that participant has
+            // duplicate/stale face records instead of the single active one
+            // indexFace() is supposed to leave behind after deleting old ones.
+            $byParticipant = collect($faces)
+                ->filter(fn ($f) => $f['external_image_id'] !== null)
+                ->groupBy('external_image_id')
+                ->filter(fn ($group) => $group->count() > 1)
+                ->map(fn ($group) => $group->values());
+
+            // image_id is assigned per source image at IndexFaces time — more
+            // than one face_id sharing the same image_id means that single
+            // photo had more than one face detected in it.
+            $byImage = collect($faces)
+                ->filter(fn ($f) => $f['image_id'] !== null)
+                ->groupBy('image_id')
+                ->filter(fn ($group) => $group->count() > 1)
+                ->map(fn ($group) => $group->values());
+
             return response()->json([
-                'success' => true,
-                'count'   => count($faces),
-                'faces'   => $faces,
+                'success'    => true,
+                'count'      => count($faces),
+                'faces'      => $faces,
+                'duplicates' => [
+                    'by_participant' => $byParticipant,
+                    'by_image'       => $byImage,
+                ],
             ]);
 
         } catch (\Aws\Exception\AwsException $e) {
