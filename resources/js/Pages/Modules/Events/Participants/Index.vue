@@ -29,7 +29,7 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search by code" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.keyword" placeholder="Search by name or code" class="form-control" style="width: 20%;">
                                 <Multiselect class="white" style="width: 20%;" :options="registrationOptions" v-model="filter.registration" label="name" :searchable="false" placeholder="Select Registration Type" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                     <i class="bx bx-refresh search-icon"></i>
@@ -75,7 +75,7 @@
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
-                                <tr v-for="(list,index) in lists" v-bind:key="index" @click="selectRow(index)"
+                                <tr v-for="(list,index) in filteredLists" v-bind:key="index" @click="selectRow(index)"
                                  :class="{ 'bg-info-subtle': selectedRow === index }">
                                     <td class="text-center">
                                         <div class="avatar-xs">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <Pagination class="ms-2 me-2 mt-n1" v-if="meta" @fetch="fetch" :lists="lists.length" :links="links" :pagination="meta" />
+                    <div class="text-muted ms-2 me-2 mt-n1">Showing <span class="fw-semibold">{{ filteredLists.length }}</span> of <span class="fw-semibold">{{ lists.length }}</span> Results</div>
                 </div>
 
             </div>
@@ -107,19 +107,15 @@
     </BRow>
 </template>
 <script>
-import _ from 'lodash';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
-import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect },
+    components: { PageHeader, Multiselect },
     props: ['counts','dropdowns'],
     data(){
         return {
             currentUrl: window.location.origin,
             lists: [],
-            meta: {},
-            links: {},
             filter: {
                 keyword: null,
                 type: null,
@@ -133,37 +129,46 @@ export default {
             selectedRow: null
         }
     },
-    watch: {
-        "filter.keyword"(newVal){
-            this.checkSearchStr(newVal);
-        },
-        "filter.registration"(){
-            this.fetch();
+    computed: {
+        filteredLists(){
+            let data = this.lists;
+
+            if(this.filter.type){
+                data = data.filter(list => list.type?.id === this.filter.type);
+            }
+
+            if(this.filter.registration === 'regular'){
+                data = data.filter(list => !list.sessions_count);
+            } else if(this.filter.registration === 'session'){
+                data = data.filter(list => list.sessions_count > 0);
+            }
+
+            if(this.filter.keyword){
+                const keyword = this.filter.keyword.toLowerCase();
+                data = data.filter(list =>
+                    list.name?.toLowerCase().includes(keyword) ||
+                    list.code?.toLowerCase().includes(keyword) ||
+                    list.affiliation?.name?.toLowerCase().includes(keyword) ||
+                    list.others?.toLowerCase().includes(keyword)
+                );
+            }
+
+            return data;
         }
     },
     created(){
        this.fetch();
     },
     methods: {
-        checkSearchStr: _.debounce(function(string) {
-            this.fetch();
-        }, 300),
-        fetch(page_url){
-            page_url = page_url || '/participants';
-            axios.get(page_url,{
+        fetch(){
+            axios.get('/participants',{
                 params : {
-                    keyword: this.filter.keyword,
-                    type: this.filter.type,
-                    registration: this.filter.registration,
-                    count: 10,
                     option: 'list'
                 }
             })
             .then(response => {
                 if(response){
                     this.lists = response.data.data;
-                    this.meta = response.data.meta;
-                    this.links = response.data.links;
                 }
             })
             .catch(err => console.log(err));
@@ -171,7 +176,6 @@ export default {
         viewType(index,type){
             this.index = index;
             this.filter.type = type;
-            this.fetch();
         },
         refresh(){
             this.filter.keyword = null;

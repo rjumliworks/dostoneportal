@@ -24,27 +24,11 @@ class ViewClass
         $query = Participant::with(['detail.type','detail.affiliation'])->withCount('sessions');
 
         // firstname/lastname/email are encrypted at rest (see Participant's set*Attribute
-        // mutators), so they can't be matched with a SQL LIKE - keyword search is limited
-        // to the plaintext participant code instead.
-        $query->when($request->keyword, function ($query, $keyword) {
-            $query->where('code', 'like', "%{$keyword}%");
-        });
-
-        $query->when($request->type, function ($query, $type) {
-            $query->whereHas('detail', fn($q) => $q->where('type_id', $type));
-        });
-
-        $query->when($request->registration, function ($query, $registration) {
-            if ($registration === 'regular') {
-                $query->doesntHave('sessions');
-            } elseif ($registration === 'session') {
-                $query->has('sessions');
-            }
-        });
-
+        // mutators), so they can't be matched with a SQL LIKE. All records are returned
+        // unpaginated so the frontend can filter by the decrypted name client-side instead.
         $query->orderBy('created_at', 'DESC');
 
-        $data = ListResource::collection($query->paginate($request->count));
+        $data = ListResource::collection($query->get());
         return $data;
     }
 }

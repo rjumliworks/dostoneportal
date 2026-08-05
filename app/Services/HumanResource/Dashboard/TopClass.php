@@ -261,7 +261,12 @@ class TopClass
         $dtrsByDate = $user->dtrs->keyBy('date');
         $absentCount = 0;
 
-        foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $date) {
+        // don't count days before the user's account existed
+        $periodStart = $user->created_at
+            ? $startOfMonth->copy()->max(Carbon::parse($user->created_at)->startOfDay())
+            : $startOfMonth;
+
+        foreach (CarbonPeriod::create($periodStart, $endOfMonth) as $date) {
             if ($date->greaterThan($today)) {
                 continue;
             }
