@@ -394,7 +394,12 @@ class RekognitionController extends Controller
     private function fetchOrphanAvatars(): array
     {
         $files = Storage::disk('s3')->files('oneportal/participants');
-        $referenced = ParticipantDetail::whereNotNull('avatar')->pluck('avatar')->all();
+
+        // toBase() bypasses ParticipantDetail::getAvatarAttribute(), which
+        // rewrites the raw stored key into a full, cache-busted S3 URL for
+        // display — comparing against that instead of the raw key would
+        // never match anything and flag every real avatar as orphaned.
+        $referenced = ParticipantDetail::whereNotNull('avatar')->toBase()->pluck('avatar')->all();
 
         return array_values(array_diff($files, $referenced));
     }
