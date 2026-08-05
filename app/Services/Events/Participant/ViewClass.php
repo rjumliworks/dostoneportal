@@ -6,6 +6,7 @@ use App\Models\Participant;
 use App\Models\ParticipantDetail;
 use App\Models\ListData;
 use App\Http\Resources\Event\Participant\ListResource;
+use App\Http\Resources\Event\Participant\ShowResource;
 
 class ViewClass
 {
@@ -30,5 +31,17 @@ class ViewClass
 
         $data = ListResource::collection($query->get());
         return $data;
+    }
+
+    public function show($id){
+        $participant = Participant::with([
+            'detail.type',
+            'detail.affiliation',
+            'sessions.session.venue',
+            'sessions.session.schedules',
+            'sessions.status',
+        ])->findOrFail($id);
+
+        return new ShowResource($participant);
     }
 }

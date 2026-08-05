@@ -22,6 +22,9 @@ class ParticipantController extends Controller
             case 'list':
                 return $this->view->list($request);
             break;
+            case 'show':
+                return $this->view->show($request->id);
+            break;
             default:
             return inertia('Modules/Events/Participants/Index',[
                 'dropdowns' => [

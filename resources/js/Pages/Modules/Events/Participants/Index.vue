@@ -30,7 +30,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search by name or code" class="form-control" style="width: 20%;">
-                                <input type="text" v-model="filter.affiliation" placeholder="Search by affiliation" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.affiliation" placeholder="Search by affiliation or designation" class="form-control" style="width: 20%;">
                                 <Multiselect class="white" style="width: 20%;" :options="registrationOptions" v-model="filter.registration" label="name" :searchable="false" placeholder="Select Registration Type" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                     <i class="bx bx-refresh search-icon"></i>
@@ -73,13 +73,15 @@
                                     <th style="width: 8%;" class="text-center">Sessions</th>
                                     <th style="width: 9%;" class="text-center">Status</th>
                                     <th style="width: 15%;" class="text-center">Registered</th>
+                                    <th style="width: 5%;" class="text-center"></th>
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
                                 <tr v-for="(list,index) in filteredLists" v-bind:key="index" @click="selectRow(index)"
                                  :class="{ 'bg-info-subtle': selectedRow === index }">
                                     <td class="text-center">
-                                        <div class="avatar-xs">
+                                        <div class="avatar-xs" style="cursor:pointer;" @click.stop="copyCode(list.code, index)"
+                                            v-b-tooltip.hover :title="isCopied(index) ? 'Copied!' : 'Click to copy code'">
                                             <img :src="list.avatar" class="rounded-circle avatar-xs" style="object-fit:cover;" alt="Avatar">
                                         </div>
                                     </td>
@@ -94,6 +96,11 @@
                                         <span class="badge" :class="list.is_completed ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'">{{ list.is_completed ? 'Completed' : 'Pending' }}</span>
                                     </td>
                                     <td class="text-center">{{ list.created_at }}</td>
+                                    <td class="text-center">
+                                        <b-button @click.stop="openView(list.id)" variant="success" size="sm" v-b-tooltip.hover title="View Participant">
+                                            <i class="ri-eye-fill align-bottom"></i>
+                                        </b-button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -106,12 +113,14 @@
             </div>
         </div>
     </BRow>
+    <View ref="view"/>
 </template>
 <script>
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
+import View from './Modals/View.vue';
 export default {
-    components: { PageHeader, Multiselect },
+    components: { PageHeader, Multiselect, View },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -128,7 +137,8 @@ export default {
                 { value: 'session', name: 'Session Registration (with sessions)' }
             ],
             index: null,
-            selectedRow: null
+            selectedRow: null,
+            copiedIndex: null
         }
     },
     computed: {
@@ -157,7 +167,8 @@ export default {
                 const affiliation = this.filter.affiliation.toLowerCase();
                 data = data.filter(list =>
                     list.affiliation?.name?.toLowerCase().includes(affiliation) ||
-                    list.others?.toLowerCase().includes(affiliation)
+                    list.others?.toLowerCase().includes(affiliation) ||
+                    list.designation?.toLowerCase().includes(affiliation)
                 );
             }
 
@@ -195,6 +206,41 @@ export default {
         },
         selectRow(index) {
             this.selectedRow = index;
+        },
+        isCopied(index){
+            return this.copiedIndex === index;
+        },
+        copyCode(code, index){
+            if(!code) return;
+
+            const markCopied = () => {
+                this.copiedIndex = index;
+                setTimeout(() => {
+                    if(this.copiedIndex === index) this.copiedIndex = null;
+                }, 2000);
+            };
+
+            if(navigator.clipboard && window.isSecureContext){
+                navigator.clipboard.writeText(code).then(markCopied).catch(() => {});
+                return;
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                markCopied();
+            } catch (err) {
+                // ignore copy failures silently
+            }
+            document.body.removeChild(textarea);
+        },
+        openView(id){
+            this.$refs.view.show(id);
         }
     }
 }
