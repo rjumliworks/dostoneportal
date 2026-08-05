@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Executive;
 
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
+use App\Models\ParticipantDetail;
 use Illuminate\Http\Request;
 use Aws\Rekognition\RekognitionClient;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class RekognitionController extends Controller
 {   
@@ -379,5 +381,53 @@ class RekognitionController extends Controller
             'message' => 'Face successfully deleted!',
             'info' => "Your file has been deleted and is now available."
         ];
+    }
+
+    /**
+     * Avatar files under oneportal/participants on S3 that no
+     * participant_details row references. These are leftovers from
+     * registration attempts that uploaded the file (see
+     * RegistrationController::uploadAvatar) but failed/rolled back before
+     * saving the row that would reference it — DB::transaction() can't undo
+     * an S3 write, so nothing else ever cleans these up.
+     */
+    private function fetchOrphanAvatars(): array
+    {
+        $files = Storage::disk('s3')->files('oneportal/participants');
+        $referenced = ParticipantDetail::whereNotNull('avatar')->pluck('avatar')->all();
+
+        return array_values(array_diff($files, $referenced));
+    }
+
+    public function orphanAvatars(): JsonResponse
+    {
+        $orphans = $this->fetchOrphanAvatars();
+
+        return response()->json([
+            'success' => true,
+            'count'   => count($orphans),
+            'files'   => $orphans,
+        ]);
+    }
+
+    public function deleteOrphanAvatars(): JsonResponse
+    {
+        $orphans = $this->fetchOrphanAvatars();
+
+        if (empty($orphans)) {
+            return response()->json([
+                'success' => true,
+                'deleted' => 0,
+                'message' => 'No orphaned avatars found.',
+            ]);
+        }
+
+        Storage::disk('s3')->delete($orphans);
+
+        return response()->json([
+            'success' => true,
+            'deleted' => count($orphans),
+            'files'   => $orphans,
+        ]);
     }
 }
