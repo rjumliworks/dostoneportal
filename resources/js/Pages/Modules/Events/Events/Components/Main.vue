@@ -11,7 +11,7 @@
                 </div>
                 <div class="flex-grow-1">
                     <h5 class="mb-0 fs-14"><span class="text-body">More About This Event</span></h5>
-                    <p class="text-muted text-truncate-two-lines fs-12">Explore key details about this event — from featured sessions and venues to organizers, exhibitors, and highlights.</p>
+                    <p class="text-muted text-truncate-two-lines fs-12">Explore key details about this event — from featured sessions and venues to organizers, exhibitors, and point rankings.</p>
                 </div>
             </div>
         </div>
@@ -41,6 +41,7 @@
                                     <Session :id="selected.id" :venues="selected.venues" :sessions="selected.sessions" v-if="menu == 'Sessions'"/>
                                     <Venue :id="selected.id" :venues="selected.venues" :detail="selected.detail" v-if="menu == 'Venues'"/>
                                     <Organizer :sessions="selected.sessions" v-if="menu == 'Organizers'"/>
+                                    <Ranking :rankings="selected.rankings" v-if="menu == 'Rankings'"/>
                                     <Link :sessions="selected.sessions" v-if="menu == 'Links'"/>
                                 </div>
                             </transition>
@@ -56,16 +57,17 @@
 import Link from './Pages/Link.vue';
 import Venue from './Pages/Venue.vue';
 import Session from './Pages/Session.vue';
+import Ranking from './Pages/Ranking.vue';
 import Exhibitor from './Pages/Exhibitor.vue';
 import Organizer from './Pages/Organizer.vue';
 export default {
-    components: { Session, Venue, Organizer, Exhibitor, Link },
+    components: { Session, Venue, Organizer, Exhibitor, Ranking, Link },
     props:['selected','types'],
     data(){
         return {
             currentUrl: window.location.origin,
             menus: [
-                'Sessions','Exhibitors','Venues','Highlights','Links'
+                'Sessions','Exhibitors','Venues','Rankings','Links'
             ],
             menu: 'Sessions',
             index: null,

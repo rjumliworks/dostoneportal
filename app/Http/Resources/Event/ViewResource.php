@@ -24,6 +24,7 @@ class ViewResource extends JsonResource
             'venues' => $this->venues,
             'exhibitors' => ExhibitorResource::collection($this->exhibitors),
             'sessions' => SessionResource::collection($this->sessions),
+            'rankings' => RankingDayResource::collection($this->rankings),
             'is_active' => $this->is_active,
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
