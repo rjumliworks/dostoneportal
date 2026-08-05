@@ -30,6 +30,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search by name or code" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.affiliation" placeholder="Search by affiliation" class="form-control" style="width: 20%;">
                                 <Multiselect class="white" style="width: 20%;" :options="registrationOptions" v-model="filter.registration" label="name" :searchable="false" placeholder="Select Registration Type" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                     <i class="bx bx-refresh search-icon"></i>
@@ -118,6 +119,7 @@ export default {
             lists: [],
             filter: {
                 keyword: null,
+                affiliation: null,
                 type: null,
                 registration: null
             },
@@ -147,9 +149,15 @@ export default {
                 const keyword = this.filter.keyword.toLowerCase();
                 data = data.filter(list =>
                     list.name?.toLowerCase().includes(keyword) ||
-                    list.code?.toLowerCase().includes(keyword) ||
-                    list.affiliation?.name?.toLowerCase().includes(keyword) ||
-                    list.others?.toLowerCase().includes(keyword)
+                    list.code?.toLowerCase().includes(keyword)
+                );
+            }
+
+            if(this.filter.affiliation){
+                const affiliation = this.filter.affiliation.toLowerCase();
+                data = data.filter(list =>
+                    list.affiliation?.name?.toLowerCase().includes(affiliation) ||
+                    list.others?.toLowerCase().includes(affiliation)
                 );
             }
 
@@ -179,6 +187,7 @@ export default {
         },
         refresh(){
             this.filter.keyword = null;
+            this.filter.affiliation = null;
             this.filter.type = null;
             this.filter.registration = null;
             this.index = null;
