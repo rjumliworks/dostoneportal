@@ -112,10 +112,10 @@ Route::middleware(['role:Administrator'])->group(function () {
     // Route::get('/rekognition/create', [App\Http\Controllers\Executive\RekognitionController::class, 'create']);
     // Route::get('/rekognition/search', [App\Http\Controllers\Executive\RekognitionController::class, 'search']);
     // Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
-    Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
-    Route::get('/rekognition/collection/{id}/faces/orphaned', [App\Http\Controllers\Executive\RekognitionController::class, 'orphanFaces']);
-    Route::get('/rekognition/collection/{id}/faces/orphaned/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteOrphanFaces']);
-    Route::get('/rekognition/collection/{id}/face/{faceId}/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
+    // Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
+    // Route::get('/rekognition/collection/{id}/faces/orphaned', [App\Http\Controllers\Executive\RekognitionController::class, 'orphanFaces']);
+    // Route::get('/rekognition/collection/{id}/faces/orphaned/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteOrphanFaces']);
+    // Route::get('/rekognition/collection/{id}/face/{faceId}/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
 });
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
