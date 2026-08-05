@@ -18,6 +18,7 @@ use App\Events\SessionEvent;
 use App\Events\CapacityEvent;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
@@ -95,22 +96,42 @@ class RegistrationController extends Controller
                     )->id;
                 }
 
-                if ($request->hasFile('signature')) {
-                    $signature_file = $request->file('signature');
-                    $signature_name = $participant->code.'.'.$signature_file->getClientOriginalExtension();
-                    $detail_data['signature'] = $signature_file->storeAs('participants/'.$participant->code.'/signature/', $signature_name, 'public');
-                }
-
+                $signature_path = null;
                 $avatar_path = null;
-                if ($request->hasFile('avatar')) {
-                    $avatar_path = $this->uploadAvatar($participant, $request->file('avatar'));
-                    $detail_data['avatar'] = $avatar_path;
-                }
 
-                $detail = $participant->detail()->create($detail_data);
+                try {
+                    if ($request->hasFile('signature')) {
+                        $signature_file = $request->file('signature');
+                        $signature_name = $participant->code.'.'.$signature_file->getClientOriginalExtension();
+                        $signature_path = $signature_file->storeAs('participants/'.$participant->code.'/signature/', $signature_name, 'public');
+                        $detail_data['signature'] = $signature_path;
+                    }
 
-                if ($avatar_path) {
-                    $this->indexFace($participant, $detail, $avatar_path);
+                    if ($request->hasFile('avatar')) {
+                        $avatar_path = $this->uploadAvatar($participant, $request->file('avatar'));
+                        $detail_data['avatar'] = $avatar_path;
+                    }
+
+                    $detail = $participant->detail()->create($detail_data);
+
+                    if ($avatar_path) {
+                        $this->indexFace($participant, $detail, $avatar_path);
+                    }
+                } catch (\Throwable $e) {
+                    // storeAs()/uploadAvatar() write straight to disk/S3 — that's
+                    // not covered by DB::transaction()'s rollback, so without this
+                    // every rejected attempt (duplicate face, no face detected, a
+                    // retake that got resubmitted, etc.) permanently orphans the
+                    // file it just uploaded. indexFace() cleans up its own
+                    // Rekognition-side face on failure, so only storage is handled
+                    // here.
+                    if ($avatar_path) {
+                        Storage::disk('s3')->delete($avatar_path);
+                    }
+                    if ($signature_path) {
+                        Storage::disk('public')->delete($signature_path);
+                    }
+                    throw $e;
                 }
 
                 $name = ucwords(strtolower($request->firstname.' '.$request->lastname));
@@ -373,13 +394,27 @@ class RegistrationController extends Controller
                 throw new \RuntimeException('No face was detected in your avatar. Please retake your photo with your face clearly visible.');
             }
 
-            foreach ($result['FaceRecords'] as $record) {
-                ParticipantFace::create([
-                    'participant_id' => $detail->id,
-                    'face_id' => $record['Face']['FaceId'],
-                    'image_id' => $record['Face']['ImageId'],
-                    'status' => 'active',
+            try {
+                foreach ($result['FaceRecords'] as $record) {
+                    ParticipantFace::create([
+                        'participant_id' => $detail->id,
+                        'face_id' => $record['Face']['FaceId'],
+                        'image_id' => $record['Face']['ImageId'],
+                        'status' => 'active',
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                // indexFaces() above already committed the face into the
+                // Rekognition collection — AWS has no rollback, so if bookkeeping
+                // it locally fails, undo the AWS side too. Otherwise it's left
+                // permanently indexed under a participant whose registration is
+                // about to be rolled back, and later blocks anyone with a similar
+                // face as "already registered to another participant".
+                $rekognition->deleteFaces([
+                    'CollectionId' => $collectionId,
+                    'FaceIds' => array_column(array_column($result['FaceRecords'], 'Face'), 'FaceId'),
                 ]);
+                throw $e;
             }
         } catch (\RuntimeException $e) {
             throw $e;

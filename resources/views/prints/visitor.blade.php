@@ -183,7 +183,80 @@
             </thead>
 
             <tbody>
-                @foreach($lists as $dtr)
+                @php
+                    // Manually insert Official Business (OJT) days - training with no time punches
+                    $officialBusinessDates = [
+                        '2026-08-03' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
+                        '2026-08-04' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
+                        '2026-08-05' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
+                    ];
+
+                    $lists = collect($lists)->keyBy('date');
+                    foreach ($officialBusinessDates as $obDate => $obTitle) {
+                        $lists->put($obDate, ['date' => $obDate, 'official_business' => $obTitle]);
+                    }
+                    $lists = $lists->sortKeys()->values();
+
+                    // group consecutive official business days so one brace can span them
+                    $obGroups = [];
+                    $obGroupCount = 0;
+                    foreach ($lists as $obIndex => $obRow) {
+                        if (isset($obRow['official_business'])) {
+                            $obGroupCount++;
+                        } elseif ($obGroupCount > 0) {
+                            $obGroups[] = ['start' => $obIndex - $obGroupCount, 'count' => $obGroupCount];
+                            $obGroupCount = 0;
+                        }
+                    }
+                    if ($obGroupCount > 0) {
+                        $obGroups[] = ['start' => $lists->count() - $obGroupCount, 'count' => $obGroupCount];
+                    }
+
+                    $grandMinutes = 0;
+                @endphp
+                @foreach($lists as $index => $dtr)
+                  @if(isset($dtr['official_business']))
+                    @php
+                        $grandMinutes += 480; // each OJT official business day counts as 8 hours
+                        $isObGroupStart = collect($obGroups)->firstWhere('start', $index);
+                        $isInObGroup = collect($obGroups)->contains(fn($g) => $index >= $g['start'] && $index < $g['start'] + $g['count']);
+                        if ($isObGroupStart) {
+                            $obFontSize = match(true) {
+                                $isObGroupStart['count'] <= 2 => 30,
+                                $isObGroupStart['count'] == 3 => 45,
+                                $isObGroupStart['count'] == 4 => 60,
+                                default => 80,
+                            };
+                        }
+                    @endphp
+                    <tr>
+                        <td class="cntr">{{ \Carbon\Carbon::parse($dtr['date'])->format('F d, Y') }}</td>
+                        @if($isObGroupStart)
+                            <td colspan="4" rowspan="{{ $isObGroupStart['count'] }}" style="position: relative; text-align:center; vertical-align: middle; padding-left: 20px;">
+                                <span style="
+                                    position: absolute;
+                                    left: 4px;
+                                    top: 0;
+                                    bottom: 0;
+                                    font-size: {{ $obFontSize }}px;
+                                    line-height: 1;
+                                    display: flex;
+                                    align-items: center;
+                                    pointer-events: none;
+                                    user-select: none;
+                                    font-weight: 100;
+                                    font-family: 'Segoe UI Thin', 'Arial', sans-serif;
+                                    ">
+                                    &#125;
+                                </span>
+                                OB &ndash; Training: {{ $dtr['official_business'] }}
+                            </td>
+                        @elseif($isInObGroup)
+                            {{-- covered by the rowspan on the group's first row --}}
+                        @endif
+                        <td class="cntr">8h 0m</td>
+                    </tr>
+                  @else
                   @php
     $totalMinutes = 0;
 
@@ -288,7 +361,7 @@
                         </td>
                         <td class="cntr">{{ $totalHours }}</td>
                     </tr>
-                    
+                  @endif
                     @endforeach
                     @php
                     $grandHours = floor($grandMinutes / 60);
@@ -302,7 +375,7 @@
                             {{ $grandHours }}h {{ $remainingMinutes }}m
                         </td>
                     </tr>
-             
+
                 </tbody>
 
             </table>

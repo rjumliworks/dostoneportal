@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Executive;
 
 use App\Http\Controllers\Controller;
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Aws\Rekognition\RekognitionClient;
 use Illuminate\Http\JsonResponse;
@@ -230,6 +231,71 @@ class RekognitionController extends Controller
                     'by_participant' => $byParticipant,
                     'by_image'       => $byImage,
                 ],
+            ]);
+
+        } catch (\Aws\Exception\AwsException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getAwsErrorMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Faces whose external_image_id doesn't match any current participant.
+     * These are leftovers from a registration attempt that failed/rolled back
+     * after IndexFaces() had already committed the face on the AWS side (no
+     * DB transaction covers that call) — they permanently block anyone with a
+     * similar-looking photo with "already registered to another participant",
+     * for a participant that doesn't actually exist. Delete them via
+     * deleteFace() below once confirmed.
+     */
+    public function orphanFaces(string $collectionId): JsonResponse
+    {
+        $rekognition = new RekognitionClient([
+            'region'  => 'ap-southeast-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        try {
+            $faces = [];
+            $nextToken = null;
+
+            do {
+                $result = $rekognition->listFaces([
+                    'CollectionId' => $collectionId,
+                    'NextToken'    => $nextToken,
+                    'MaxResults'   => 100,
+                ]);
+
+                foreach ($result['Faces'] as $face) {
+                    $faces[] = [
+                        'face_id'           => $face['FaceId'],
+                        'image_id'          => $face['ImageId'] ?? null,
+                        'external_image_id' => $face['ExternalImageId'] ?? null,
+                        'confidence'        => $face['Confidence'] ?? null,
+                        'created_at'        => $face['CreatedTimestamp'] ?? null,
+                    ];
+                }
+
+                $nextToken = $result['NextToken'] ?? null;
+
+            } while ($nextToken);
+
+            $existingIds = Participant::pluck('id')->map(fn ($id) => (string) $id)->all();
+
+            $orphans = collect($faces)
+                ->filter(fn ($f) => $f['external_image_id'] !== null && !in_array($f['external_image_id'], $existingIds, true))
+                ->values();
+
+            return response()->json([
+                'success' => true,
+                'count'   => $orphans->count(),
+                'faces'   => $orphans,
             ]);
 
         } catch (\Aws\Exception\AwsException $e) {
