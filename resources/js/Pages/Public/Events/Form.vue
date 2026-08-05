@@ -823,6 +823,16 @@ export default {
             this.clearError('avatar');
             this.startCamera();
         },
+        // Forces a fresh capture after any failed submit attempt. Without this,
+        // a stale photo from an earlier (failed or abandoned) attempt stays in
+        // form.avatar/avatarPreview — on a shared kiosk, staff can then edit the
+        // fields to a different walk-in and resubmit, silently attaching the
+        // previous person's face to the new registration.
+        resetAvatarCapture() {
+            this.stopCamera();
+            this.avatarPreview = null;
+            this.form.avatar = null;
+        },
         async submit() {
             this.form.clearErrors();
             const errs = this.validate();
@@ -832,6 +842,7 @@ export default {
 
             if (Object.keys(errs).length) {
                 this.form.setError(errs);
+                this.resetAvatarCapture();
                 return;
             }
 
@@ -860,10 +871,11 @@ export default {
                     this.form.reset();
                     this.form.clearErrors();
                     this.clearSignature();
-                    this.stopCamera();
-                    this.avatarPreview = null;
-                    this.form.avatar = null;
+                    this.resetAvatarCapture();
                     this.capacityConfirmed = false;
+                },
+                onError: () => {
+                    this.resetAvatarCapture();
                 },
             });
         },
