@@ -114,6 +114,7 @@ Route::middleware(['role:Administrator'])->group(function () {
     // Route::get('/rekognition/collection/{id}', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteCollection']);
     Route::get('/rekognition/collection/{id}/faces', [App\Http\Controllers\Executive\RekognitionController::class, 'listFaces']);
     Route::get('/rekognition/collection/{id}/faces/orphaned', [App\Http\Controllers\Executive\RekognitionController::class, 'orphanFaces']);
+    Route::get('/rekognition/collection/{id}/faces/orphaned/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteOrphanFaces']);
     Route::get('/rekognition/collection/{id}/face/{faceId}/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
 });
 

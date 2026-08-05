@@ -247,9 +247,42 @@ class RekognitionController extends Controller
      * after IndexFaces() had already committed the face on the AWS side (no
      * DB transaction covers that call) — they permanently block anyone with a
      * similar-looking photo with "already registered to another participant",
-     * for a participant that doesn't actually exist. Delete them via
-     * deleteFace() below once confirmed.
+     * for a participant that doesn't actually exist.
      */
+    private function fetchOrphanFaces(RekognitionClient $rekognition, string $collectionId): array
+    {
+        $faces = [];
+        $nextToken = null;
+
+        do {
+            $result = $rekognition->listFaces([
+                'CollectionId' => $collectionId,
+                'NextToken'    => $nextToken,
+                'MaxResults'   => 100,
+            ]);
+
+            foreach ($result['Faces'] as $face) {
+                $faces[] = [
+                    'face_id'           => $face['FaceId'],
+                    'image_id'          => $face['ImageId'] ?? null,
+                    'external_image_id' => $face['ExternalImageId'] ?? null,
+                    'confidence'        => $face['Confidence'] ?? null,
+                    'created_at'        => $face['CreatedTimestamp'] ?? null,
+                ];
+            }
+
+            $nextToken = $result['NextToken'] ?? null;
+
+        } while ($nextToken);
+
+        $existingIds = Participant::pluck('id')->map(fn ($id) => (string) $id)->all();
+
+        return collect($faces)
+            ->filter(fn ($f) => $f['external_image_id'] !== null && !in_array($f['external_image_id'], $existingIds, true))
+            ->values()
+            ->all();
+    }
+
     public function orphanFaces(string $collectionId): JsonResponse
     {
         $rekognition = new RekognitionClient([
@@ -262,40 +295,59 @@ class RekognitionController extends Controller
         ]);
 
         try {
-            $faces = [];
-            $nextToken = null;
-
-            do {
-                $result = $rekognition->listFaces([
-                    'CollectionId' => $collectionId,
-                    'NextToken'    => $nextToken,
-                    'MaxResults'   => 100,
-                ]);
-
-                foreach ($result['Faces'] as $face) {
-                    $faces[] = [
-                        'face_id'           => $face['FaceId'],
-                        'image_id'          => $face['ImageId'] ?? null,
-                        'external_image_id' => $face['ExternalImageId'] ?? null,
-                        'confidence'        => $face['Confidence'] ?? null,
-                        'created_at'        => $face['CreatedTimestamp'] ?? null,
-                    ];
-                }
-
-                $nextToken = $result['NextToken'] ?? null;
-
-            } while ($nextToken);
-
-            $existingIds = Participant::pluck('id')->map(fn ($id) => (string) $id)->all();
-
-            $orphans = collect($faces)
-                ->filter(fn ($f) => $f['external_image_id'] !== null && !in_array($f['external_image_id'], $existingIds, true))
-                ->values();
+            $orphans = $this->fetchOrphanFaces($rekognition, $collectionId);
 
             return response()->json([
                 'success' => true,
-                'count'   => $orphans->count(),
+                'count'   => count($orphans),
                 'faces'   => $orphans,
+            ]);
+
+        } catch (\Aws\Exception\AwsException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getAwsErrorMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Deletes every orphaned face found by fetchOrphanFaces() in a single
+     * AWS call, instead of walking deleteFace() one FaceId at a time.
+     */
+    public function deleteOrphanFaces(string $collectionId): JsonResponse
+    {
+        $rekognition = new RekognitionClient([
+            'region'  => 'ap-southeast-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        try {
+            $faceIds = array_column($this->fetchOrphanFaces($rekognition, $collectionId), 'face_id');
+
+            if (empty($faceIds)) {
+                return response()->json([
+                    'success' => true,
+                    'deleted' => 0,
+                    'message' => 'No orphaned faces found.',
+                ]);
+            }
+
+            // deleteFaces() accepts up to 4096 FaceIds per call — comfortably
+            // above anything this collection will accumulate as orphans.
+            $rekognition->deleteFaces([
+                'CollectionId' => $collectionId,
+                'FaceIds' => $faceIds,
+            ]);
+
+            return response()->json([
+                'success'  => true,
+                'deleted'  => count($faceIds),
+                'face_ids' => $faceIds,
             ]);
 
         } catch (\Aws\Exception\AwsException $e) {

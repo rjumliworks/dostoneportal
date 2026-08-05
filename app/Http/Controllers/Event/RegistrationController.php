@@ -369,8 +369,34 @@ class RegistrationController extends Controller
             }
 
             $match = $matches['FaceMatches'][0] ?? null;
-            if ($match && ($match['Face']['ExternalImageId'] ?? null) !== (string) $participant->id) {
-                throw new \RuntimeException('This face is already registered to another participant. Please use your own photo.');
+            $matchedId = $match['Face']['ExternalImageId'] ?? null;
+
+            if ($match && $matchedId !== (string) $participant->id) {
+                if ($matchedId !== null && Participant::where('id', $matchedId)->exists()) {
+                    throw new \RuntimeException('This face is already registered to another participant. Please use your own photo.');
+                }
+
+                // Stale/orphaned face: indexed by an earlier attempt that
+                // failed/rolled back after IndexFaces() had already committed
+                // it on the AWS side (no DB transaction covers that call —
+                // see the cleanup below and in store()). Nothing in the DB
+                // owns it, so delete it and continue indexing this
+                // participant's photo instead of blocking them over a ghost
+                // record. Narrow race: if $matchedId belongs to a
+                // registration that's still mid-transaction (not yet
+                // committed), this won't see it and could delete a face
+                // that's about to become legitimate — rare in practice since
+                // it needs two near-simultaneous submissions of the literal
+                // same photo, but worth knowing if this ever misfires.
+                \Log::info('Rekognition: deleting orphaned face with no matching participant.', [
+                    'face_id' => $match['Face']['FaceId'],
+                    'external_image_id' => $matchedId,
+                ]);
+
+                $rekognition->deleteFaces([
+                    'CollectionId' => $collectionId,
+                    'FaceIds' => [$match['Face']['FaceId']],
+                ]);
             }
 
             $existingFaces = ParticipantFace::where('participant_id', $detail->id)->get();
