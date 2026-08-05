@@ -25,6 +25,9 @@
                             <div class="input-group mb-1">
                                 <Multiselect class="white" style="width: 170px;" :options="months" v-model="month" :searchable="true" :canClear="false" placeholder="Select Month" />
                                 <input type="text" v-model="year" class="form-control" style="width: 90px;">
+                                <span @click="print()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;">
+                                    <i class="ri-printer-line search-icon"></i>
+                                </span>
                             </div>
                         </b-col>
                         <b-col class="text-lg-end mb-1">
@@ -40,16 +43,17 @@
                                 <tr class="text-white">
                                     <th class="text-center" style="width: 4%;">#</th>
                                     <th>Name</th>
-                                    <th class="text-center" style="width: 15%;">Undertime Minutes</th>
-                                    <th class="text-center" style="width: 15%;">Tardy Minutes</th>
-                                    <th class="text-center" style="width: 20%;">Total Summary of Undertime/Tardy in Minutes</th>
-                                    <th class="text-center" style="width: 18%;">Total Occurrences Undertime/Tardy</th>
+                                    <th class="text-center" style="width: 13%;">Undertime Minutes</th>
+                                    <th class="text-center" style="width: 13%;">Tardy Minutes</th>
+                                    <th class="text-center" style="width: 17%;">Total Summary of Undertime/Tardy in Minutes</th>
+                                    <th class="text-center" style="width: 16%;">Total Occurrences Undertime/Tardy</th>
+                                    <th class="text-center" style="width: 10%;">Incomplete</th>
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-13">
                                 <template v-for="group in lists" v-bind:key="group.division">
                                     <tr class="bg-primary-subtle">
-                                        <td colspan="6" class="fw-semibold">{{ group.division }}</td>
+                                        <td colspan="7" class="fw-semibold">{{ group.division }}</td>
                                     </tr>
                                     <tr v-for="(user,index) in group.users" v-bind:key="user.user_id" :class="rowClass(user.occurrences)">
                                         <td class="text-center">{{ index + 1 }}</td>
@@ -58,6 +62,12 @@
                                         <td class="text-center">{{ user.tardiness }}</td>
                                         <td class="text-center">{{ user.total }}</td>
                                         <td class="text-center">{{ user.occurrences }}</td>
+                                        <td class="text-center">
+                                            <span v-if="user.incomplete_count > 0" @click="openIncomplete(user)" class="badge bg-secondary-subtle text-secondary border border-secondary" style="cursor: pointer;" v-b-tooltip.hover title="View incomplete DTRs">
+                                                {{ user.incomplete_count }}
+                                            </span>
+                                            <span v-else class="text-muted">0</span>
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -67,16 +77,19 @@
             </div>
         </div>
     </BRow>
+    <Incomplete ref="incomplete"/>
 </template>
 <script>
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
+import Incomplete from './Modals/Incomplete.vue';
 export default {
-    components: { PageHeader, Multiselect },
+    components: { PageHeader, Multiselect, Incomplete },
     props: ['years','divisions'],
     data(){
         return {
             lists: [],
+            incompleteList: [],
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
             month: new Date().toLocaleString('default', { month: 'long' }),
             year: new Date().getFullYear(),
@@ -103,7 +116,8 @@ export default {
                 }
             })
             .then(response => {
-                this.lists = response.data;
+                this.lists = response.data.groups;
+                this.incompleteList = response.data.incomplete;
             })
             .catch(err => console.log(err));
         },
@@ -111,6 +125,13 @@ export default {
             if(occurrences >= 10) return 'bg-danger-subtle';
             if(occurrences >= 6) return 'bg-warning-subtle';
             return '';
+        },
+        openIncomplete(user){
+            const lists = this.incompleteList.filter(item => item.user_id === user.user_id);
+            this.$refs.incomplete.show(lists, user.name);
+        },
+        print(){
+            window.open('/tardiness?option=print&month='+this.month+'&year='+this.year);
         }
     }
 }

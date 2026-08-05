@@ -53,10 +53,11 @@ class TopClass
             })
             ->get();
 
-        // Compute lates: DTR tardiness/undertime not zero
+        // Compute lates: DTR tardiness/undertime not zero, only counting completed DTRs
         $usersWithLates = $users->map(function ($user) use ($startOfMonth, $endOfMonth) {
             $lateCount = $user->dtrs()
                 ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->where('is_completed', 1)
                 ->where(function ($q) {
                     $q->where('tardiness', '!=', 0)
                     ->orWhere('undertime', '!=', 0);
@@ -81,26 +82,32 @@ class TopClass
         [$startOfMonth, $endOfMonth] = $this->monthRange($request);
 
         // Users (Regular type, Active status only) with monthly undertime/tardiness totals
+        // (only completed DTRs count toward tardiness/undertime; incomplete ones are tracked separately below)
         $users = User::with(['profile', 'organization.division'])
             ->whereHas('organization', function ($q) {
                 $q->where('type_id', 16)->where('status_id', 2);
             })
             ->withSum(['dtrs as undertime_minutes' => function ($q) use ($startOfMonth, $endOfMonth) {
-                $q->whereBetween('date', [$startOfMonth, $endOfMonth]);
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth])->where('is_completed', 1);
             }], 'undertime')
             ->withSum(['dtrs as tardiness_minutes' => function ($q) use ($startOfMonth, $endOfMonth) {
-                $q->whereBetween('date', [$startOfMonth, $endOfMonth]);
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth])->where('is_completed', 1);
             }], 'tardiness')
             ->withCount(['dtrs as occurrences' => function ($q) use ($startOfMonth, $endOfMonth) {
                 $q->whereBetween('date', [$startOfMonth, $endOfMonth])
+                    ->where('is_completed', 1)
                     ->where(function ($q2) {
                         $q2->where('tardiness', '!=', 0)
                         ->orWhere('undertime', '!=', 0);
                     });
             }])
+            ->withCount(['dtrs as incomplete_count' => function ($q) use ($startOfMonth, $endOfMonth) {
+                $q->whereBetween('date', [$startOfMonth, $endOfMonth])
+                    ->where('is_completed', 0);
+            }])
             ->get();
 
-        return $users
+        $groups = $users
             ->map(function ($user) {
                 $undertime = (int) $user->undertime_minutes;
                 $tardiness = (int) $user->tardiness_minutes;
@@ -113,6 +120,7 @@ class TopClass
                     'tardiness' => $tardiness,
                     'total' => $undertime + $tardiness,
                     'occurrences' => (int) $user->occurrences,
+                    'incomplete_count' => (int) $user->incomplete_count,
                 ];
             })
             ->groupBy('division')
@@ -122,11 +130,36 @@ class TopClass
                     'division' => $division,
                     'users' => $users->sortBy([
                         ['occurrences', 'desc'],
-                        ['name', 'asc'],
+                        ['total', 'desc'],
                     ])->values(),
                 ];
             })
             ->values();
+
+        // DTRs excluded from the totals above because they are not yet completed
+        $incompleteList = Dtr::with(['user.profile', 'user.organization.division'])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->where('is_completed', 0)
+            ->whereHas('user.organization', function ($q) {
+                $q->where('type_id', 16)->where('status_id', 2);
+            })
+            ->orderBy('date')
+            ->get()
+            ->map(function ($dtr) {
+                return [
+                    'user_id' => $dtr->user_id,
+                    'name' => $dtr->user->profile->name ?? '',
+                    'division' => $dtr->user->organization->division->name ?? 'Unassigned',
+                    'date' => $dtr->date,
+                ];
+            })
+            ->values();
+
+        return [
+            'groups' => $groups,
+            'incomplete_count' => $incompleteList->count(),
+            'incomplete' => $incompleteList,
+        ];
     }
 
     public function absencesReport($request)

@@ -8,16 +8,18 @@ use App\Services\DropdownClass;
 use App\Services\HumanResource\Dashboard\TopClass;
 use App\Services\HumanResource\Dashboard\BarClass;
 use App\Services\HumanResource\Dashboard\IndexClass;
+use App\Services\HumanResource\Dashboard\PrintClass;
 
 class DashboardController extends Controller
 {
-    protected $dashboard,$dropdown,$top,$bar;
+    protected $dashboard,$dropdown,$top,$bar,$print;
 
-    public function __construct(IndexClass $dashboard, BarClass $bar, DropdownClass $dropdown, TopClass $top){
+    public function __construct(IndexClass $dashboard, BarClass $bar, DropdownClass $dropdown, TopClass $top, PrintClass $print){
         $this->dashboard = $dashboard;
         $this->dropdown = $dropdown;
         $this->bar = $bar;
         $this->top = $top;
+        $this->print = $print;
     }
 
     public function index(Request $request){
@@ -49,6 +51,9 @@ class DashboardController extends Controller
             case 'list':
                 return $this->top->tardinessReport($request);
             break;
+            case 'print':
+                return $this->print->tardiness($request);
+            break;
             default:
                 return inertia('Modules/HumanResource/Dashboard/Tardiness',[
                     'years' => $this->dashboard->years(),
@@ -61,6 +66,9 @@ class DashboardController extends Controller
         switch($request->option){
             case 'list':
                 return $this->top->absencesReport($request);
+            break;
+            case 'print':
+                return $this->print->absences($request);
             break;
             default:
                 return inertia('Modules/HumanResource/Dashboard/Absences',[

@@ -25,6 +25,9 @@
                             <div class="input-group mb-1">
                                 <Multiselect class="white" style="width: 170px;" :options="months" v-model="month" :searchable="true" :canClear="false" placeholder="Select Month" />
                                 <input type="text" v-model="year" class="form-control" style="width: 90px;">
+                                <span @click="print()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;">
+                                    <i class="ri-printer-line search-icon"></i>
+                                </span>
                             </div>
                         </b-col>
                     </b-row>
@@ -98,6 +101,9 @@ export default {
                 this.lists = response.data;
             })
             .catch(err => console.log(err));
+        },
+        print(){
+            window.open('/absences?option=print&month='+this.month+'&year='+this.year);
         }
     }
 }

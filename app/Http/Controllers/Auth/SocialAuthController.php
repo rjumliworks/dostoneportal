@@ -50,7 +50,9 @@ class SocialAuthController extends Controller
 
                         $user->update([
                             'provider'    => $provider,
-                            'provider_id' => $socialUser->getId()
+                            'provider_id' => $socialUser->getId(),
+                            'email_verified_at' => now(), 
+                            'code' => $code
                         ]);
                     }
                 }else{
