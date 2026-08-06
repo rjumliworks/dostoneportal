@@ -100,6 +100,9 @@ class SessionController extends Controller
                 case 'status':
                     return $this->update->status($request);
                 break;
+                case 'notify-approved':
+                    return $this->update->notifyApproved($request);
+                break;
             }
         });
         

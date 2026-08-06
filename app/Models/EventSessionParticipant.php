@@ -12,7 +12,7 @@ class EventSessionParticipant extends Model
     public const CAPACITY_EXCLUDED_STATUSES = [57, 59, 60];
 
     protected $fillable = [
-      'date','participant_id', 'session_id', 'status_id','method_id','attended_at','image','is_approved'
+      'date','participant_id', 'session_id', 'status_id','method_id','attended_at','image','is_approved','approval_mailed_at'
     ];
 
     public function participant()

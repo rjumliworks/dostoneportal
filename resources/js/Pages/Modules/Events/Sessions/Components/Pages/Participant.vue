@@ -36,11 +36,45 @@
             </div>
             <div class="flex-shrink-0">
                 <div class="d-flex flex-wrap gap-2 mt-3">
-                    
+                    <b-button v-if="unmailedApprovedCount > 0" @click="confirmNotify = true" variant="soft-warning" size="sm">
+                        <i class="ri-mail-send-line align-bottom me-1"></i> Send Approval Emails ({{ unmailedApprovedCount }})
+                    </b-button>
                 </div>
             </div>
         </div>
     </div>
+
+    <b-modal
+        v-model="confirmNotify"
+        hide-footer
+        header-class="p-0"
+        body-class="p-0"
+        class="v-modal-custom"
+        content-class="border-0"
+        centered
+        hide-header-close
+    >
+        <b-row class="g-0">
+            <b-col lg="12">
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-sm mx-auto mb-3">
+                        <div class="avatar-title rounded-circle bg-warning-subtle text-warning">
+                            <i class="ri-mail-send-line fs-24"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-semibold fs-14">Send Approval Emails?</h4>
+                    <p class="text-muted fs-12 mb-4">
+                        This will send the approval confirmation email to {{ unmailedApprovedCount }} approved
+                        participant{{ unmailedApprovedCount === 1 ? '' : 's' }} who haven't received it yet.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-light" @click="confirmNotify = false" :disabled="notifyForm.processing">Cancel</button>
+                        <button class="btn btn-warning" @click="sendBulkApprovalEmails" :disabled="notifyForm.processing">Send</button>
+                    </div>
+                </div>
+            </b-col>
+        </b-row>
+    </b-modal>
     
         <div class="table-responsive table-card" style="height: calc(100vh - 520px);">
             <table class="table table-nowrap align-middle mb-0">
@@ -92,6 +126,7 @@
 </template>
 <script>
 import _ from 'lodash';
+import { useForm } from '@inertiajs/vue3';
 import Participant from './Modals/Participant.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
@@ -102,7 +137,12 @@ export default {
             index: null,
             statusIndex: null,
             search: '',
-            status: null
+            status: null,
+            confirmNotify: false,
+            notifyForm: useForm({
+                id: null,
+                option: 'notify-approved'
+            })
         }
     },
      computed: {
@@ -120,6 +160,10 @@ export default {
             return this.participants
                 .filter(participant => !keyword || participant.name?.toLowerCase().includes(keyword))
                 .filter(participant => !this.status || participant.status.id === this.status);
+        },
+        unmailedApprovedCount() {
+            if (!this.is_exclusive) return 0;
+            return this.participants.filter(participant => participant.is_approved && !participant.approval_mailed_at).length;
         }
     },
     methods: {
@@ -137,6 +181,15 @@ export default {
         viewStatus(index,value){
             this.statusIndex = index;
             this.status = value;
+        },
+        sendBulkApprovalEmails(){
+            this.notifyForm.id = this.id;
+            this.notifyForm.put('/sessions/update', {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.confirmNotify = false;
+                },
+            });
         },
     }
 }

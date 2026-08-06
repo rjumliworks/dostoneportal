@@ -12,13 +12,14 @@ use Illuminate\Support\Str;
 use App\Http\Resources\Event\AttendanceResource;
 use App\Http\Resources\Api\Events\Session\ParticipantResource;
 use App\Http\Resources\Event\Session\ParticipantListResource;
+use App\Jobs\ParticipantApprovedJob;
 
 class UpdateClass
 {
     public function participant($request){
         $data = EventSessionParticipant::with('participant','status')
         ->where('session_id',$request->session_id)
-        ->where('participant_id',$request->participant_id)->first();        
+        ->where('participant_id',$request->participant_id)->first();
         $data->status_id = $request->status_id;
         $data->is_approved = $request->is_approved;
         $data->save();
@@ -29,7 +30,13 @@ class UpdateClass
             'promote' => 'promote',
             default => 'reject',
         };
-        broadcast(new SessionEvent(new ParticipantResource($data), $broadcastType));
+        // broadcast(new SessionEvent(new ParticipantResource($data), $broadcastType));
+
+        if ($request->action === 'approve') {
+            ParticipantApprovedJob::dispatch($data->participant->email, $data->participant->name, $data->session_id)->onConnection('database');
+            $data->approval_mailed_at = now();
+            $data->save();
+        }
 
         $message = match ($request->action) {
             'approve' => 'Participant successfully approved.',
@@ -41,6 +48,43 @@ class UpdateClass
         return [
             'data' => new ParticipantListResource($data),
             'message' => $message,
+            'info' => 'success',
+        ];
+    }
+
+    public function notifyApproved($request){
+        $hashids = new Hashids('krad',10);
+        $key = $hashids->decode($request->id);
+
+        $session = EventSession::find($key[0]);
+        if (!$session || !$session->is_exclusive) {
+            return [
+                'data' => 0,
+                'message' => 'Bulk approval emails are only available for exclusive sessions.',
+                'info' => 'error',
+            ];
+        }
+
+        $pending = EventSessionParticipant::with('participant')
+            ->where('session_id', $key[0])
+            ->where('is_approved', 1)
+            ->whereNull('approval_mailed_at')
+            ->get();
+
+        foreach ($pending as $data) {
+            ParticipantApprovedJob::dispatch($data->participant->email, $data->participant->name, $data->session_id)->onConnection('database');
+        }
+
+        EventSessionParticipant::where('session_id', $key[0])
+            ->where('is_approved', 1)
+            ->whereNull('approval_mailed_at')
+            ->update(['approval_mailed_at' => now()]);
+
+        return [
+            'data' => $pending->count(),
+            'message' => $pending->count() > 0
+                ? $pending->count().' approval email(s) queued for sending.'
+                : 'No pending participants to notify.',
             'info' => 'success',
         ];
     }
