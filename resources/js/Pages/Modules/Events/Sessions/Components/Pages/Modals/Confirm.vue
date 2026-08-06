@@ -99,6 +99,22 @@ export default {
                     btnClass: 'btn-primary',
                     btnLabel: 'Promote',
                 },
+                pending: {
+                    avatarClass: 'bg-warning-subtle text-warning',
+                    icon: 'ri-time-line',
+                    title: 'Mark as Pending?',
+                    body: 'Are you sure you want to mark this participant as pending? Their approval status will be reset for review.',
+                    btnClass: 'btn-warning',
+                    btnLabel: 'Mark as Pending',
+                },
+                cancel: {
+                    avatarClass: 'bg-warning-subtle text-warning',
+                    icon: 'ri-forbid-line',
+                    title: 'Cancel Attendance?',
+                    body: 'Are you sure you want to cancel this participant\'s attendance? This indicates the participant no longer wishes to attend this session.',
+                    btnClass: 'btn-warning',
+                    btnLabel: 'Cancel Attendance',
+                },
             };
             return configs[this.action] || configs.reject;
         },
@@ -110,9 +126,12 @@ export default {
             if (data === 'approve') {
                 this.form.is_approved = 1;
                 this.form.status_id = 58;
-            } else if (data === 'promote') {
+            } else if (data === 'promote' || data === 'pending') {
                 this.form.is_approved = 0;
                 this.form.status_id = 52;
+            } else if (data === 'cancel') {
+                this.form.is_approved = 0;
+                this.form.status_id = 59;
             } else {
                 this.form.is_approved = 0;
                 this.form.status_id = 57;

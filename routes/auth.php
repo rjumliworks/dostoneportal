@@ -44,6 +44,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'store']);
     Route::post('/otp', [ProfileController::class, 'otp']);
     Route::put('/profile/updated', [ProfileController::class, 'update']);
+    Route::get('/profile/security', [ProfileController::class, 'security']);
+    Route::post('/profile/pds', [ProfileController::class, 'pds']);
+    Route::put('/profile/pds/{id}', [ProfileController::class, 'pds']);
+    Route::delete('/profile/pds/{id}', [ProfileController::class, 'destroyPds']);
     Route::get('two-factor-challenge', [TwoFactorAuthenticationController::class, 'index'])->name('twofactor');
     Route::post('two-factor-challenge', [TwoFactorAuthenticationController::class, 'store']);
     Route::post('two-factor/enable', [TwoFactorAuthenticationController::class, 'enable']);

@@ -93,6 +93,70 @@ class SaveClass
         ];
     }
 
+    public function pds($request)
+    {
+        $map = [
+            'academic' => \App\Models\UserAcademic::class,
+            'eligibility' => \App\Models\UserEligibility::class,
+            'work_experience' => \App\Models\UserWorkExperience::class,
+            'voluntary_work' => \App\Models\UserVoluntaryWork::class,
+            'training' => \App\Models\UserTraining::class,
+            'other_information' => \App\Models\UserOtherInformation::class,
+            'reference' => \App\Models\UserReference::class,
+        ];
+
+        $model = $map[$request->option];
+        $payload = $request->except(['option', 'id']);
+        $payload['user_id'] = \Auth::id();
+
+        if ($request->filled('id')) {
+            $record = $model::where('id', $request->id)->where('user_id', \Auth::id())->firstOrFail();
+            $record->update($payload);
+        } else {
+            $record = $model::create($payload);
+        }
+
+        return [
+            'data' => $record,
+            'message' => 'Record saved successfully.',
+            'info' => 'Your Personal Data Sheet has been updated.',
+        ];
+    }
+
+    public function declaration($request)
+    {
+        $record = \App\Models\UserPdsDeclaration::updateOrCreate(
+            ['user_id' => \Auth::id()],
+            $request->except('option')
+        );
+
+        return [
+            'data' => $record,
+            'message' => 'Declaration saved successfully.',
+            'info' => 'Your Personal Data Sheet has been updated.',
+        ];
+    }
+
+    public function removePds($request, $id)
+    {
+        $map = [
+            'academic' => \App\Models\UserAcademic::class,
+            'eligibility' => \App\Models\UserEligibility::class,
+            'work_experience' => \App\Models\UserWorkExperience::class,
+            'voluntary_work' => \App\Models\UserVoluntaryWork::class,
+            'training' => \App\Models\UserTraining::class,
+            'other_information' => \App\Models\UserOtherInformation::class,
+            'reference' => \App\Models\UserReference::class,
+        ];
+
+        $model = $map[$request->option];
+        $model::where('id', $id)->where('user_id', \Auth::id())->delete();
+
+        return [
+            'message' => 'Record removed successfully.',
+        ];
+    }
+
     public function destroy($request)
     {
         if (!Auth::guard('web')->validate([

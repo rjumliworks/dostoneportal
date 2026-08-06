@@ -77,6 +77,14 @@
             <div class="d-grid gap-2" v-if="selected.status.name == 'Reserved'">
                 <button @click="openApproval('promote')" class="btn btn-primary" type="button">Promote to Pending</button>
             </div>
+            <div class="d-grid gap-2" v-if="selected.status.name == 'Approved'">
+                <button v-if="is_exclusive" @click="openApproval('reject')" class="btn btn-soft-danger" type="button">Reject</button>
+                <button @click="openApproval('cancel')" class="btn btn-soft-warning" type="button">Cancel Attendance</button>
+            </div>
+            <div class="d-grid gap-2" v-if="is_exclusive && selected.status.name == 'Rejected'">
+                <button @click="openApproval('approve')" class="btn btn-success" type="button">Approve</button>
+                <button @click="openApproval('pending')" class="btn btn-soft-warning" type="button">Mark as Pending</button>
+            </div>
         </div>
     </div>
 </b-modal>

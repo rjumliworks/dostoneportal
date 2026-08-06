@@ -99,6 +99,41 @@ class User extends Authenticatable  implements MustVerifyEmail
         return $this->hasMany('App\Models\UserContract', 'user_id');
     }
 
+    public function eligibilities()
+    {
+        return $this->hasMany('App\Models\UserEligibility', 'user_id')->orderByDesc('id');
+    }
+
+    public function workExperiences()
+    {
+        return $this->hasMany('App\Models\UserWorkExperience', 'user_id')->orderByDesc('start_at');
+    }
+
+    public function voluntaryWorks()
+    {
+        return $this->hasMany('App\Models\UserVoluntaryWork', 'user_id')->orderByDesc('start_at');
+    }
+
+    public function trainings()
+    {
+        return $this->hasMany('App\Models\UserTraining', 'user_id')->orderByDesc('start_at');
+    }
+
+    public function otherInformation()
+    {
+        return $this->hasMany('App\Models\UserOtherInformation', 'user_id');
+    }
+
+    public function references()
+    {
+        return $this->hasMany('App\Models\UserReference', 'user_id');
+    }
+
+    public function declaration()
+    {
+        return $this->hasOne('App\Models\UserPdsDeclaration', 'user_id');
+    }
+
     public function credentials()
     {
         return $this->hasMany('App\Models\UserCredential', 'user_id')->orderBy('created_at','DESC');

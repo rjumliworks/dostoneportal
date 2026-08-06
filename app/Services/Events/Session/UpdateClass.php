@@ -28,6 +28,8 @@ class UpdateClass
         $broadcastType = match ($request->action) {
             'approve' => 'approve',
             'promote' => 'promote',
+            'pending' => 'pending',
+            'cancel' => 'cancel',
             default => 'reject',
         };
         // broadcast(new SessionEvent(new ParticipantResource($data), $broadcastType));
@@ -42,6 +44,8 @@ class UpdateClass
             'approve' => 'Participant successfully approved.',
             'reject' => 'Participant successfully rejected.',
             'promote' => 'Participant successfully promoted from the waitlist.',
+            'pending' => 'Participant successfully marked as pending.',
+            'cancel' => 'Participant attendance successfully cancelled.',
             default => 'Participant status successfully updated.',
         };
 

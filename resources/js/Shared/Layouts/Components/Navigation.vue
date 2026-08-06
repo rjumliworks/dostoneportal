@@ -130,10 +130,9 @@
                             <span class="align-middle"> Help</span>
                         </Link> -->
                         <div class="dropdown-divider"></div>
-                        <Link class="dropdown-item" href="/pages/profile-setting">
-                            <!-- <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">New</BBadge> -->
-                            <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
-                            <span class="align-middle"> Settings</span>
+                        <Link class="dropdown-item" href="/profile/security">
+                            <i class="mdi mdi-shield-lock-outline text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle"> Account Security</span>
                         </Link>
                         <Link class="dropdown-item" href="/confirm-password">
                             <i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>

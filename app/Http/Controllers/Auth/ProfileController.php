@@ -5,25 +5,39 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Models\UserCertificate;
 use App\Models\UserAddress;
+use App\Models\UserAcademic;
+use App\Models\UserContract;
+use App\Models\UserEligibility;
+use App\Models\UserWorkExperience;
+use App\Models\UserVoluntaryWork;
+use App\Models\UserTraining;
+use App\Models\UserOtherInformation;
+use App\Models\UserReference;
+use App\Models\UserPdsDeclaration;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Profile\ViewClass;
 use App\Services\Profile\SaveClass;
+use App\Services\DropdownClass;
 use App\Http\Requests\Auth\ProfileRequest;
+use App\Http\Requests\Auth\PdsRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
-use App\Mail\AccountActivationCode; 
+use App\Mail\AccountActivationCode;
 use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends Controller
 {
     use HandlesTransaction;
 
-    public function __construct(ViewClass $view, SaveClass $save){
+    public $view, $save, $dropdown;
+
+    public function __construct(ViewClass $view, SaveClass $save, DropdownClass $dropdown){
         $this->view = $view;
         $this->save = $save;
+        $this->dropdown = $dropdown;
     }
 
     public function index(Request $request){
@@ -41,11 +55,53 @@ class ProfileController extends Controller
             case 'sessions':
                 return $this->view->sessions($request);
             break;
-            default: 
+            default:
+            $userId = \Auth::user()->id;
             return inertia('Auth/Profile/Index',[
-                'addresses' => UserAddress::with('region','province','municipality','barangay')->where('user_id',\Auth::user()->id)->get()
+                'addresses' => UserAddress::with('region','province','municipality','barangay')->where('user_id',$userId)->get(),
+                'academics' => UserAcademic::with('school','course','level')->where('user_id',$userId)->orderByDesc('id')->get(),
+                'eligibilities' => UserEligibility::where('user_id',$userId)->orderByDesc('id')->get(),
+                'contracts' => UserContract::with('position','type')->where('user_id',$userId)->orderByDesc('start_at')->get(),
+                'workExperiences' => UserWorkExperience::where('user_id',$userId)->orderByDesc('start_at')->get(),
+                'voluntaryWorks' => UserVoluntaryWork::where('user_id',$userId)->orderByDesc('start_at')->get(),
+                'trainings' => UserTraining::where('user_id',$userId)->orderByDesc('start_at')->get(),
+                'otherInformation' => UserOtherInformation::where('user_id',$userId)->get(),
+                'references' => UserReference::where('user_id',$userId)->get(),
+                'declaration' => UserPdsDeclaration::where('user_id',$userId)->first(),
+                'dropdowns' => [
+                    'levels' => $this->dropdown->datas('Level'),
+                ],
             ]);
         }
+    }
+
+    public function security(){
+        return inertia('Auth/Profile/Security/Index');
+    }
+
+    public function pds(PdsRequest $request, $id = null){
+        if ($id) {
+            $request->merge(['id' => $id]);
+        }
+        $result = $this->handleTransaction(function () use ($request) {
+            return $request->option === 'declaration'
+                ? $this->save->declaration($request)
+                : $this->save->pds($request);
+        });
+
+        return back()->with([
+            'data' => $result['data'] ?? [],
+            'message' => $result['message'],
+            'info' => $result['info'] ?? '',
+        ]);
+    }
+
+    public function destroyPds(Request $request, $id){
+        $result = $this->save->removePds($request, $id);
+
+        return back()->with([
+            'message' => $result['message'],
+        ]);
     }
 
     public function store(Request $request)
