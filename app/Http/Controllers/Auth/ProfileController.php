@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\UserInformation;
 use App\Models\UserCertificate;
 use App\Models\UserAddress;
 use App\Models\UserAcademic;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Profile\ViewClass;
 use App\Services\Profile\SaveClass;
+use App\Services\Profile\PrintClass;
 use App\Services\DropdownClass;
 use App\Http\Requests\Auth\ProfileRequest;
 use App\Http\Requests\Auth\PdsRequest;
@@ -32,12 +34,13 @@ class ProfileController extends Controller
 {
     use HandlesTransaction;
 
-    public $view, $save, $dropdown;
+    public $view, $save, $dropdown, $print;
 
-    public function __construct(ViewClass $view, SaveClass $save, DropdownClass $dropdown){
+    public function __construct(ViewClass $view, SaveClass $save, DropdownClass $dropdown, PrintClass $print){
         $this->view = $view;
         $this->save = $save;
         $this->dropdown = $dropdown;
+        $this->print = $print;
     }
 
     public function index(Request $request){
@@ -55,24 +58,60 @@ class ProfileController extends Controller
             case 'sessions':
                 return $this->view->sessions($request);
             break;
+            case 'download':
+                return $this->print->pds(\Auth::id());
+            break;
             default:
-            $userId = \Auth::user()->id;
-            return inertia('Auth/Profile/Index',[
-                'addresses' => UserAddress::with('region','province','municipality','barangay')->where('user_id',$userId)->get(),
-                'academics' => UserAcademic::with('school','course','level')->where('user_id',$userId)->orderByDesc('id')->get(),
-                'eligibilities' => UserEligibility::where('user_id',$userId)->orderByDesc('id')->get(),
-                'contracts' => UserContract::with('position','type')->where('user_id',$userId)->orderByDesc('start_at')->get(),
-                'workExperiences' => UserWorkExperience::where('user_id',$userId)->orderByDesc('start_at')->get(),
-                'voluntaryWorks' => UserVoluntaryWork::where('user_id',$userId)->orderByDesc('start_at')->get(),
-                'trainings' => UserTraining::where('user_id',$userId)->orderByDesc('start_at')->get(),
-                'otherInformation' => UserOtherInformation::where('user_id',$userId)->get(),
-                'references' => UserReference::where('user_id',$userId)->get(),
-                'declaration' => UserPdsDeclaration::where('user_id',$userId)->first(),
-                'dropdowns' => [
-                    'levels' => $this->dropdown->datas('Level'),
-                ],
-            ]);
+            return inertia('Auth/Profile/Index', $this->loadProfileData(\Auth::user()->id));
         }
+    }
+
+    public function onboarding(){
+        return response()->json($this->loadProfileData(\Auth::user()->id));
+    }
+
+    private function loadProfileData($userId){
+        $profile = User::with('profile')->find($userId)->profile;
+        $information = UserInformation::where('user_id',$userId)->first();
+        $personal = $information->personal ?? [];
+
+        return [
+            // Built explicitly (not the raw model) because UserProfile decrypts several
+            // columns via an overridden getAttribute(), which plain toArray()/json
+            // serialization bypasses, leaking ciphertext instead of the real value.
+            // height/weight/citizenship*/place_of_birth/agency_employee_no live in
+            // user_information.personal (JSON), but are merged into 'profile' here
+            // so the wizard's Personal Information step can read them from one place.
+            'profile' => $profile ? [
+                'sex_id' => $profile->sex_id,
+                'marital_id' => $profile->marital_id,
+                'religion_id' => $profile->religion_id,
+                'blood_id' => $profile->blood_id,
+                'mobile' => $profile->mobile,
+                'birthdate' => $profile->birthdate,
+                'height' => $personal['height'] ?? null,
+                'weight' => $personal['weight'] ?? null,
+                'citizenship' => $personal['citizenship'] ?? null,
+                'citizenship_type' => $personal['citizenship_type'] ?? null,
+                'citizenship_country' => $personal['citizenship_country'] ?? null,
+                'place_of_birth' => $personal['place_of_birth'] ?? null,
+                'agency_employee_no' => $personal['agency_employee_no'] ?? null,
+            ] : null,
+            'addresses' => UserAddress::with('region','province','municipality','barangay')->where('user_id',$userId)->get(),
+            'academics' => UserAcademic::with('school','course','level')->where('user_id',$userId)->orderByDesc('id')->get(),
+            'eligibilities' => UserEligibility::where('user_id',$userId)->orderByDesc('id')->get(),
+            'contracts' => UserContract::with('position','type')->where('user_id',$userId)->orderByDesc('start_at')->get(),
+            'workExperiences' => UserWorkExperience::where('user_id',$userId)->orderByDesc('start_at')->get(),
+            'voluntaryWorks' => UserVoluntaryWork::where('user_id',$userId)->orderByDesc('start_at')->get(),
+            'trainings' => UserTraining::where('user_id',$userId)->orderByDesc('start_at')->get(),
+            'otherInformation' => UserOtherInformation::where('user_id',$userId)->get(),
+            'references' => UserReference::where('user_id',$userId)->get(),
+            'declaration' => UserPdsDeclaration::where('user_id',$userId)->first(),
+            'userInformation' => $information,
+            'dropdowns' => [
+                'levels' => $this->dropdown->datas('Level'),
+            ],
+        ];
     }
 
     public function security(){
@@ -84,9 +123,16 @@ class ProfileController extends Controller
             $request->merge(['id' => $id]);
         }
         $result = $this->handleTransaction(function () use ($request) {
-            return $request->option === 'declaration'
-                ? $this->save->declaration($request)
-                : $this->save->pds($request);
+            switch ($request->option) {
+                case 'declaration':
+                    return $this->save->declaration($request);
+                case 'government_ids':
+                    return $this->save->governmentIds($request);
+                case 'family_background':
+                    return $this->save->familyBackground($request);
+                default:
+                    return $this->save->pds($request);
+            }
         });
 
         return back()->with([

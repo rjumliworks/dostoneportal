@@ -28,7 +28,7 @@ class UserProfile extends Model
         'blood_id',
         'marital_id',
         'religion_id',
-        'user_id', 
+        'user_id',
     ];
     protected $appends = ['name','fullname'];
     protected $encryptable = [

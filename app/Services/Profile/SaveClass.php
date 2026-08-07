@@ -39,58 +39,90 @@ class SaveClass
     }
 
     public function update($request){
-        $data = User::find(\Auth::user()->id);
-        if($data->save()){
-            $profile = $data->profile;
-            $profile->sex_id = $request->sex_id;
-            $profile->blood_id = $request->blood_id;
-            $profile->marital_id = $request->marital_id;
-            $profile->religion_id = $request->religion_id;
-            $profile->mobile = $request->mobile;
-            $profile->is_completed = 1;
-            if($profile->save()){
-                if($request->filled('permanent.address')) {
-                    $data->addresses()->updateOrCreate(
-                        [
-                            'is_permanent' => 1,
-                        ],
-                        [
-                            'address'           => $request->permanent['address'],
-                            'region_code'       => $request->permanent['region_code'],
-                            'province_code'     => $request->permanent['province_code'],
-                            'municipality_code' => $request->permanent['municipality_code'],
-                            'barangay_code'     => $request->permanent['barangay_code'],
-                            'latitude'          => $request->permanent['latitude'],
-                            'longitude'         => $request->permanent['longitude'],
-                        ]
-                    );
-                }
-                
-                if($request->filled('home.address')) {
-                        $data->addresses()->updateOrCreate(
-                        [
-                            'is_permanent' => 0,
-                        ],[
-                            'address'           => $request->home['address'],
-                            'region_code'       => $request->home['region_code'],
-                            'province_code'     => $request->home['province_code'],
-                            'municipality_code' => $request->home['municipality_code'],
-                            'barangay_code'     => $request->home['barangay_code'],
-                            'latitude'          => $request->home['latitude'],
-                            'longitude'         => $request->home['longitude']
-                        ]
-                    );
-                }
+        $user = User::find(\Auth::user()->id);
 
-                $this->information($data->id);
-            }
+        switch ($request->option) {
+            case 'personal':
+                $this->updateProfileFields($request, $user);
+                break;
+            case 'address':
+                $this->updateAddresses($request, $user);
+                break;
+            default:
+                $this->updateProfileFields($request, $user);
+                $this->updateAddresses($request, $user);
+                break;
         }
+
         $data = User::find(\Auth::user()->id);
         return [
             'data' => $data,
-            'message' => 'User information updated successfully.', 
+            'message' => 'User information updated successfully.',
             'info' => "All relevant fields have been refreshed with the latest data."
         ];
+    }
+
+    private function updateProfileFields($request, $user)
+    {
+        $profile = $user->profile;
+        $profile->sex_id = $request->sex_id;
+        $profile->blood_id = $request->blood_id;
+        $profile->marital_id = $request->marital_id;
+        $profile->religion_id = $request->religion_id;
+        $profile->mobile = $request->mobile;
+        $profile->birthdate = $request->birthdate;
+        $profile->save();
+
+        UserInformation::updateOrCreate(
+            ['user_id' => $user->id],
+            ['personal' => [
+                'height' => $request->height,
+                'weight' => $request->weight,
+                'citizenship' => $request->citizenship,
+                'citizenship_type' => $request->citizenship_type,
+                'citizenship_country' => $request->citizenship_country,
+                'place_of_birth' => $request->place_of_birth,
+                'agency_employee_no' => $request->agency_employee_no,
+            ]]
+        );
+    }
+
+    private function updateAddresses($request, $user)
+    {
+        if ($request->filled('permanent.address')) {
+            $user->addresses()->updateOrCreate(
+                [
+                    'is_permanent' => 1,
+                ],
+                [
+                    'address'           => $request->permanent['address'],
+                    'zip_code'          => $request->permanent['zip_code'] ?? null,
+                    'region_code'       => $request->permanent['region_code'],
+                    'province_code'     => $request->permanent['province_code'],
+                    'municipality_code' => $request->permanent['municipality_code'],
+                    'barangay_code'     => $request->permanent['barangay_code'],
+                    'latitude'          => $request->permanent['latitude'],
+                    'longitude'         => $request->permanent['longitude'],
+                ]
+            );
+        }
+
+        if ($request->filled('home.address')) {
+            $user->addresses()->updateOrCreate(
+                [
+                    'is_permanent' => 0,
+                ],[
+                    'address'           => $request->home['address'],
+                    'zip_code'          => $request->home['zip_code'] ?? null,
+                    'region_code'       => $request->home['region_code'],
+                    'province_code'     => $request->home['province_code'],
+                    'municipality_code' => $request->home['municipality_code'],
+                    'barangay_code'     => $request->home['barangay_code'],
+                    'latitude'          => $request->home['latitude'],
+                    'longitude'         => $request->home['longitude']
+                ]
+            );
+        }
     }
 
     public function pds($request)
@@ -127,12 +159,47 @@ class SaveClass
     {
         $record = \App\Models\UserPdsDeclaration::updateOrCreate(
             ['user_id' => \Auth::id()],
-            $request->except('option')
+            array_merge($request->except('option'), ['declared_at' => now()->toDateString()])
         );
+
+        // Declaration is the final wizard step, so completing it is what marks the PDS as done.
+        \App\Models\UserProfile::where('user_id', \Auth::id())->update(['is_completed' => 1]);
 
         return [
             'data' => $record,
             'message' => 'Declaration saved successfully.',
+            'info' => 'Your Personal Data Sheet has been updated.',
+        ];
+    }
+
+    public function governmentIds($request)
+    {
+        $record = UserInformation::updateOrCreate(
+            ['user_id' => \Auth::id()],
+            ['accounts' => $request->input('accounts')]
+        );
+
+        return [
+            'data' => $record,
+            'message' => 'Government ID numbers saved successfully.',
+            'info' => 'Your Personal Data Sheet has been updated.',
+        ];
+    }
+
+    public function familyBackground($request)
+    {
+        $record = UserInformation::updateOrCreate(
+            ['user_id' => \Auth::id()],
+            ['backgrounds' => [
+                'parents'  => $request->input('parents'),
+                'spouse'   => $request->input('spouse'),
+                'children' => $request->input('children', []),
+            ]]
+        );
+
+        return [
+            'data' => $record,
+            'message' => 'Family background saved successfully.',
             'info' => 'Your Personal Data Sheet has been updated.',
         ];
     }
@@ -182,62 +249,4 @@ class SaveClass
             ->delete();
     }
 
-    private function information($id){
-        $accounts = [
-            ["name" => "Pag-Ibig","number" => null,"deduction" => null, "is_contribution" => true],
-            ["name" => "SSS","number" => null, "deduction" => null, "is_contribution" => true],
-            ["name" => "GSIS", "number" => null, "deduction" => null, "is_contribution" => true],
-            ["name" => "PhilHealth", "number" => null, "deduction" => null, "is_contribution" => true],
-            ["name" => "TIN",  "number" => null, "deduction" => null, "is_contribution" => false],
-            ["name" => "LandBank", "number" => null, "deduction" => null, "is_contribution" => false]
-        ];
-        
-        $family = [
-            "parents" => [
-                "father" => [
-                    "name" => null,
-                    "address" => null,
-                ],
-                "mother" => [
-                    "name" => null,
-                    "address" => null,
-                ]
-            ],
-            "spouse" => [
-                "name" => null,
-                "address" => null,
-                "contact_no" => null,
-                "occupation" => null,
-                "company" => null,
-            ],
-            "children" => []
-        ];
-
-        $contacts = [
-            "emergency_contact" => [
-                "name" => null,
-                "relationship" => null,
-                "contact_no" => null,
-                "address" => [
-                    "region" => null,
-                    "province" => null,
-                    "municipality" => null,
-                    "barangay" => null,
-                    "street" => null
-                ]
-            ]
-        ];
-
-        UserInformation::updateOrCreate(
-            [
-                'user_id' => $id
-            ],
-            [
-                'accounts' => json_encode($accounts),
-                'backgrounds' => json_encode($family),
-                'contacts' => json_encode($contacts),
-            ]
-        );
-        
-    }
 }

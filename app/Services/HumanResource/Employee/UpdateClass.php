@@ -4,9 +4,23 @@ namespace App\Services\HumanResource\Employee;
 
 use App\Models\User;
 use App\Models\UserOrganization;
+use App\Models\UserInformation;
 
 class UpdateClass
 {
+    public function background($request){
+        $data = UserInformation::updateOrCreate(
+            ['user_id' => $request->id],
+            ['backgrounds' => $request->background]
+        );
+
+        return [
+            'data' => $data,
+            'message' => 'Family background updated successfully',
+            'info' => 'You can now manage this employee’s family background',
+        ];
+    }
+
     public function status($request){
         $data = UserOrganization::where('user_id',$request->id)->first();
         $data->status_id = $request->status_id;

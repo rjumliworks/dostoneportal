@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('activation-check', [ProfileController::class, 'check']);
     Route::post('photo', [ProfileController::class, 'store']);
     Route::get('/profile', [ProfileController::class, 'index']);
+    Route::get('/profile/onboarding', [ProfileController::class, 'onboarding']);
     Route::post('/profile', [ProfileController::class, 'store']);
     Route::post('/otp', [ProfileController::class, 'otp']);
     Route::put('/profile/updated', [ProfileController::class, 'update']);

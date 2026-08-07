@@ -35,7 +35,7 @@
         </div>
     </b-modal>
     <Survey v-if="showSurveyModal" v-model="surveyRequired" :questions="surveyQuestions" @success="handleSurveySubmit" />
-    <Update v-if="showUpdateModal" v-model="updateRequired" @success="handleUpdateSubmit"/>
+    <Wizard v-if="showUpdateModal" v-model="updateRequired" @success="handleUpdateSubmit"/>
 </template>
 <script>
 import { layoutComputed } from "@/Shared/State/helpers";
@@ -43,14 +43,14 @@ import Vertical from "./Vertical.vue";
 import Horizontal from "./Horizontal.vue";
 import TwoColumns from "./Twocolumn.vue";
 import Survey from './Components/Survey.vue';
-import Update from './Components/Update.vue';
+import Wizard from './Components/Wizard/Wizard.vue';
 export default {
     components: {
         Vertical,
         Horizontal,
         TwoColumns,
         Survey,
-        Update
+        Wizard
     },
     props: { 
         surveyQuestions: Array

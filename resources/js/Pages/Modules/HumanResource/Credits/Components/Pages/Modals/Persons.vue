@@ -21,16 +21,34 @@
                         </div>
                         <div class="card bg-white rounded-bottom shadow-none mb-0">
                             <div class="row p-3">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <BCol lg="12" class="mt-n2">
-                                        <InputLabel value="Name" :message="form.errors.school"/>
-                                        <TextInput v-model="form.background.parents.mother.name" type="text" class="form-control" placeholder="Please enter school" @input="handleInput('school')" :light="true" />
+                                        <InputLabel value="Lastname"/>
+                                        <TextInput v-model="form.background.parents.mother.lastname" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-6">
+                                    <BCol lg="12" class="mt-n2">
+                                        <InputLabel value="Firstname"/>
+                                        <TextInput v-model="form.background.parents.mother.firstname" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-6">
+                                    <BCol lg="12" class="mt-1">
+                                        <InputLabel value="Middlename"/>
+                                        <TextInput v-model="form.background.parents.mother.middlename" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-6">
+                                    <BCol lg="12" class="mt-1">
+                                        <InputLabel value="Suffix"/>
+                                        <TextInput v-model="form.background.parents.mother.suffix" type="text" class="form-control" placeholder="Jr., Sr., III" :light="true" />
                                     </BCol>
                                 </div>
                                 <div class="col-md-12">
-                                    <BCol lg="12" class="mt-0">
-                                        <InputLabel value="Address" :message="form.errors.school"/>
-                                        <TextInput v-model="form.background.parents.mother.address" type="text" class="form-control" placeholder="Please enter school" @input="handleInput('school')" :light="true" />
+                                    <BCol lg="12" class="mt-1">
+                                        <InputLabel value="Address"/>
+                                        <TextInput v-model="form.background.parents.mother.address" type="text" class="form-control" :light="true" />
                                     </BCol>
                                 </div>
                             </div>
@@ -56,16 +74,34 @@
                         </div>
                         <div class="card bg-white rounded-bottom shadow-none mb-0">
                             <div class="row p-3">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <BCol lg="12" class="mt-n2">
-                                        <InputLabel value="Name" :message="form.errors.school"/>
-                                        <TextInput v-model="form.background.parents.father.name" type="text" class="form-control" placeholder="Please enter school" @input="handleInput('school')" :light="true" />
+                                        <InputLabel value="Lastname"/>
+                                        <TextInput v-model="form.background.parents.father.lastname" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-6">
+                                    <BCol lg="12" class="mt-n2">
+                                        <InputLabel value="Firstname"/>
+                                        <TextInput v-model="form.background.parents.father.firstname" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-6">
+                                    <BCol lg="12" class="mt-1">
+                                        <InputLabel value="Middlename"/>
+                                        <TextInput v-model="form.background.parents.father.middlename" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-6">
+                                    <BCol lg="12" class="mt-1">
+                                        <InputLabel value="Suffix"/>
+                                        <TextInput v-model="form.background.parents.father.suffix" type="text" class="form-control" placeholder="Jr., Sr., III" :light="true" />
                                     </BCol>
                                 </div>
                                 <div class="col-md-12">
-                                    <BCol lg="12" class="mt-0">
-                                        <InputLabel value="Address" :message="form.errors.school"/>
-                                        <TextInput v-model="form.background.parents.father.address" type="text" class="form-control" placeholder="Please enter school" @input="handleInput('school')" :light="true" />
+                                    <BCol lg="12" class="mt-1">
+                                        <InputLabel value="Address"/>
+                                        <TextInput v-model="form.background.parents.father.address" type="text" class="form-control" :light="true" />
                                     </BCol>
                                 </div>
                             </div>
@@ -91,10 +127,28 @@
                         </div>
                         <div class="card bg-white rounded-bottom shadow-none mb-0">
                             <div class="row p-3">
-                                <div class="col-md-12">
+                                <div class="col-md-3">
                                     <BCol lg="12" class="mt-n2">
-                                        <InputLabel value="Name" :message="form.errors.school"/>
-                                        <TextInput v-model="form.background.spouse.name" type="text" class="form-control" placeholder="Please enter school" @input="handleInput('school')" :light="true" />
+                                        <InputLabel value="Lastname"/>
+                                        <TextInput v-model="form.background.spouse.lastname" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-3">
+                                    <BCol lg="12" class="mt-n2">
+                                        <InputLabel value="Firstname"/>
+                                        <TextInput v-model="form.background.spouse.firstname" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-3">
+                                    <BCol lg="12" class="mt-n2">
+                                        <InputLabel value="Middlename"/>
+                                        <TextInput v-model="form.background.spouse.middlename" type="text" class="form-control" :light="true" />
+                                    </BCol>
+                                </div>
+                                <div class="col-md-3">
+                                    <BCol lg="12" class="mt-n2">
+                                        <InputLabel value="Suffix"/>
+                                        <TextInput v-model="form.background.spouse.suffix" type="text" class="form-control" placeholder="Jr., Sr., III" :light="true" />
                                     </BCol>
                                 </div>
                                 <div class="col-md-6">
@@ -155,17 +209,26 @@ export default {
                 id: null,
                 background: {
                     parents: {
-                        mother: { 
-                            name: null,
+                        mother: {
+                            lastname: null,
+                            firstname: null,
+                            middlename: null,
+                            suffix: null,
                             address: null
                         },
-                        father: { 
-                            name: null,
+                        father: {
+                            lastname: null,
+                            firstname: null,
+                            middlename: null,
+                            suffix: null,
                             address: null
                         },
                     },
-                    spouse: { 
-                        name: null,
+                    spouse: {
+                        lastname: null,
+                        firstname: null,
+                        middlename: null,
+                        suffix: null,
                         address: null,
                         contact_no: null,
                         company: null,

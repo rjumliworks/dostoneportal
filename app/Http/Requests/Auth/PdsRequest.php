@@ -74,6 +74,38 @@ class PdsRequest extends FormRequest
                     'address' => 'nullable|string|max:255',
                     'contact' => 'nullable|string|max:255',
                 ];
+            case 'government_ids':
+                return [
+                    'accounts' => 'required|array',
+                    'accounts.*.name' => 'required|string|max:100',
+                    'accounts.*.number' => 'nullable|string|max:50',
+                    'accounts.*.deduction' => 'nullable|numeric',
+                    'accounts.*.is_contribution' => 'required|boolean',
+                ];
+            case 'family_background':
+                return [
+                    'parents.father.lastname' => 'nullable|string|max:100',
+                    'parents.father.firstname' => 'nullable|string|max:100',
+                    'parents.father.middlename' => 'nullable|string|max:100',
+                    'parents.father.suffix' => 'nullable|string|max:20',
+                    'parents.father.address' => 'nullable|string|max:255',
+                    'parents.mother.lastname' => 'nullable|string|max:100',
+                    'parents.mother.firstname' => 'nullable|string|max:100',
+                    'parents.mother.middlename' => 'nullable|string|max:100',
+                    'parents.mother.suffix' => 'nullable|string|max:20',
+                    'parents.mother.address' => 'nullable|string|max:255',
+                    'spouse.lastname' => 'nullable|string|max:100',
+                    'spouse.firstname' => 'nullable|string|max:100',
+                    'spouse.middlename' => 'nullable|string|max:100',
+                    'spouse.suffix' => 'nullable|string|max:20',
+                    'spouse.address' => 'nullable|string|max:255',
+                    'spouse.contact_no' => 'nullable|string|max:20',
+                    'spouse.occupation' => 'nullable|string|max:255',
+                    'spouse.company' => 'nullable|string|max:255',
+                    'children' => 'nullable|array',
+                    'children.*.name' => 'required_with:children.*.birthdate|nullable|string|max:255',
+                    'children.*.birthdate' => 'nullable|date',
+                ];
             case 'declaration':
                 return [
                     'related_third_degree' => 'nullable|boolean',

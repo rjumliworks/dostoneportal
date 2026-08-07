@@ -8,8 +8,9 @@ class UserAddress extends Model
 {
      protected $fillable = [
         'user_id',
-        'is_permanent', 
+        'is_permanent',
         'address',
+        'zip_code',
         'region_code',
         'province_code',
         'municipality_code',

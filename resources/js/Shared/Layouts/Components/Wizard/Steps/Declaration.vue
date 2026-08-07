@@ -1,24 +1,7 @@
 <template>
-<div class="card bg-light-subtle shadow-none border">
-    <div class="card-header bg-light-subtle">
-        <div class="d-flex mb-n3">
-            <div class="flex-shrink-0 me-3">
-                <div style="height:2.5rem;width:2.5rem;">
-                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                        <i class="ri-file-shield-2-fill text-primary fs-24"></i>
-                    </span>
-                </div>
-            </div>
-            <div class="flex-grow-1">
-                <h5 class="mb-0 fs-14"><span class="text-body">Declaration & Legal Questions</span></h5>
-                <p class="text-muted text-truncate-two-lines fs-12">Answer honestly. Any misrepresentation may cause the filing of an administrative/criminal case.</p>
-            </div>
-            <div class="flex-shrink-0">
-                <b-button variant="primary" size="sm" @click="submit()" :disabled="form.processing"><i class="ri-save-3-fill align-bottom me-1"></i> Save</b-button>
-            </div>
-        </div>
-    </div>
-    <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 291px); overflow: auto;">
+    <div>
+        <h5 class="fs-14 text-primary mb-1">Declaration & Legal Questions</h5>
+        <p class="text-muted fs-12 mb-3">Answer honestly. Any misrepresentation may cause the filing of an administrative/criminal case.</p>
         <form class="customform">
             <div v-for="(q, index) in questions" :key="q.field" class="card border shadow-none p-3 mb-3">
                 <div class="d-flex align-items-start">
@@ -59,7 +42,6 @@
             </BRow>
         </form>
     </div>
-</div>
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
@@ -67,8 +49,44 @@ import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
     components: { InputLabel, TextInput },
-    props: ['declaration'],
+    props: ['data'],
     data(){
+        const declaration = this.data.declaration || {};
+        const form = useForm({
+            related_third_degree: 0,
+            related_third_degree_details: null,
+            related_fourth_degree: 0,
+            related_fourth_degree_details: null,
+            admin_offense_found_guilty: 0,
+            admin_offense_details: null,
+            criminally_charged: 0,
+            criminal_charge_details: null,
+            convicted_crime: 0,
+            convicted_crime_details: null,
+            separated_from_service: 0,
+            separated_from_service_details: null,
+            election_candidate: 0,
+            election_candidate_details: null,
+            resigned_to_campaign: 0,
+            resigned_to_campaign_details: null,
+            immigrant_status: 0,
+            immigrant_status_country: null,
+            indigenous_group_member: 0,
+            indigenous_group_details: null,
+            is_pwd: 0,
+            pwd_id_number: null,
+            is_solo_parent: 0,
+            solo_parent_id_number: null,
+            government_id_type: null,
+            government_id_number: null,
+            government_id_issued_at: null,
+            option: 'declaration'
+        });
+        Object.keys(form.data()).forEach(key => {
+            if (key !== 'option' && declaration[key] !== undefined && declaration[key] !== null) {
+                form[key] = declaration[key];
+            }
+        });
         return {
             questions: [
                 { field: 'related_third_degree', label: 'Are you related by consanguinity or affinity to the appointing or recommending authority, or to the chief of bureau or office, or to the person who has immediate supervision over you, within the third degree?', details: 'related_third_degree_details' },
@@ -84,51 +102,15 @@ export default {
                 { field: 'is_pwd', label: 'Are you a person with disability?', details: 'pwd_id_number', detailsLabel: 'Please specify ID No.' },
                 { field: 'is_solo_parent', label: 'Are you a solo parent?', details: 'solo_parent_id_number', detailsLabel: 'Please specify ID No.' },
             ],
-            form: useForm({
-                related_third_degree: 0,
-                related_third_degree_details: null,
-                related_fourth_degree: 0,
-                related_fourth_degree_details: null,
-                admin_offense_found_guilty: 0,
-                admin_offense_details: null,
-                criminally_charged: 0,
-                criminal_charge_details: null,
-                convicted_crime: 0,
-                convicted_crime_details: null,
-                separated_from_service: 0,
-                separated_from_service_details: null,
-                election_candidate: 0,
-                election_candidate_details: null,
-                resigned_to_campaign: 0,
-                resigned_to_campaign_details: null,
-                immigrant_status: 0,
-                immigrant_status_country: null,
-                indigenous_group_member: 0,
-                indigenous_group_details: null,
-                is_pwd: 0,
-                pwd_id_number: null,
-                is_solo_parent: 0,
-                solo_parent_id_number: null,
-                government_id_type: null,
-                government_id_number: null,
-                government_id_issued_at: null,
-                option: 'declaration'
-            }),
-        }
-    },
-    created(){
-        if (this.declaration) {
-            Object.keys(this.form.data()).forEach(key => {
-                if (key !== 'option' && this.declaration[key] !== undefined && this.declaration[key] !== null) {
-                    this.form[key] = this.declaration[key];
-                }
-            });
+            form
         }
     },
     methods: {
-        submit(){
+        proceed(){
             this.form.post('/profile/pds', {
                 preserveScroll: true,
+                onSuccess: () => this.$emit('saved'),
+                onError: () => this.$emit('failed'),
             });
         }
     }

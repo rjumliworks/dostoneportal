@@ -31,7 +31,7 @@
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="mb-0 fs-12">Mother :</p>
-                                <h6 v-if="backgrounds.parents.mother.name" class="text-truncate fs-12 mb-0"> {{backgrounds.parents.mother.name}} </h6>
+                                <h6 v-if="fullName(backgrounds.parents.mother)" class="text-truncate fs-12 mb-0"> {{ fullName(backgrounds.parents.mother) }} </h6>
                                 <h6 v-else class="text-truncat text-muted fs-12 mb-0"> Not set </h6>
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="mb-0 fs-12">Father :</p>
-                                <h6 v-if="backgrounds.parents.father.name" class="text-truncate fs-12 mb-0"> {{backgrounds.parents.father.name}} </h6>
+                                <h6 v-if="fullName(backgrounds.parents.father)" class="text-truncate fs-12 mb-0"> {{ fullName(backgrounds.parents.father) }} </h6>
                                 <h6 v-else class="text-truncat text-muted fs-12 mb-0"> Not set </h6>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
                                 <p class="mb-0 fs-12">Spouse :</p>
-                                <h6 v-if="backgrounds.spouse.name" class="text-truncate fs-12 mb-0"> {{backgrounds.spouse.name}} </h6>
+                                <h6 v-if="fullName(backgrounds.spouse)" class="text-truncate fs-12 mb-0"> {{ fullName(backgrounds.spouse) }} </h6>
                                 <h6 v-else class="text-truncat text-muted fs-12 mb-0"> Not set </h6>
                             </div>
                         </div>
@@ -176,6 +176,10 @@ export default {
         },
         openAccount(){
                 this.$refs.account.show(this.id,this.accounts);
+        },
+        fullName(person){
+            if (!person) return null;
+            return [person.firstname, person.middlename, person.lastname, person.suffix].filter(Boolean).join(' ') || null;
         }
    }
 }

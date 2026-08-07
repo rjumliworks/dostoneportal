@@ -20,12 +20,12 @@
                         </div>
                         <h5 class="fs-16 mb-0">{{ $page.props.user.data.name }}</h5>
                         <p class="text-muted mb-0">{{ $page.props.user.data.position }}</p>
+                        <b-button variant="soft-primary" size="sm" class="mt-2" @click="downloadPds()">
+                            <i class="ri-file-download-fill align-bottom me-1"></i> Download PDS (PDF)
+                        </b-button>
                     </div>
                     <hr class="text-muted">
-                    <b-list-group class="list-group-fill-success mt-4">
-                        <BListGroupItem :active="activeTab === 1" href="#" class="list-group-item-action" @click="show(1)">
-                            <i class="ri-apps-2-fill align-middle me-2"></i>Overview
-                        </BListGroupItem>
+                    <b-list-group class="list-group-fill-success mt-4" style="height: calc(100vh - 530px); overflow: auto;">
                         <BListGroupItem :active="activeTab === 2" href="#" class="list-group-item-action" @click="show(2)">
                             <i class="ri-profile-fill align-middle me-2"></i>Personal Information
                         </BListGroupItem>
@@ -56,25 +56,20 @@
                         <BListGroupItem :active="activeTab === 11" href="#" class="list-group-item-action" @click="show(11)">
                             <i class="ri-file-shield-2-fill align-middle me-2"></i>Declaration & Legal Info
                         </BListGroupItem>
-                        <BListGroupItem :active="activeTab === 12" href="#" class="list-group-item-action" @click="show(12)">
+                        <!-- <BListGroupItem :active="activeTab === 12" href="#" class="list-group-item-action" @click="show(12)">
                             <i class="ri-profile-fill align-middle me-2"></i>Digital Certificate
-                        </BListGroupItem>
+                        </BListGroupItem> -->
                          <BListGroupItem :active="activeTab === 13" href="#" class="list-group-item-action" @click="show(13)">
                             <i class="ri-bank-card-fill  align-middle me-2"></i>Contributions & Account Numbers
                         </BListGroupItem>
                     </b-list-group>
-                    <hr class="text-muted">
-                    <Link href="/profile/security" class="btn btn-soft-secondary w-100">
-                        <i class="ri-shield-check-line align-middle me-1"></i> Account Security
-                    </Link>
                 </div>
             </div>
         </div>
 
         <div class="col-md-9">
-            <Overview v-if="activeTab === 1"/>
             <Edit :addresses="addresses" v-if="activeTab === 2"/>
-            <Address v-if="activeTab === 3"/>
+            <Family :information="userInformation" v-if="activeTab === 3"/>
             <Academic :lists="academics" :levels="dropdowns.levels" v-if="activeTab === 4"/>
             <Eligibility :lists="eligibilities" v-if="activeTab === 5"/>
             <WorkExperience :lists="workExperiences" :contracts="contracts" v-if="activeTab === 6"/>
@@ -83,8 +78,8 @@
             <OtherInformation :lists="otherInformation" v-if="activeTab === 9"/>
             <Reference :lists="references" v-if="activeTab === 10"/>
             <Declaration :declaration="declaration" v-if="activeTab === 11"/>
-            <Certificate v-if="activeTab === 12"/>
-            <Account v-if="activeTab === 13"/>
+            <!-- <Certificate v-if="activeTab === 12"/> -->
+            <Account :information="userInformation" v-if="activeTab === 13"/>
         </div>
     </div>
 </template>
@@ -94,7 +89,7 @@ import Overview from "./Pages/Overview.vue";
 import Edit from "./Pages/Edit.vue";
 import Certificate from './Pages/Certificate.vue';
 import Account from './Pages/Account.vue';
-import Address from './Pages/Address.vue';
+import Family from './Pages/Family.vue';
 import Academic from './Pages/Academic.vue';
 import Eligibility from './Pages/Eligibility.vue';
 import WorkExperience from './Pages/WorkExperience.vue';
@@ -105,12 +100,12 @@ import Reference from './Pages/Reference.vue';
 import Declaration from './Pages/Declaration.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { Link, PageHeader, Overview, Edit, Address, Account, Certificate, Academic, Eligibility, WorkExperience, VoluntaryWork, Training, OtherInformation, Reference, Declaration },
-    props: ['addresses','academics','eligibilities','contracts','workExperiences','voluntaryWorks','trainings','otherInformation','references','declaration','dropdowns'],
+    components: { Link, PageHeader, Overview, Edit, Family, Account, Certificate, Academic, Eligibility, WorkExperience, VoluntaryWork, Training, OtherInformation, Reference, Declaration },
+    props: ['addresses','academics','eligibilities','contracts','workExperiences','voluntaryWorks','trainings','otherInformation','references','declaration','dropdowns','userInformation'],
     data() {
         return {
             currentUrl: window.location.origin,
-            activeTab: 1,
+            activeTab: 2,
             form: useForm({
                 image: null,
             }),
@@ -119,6 +114,9 @@ export default {
     methods: {
         show(tab){
             this.activeTab = tab;
+        },
+        downloadPds(){
+            window.open('/profile?option=download');
         },
         previewImage(e) {
             var fileInput = document.querySelector(".profile-img-file-input");
