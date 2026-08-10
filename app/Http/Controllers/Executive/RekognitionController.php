@@ -360,7 +360,7 @@ class RekognitionController extends Controller
         }
     }
 
-    public function deleteFace(string $collectionId,string $faceId)
+    public function deleteFace(string $collectionId,string $faceId): JsonResponse
     {
         $rekognition = new RekognitionClient([
             'region'  => 'ap-southeast-1',
@@ -371,16 +371,24 @@ class RekognitionController extends Controller
             ],
         ]);
 
-        $result = $rekognition->deleteFaces([
-            'CollectionId' => $collectionId,
-            'FaceIds'      => [$faceId], // 👈 single face
-        ]);
+        try {
+            $result = $rekognition->deleteFaces([
+                'CollectionId' => $collectionId,
+                'FaceIds'      => [$faceId], // 👈 single face
+            ]);
 
-        return [
-            'data' => $result,
-            'message' => 'Face successfully deleted!',
-            'info' => "Your file has been deleted and is now available."
-        ];
+            return response()->json([
+                'success' => true,
+                'data' => $result,
+                'message' => 'Face successfully deleted!',
+                'info' => "Your file has been deleted and is now available."
+            ]);
+        } catch (\Aws\Exception\AwsException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getAwsErrorMessage(),
+            ], 500);
+        }
     }
 
     /**

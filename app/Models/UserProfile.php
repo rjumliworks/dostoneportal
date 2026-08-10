@@ -50,7 +50,7 @@ class UserProfile extends Model
 
     public function getFullnameAttribute()
     {
-        $middleInitial = $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
+        $middleInitial = $this->middlename ? strtoupper(mb_substr($this->middlename, 0, 1)) . '.' : '';
         $name = trim("{$this->firstname} {$middleInitial} {$this->lastname}");
         if ($this->suffix?->name) {
             $name .= ', ' . $this->suffix->name;
@@ -60,7 +60,7 @@ class UserProfile extends Model
 
     public function getNameAttribute()
     {
-        $middleInitial = $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
+        $middleInitial = $this->middlename ? strtoupper(mb_substr($this->middlename, 0, 1)) . '.' : '';
         $parts = [trim($this->lastname) . ',', trim($this->firstname), $middleInitial, $this->suffix?->name];
         return implode(' ', array_filter($parts));
     }

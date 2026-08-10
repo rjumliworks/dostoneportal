@@ -431,7 +431,7 @@ class DropdownClass
             return [
                 'value' => $item->id,
                 'signatory' => $item->signatory,
-                'name' => $item->profile->lastname . ', ' . $item->profile->firstname . ' ' . $item->profile->middlename[0] . '.',
+                'name' => $item->profile->lastname . ', ' . $item->profile->firstname . ' ' . mb_substr($item->profile->middlename, 0, 1) . '.',
                 'position' => optional($item->organization->position)->name,
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,

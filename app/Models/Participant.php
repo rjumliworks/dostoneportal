@@ -15,7 +15,7 @@ class Participant extends Authenticatable
 
     public function getNameAttribute()
     {
-        $middleInitial = $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
+        $middleInitial = $this->middlename ? strtoupper(mb_substr($this->middlename, 0, 1)) . '.' : '';
         $parts = [trim($this->lastname) . ',', trim($this->firstname), $middleInitial, $this->suffix];
         return implode(' ', array_filter($parts));
     }

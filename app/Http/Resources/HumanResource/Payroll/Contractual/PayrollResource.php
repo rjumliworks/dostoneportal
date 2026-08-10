@@ -26,7 +26,7 @@ class PayrollResource extends JsonResource
             'deduction' => $this->deduction,
             'tardiness' => $this->tardiness,
             'netpay' => $this->netpay,
-            'name' => $this->user->profile->lastname.', '.$this->user->profile->firstname.' '.$this->user->profile->middlename[0].'.',
+            'name' => $this->user->profile->lastname.', '.$this->user->profile->firstname.' '.mb_substr($this->user->profile->middlename, 0, 1).'.',
             'user_id' => $this->user->id,
             'position' => $this->user->organization->position->name,
             'salary' => $this->user->organization->salary->amount,

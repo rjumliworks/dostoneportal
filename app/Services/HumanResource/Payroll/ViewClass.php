@@ -50,7 +50,7 @@ class ViewClass
         $totalFirstAmount = 0;
 
         $payrolls = $data->payrolls->sortBy(function ($payroll) {
-            return optional($payroll->user->profile)->lastname . ' ' .optional($payroll->user->profile)->firstname. ' ' .optional($payroll->user->profile)->middlename[0];
+            return optional($payroll->user->profile)->lastname . ' ' .optional($payroll->user->profile)->firstname. ' ' .mb_substr((string) optional($payroll->user->profile)->middlename, 0, 1);
         })
         ->values()
         ->map(function ($payroll) use (&$totalSalary, &$totalDeductions, &$totalNetAmount,&$totalDeductionAmount,&$totalFirstAmount, $deductionNames) {
@@ -130,7 +130,7 @@ class ViewClass
         $totalSecondAmount = 0;
 
         $payrolls = $data->payrolls->sortBy(function ($payroll) {
-            return optional($payroll->user->profile)->lastname . ' ' .optional($payroll->user->profile)->firstname. ' ' .optional($payroll->user->profile)->middlename[0];
+            return optional($payroll->user->profile)->lastname . ' ' .optional($payroll->user->profile)->firstname. ' ' .mb_substr((string) optional($payroll->user->profile)->middlename, 0, 1);
         })
         ->values()
         ->map(function ($payroll) use (&$totalSalary, &$totalDeductions, &$totalDeductionAmount,&$totalFirstAmount,&$totalNetAmount,&$totalSecondAmount, $deductionNames,$data) {
@@ -165,7 +165,7 @@ class ViewClass
             return [
                 'id' => $payroll->id,
                 'username' => $payroll->user->username ?? '',
-                'name' => optional($payroll->user->profile)->lastname . ' ' .optional($payroll->user->profile)->firstname. ' ' .optional($payroll->user->profile)->middlename[0],
+                'name' => optional($payroll->user->profile)->lastname . ' ' .optional($payroll->user->profile)->firstname. ' ' .mb_substr((string) optional($payroll->user->profile)->middlename, 0, 1),
                 'position' => optional($payroll->user->organization->position)->name,
                 'salary' => optional($payroll->user->organization->salary)->amount,
                 'grade' => optional($payroll->user->organization->salary)->grade,
