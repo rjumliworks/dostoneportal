@@ -229,6 +229,39 @@ class VipController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    /**
+     * Short-lived TURN credentials for the WebRTC signal above, generated
+     * against coturn's shared "static-auth-secret" (the TURN REST API
+     * convention coturn itself implements) rather than a fixed username/
+     * password baked into either frontend bundle - anyone reading the JS
+     * only ever finds a credential that already expired.
+     */
+    public function turnCredentials()
+    {
+        $secret = config('services.turn.secret');
+
+        if (!$secret) {
+            return response()->json(['error' => 'TURN not configured'], 503);
+        }
+
+        $ttl = (int) config('services.turn.ttl', 3600);
+        $host = config('services.turn.host');
+        $port = config('services.turn.port');
+
+        $username = (now()->timestamp + $ttl).':vip';
+        $credential = base64_encode(hash_hmac('sha1', $username, $secret, true));
+
+        return response()->json([
+            'ttl' => $ttl,
+            'username' => $username,
+            'credential' => $credential,
+            'urls' => [
+                "turn:{$host}:{$port}?transport=udp",
+                "turn:{$host}:{$port}?transport=tcp",
+            ],
+        ]);
+    }
+
      public function image($request,$user)
     {
         

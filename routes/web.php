@@ -29,6 +29,7 @@ Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(func
     Route::get('/qrcode', [App\Http\Controllers\Event\PublicController::class, 'qrcode']);
     Route::post('/check', [App\Http\Controllers\Event\VipController::class, 'check']);
     Route::post('/vip-signal', [App\Http\Controllers\Event\VipController::class, 'signal']);
+    Route::get('/vip-signal/turn-credentials', [App\Http\Controllers\Event\VipController::class, 'turnCredentials']);
     Route::get('/scanner', [App\Http\Controllers\Event\VipController::class, 'scanner']);
     Route::get('/vipregistrationkrad', [App\Http\Controllers\Event\VipController::class, 'registration']);
     Route::post('/register-vip', [App\Http\Controllers\Event\VipController::class, 'store']);

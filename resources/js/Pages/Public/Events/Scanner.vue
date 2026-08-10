@@ -565,10 +565,23 @@ export default {
         sendVideoSignal(type, data) {
             axios.post('/vip-signal', { type, from: 'scanner', data }).catch(() => {});
         },
-        createVideoPeerConnection() {
-            const pc = new RTCPeerConnection({
-                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-            });
+        // TURN credentials are short-lived (see VipController::turnCredentials),
+        // so fetched fresh for each new peer connection rather than cached -
+        // one small GET per 'join' is negligible next to the video itself.
+        // Falls back to STUN-only if TURN isn't configured/reachable, same as
+        // before this existed.
+        async fetchIceServers() {
+            const stun = { urls: 'stun:stun.l.google.com:19302' };
+            try {
+                const { data } = await axios.get('/vip-signal/turn-credentials');
+                return [stun, { urls: data.urls, username: data.username, credential: data.credential }];
+            } catch (err) {
+                return [stun];
+            }
+        },
+        async createVideoPeerConnection() {
+            const iceServers = await this.fetchIceServers();
+            const pc = new RTCPeerConnection({ iceServers });
             this.cameraStream.getTracks().forEach(track => pc.addTrack(track, this.cameraStream));
             pc.onicecandidate = (e) => {
                 if (e.candidate) this.sendVideoSignal('ice-candidate', e.candidate.toJSON());
@@ -580,7 +593,7 @@ export default {
 
             if (signal.type === 'join') {
                 if (this.peerConnection) this.peerConnection.close();
-                this.peerConnection = this.createVideoPeerConnection();
+                this.peerConnection = await this.createVideoPeerConnection();
                 const offer = await this.peerConnection.createOffer();
                 await this.peerConnection.setLocalDescription(offer);
                 this.sendVideoSignal('offer', offer);

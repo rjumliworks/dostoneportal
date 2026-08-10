@@ -48,4 +48,15 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    // Self-hosted coturn on the same box as Reverb (see VipController::
+    // turnCredentials()) - lets the Scanner.vue <-> FaceRecognitionPage.jsx
+    // WebRTC video connect even when STUN alone can't punch through both
+    // sides' NATs. 'secret' must match coturn's static-auth-secret exactly.
+    'turn' => [
+        'secret' => env('TURN_SECRET'),
+        'host' => env('TURN_HOST', 'one.dost9.ph'),
+        'port' => env('TURN_PORT', 3478),
+        'ttl' => env('TURN_TTL', 3600),
+    ],
+
 ];
