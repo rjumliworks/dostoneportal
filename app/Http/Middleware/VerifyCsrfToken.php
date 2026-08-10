@@ -12,6 +12,9 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Hit cross-origin, unauthenticated, from the separate
+        // FaceRecognitionPage.jsx display app (see VipController::signal())
+        // - it has no session/CSRF cookie for this domain to send.
+        'vip-signal',
     ];
 }

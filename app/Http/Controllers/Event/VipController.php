@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Event;
 use Carbon\Carbon;
 use App\Models\Vip;
 use App\Events\VipEvent;
+use App\Events\VipSignalEvent;
 use Illuminate\Support\Str;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
@@ -207,6 +208,25 @@ class VipController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Relays WebRTC signaling (SDP offers/answers, ICE candidates) between
+     * Scanner.vue and the separate FaceRecognitionPage.jsx display app. No
+     * video passes through here or through Reverb - this just lets the two
+     * browsers find each other and negotiate a direct peer connection.
+     */
+    public function signal(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|string|in:scanner-ready,join,offer,answer,ice-candidate,leave',
+            'from' => 'required|string|in:scanner,display',
+            'data' => 'nullable',
+        ]);
+
+        broadcast(new VipSignalEvent($request->only(['type', 'from', 'data'])));
+
+        return response()->json(['ok' => true]);
     }
 
      public function image($request,$user)

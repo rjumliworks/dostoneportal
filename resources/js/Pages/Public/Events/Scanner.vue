@@ -492,6 +492,8 @@ export default {
     data() {
         return {
             cameraStream: null,
+            videoSignalChannel: null,
+            peerConnection: null,
             hasScanned: false,
             faceDetected: false,
             detectionRunning: false,
@@ -511,6 +513,7 @@ export default {
     async mounted() {
         try {
             await this.initCamera();
+            this.initVideoBroadcast();
             await this.loadModels();
             this.startDetectionLoop();
         } catch (err) {
@@ -523,6 +526,7 @@ export default {
         if (this.detectionTimeout) {
             clearTimeout(this.detectionTimeout);
         }
+        this.teardownVideoBroadcast();
         if (this.cameraStream) {
             this.cameraStream.getTracks().forEach(track => track.stop());
         }
@@ -534,6 +538,73 @@ export default {
         },
         async loadModels() {
             await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+        },
+        // Streams this device's live camera feed to the separate VIP display
+        // app (FaceRecognitionPage.jsx) over WebRTC, using this app's own
+        // Reverb connection purely to exchange SDP/ICE - see
+        // VipSignalEvent/VipController::signal(). The display always
+        // initiates by announcing itself ('join'/'scanner-ready'), and this
+        // side answers with a fresh offer each time, so either page can
+        // reload independently mid-event without a manual restart.
+        initVideoBroadcast() {
+            this.videoSignalChannel = window.Echo.channel('vip-signal');
+            this.videoSignalChannel.listen('VipSignalEvent', (e) => this.handleVideoSignal(e?.signal));
+            this.sendVideoSignal('scanner-ready', null);
+        },
+        teardownVideoBroadcast() {
+            if (this.videoSignalChannel) {
+                this.sendVideoSignal('leave', null);
+                window.Echo.leave('vip-signal');
+                this.videoSignalChannel = null;
+            }
+            if (this.peerConnection) {
+                this.peerConnection.close();
+                this.peerConnection = null;
+            }
+        },
+        sendVideoSignal(type, data) {
+            axios.post('/vip-signal', { type, from: 'scanner', data }).catch(() => {});
+        },
+        createVideoPeerConnection() {
+            const pc = new RTCPeerConnection({
+                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+            });
+            this.cameraStream.getTracks().forEach(track => pc.addTrack(track, this.cameraStream));
+            pc.onicecandidate = (e) => {
+                if (e.candidate) this.sendVideoSignal('ice-candidate', e.candidate.toJSON());
+            };
+            return pc;
+        },
+        async handleVideoSignal(signal) {
+            if (!signal || signal.from !== 'display') return;
+
+            if (signal.type === 'join') {
+                if (this.peerConnection) this.peerConnection.close();
+                this.peerConnection = this.createVideoPeerConnection();
+                const offer = await this.peerConnection.createOffer();
+                await this.peerConnection.setLocalDescription(offer);
+                this.sendVideoSignal('offer', offer);
+                return;
+            }
+
+            if (signal.type === 'answer' && this.peerConnection) {
+                await this.peerConnection.setRemoteDescription(signal.data);
+                return;
+            }
+
+            if (signal.type === 'ice-candidate' && this.peerConnection) {
+                try {
+                    await this.peerConnection.addIceCandidate(signal.data);
+                } catch (err) {
+                    // A candidate that loses the race with connection teardown is fine to drop.
+                }
+                return;
+            }
+
+            if (signal.type === 'leave' && this.peerConnection) {
+                this.peerConnection.close();
+                this.peerConnection = null;
+            }
         },
         startDetectionLoop() {
             const detectorOptions = new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 });
