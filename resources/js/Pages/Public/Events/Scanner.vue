@@ -298,10 +298,6 @@
                         class="camera-circle-video">
                     </video>
 
-                    <div class="camera-shutter" :class="{ 'shutter-open': faceDetected }">
-                        <img src="@assets/images/logo-sm.png" alt="" class="brand-spinner">
-                    </div>
-
                     <div class="capture-success" :class="{ 'is-error': ringOutcome === 'error' }" v-if="ringState === 'success'">
                         <i :class="ringOutcome === 'error' ? 'ri-close-line' : 'ri-check-line'"></i>
                     </div>
@@ -926,40 +922,6 @@ export default {
     height: 100%;
     object-fit: cover;
     transform: scaleX(-1);
-}
-
-.camera-shutter {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f1f3f5;
-    color: #adb5bd;
-    transition: transform 0.6s ease, opacity 0.6s ease;
-}
-
-.brand-spinner {
-    width: 40%;
-    height: 40%;
-    object-fit: contain;
-    animation: brand-spin 3s linear infinite;
-}
-
-@keyframes brand-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.shutter-open {
-    transform: scale(1.2);
-    opacity: 0;
-    pointer-events: none;
 }
 
 .capture-success {
