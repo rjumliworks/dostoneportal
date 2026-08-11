@@ -93,6 +93,41 @@ class UpdateClass
         ];
     }
 
+    public function approveAll($request){
+        $hashids = new Hashids('krad',10);
+        $key = $hashids->decode($request->id);
+
+        $session = EventSession::find($key[0]);
+        if (!$session || !$session->is_exclusive) {
+            return [
+                'data' => 0,
+                'message' => 'Bulk approval is only available for exclusive sessions.',
+                'info' => 'error',
+            ];
+        }
+
+        $pending = EventSessionParticipant::with('participant')
+            ->where('session_id', $key[0])
+            ->where('status_id', 52)
+            ->get();
+
+        foreach ($pending as $data) {
+            $data->status_id = 58;
+            $data->is_approved = 1;
+            $data->approval_mailed_at = now();
+            $data->save();
+            ParticipantApprovedJob::dispatch($data->participant->email, $data->participant->name, $data->session_id)->onConnection('database');
+        }
+
+        return [
+            'data' => $pending->count(),
+            'message' => $pending->count() > 0
+                ? $pending->count().' participant(s) successfully approved.'
+                : 'No pending participants to approve.',
+            'info' => 'success',
+        ];
+    }
+
     public function session($request){
         $data = EventSession::findOrFail($request->id);
         $data->update([

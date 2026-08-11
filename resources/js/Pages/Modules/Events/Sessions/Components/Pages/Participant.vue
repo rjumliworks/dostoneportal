@@ -36,6 +36,9 @@
             </div>
             <div class="flex-shrink-0">
                 <div class="d-flex flex-wrap gap-2 mt-3">
+                    <b-button v-if="pendingApprovalCount > 0" @click="confirmApproveAll = true" variant="soft-success" size="sm">
+                        <i class="ri-checkbox-circle-line align-bottom me-1"></i> Mark All as Approved ({{ pendingApprovalCount }})
+                    </b-button>
                     <b-button v-if="unmailedApprovedCount > 0" @click="confirmNotify = true" variant="soft-warning" size="sm">
                         <i class="ri-mail-send-line align-bottom me-1"></i> Send Approval Emails ({{ unmailedApprovedCount }})
                     </b-button>
@@ -75,7 +78,39 @@
             </b-col>
         </b-row>
     </b-modal>
-    
+
+    <b-modal
+        v-model="confirmApproveAll"
+        hide-footer
+        header-class="p-0"
+        body-class="p-0"
+        class="v-modal-custom"
+        content-class="border-0"
+        centered
+        hide-header-close
+    >
+        <b-row class="g-0">
+            <b-col lg="12">
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-sm mx-auto mb-3">
+                        <div class="avatar-title rounded-circle bg-success-subtle text-success">
+                            <i class="ri-checkbox-circle-line fs-24"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-semibold fs-14">Mark All as Approved?</h4>
+                    <p class="text-muted fs-12 mb-4">
+                        This will approve all {{ pendingApprovalCount }} pending
+                        participant{{ pendingApprovalCount === 1 ? '' : 's' }} and send them the approval confirmation email.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-light" @click="confirmApproveAll = false" :disabled="approveAllForm.processing">Cancel</button>
+                        <button class="btn btn-success" @click="approveAllParticipants" :disabled="approveAllForm.processing">Approve All</button>
+                    </div>
+                </div>
+            </b-col>
+        </b-row>
+    </b-modal>
+
         <div class="table-responsive table-card" style="height: calc(100vh - 520px);">
             <table class="table table-nowrap align-middle mb-0">
             
@@ -142,6 +177,11 @@ export default {
             notifyForm: useForm({
                 id: null,
                 option: 'notify-approved'
+            }),
+            confirmApproveAll: false,
+            approveAllForm: useForm({
+                id: null,
+                option: 'approve-all'
             })
         }
     },
@@ -164,6 +204,10 @@ export default {
         unmailedApprovedCount() {
             if (!this.is_exclusive) return 0;
             return this.participants.filter(participant => participant.is_approved && !participant.approval_mailed_at).length;
+        },
+        pendingApprovalCount() {
+            if (!this.is_exclusive) return 0;
+            return this.participants.filter(participant => participant.status.name === 'Pending').length;
         }
     },
     methods: {
@@ -188,6 +232,15 @@ export default {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.confirmNotify = false;
+                },
+            });
+        },
+        approveAllParticipants(){
+            this.approveAllForm.id = this.id;
+            this.approveAllForm.put('/sessions/update', {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.confirmApproveAll = false;
                 },
             });
         },
