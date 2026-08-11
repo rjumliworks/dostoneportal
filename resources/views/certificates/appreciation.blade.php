@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Certificate</title>
+    <title>Certificate of Appreciation</title>
     <style>
         @font-face {
             font-family: 'Certificate Body';
