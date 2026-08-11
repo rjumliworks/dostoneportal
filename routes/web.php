@@ -79,6 +79,7 @@ Route::middleware(['role:Event Manager'])->group(function () {
     Route::resource('/events', App\Http\Controllers\Event\EventController::class);
     Route::resource('/exhibits', App\Http\Controllers\Event\ExhibitController::class);
     Route::resource('/participants', App\Http\Controllers\Event\ParticipantController::class);
+    Route::post('/participants/{id}/avatar', [App\Http\Controllers\Event\ParticipantController::class, 'avatar']);
 });
 
 Route::middleware(['role:Event Manager,Session Manager'])->group(function () {
