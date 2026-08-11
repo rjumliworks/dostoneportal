@@ -1,49 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Certificate</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
     <style>
-        @font-face {
-            font-family: 'Certificate Body';
-            font-weight: 400;
-            font-style: normal;
-            src: url("{{ public_path('fonts') }}/Roboto-Regular.ttf") format('truetype');
-        }
-
-        @font-face {
-            font-family: 'Certificate Body';
-            font-weight: 700;
-            font-style: normal;
-            src: url("{{ public_path('fonts') }}/Roboto-Bold.ttf") format('truetype');
-        }
-
-        @font-face {
-            font-family: 'Certificate Name';
-            font-weight: 700;
-            font-style: italic;
-            src: url("{{ public_path('fonts') }}/Poppins-BoldItalic.ttf") format('truetype');
-        }
-
         @page {
-            margin: 0;
+            size: A4 landscape;
+            margin: 0; /* Remove page margins for full bg */
         }
-
+        @font-face {
+            font-family: 'Great Vibes';
+            src: url({{ public_path('fonts/LeckerliOne-Regular.ttf') }}) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9px;
             margin: 0;
             padding: 0;
-            font-family: 'Certificate Body', sans-serif;
+            position: relative;
         }
 
-        #background {
-            position: absolute;
+        /* Full background */
+        .certificate-bg {
+            position: fixed; /* Always behind */
             top: 0;
             left: 0;
-            width: 2000px;
-            height: 1414px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
         }
 
-        #recipient {
+        /* Content with margins */
+        .content {
+            margin: 40px 60px; /* Your custom safe margins */
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <img src="{{ public_path('images/appreciation-template.png') }}" class="certificate-bg">
+
+    <!-- Foreground Content -->
+    <div class="content">
+        {{-- <div style="text-align: center; margin-top: 125px; margin-bottom: 20px;">
+            <img src="{{ public_path('images/dost.png') }}" alt="tag" style="width: 80px; height: 80px; margin-right: 20px;">
+            <img src="{{ public_path('images/bagongpilipinas.png') }}" alt="tag" style="width: 80px; height: 80px;">
+        </div> --}}
+
+        {{-- <h1 style="text-align: center; font-size: 36px; margin-top: 20px;">CERTIFICATE OF APPRECIATION</h1>
+        <p style="text-align: center; font-size: 20px; margin-top: -10px;">This certificate is proudly presented to</p> --}}
+
+        <h1 style="
             position: absolute;
             left: 208px;
             top: 600px;
@@ -53,55 +70,35 @@
             font-family: 'Certificate Name', sans-serif;
             font-weight: 700;
             font-style: italic;
-            white-space: nowrap;
-        }
+            white-space: nowrap;">
+            <ins>{{$data['participant']['firstname'].' '.$data['participant']['middlename'][0].'. '.$data['participant']['lastname']}}</ins>
+        </h1>
+        
+        <div style="max-width: 780px; margin-left: 23px; margin-top: 20px;">
+            <p style="text-align: center; font-size: 15px; line-height: 1.4; margin-top: 60px;">
+                  For the active participation during the session 
+                <b><ins><i>"{{$data['session']['title']}}"</i></ins></b> conducted as part of the
+                <b><ins>{{$data['session']['event']['name']}}</b></ins> held on 
+               {{ \Carbon\Carbon::parse($data['session']['schedules'][0]['date'])->format('d F Y') }} at {{ $data['session']['venue']['name']}}, {{ $data['session']['event']['detail']['venue']}}. 
+            </p> 
 
-        #body {
-            position: absolute;
-            left: 214px;
-            top: 800px;
-            width: 1337px;
-            text-align: justify;
-            color: #000000;
-        }
+            {{-- <p style="text-align: center; margin-top: 30px; font-size: 15px;">
+                Your expertise, insightful presentation and shared knowledge significantly contributed 
+                to the success of our event.
+            </p> --}}
 
-        #issued {
-            position: absolute;
-            left: 214px;
-            top: 987px;
-            width: 1300px;
-            color: #000000;
-        }
+            <p style="text-align: center; margin-top: 50px; font-size: 15px;">
+                Given this <b>{{ \Carbon\Carbon::now()->format('jS \\d\\a\\y \\o\\f F Y') }} in Zamboanga City, Philippines.</b>
+            </p>
+        </div>
 
-        .emphasis {
-            color: #771d1b;
-            font-weight: 700;
-        }
-
-        .event {
-            color: #14314f;
-            font-weight: 700;
-        }
-
-        .venue {
-            color: #ec8836;
-            font-weight: 700;
-        }
-    </style>
-</head>
-<body>
-    <img id="background" src="{{ public_path('images/appreciation-template.png') }}" alt="">
-
-    <div id="recipient" style="font-size: {{ $recipientFontSize }}px; line-height: {{ $recipientFontSize }}px;">
-        {{ $data['participant']['firstname'].' '.$data['participant']['middlename'][0].'. '.$data['participant']['lastname'] }}
-    </div>
-
-    <div id="body" style="font-size: {{ $bodyFontSize }}px; line-height: 36.3px;">
-        @foreach ($bodySegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
-    </div>
-
-    <div id="issued" style="font-size: {{ $bodyFontSize }}px; line-height: 36.3px;">
-        @foreach ($issueSegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
+        {{-- <div style="text-align: center; position: absolute; bottom: 60; left: 50%; transform: translateX(-50%);">
+            <h1 style="font-size: 17px; margin: 0;">JENNIFER A. PIDOR</h1>
+            <p style="font-size: 13px; margin: 0;">OIC - Regional Director</p>
+        </div> --}}
+        <img src="{{ public_path('images/esig.png') }}" 
+                alt="tag" 
+                style="width: 200px; height: 200px; position: absolute; bottom: 15; left: 240;">
     </div>
 </body>
 </html>
