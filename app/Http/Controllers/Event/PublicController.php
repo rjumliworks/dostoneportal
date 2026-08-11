@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Event;
 use Hashids\Hashids;
 use Carbon\Carbon;
 use App\Events\SessionEvent;
+use App\Events\CapacityEvent;
 use App\Models\Participant;
 use App\Models\EventSession;
 use App\Services\DropdownClass;
@@ -202,9 +203,40 @@ class PublicController extends Controller
                 $image = 'data:'.$request->file('image')->getMimeType().';base64,'.base64_encode(file_get_contents($request->file('image')->getRealPath()));
                 $datetime =  now();
 
+                $isWalkIn = false;
                 $isRegistered = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->exists();
                 if (!$isRegistered) {
-                    return response()->json(['message' => 'Participant not registered in this session'], 404);
+                    $isWalkIn = true;
+                    // Walk-in check-in: the face matched a known participant, just not one
+                    // pre-registered for this specific session, so register them on the
+                    // spot instead of turning them away — the scan itself is proof they're
+                    // physically present.
+                    EventSessionParticipant::create([
+                        'participant_id' => $user->id,
+                        'session_id' => $request->session_id,
+                        'status_id' => 52, // Pending — flipped to Present (53) by image() below
+                        'is_approved' => 0,
+                    ]);
+
+                    // Re-fetch instead of broadcasting the create() result directly: a
+                    // freshly-created model holds created_at as an in-memory Carbon
+                    // instance, but the status/created_at accessors expect a raw DB
+                    // string (they call strtotime() on it) — broadcasting the Carbon
+                    // version throws a TypeError that isn't caught below, which was
+                    // silently aborting the walk-in check-in after the insert had
+                    // already committed.
+                    $walkIn = EventSessionParticipant::with('participant.detail')
+                        ->where('session_id', $request->session_id)
+                        ->where('participant_id', $user->id)
+                        ->first();
+
+                    // broadcast(new SessionEvent(new ParticipantResource($walkIn), 'register'));
+                    // broadcast(new CapacityEvent(
+                    //     EventSessionParticipant::where('session_id', $request->session_id)
+                    //         ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+                    //         ->count(),
+                    //     $request->session_id
+                    // ));
                 }
 
                 $attendance = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->whereNotNull('attended_at')->exists();
@@ -222,8 +254,8 @@ class PublicController extends Controller
                     ];
                 }else{
                     $this->image($request,$user,$datetime);
-                    $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
-                    broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
+                    // $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
+                    // broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
                     $data = [
                         'name' => $user->name,
                         'affiliation' => $user->detail->affiliation?->name === 'Others'
@@ -232,6 +264,7 @@ class PublicController extends Controller
                         'avatar' => $user->detail->avatar,
                         'capture' => $image,
                         'datetime' => Carbon::parse($datetime)->format('F j, Y g:i A'),
+                        'message' => $isWalkIn ? 'Participant is not registered but automatically registered to this session.' : null,
                     ];
                     return [
                         'data' => $data,

@@ -171,10 +171,6 @@
                                     class="camera-circle-video">
                                 </video>
 
-                                <div class="camera-shutter" :class="{ 'shutter-open': faceDetected }">
-                                    <img src="@assets/images/logos/logo-sm.png" alt="" class="brand-spinner">
-                                </div>
-
                                 <div class="capture-flash" v-if="flashActive"></div>
 
                                 <div class="capture-result capture-result-success" v-if="ringState === 'success'">
@@ -188,7 +184,6 @@
                                 </div>
 
                                 <button
-                                    v-if="faceDetected"
                                     type="button"
                                     class="btn-scan-trigger"
                                     :disabled="isScanning"
@@ -204,25 +199,30 @@
 
                 <div class="session-info-col" ref="infoCol">
                     <div class="status-card" :class="'status-card-' + (status || 'idle')">
-                        <div v-if="status === 'Success'" class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <img :src="employee.avatar" alt="user-img" class="status-avatar">
+                        <div v-if="status === 'Success'" class="w-100">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0 me-3">
+                                    <img :src="employee.avatar" alt="user-img" class="status-avatar">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-16 text-uppercase fw-semibold">{{ employee.name }}</h5>
+                                    <p class="text-muted mb-0 fs-12">{{ employee.affiliation }}</p>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="mb-0">{{ employee.datetime }}</h6>
+                                    <p class="text-muted mb-0 fs-12">{{ employee.datetype }}</p>
+                                </div>
                             </div>
-                            <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-16 text-uppercase fw-semibold">{{ employee.name }}</h5>
-                                <p class="text-muted mb-0 fs-12">{{ employee.affiliation }}</p>
-                            </div>
-                            <div class="text-end">
-                                <h6 class="mb-0">{{ employee.datetime }}</h6>
-                                <p class="text-muted mb-0 fs-12">{{ employee.datetype }}</p>
-                            </div>
+                            <p v-if="employee.message" class="mb-0 mt-2 fs-12 fw-semibold status-warning-text">
+                                <i class="ri-error-warning-line me-1"></i>{{ employee.message }}
+                            </p>
                         </div>
                         <div v-else-if="status === 'Duplicate'" class="text-center">
                             <p class="mb-0 fw-bold fs-14">Duplicate attendance detected<span v-if="employee"> for <b class="text-uppercase">{{ employee.name }}</b></span></p>
                             <p class="mb-0 fs-12">This participant's attendance has already been recorded. No additional entry is needed.</p>
                         </div>
                         <div v-else-if="status === 'Error'" class="text-center">
-                            <p class="mb-0 fw-bold fs-14">Participant not registered in the session.</p>
+                            <p class="mb-0 fw-bold fs-14">Participant not recognized.</p>
                             <p class="mb-0 fs-12">No matching participant was found based on the face data. Please register first.</p>
                         </div>
                         <div v-else class="text-center">
@@ -284,7 +284,6 @@
 </template>
 <script>
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import * as faceapi from 'face-api.js';
 
 // Same colors as the DOST pillar theme used elsewhere: Wealth Creation, Wealth Protection, Human Well Being, Sustainability
 const PILLAR_PALETTES = [
@@ -352,11 +351,7 @@ export default {
             attendees: this.session.data.attendees ?? [],
             floatingShapes: generateFloatingShapes(),
             pageHeight: null,
-            cameraSize: null,
-            faceDetected: false,
-            detectionRunning: false,
-            detectionTimeout: null,
-            missedFrames: 0
+            cameraSize: null
         };
     },
     computed: {
@@ -384,10 +379,8 @@ export default {
             this.initDeviceId();
             try {
                 await this.initCamera();
-                await this.loadModels();
-                this.startDetectionLoop();
             } catch (e) {
-                console.error('Failed to start camera/face detection:', e);
+                console.error('Failed to start camera:', e);
             }
         });
         this.keepAliveInterval = setInterval(() => {
@@ -401,10 +394,6 @@ export default {
         }
         if (this.captureFeedbackTimeout) {
             clearTimeout(this.captureFeedbackTimeout);
-        }
-        this.detectionRunning = false;
-        if (this.detectionTimeout) {
-            clearTimeout(this.detectionTimeout);
         }
         if (this.cameraStream) {
             this.cameraStream.getTracks().forEach(track => track.stop());
@@ -449,43 +438,6 @@ export default {
         async initCamera() {
             this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
             this.$refs.video.srcObject = this.cameraStream;
-        },
-        async loadModels() {
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-        },
-        startDetectionLoop() {
-            const detectorOptions = new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 });
-            const missesBeforeClose = 8;
-            this.detectionRunning = true;
-
-            const runDetection = async () => {
-                if (!this.detectionRunning) return;
-
-                try {
-                    const video = this.$refs.video;
-                    if (video && video.readyState === 4) {
-                        const result = await faceapi.detectSingleFace(video, detectorOptions);
-
-                        if (result) {
-                            this.missedFrames = 0;
-                            this.faceDetected = true;
-                        } else {
-                            this.missedFrames++;
-                            if (this.missedFrames >= missesBeforeClose) {
-                                this.faceDetected = false;
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.error('Face detection tick failed:', e);
-                } finally {
-                    if (this.detectionRunning) {
-                        this.detectionTimeout = setTimeout(runDetection, 150);
-                    }
-                }
-            };
-
-            runDetection();
         },
         async captureFrame() {
             if (this.isScanning) return;
@@ -695,36 +647,6 @@ export default {
     transform: scaleX(-1);
 }
 
-.camera-shutter {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f1f3f5;
-    color: #adb5bd;
-    transition: transform 0.6s ease, opacity 0.6s ease;
-}
-
-.brand-spinner {
-    width: 40%;
-    height: 40%;
-    object-fit: contain;
-    animation: brand-spin 3s linear infinite;
-}
-
-@keyframes brand-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.shutter-open {
-    transform: scale(1.2);
-    opacity: 0;
-    pointer-events: none;
-}
-
 .capture-flash {
     position: absolute;
     inset: 0;
@@ -844,6 +766,10 @@ export default {
     background-color: rgba(220, 53, 69, 0.12);
     border-color: rgba(220, 53, 69, 0.4);
     color: #8b1a24;
+}
+
+.status-warning-text {
+    color: #8a5a00;
 }
 
 .status-avatar {
