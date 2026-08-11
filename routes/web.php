@@ -51,6 +51,8 @@ Route::domain('wfh.' . config('app.app_host'))->as('wfh.')->group(function () {
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
 Route::get('/dropdowns', [App\Http\Controllers\SearchController::class, 'dropdowns']);
 
+Route::get('/certificates/appreciation/{session}/{participant}', [App\Http\Controllers\Event\CertificateController::class, 'appreciation']);
+
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
      Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
