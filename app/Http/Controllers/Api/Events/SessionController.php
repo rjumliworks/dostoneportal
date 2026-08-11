@@ -111,9 +111,6 @@ class SessionController extends Controller
 
     private function certificate($session,$participant){
         $data = EventSessionParticipant::with('participant','session.event.detail.municipality','session.venue','session.schedules')->where('session_id',$session)->where('participant_id',$participant)->first();
-        $array = [
-            'data' => $data
-        ];
 
         $composer = new \App\Services\Certificates\CertificateComposer();
         $fitter = new \App\Services\Certificates\CertificateTextFitter();
@@ -151,7 +148,7 @@ class SessionController extends Controller
         ])->setPaper(\App\Services\Certificates\CertificateComposer::PAGE);
         $pdfContent2 = base64_encode($pdf2->output());
 
-        CertificateJob::dispatch($data->participant->email, $array,$pdfContent1, $pdfContent2)->onConnection('database');
+        CertificateJob::dispatch($data->participant->email, $data,$pdfContent1, $pdfContent2)->onConnection('database');
     }
 
     /**

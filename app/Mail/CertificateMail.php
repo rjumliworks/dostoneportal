@@ -23,8 +23,8 @@ class CertificateMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Your Certificates')
-            ->view('emails.certificate') // simple blade for the email body
+        return $this->subject('DOST-IX Certificates of Appearance & Participation')
+            ->view('emails.certificate')
             ->attachData(
                 base64_decode($this->pdf1),
                 'Appearance.pdf',
