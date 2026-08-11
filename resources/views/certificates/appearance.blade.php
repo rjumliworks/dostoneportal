@@ -1,70 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report</title>
+    <meta charset="utf-8">
+    <title>Certificate of Appearance</title>
     <style>
-        /* Styles for the footer */
+        @font-face {
+            font-family: 'Certificate Body';
+            font-weight: 400;
+            font-style: normal;
+            src: url("{{ public_path('fonts') }}/Roboto-Regular.ttf") format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Certificate Body';
+            font-weight: 700;
+            font-style: normal;
+            src: url("{{ public_path('fonts') }}/Roboto-Bold.ttf") format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Certificate Name';
+            font-weight: 700;
+            font-style: italic;
+            src: url("{{ public_path('fonts') }}/Poppins-BoldItalic.ttf") format('truetype');
+        }
+
         @page {
-           
+            margin: 0;
         }
-        html * {
-            font-family:Arial, Helvetica, sans-serif;
-            margin: 10px;
-        }
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 9px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Certificate Body', sans-serif;
         }
-        .content {
-            margin-bottom:55px; /* Space for the footer */
+
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2000px;
+            height: 1414px;
         }
-        .page-break {
-            page-break-after: always;
+
+        #recipient {
+            position: absolute;
+            left: 208px;
+            top: 600px;
+            width: 1220px;
+            height: 120px;
+            color: #80211d;
+            font-family: 'Certificate Name', sans-serif;
+            font-weight: 700;
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        #body {
+            position: absolute;
+            left: 214px;
+            top: 800px;
+            width: 1337px;
+            text-align: justify;
+            color: #000000;
+        }
+
+        #issued {
+            position: absolute;
+            left: 214px;
+            top: 987px;
+            width: 1300px;
+            color: #000000;
+        }
+
+        .emphasis {
+            color: #771d1b;
+            font-weight: 700;
+        }
+
+        .event {
+            color: #14314f;
+            font-weight: 700;
+        }
+
+        .venue {
+            color: #ec8836;
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
-    <div style="font-family:Arial;">
-        <img src="{{ public_path('images/dost.png') }}" alt="tag" style="position: absolute; top: -4; left: 15; width: 80px; height: 80px;">
-        <div style="position: absolute; top: -2; left: 73;">
-            <p style="font-size: 15px; margin-bottom: -9px;">Republic of the Philippines</p>
-            <p style="font-size: 17px; margin-bottom: -10px; font-weight: bold;">DEPARTMENT OF SCIENCE AND TECHNOLOGY</p>
-            <p style="font-size: 15px; margin-bottom: 0px;">Regional Office IX</p>
-        </div>
-        <img src="{{ public_path('images/bagongpilipinas.png') }}" alt="tag" style="position: absolute; top: -4; right: 15; width: 80px; height: 80px;">
+    <img id="background" src="{{ public_path('images/attendance-template.png') }}" alt="">
 
-        <h1 style="text-align: center; font-size: 26px; margin-top: 140px;">CERTIFICATE OF APPEARANCE</h1>
+    <div id="recipient" style="font-size: {{ $recipientFontSize }}px; line-height: {{ $recipientFontSize }}px;">
+        {{ $recipientName }}
+    </div>
 
-        <p style="text-align: justify; font-size: 15px; line-height: 1.4; margin-top: 60px;">
-            This is to certify that <b><ins>{{$data['participant']['firstname'].' '.$data['participant']['middlename'][0].'. '.$data['participant']['lastname']}}</ins></b> of <b><ins>{{$data['participant']['detail']['affiliation']}}</ins></b> Appeared at <b><ins>{{$data['session']['event']['detail']['venue'].', '.$data['session']['event']['detail']['municipality']['name']}}</ins></b> on <b><ins>{{ \Carbon\Carbon::now()->format('F d, Y') }}</b></ins> to attend<b><ins> {{$data['session']['event']['name']}}.</b></ins>
-        </p>
+    <div id="body" style="font-size: {{ $bodyFontSize }}px; line-height: 36.3px;">
+        @foreach ($bodySegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
+    </div>
 
-        <p style="text-align: justify; margin-top: 30px; font-size: 15px; line-height: 1.4;">
-            This certification is issued in compliance with the standing regulations provided under 
-            Republic Act No. 3847 duly implemented by COA Circular No. 127
-            for the purpose of establishing the evidence and duration of his/her appearance hereto.  
-            The truth of which is hereby vouchsafed and guaranteed by the undersigned.
-        </p>
-
-        <p  style="margin-top: 30px; font-size: 15px;">
-            Issued this <b><ins>{{ \Carbon\Carbon::now()->format('jS \\d\\a\\y \\o\\f F Y') }}</ins></b> in Zamboanga City, Philippines.
-        </p>
-
-        <div style="float: right; text-align: center; margin-top: 70px; position: relative; width: 200px; height: 200px;">
-            <!-- Signature Image -->
-            <img src="{{ public_path('images/esig.png') }}" 
-                alt="tag" 
-                style="width: 200px; height: 200px; position: absolute; top: 0; left: 0;">
-
-            <!-- Name & Title -->
-            <div style="position: absolute; bottom: 10px; left: 0; width: 100%;">
-                <h1 style="font-size: 17px; margin: 0; color: black;">JENNIFER A. PIDOR</h1>
-                <p style="font-size: 13px; margin: 0; color: black;">OIC - Regional Director</p>
-            </div>
-        </div>
-        
+    <div id="issued" style="font-size: {{ $bodyFontSize }}px; line-height: 36.3px;">
+        @foreach ($issueSegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
     </div>
 </body>
 </html>

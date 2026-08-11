@@ -110,15 +110,47 @@ class SessionController extends Controller
     }
 
     private function certificate($session,$participant){
-        $data = EventSessionParticipant::with('participant','session.event.detail.municipality')->where('session_id',$session)->where('participant_id',$participant)->first(); 
+        $data = EventSessionParticipant::with('participant','session.event.detail.municipality','session.venue','session.schedules')->where('session_id',$session)->where('participant_id',$participant)->first();
         $array = [
             'data' => $data
-        ]; 
+        ];
 
-        $pdf1 = \PDF::loadView('certificates.appearance',$array)->setPaper('a4', 'portrait');
+        $composer = new \App\Services\Certificates\CertificateComposer();
+        $fitter = new \App\Services\Certificates\CertificateTextFitter();
+        $recipientName = $composer->recipientName($data->participant);
+        $recipientFontSize = $fitter->recipientFontSize($recipientName);
+        $issueSegments = $composer->issueSegments();
+
+        $appearanceSegments = $composer->bodySegments([
+            ['text' => 'For ', 'style' => 'plain'],
+            ['text' => 'attending', 'style' => 'emphasis'],
+            ['text' => ' the ', 'style' => 'plain'],
+        ], $data);
+
+        $pdf1 = \PDF::loadView('certificates.appearance', [
+            'recipientName' => $recipientName,
+            'recipientFontSize' => $recipientFontSize,
+            'bodyFontSize' => $fitter->bodyFontSize($appearanceSegments),
+            'bodySegments' => $appearanceSegments,
+            'issueSegments' => $issueSegments,
+        ])->setPaper(\App\Services\Certificates\CertificateComposer::PAGE);
         $pdfContent1 = base64_encode($pdf1->output());
-        $pdf2 = \PDF::loadView('certificates.participation',$array)->setPaper('a4', 'portrait');
+
+        $participationSegments = $composer->bodySegments([
+            ['text' => 'For ', 'style' => 'plain'],
+            ['text' => 'participating', 'style' => 'emphasis'],
+            ['text' => ' in the ', 'style' => 'plain'],
+        ], $data);
+
+        $pdf2 = \PDF::loadView('certificates.participation', [
+            'recipientName' => $recipientName,
+            'recipientFontSize' => $recipientFontSize,
+            'bodyFontSize' => $fitter->bodyFontSize($participationSegments),
+            'bodySegments' => $participationSegments,
+            'issueSegments' => $issueSegments,
+        ])->setPaper(\App\Services\Certificates\CertificateComposer::PAGE);
         $pdfContent2 = base64_encode($pdf2->output());
+
         CertificateJob::dispatch($data->participant->email, $array,$pdfContent1, $pdfContent2)->onConnection('database');
     }
 
