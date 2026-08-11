@@ -305,7 +305,6 @@
                     <div class="capture-flash" v-if="flashActive"></div>
 
                     <button
-                        v-if="faceDetected"
                         type="button"
                         class="btn-scan-trigger"
                         :disabled="ringState !== 'idle' || scanning"
@@ -318,8 +317,6 @@
     </div>
 </template>
 <script>
-import * as faceapi from 'face-api.js';
-
 const FIREWORKS_PALETTE = [
     '#F4A623', '#E8940C', '#FFC857',
     '#2E5C8A', '#1F4568', '#4A80B5',
@@ -488,13 +485,7 @@ export default {
     data() {
         return {
             cameraStream: null,
-            videoSignalChannel: null,
-            peerConnection: null,
             hasScanned: false,
-            faceDetected: false,
-            detectionRunning: false,
-            detectionTimeout: null,
-            missedFrames: 0,
             ringState: 'idle',
             ringOutcome: 'success',
             ringDisplayProgress: 0,
@@ -509,20 +500,12 @@ export default {
     async mounted() {
         try {
             await this.initCamera();
-            this.initVideoBroadcast();
-            await this.loadModels();
-            this.startDetectionLoop();
         } catch (err) {
-            console.error('Failed to start camera/face detection:', err);
+            console.error('Failed to start camera:', err);
         }
     },
     beforeUnmount() {
-        this.detectionRunning = false;
         this._ringSweeping = false;
-        if (this.detectionTimeout) {
-            clearTimeout(this.detectionTimeout);
-        }
-        this.teardownVideoBroadcast();
         if (this.cameraStream) {
             this.cameraStream.getTracks().forEach(track => track.stop());
         }
@@ -532,127 +515,8 @@ export default {
             this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
             this.$refs.video.srcObject = this.cameraStream;
         },
-        async loadModels() {
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-        },
-        // Streams this device's live camera feed to the separate VIP display
-        // app (FaceRecognitionPage.jsx) over WebRTC, using this app's own
-        // Reverb connection purely to exchange SDP/ICE - see
-        // VipSignalEvent/VipController::signal(). The display always
-        // initiates by announcing itself ('join'/'scanner-ready'), and this
-        // side answers with a fresh offer each time, so either page can
-        // reload independently mid-event without a manual restart.
-        initVideoBroadcast() {
-            this.videoSignalChannel = window.Echo.channel('vip-signal');
-            this.videoSignalChannel.listen('VipSignalEvent', (e) => this.handleVideoSignal(e?.signal));
-            this.sendVideoSignal('scanner-ready', null);
-        },
-        teardownVideoBroadcast() {
-            if (this.videoSignalChannel) {
-                this.sendVideoSignal('leave', null);
-                window.Echo.leave('vip-signal');
-                this.videoSignalChannel = null;
-            }
-            if (this.peerConnection) {
-                this.peerConnection.close();
-                this.peerConnection = null;
-            }
-        },
-        sendVideoSignal(type, data) {
-            axios.post('/vip-signal', { type, from: 'scanner', data }).catch(() => {});
-        },
-        // TURN credentials are short-lived (see VipController::turnCredentials),
-        // so fetched fresh for each new peer connection rather than cached -
-        // one small GET per 'join' is negligible next to the video itself.
-        // Falls back to STUN-only if TURN isn't configured/reachable, same as
-        // before this existed.
-        async fetchIceServers() {
-            const stun = { urls: 'stun:stun.l.google.com:19302' };
-            try {
-                const { data } = await axios.get('/vip-signal/turn-credentials');
-                return [stun, { urls: data.urls, username: data.username, credential: data.credential }];
-            } catch (err) {
-                return [stun];
-            }
-        },
-        async createVideoPeerConnection() {
-            const iceServers = await this.fetchIceServers();
-            const pc = new RTCPeerConnection({ iceServers });
-            this.cameraStream.getTracks().forEach(track => pc.addTrack(track, this.cameraStream));
-            pc.onicecandidate = (e) => {
-                if (e.candidate) this.sendVideoSignal('ice-candidate', e.candidate.toJSON());
-            };
-            return pc;
-        },
-        async handleVideoSignal(signal) {
-            if (!signal || signal.from !== 'display') return;
-
-            if (signal.type === 'join') {
-                if (this.peerConnection) this.peerConnection.close();
-                this.peerConnection = await this.createVideoPeerConnection();
-                const offer = await this.peerConnection.createOffer();
-                await this.peerConnection.setLocalDescription(offer);
-                this.sendVideoSignal('offer', offer);
-                return;
-            }
-
-            if (signal.type === 'answer' && this.peerConnection) {
-                await this.peerConnection.setRemoteDescription(signal.data);
-                return;
-            }
-
-            if (signal.type === 'ice-candidate' && this.peerConnection) {
-                try {
-                    await this.peerConnection.addIceCandidate(signal.data);
-                } catch (err) {
-                    // A candidate that loses the race with connection teardown is fine to drop.
-                }
-                return;
-            }
-
-            if (signal.type === 'leave' && this.peerConnection) {
-                this.peerConnection.close();
-                this.peerConnection = null;
-            }
-        },
-        startDetectionLoop() {
-            const detectorOptions = new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.3 });
-            const missesBeforeClose = 8;
-            this.detectionRunning = true;
-
-            // Only drives the shutter open/close visual now - capture is manual via the scan button.
-            const runDetection = async () => {
-                if (!this.detectionRunning) return;
-
-                try {
-                    const video = this.$refs.video;
-                    if (video && video.readyState === 4) {
-                        const result = await faceapi.detectSingleFace(video, detectorOptions);
-
-                        if (result) {
-                            this.missedFrames = 0;
-                            this.faceDetected = true;
-                        } else {
-                            this.missedFrames++;
-                            if (this.missedFrames >= missesBeforeClose) {
-                                this.faceDetected = false;
-                            }
-                        }
-                    }
-                } catch (err) {
-                    // Never let a single failed inference kill the recursive loop
-                    console.error('Face detection tick failed:', err);
-                } finally {
-                    if (this.detectionRunning) {
-                        this.detectionTimeout = setTimeout(runDetection, 150);
-                    }
-                }
-            };
-
-            runDetection();
-        },
         async captureScan() {
-            if (!this.faceDetected || this.ringState !== 'idle' || this.scanning) return;
+            if (this.ringState !== 'idle' || this.scanning) return;
 
             const video = this.$refs.video;
             const canvas = document.createElement('canvas');

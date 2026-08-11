@@ -55,15 +55,31 @@ class AvatarController extends Controller
                         ],
                     ]);
 
+                    $collectionId = config('services.rekognition.participant_id');
+
+                    // Re-uploading an avatar must replace the participant's indexed
+                    // face, not stack a new one alongside it — otherwise Rekognition
+                    // ends up with multiple faces under the same ExternalImageId and
+                    // scans can match against a stale photo. Mirrors
+                    // RegistrationController::indexFace().
+                    $existingFaces = ParticipantFace::where('participant_id', $participant->detail->id)->get();
+                    if ($existingFaces->isNotEmpty()) {
+                        $rekognition->deleteFaces([
+                            'CollectionId' => $collectionId,
+                            'FaceIds' => $existingFaces->pluck('face_id')->all(),
+                        ]);
+                        ParticipantFace::whereIn('id', $existingFaces->pluck('id'))->delete();
+                    }
+
                     $result = $rekognition->indexFaces([
-                        'CollectionId' => config('services.rekognition.participant_id'),
+                        'CollectionId' => $collectionId,
                         'Image' => [
                             'S3Object' => [
                                 'Bucket' => config('services.rekognition.bucket'),
                                 'Name' => $s3Path,
                             ],
                         ],
-                        'ExternalImageId' => (string) $participant->id, 
+                        'ExternalImageId' => (string) $participant->id,
                         'DetectionAttributes' => ['DEFAULT'],
                     ]);
                     foreach ($result['FaceRecords'] as $record) {

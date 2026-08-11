@@ -29,10 +29,3 @@ Broadcast::channel('capacity', function () {
 Broadcast::channel('vip', function () {
     return true;
 });
-
-// Signaling only (SDP/ICE for the Scanner.vue -> FaceRecognitionPage.jsx
-// WebRTC video handoff) - no video ever touches this channel. Public like
-// 'vip' above since the display side is a guest app with no session here.
-Broadcast::channel('vip-signal', function () {
-    return true;
-});
