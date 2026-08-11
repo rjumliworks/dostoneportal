@@ -230,13 +230,15 @@ class PublicController extends Controller
                         ->where('participant_id', $user->id)
                         ->first();
 
-                    // broadcast(new SessionEvent(new ParticipantResource($walkIn), 'register'));
-                    // broadcast(new CapacityEvent(
-                    //     EventSessionParticipant::where('session_id', $request->session_id)
-                    //         ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
-                    //         ->count(),
-                    //     $request->session_id
-                    // ));
+                    if (app()->environment('production')) {
+                        broadcast(new SessionEvent(new ParticipantResource($walkIn), 'register'));
+                        broadcast(new CapacityEvent(
+                            EventSessionParticipant::where('session_id', $request->session_id)
+                                ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+                                ->count(),
+                            $request->session_id
+                        ));
+                    }
                 }
 
                 $attendance = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->whereNotNull('attended_at')->exists();
@@ -254,8 +256,10 @@ class PublicController extends Controller
                     ];
                 }else{
                     $this->image($request,$user,$datetime);
-                    // $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
-                    // broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
+                    if (app()->environment('production')) {
+                        $broadcast = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->first();
+                        broadcast(new SessionEvent(new ParticipantResource($broadcast),'datetime'));
+                    }
                     $data = [
                         'name' => $user->name,
                         'affiliation' => $user->detail->affiliation?->name === 'Others'
