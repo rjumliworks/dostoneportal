@@ -56,12 +56,13 @@ class ParticipantController extends Controller
             ]);
 
             $participant = Participant::with('detail')->findOrFail($id);
+            $imageHash = hash_file('sha256', $request->file('image')->getRealPath());
             $s3Path = $this->uploadAvatar($participant, $request->file('image'));
 
             $participant->detail->avatar = $s3Path;
             $participant->detail->save();
 
-            $this->indexFace($participant, $participant->detail, $s3Path);
+            $this->indexFace($participant, $participant->detail, $s3Path, $imageHash);
 
             return response()->json([
                 'status'  => true,
@@ -96,116 +97,125 @@ class ParticipantController extends Controller
      *
      * participant_faces.participant_id is a FK into participant_details, not
      * participants — always pass the detail row's id, not $participant->id.
+     *
+     * $imageHash (sha256 of the uploaded bytes) serializes concurrent calls
+     * for the exact same photo — see RegistrationController::indexFace() for
+     * why that matters.
      */
-    private function indexFace(Participant $participant, ParticipantDetail $detail, string $s3Path){
+    private function indexFace(Participant $participant, ParticipantDetail $detail, string $s3Path, string $imageHash){
         try {
-            $rekognition = new RekognitionClient([
-                'version' => 'latest',
-                'region'      => config('services.rekognition.region'),
-                'credentials' => [
-                    'key'    => config('services.rekognition.key'),
-                    'secret' => config('services.rekognition.secret'),
-                ],
-            ]);
-
-            $collectionId = config('services.rekognition.participant_id');
-            $image = [
-                'S3Object' => [
-                    'Bucket' => config('services.rekognition.bucket'),
-                    'Name' => $s3Path,
-                ],
-            ];
-
-            try {
-                $matches = $rekognition->searchFacesByImage([
-                    'CollectionId' => $collectionId,
-                    'Image' => $image,
-                    'FaceMatchThreshold' => 90,
-                    'MaxFaces' => 1,
+            return \Cache::lock('face-index:'.$imageHash, 30)->block(15, function () use ($participant, $detail, $s3Path) {
+                $rekognition = new RekognitionClient([
+                    'version' => 'latest',
+                    'region'      => config('services.rekognition.region'),
+                    'credentials' => [
+                        'key'    => config('services.rekognition.key'),
+                        'secret' => config('services.rekognition.secret'),
+                    ],
                 ]);
-            } catch (RekognitionException $e) {
-                if ($e->getAwsErrorCode() === 'InvalidParameterException') {
-                    throw new \RuntimeException('No face was detected in the photo. Please retake it with the participant\'s face clearly visible.');
-                }
-                throw $e;
-            }
 
-            $match = $matches['FaceMatches'][0] ?? null;
-            $matchedId = $match['Face']['ExternalImageId'] ?? null;
+                $collectionId = config('services.rekognition.participant_id');
+                $image = [
+                    'S3Object' => [
+                        'Bucket' => config('services.rekognition.bucket'),
+                        'Name' => $s3Path,
+                    ],
+                ];
 
-            if ($match && $matchedId !== (string) $participant->id) {
-                if ($matchedId !== null && Participant::where('id', $matchedId)->exists()) {
-                    throw new \RuntimeException('This face is already registered to another participant.');
+                try {
+                    $matches = $rekognition->searchFacesByImage([
+                        'CollectionId' => $collectionId,
+                        'Image' => $image,
+                        'FaceMatchThreshold' => 90,
+                        'MaxFaces' => 1,
+                    ]);
+                } catch (RekognitionException $e) {
+                    if ($e->getAwsErrorCode() === 'InvalidParameterException') {
+                        throw new \RuntimeException('No face was detected in the photo. Please retake it with the participant\'s face clearly visible.');
+                    }
+                    throw $e;
                 }
 
-                // Stale/orphaned face: indexed by an earlier attempt that
-                // failed/rolled back after IndexFaces() had already committed
-                // it on the AWS side. Nothing in the DB owns it, so delete it
-                // and continue indexing this participant's photo instead of
-                // blocking staff over a ghost record.
-                \Log::info('Rekognition: deleting orphaned face with no matching participant.', [
-                    'face_id' => $match['Face']['FaceId'],
-                    'external_image_id' => $matchedId,
-                ]);
+                $match = $matches['FaceMatches'][0] ?? null;
+                $matchedId = $match['Face']['ExternalImageId'] ?? null;
 
-                $rekognition->deleteFaces([
-                    'CollectionId' => $collectionId,
-                    'FaceIds' => [$match['Face']['FaceId']],
-                ]);
-            }
+                if ($match && $matchedId !== (string) $participant->id) {
+                    if ($matchedId !== null && Participant::where('id', $matchedId)->exists()) {
+                        throw new \RuntimeException('This face is already registered to another participant.');
+                    }
 
-            $existingFaces = ParticipantFace::where('participant_id', $detail->id)->get();
+                    // Stale/orphaned face: indexed by an earlier attempt that
+                    // failed/rolled back after IndexFaces() had already committed
+                    // it on the AWS side. Nothing in the DB owns it, so delete it
+                    // and continue indexing this participant's photo instead of
+                    // blocking staff over a ghost record.
+                    \Log::info('Rekognition: deleting orphaned face with no matching participant.', [
+                        'face_id' => $match['Face']['FaceId'],
+                        'external_image_id' => $matchedId,
+                    ]);
 
-            if ($existingFaces->isNotEmpty()) {
-                $rekognition->deleteFaces([
-                    'CollectionId' => $collectionId,
-                    'FaceIds' => $existingFaces->pluck('face_id')->all(),
-                ]);
-                ParticipantFace::whereIn('id', $existingFaces->pluck('id'))->delete();
-            }
-
-            $result = $rekognition->indexFaces([
-                'CollectionId' => $collectionId,
-                'Image' => $image,
-                'ExternalImageId' => (string) $participant->id,
-                'DetectionAttributes' => ['DEFAULT'],
-            ]);
-
-            if (empty($result['FaceRecords'])) {
-                throw new \RuntimeException('No face was detected in the photo. Please retake it with the participant\'s face clearly visible.');
-            }
-
-            try {
-                foreach ($result['FaceRecords'] as $record) {
-                    ParticipantFace::create([
-                        'participant_id' => $detail->id,
-                        'face_id' => $record['Face']['FaceId'],
-                        'image_id' => $record['Face']['ImageId'],
-                        'status' => 'active',
+                    $rekognition->deleteFaces([
+                        'CollectionId' => $collectionId,
+                        'FaceIds' => [$match['Face']['FaceId']],
                     ]);
                 }
-            } catch (\Throwable $e) {
-                // indexFaces() above already committed the face into the
-                // Rekognition collection — AWS has no rollback, so if bookkeeping
-                // it locally fails, undo the AWS side too. Otherwise it's left
-                // permanently indexed under a participant whose face update is
-                // about to be reported as failed, and later blocks anyone with
-                // a similar face as "already registered to another participant".
-                $rekognition->deleteFaces([
-                    'CollectionId' => $collectionId,
-                    'FaceIds' => array_column(array_column($result['FaceRecords'], 'Face'), 'FaceId'),
-                ]);
 
-                // ImageId is a content hash, not a random id like FaceId — a
-                // collision here means this exact photo was already indexed by
-                // another submission (e.g. this update was somehow triggered
-                // twice). Surface that plainly instead of a raw SQL error.
-                if ($e instanceof UniqueConstraintViolationException) {
-                    throw new \RuntimeException('This exact photo has already been used for another registration. Please retake the photo and try again.');
+                $existingFaces = ParticipantFace::where('participant_id', $detail->id)->get();
+
+                if ($existingFaces->isNotEmpty()) {
+                    $rekognition->deleteFaces([
+                        'CollectionId' => $collectionId,
+                        'FaceIds' => $existingFaces->pluck('face_id')->all(),
+                    ]);
+                    ParticipantFace::whereIn('id', $existingFaces->pluck('id'))->delete();
                 }
 
-                throw $e;
-            }
+                $result = $rekognition->indexFaces([
+                    'CollectionId' => $collectionId,
+                    'Image' => $image,
+                    'ExternalImageId' => (string) $participant->id,
+                    'DetectionAttributes' => ['DEFAULT'],
+                ]);
+
+                if (empty($result['FaceRecords'])) {
+                    throw new \RuntimeException('No face was detected in the photo. Please retake it with the participant\'s face clearly visible.');
+                }
+
+                try {
+                    foreach ($result['FaceRecords'] as $record) {
+                        ParticipantFace::create([
+                            'participant_id' => $detail->id,
+                            'face_id' => $record['Face']['FaceId'],
+                            'image_id' => $record['Face']['ImageId'],
+                            'status' => 'active',
+                        ]);
+                    }
+                } catch (\Throwable $e) {
+                    // indexFaces() above already committed the face into the
+                    // Rekognition collection — AWS has no rollback, so if bookkeeping
+                    // it locally fails, undo the AWS side too. Otherwise it's left
+                    // permanently indexed under a participant whose face update is
+                    // about to be reported as failed, and later blocks anyone with
+                    // a similar face as "already registered to another participant".
+                    $rekognition->deleteFaces([
+                        'CollectionId' => $collectionId,
+                        'FaceIds' => array_column(array_column($result['FaceRecords'], 'Face'), 'FaceId'),
+                    ]);
+
+                    // ImageId is a content hash, not a random id like FaceId — a
+                    // collision here means this exact photo was already indexed by
+                    // another submission racing this one. The lock above should
+                    // make that essentially impossible now; this stays as a
+                    // safety net in case a lock is ever missed.
+                    if ($e instanceof UniqueConstraintViolationException) {
+                        throw new \RuntimeException('This exact photo has already been used for another registration. Please retake the photo and try again.');
+                    }
+
+                    throw $e;
+                }
+            });
+        } catch (\Illuminate\Contracts\Cache\LockTimeoutException $e) {
+            throw new \RuntimeException('This photo is still being processed from another submission. Please wait a moment and try again.');
         } catch (\RuntimeException $e) {
             throw $e;
         } catch (\Exception $e) {
