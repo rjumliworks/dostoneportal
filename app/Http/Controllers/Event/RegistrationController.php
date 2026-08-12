@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Aws\Rekognition\RekognitionClient;
 use Aws\Rekognition\Exception\RekognitionException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use App\Http\Requests\Event\ParticipantRequest;
 use App\Http\Resources\Api\Events\Session\ParticipantResource;
 
@@ -440,6 +441,19 @@ class RegistrationController extends Controller
                     'CollectionId' => $collectionId,
                     'FaceIds' => array_column(array_column($result['FaceRecords'], 'Face'), 'FaceId'),
                 ]);
+
+                // ImageId is a content hash, not a random id like FaceId — a
+                // collision here means this exact photo was already indexed by
+                // another submission, most likely two requests racing on the
+                // same capture (double-click, retry, or a stale photo reused
+                // on a shared kiosk) that both passed the searchFacesByImage()
+                // duplicate check before either had committed. Surface that
+                // plainly instead of letting the raw SQL error reach the
+                // registrant.
+                if ($e instanceof UniqueConstraintViolationException) {
+                    throw new \RuntimeException('This exact photo has already been used for another registration. If you\'re retrying for the same person, check whether they\'re already registered before resubmitting — otherwise, please retake the photo.');
+                }
+
                 throw $e;
             }
         } catch (\RuntimeException $e) {
