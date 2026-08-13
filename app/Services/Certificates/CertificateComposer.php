@@ -37,7 +37,7 @@ class CertificateComposer
             ['text' => ' session of ', 'style' => 'plain'],
             ['text' => $data->session->event->name, 'style' => 'event'],
             ['text' => ', held on ', 'style' => 'plain'],
-            ['text' => Carbon::parse($data->session->schedules[0]->date)->format('d F Y'), 'style' => 'event'],
+            ['text' => Carbon::parse($data->session->schedules[0]->date)->format('j F Y'), 'style' => 'event'],
             ['text' => ' at ', 'style' => 'plain'],
             ['text' => $data->session->venue->establishment.', '.$data->session->venue->address.'.', 'style' => 'venue'],
         ];
