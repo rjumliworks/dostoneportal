@@ -197,7 +197,7 @@
         <h1 class="title">CERTIFICATE OF APPEARANCE</h1>
 
         <p style="text-align: justify; font-size: 15px; line-height: 1.4; margin-top: 60px;">
-            This is to certify that <b><ins>Juan D. Dela Cruz</ins></b> of <b><ins>Sample Affiliation Inc.</ins></b> Appeared at <b><ins>Sample Venue, Zamboanga City</ins></b> on <b><ins>{{ \Carbon\Carbon::now()->format('F d, Y') }}</b></ins> to participate<b><ins> Sample Event Name.</b></ins>
+            This is to certify that <b><ins>{{ $recipientName }}</ins></b> of <b><ins>{{ $affiliationName }}</ins></b> Appeared at <b><ins>{{ $venueText }}</ins></b> on <b><ins>{{ $sessionDateText }}</ins></b> to attend<b><ins> {{ $eventName }}.</ins></b>
         </p>
 
         <p class="compliance">

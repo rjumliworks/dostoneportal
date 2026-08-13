@@ -11,7 +11,7 @@ class CertificateClass
 {
     public function send($session, $participant)
     {
-        $data = EventSessionParticipant::with('participant','session.event.detail.municipality','session.venue','session.schedules')->where('session_id',$session)->where('participant_id',$participant)->first();
+        $data = EventSessionParticipant::with('participant.detail.affiliation','session.event.detail.municipality','session.venue','session.schedules')->where('session_id',$session)->where('participant_id',$participant)->first();
 
         $composer = new CertificateComposer();
         $fitter = new CertificateTextFitter();
@@ -25,6 +25,8 @@ class CertificateClass
             ['text' => ' the ', 'style' => 'plain'],
         ], $data);
 
+        $sessionDate = optional($data->session->schedules->first())->date;
+
         $pdf1 = \PDF::loadView('certificates.appearance', [
             'sessionId' => $session,
             'recipientName' => $recipientName,
@@ -32,6 +34,10 @@ class CertificateClass
             'bodyFontSize' => $fitter->bodyFontSize($appearanceSegments),
             'bodySegments' => $appearanceSegments,
             'issueSegments' => $issueSegments,
+            'affiliationName' => optional($data->participant->detail->affiliation)->name,
+            'eventName' => $data->session->event->name,
+            'venueText' => $data->session->venue->establishment.', '.$data->session->venue->address,
+            'sessionDateText' => $sessionDate ? \Carbon\Carbon::parse($sessionDate)->format('F d, Y') : '',
         ])->setPaper('a4');
         $pdfContent1 = base64_encode($pdf1->output());
 

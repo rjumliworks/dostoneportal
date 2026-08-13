@@ -75,6 +75,10 @@ Route::get('/appearance', function () {
             ['text' => \Carbon\Carbon::now()->format('jS'), 'style' => 'event'],
             ['text' => \Carbon\Carbon::now()->format(' \d\a\y \o\f F Y').' in Zamboanga City, Philippines.', 'style' => 'plain'],
         ],
+        'affiliationName' => 'Sample Affiliation Inc.',
+        'eventName' => 'Sample Event Name',
+        'venueText' => 'Sample Venue, Zamboanga City',
+        'sessionDateText' => \Carbon\Carbon::now()->format('F d, Y'),
     ])->setPaper('a4')->stream('appearance.pdf');
 });
 
