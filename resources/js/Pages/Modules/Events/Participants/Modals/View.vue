@@ -107,6 +107,14 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-12" v-if="selected.signature">
+                <div class="p-1 border border-dashed rounded">
+                    <p class="text-muted mb-1 fs-12">Signature :</p>
+                    <div class="text-center bg-light rounded p-2">
+                        <img :src="selected.signature" alt="Signature" style="max-height: 80px; max-width: 100%;">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <hr class="text-muted"/>

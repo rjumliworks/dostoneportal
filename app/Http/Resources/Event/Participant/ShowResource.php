@@ -4,6 +4,7 @@ namespace App\Http\Resources\Event\Participant;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ShowResource extends JsonResource
 {
@@ -14,6 +15,7 @@ class ShowResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'avatar' => $this->detail?->avatar,
+            'signature' => $this->detail?->signature ? Storage::disk('public')->url($this->detail->signature) : null,
             'email' => $this->email,
             'mobile' => $this->mobile,
             'birthdate' => $this->detail?->birthdate,
