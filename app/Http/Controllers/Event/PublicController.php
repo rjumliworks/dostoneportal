@@ -308,7 +308,7 @@ class PublicController extends Controller
         $filename = Str::random(10).'.'.$extension;
         $path = 'images/participants/'.$user->code.'/'.$filename;
 
-        Storage::disk('public')->putFileAs('participants/'.$user->code.'/attendance/', $file, $filename);
+        Storage::disk('public')->putFileAs('images/participants/'.$user->code, $file, $filename);
 
         EventSessionAttendance::updateOrCreate(
             [

@@ -283,6 +283,20 @@ class PrintClass
             return 'data:' . $mime . ';base64,' . base64_encode($file);
         }
 
+        // Attendance captures were previously written to
+        // participants/{code}/attendance/{filename} while the DB recorded
+        // images/participants/{code}/{filename}. Older rows still point at
+        // that mismatched path, so fall back to the actual legacy location
+        // instead of moving/renaming anything on disk.
+        if (preg_match('#^images/participants/([^/]+)/([^/]+)$#', $path, $m)) {
+            $legacyPath = 'participants/'.$m[1].'/attendance/'.$m[2];
+            if (Storage::disk('public')->exists($legacyPath)) {
+                $file = Storage::disk('public')->get($legacyPath);
+                $mime = Storage::disk('public')->mimeType($legacyPath);
+                return 'data:' . $mime . ';base64,' . base64_encode($file);
+            }
+        }
+
         // If you stored a full URL instead of a storage path:
         if (filter_var($path, FILTER_VALIDATE_URL)) {
             try {
