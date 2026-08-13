@@ -52,6 +52,31 @@ Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
 Route::get('/dropdowns', [App\Http\Controllers\SearchController::class, 'dropdowns']);
 
 Route::get('/certificates/appreciation/{session}/{participant}', [App\Http\Controllers\Event\CertificateController::class, 'appreciation']);
+Route::get('/appearance', function () {
+    return \PDF::loadView('certificates.appearance', [
+        'sessionId' => request('session_id'),
+        'recipientName' => 'JUAN D. DELA CRUZ',
+        'recipientFontSize' => 90,
+        'bodyFontSize' => 27,
+        'bodySegments' => [
+            ['text' => 'For ', 'style' => 'plain'],
+            ['text' => 'attending', 'style' => 'emphasis'],
+            ['text' => ' the ', 'style' => 'plain'],
+            ['text' => 'Sample Session Title', 'style' => 'event'],
+            ['text' => ' session of ', 'style' => 'plain'],
+            ['text' => 'Sample Event Name', 'style' => 'event'],
+            ['text' => ', held on ', 'style' => 'plain'],
+            ['text' => \Carbon\Carbon::now()->format('j F Y'), 'style' => 'event'],
+            ['text' => ' at ', 'style' => 'plain'],
+            ['text' => 'Sample Venue, Zamboanga City.', 'style' => 'venue'],
+        ],
+        'issueSegments' => [
+            ['text' => 'Given this ', 'style' => 'plain'],
+            ['text' => \Carbon\Carbon::now()->format('jS'), 'style' => 'event'],
+            ['text' => \Carbon\Carbon::now()->format(' \d\a\y \o\f F Y').' in Zamboanga City, Philippines.', 'style' => 'plain'],
+        ],
+    ])->setPaper('a4')->stream('appearance.pdf');
+});
 
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');

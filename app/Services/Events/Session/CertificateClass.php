@@ -26,12 +26,13 @@ class CertificateClass
         ], $data);
 
         $pdf1 = \PDF::loadView('certificates.appearance', [
+            'sessionId' => $session,
             'recipientName' => $recipientName,
             'recipientFontSize' => $recipientFontSize,
             'bodyFontSize' => $fitter->bodyFontSize($appearanceSegments),
             'bodySegments' => $appearanceSegments,
             'issueSegments' => $issueSegments,
-        ])->setPaper(CertificateComposer::PAGE);
+        ])->setPaper('a4');
         $pdfContent1 = base64_encode($pdf1->output());
 
         $participationSegments = $composer->bodySegments([

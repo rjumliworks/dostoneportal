@@ -32,45 +32,104 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Certificate Body', sans-serif;
+            font-family: 'Certificate Body', Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #000000;
         }
 
-        #background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 2000px;
-            height: 1414px;
+        .content {
+            padding: 50px 60px;
+        }
+
+        .header-table {
+            width: 100%;
+            border: none;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .header-table .logo {
+            width: 78px;
+        }
+
+        .header-table .logo img {
+            width: 75px;
+        }
+
+        .header-table .logo-left img {
+            margin-left: -10px;
+        }
+
+        .header-table .logo-right img {
+            margin-right: -10px;
+        }
+
+        .header-table .agency-text {
+            text-align: left;
+        }
+
+        .header-table .agency-text .agency-text-inner {
+            margin-left: -10px;
+        }
+
+        .header-table .agency-text .country {
+            font-size: 11px;
+            margin-bottom: -5px;
+        }
+
+        .header-table .agency-text .agency {
+            font-size: 16px;
+            margin-bottom: -5px;
+            font-weight: bold;
+        }
+
+        .header-table .agency-text .region {
+            font-size: 12px;
+            margin-bottom: -5px;
+        }
+
+        .header-table .agency-text .tagline {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        h1.title {
+            text-align: center;
+            font-size: 26px;
+            margin-top: 50px;
+            margin-bottom: 0px;
+        }
+
+        .caption {
+            text-align: center;
+            font-size: 15px;
+            margin-top: 40px;
         }
 
         #recipient {
-            position: absolute;
-            left: 208px;
-            top: 600px;
-            width: 1220px;
-            height: 120px;
+            text-align: center;
             color: #80211d;
             font-family: 'Certificate Name', sans-serif;
             font-weight: 700;
             font-style: italic;
-            white-space: nowrap;
+            margin-top: 10px;
         }
 
         #body {
-            position: absolute;
-            left: 214px;
-            top: 800px;
-            width: 1337px;
             text-align: justify;
-            color: #000000;
+            line-height: 1.6;
+            margin-top: 25px;
+        }
+
+        .compliance {
+            text-align: justify;
+            font-size: 15px;
+            line-height: 1.4;
+            margin-top: 30px;
         }
 
         #issued {
-            position: absolute;
-            left: 214px;
-            top: 987px;
-            width: 1300px;
-            color: #000000;
+            margin-top: 30px;
         }
 
         .emphasis {
@@ -87,21 +146,84 @@
             color: #ec8836;
             font-weight: 700;
         }
+
+        .signature {
+            float: right;
+            text-align: center;
+            margin-top: 60px;
+            position: relative;
+            width: 200px;
+        }
+
+        .signature img {
+            width: 160px;
+        }
+
+        .signature p {
+            margin: 0;
+            color: #000000;
+        }
+
+        .signature .name {
+            font-size: 15px;
+        }
+
+        .signature .position {
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
-    <img id="background" src="{{ public_path('images/attendance-template.png') }}" alt="">
+    <div class="content">
+        <table class="header-table">
+            <tr>
+                <td class="logo logo-left" style="text-align: left;">
+                    <img src="{{ public_path('images/logos/logo-sm.png') }}" alt="DOST">
+                </td>
+                <td class="agency-text">
+                    <div class="agency-text-inner">
+                        <div class="country">Republic of the Philippines</div>
+                        <div class="agency">DEPARTMENT OF SCIENCE AND TECHNOLOGY</div>
+                        <div class="region">ZAMBOANGA DEL NORTE</div>
+                        <div class="tagline">OneDOST4U: Solutions and Opportunities for All</div>
+                    </div>
+                </td>
+                <td class="logo logo-right" style="text-align: right;">
+                    <img src="{{ public_path('images/logos/bagongpilipinas.png') }}" alt="Bagong Pilipinas">
+                </td>
+            </tr>
+        </table>
 
-    <div id="recipient" style="font-size: {{ $recipientFontSize }}px; line-height: {{ $recipientFontSize }}px;">
-        {{ $recipientName }}
-    </div>
+        <h1 class="title">CERTIFICATE OF APPEARANCE</h1>
 
-    <div id="body" style="font-size: {{ $bodyFontSize }}px; line-height: 36.3px;">
-        @foreach ($bodySegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
-    </div>
+        <p style="text-align: justify; font-size: 15px; line-height: 1.4; margin-top: 60px;">
+            This is to certify that <b><ins>Juan D. Dela Cruz</ins></b> of <b><ins>Sample Affiliation Inc.</ins></b> Appeared at <b><ins>Sample Venue, Zamboanga City</ins></b> on <b><ins>{{ \Carbon\Carbon::now()->format('F d, Y') }}</b></ins> to participate<b><ins> Sample Event Name.</b></ins>
+        </p>
 
-    <div id="issued" style="font-size: {{ $bodyFontSize }}px; line-height: 36.3px;">
-        @foreach ($issueSegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
+        <p class="compliance">
+            This certification is issued in compliance with the standing regulations provided under
+            Republic Act No. 3847 duly implemented by COA Circular No. 127
+            for the purpose of establishing the evidence and duration of his/her appearance hereto.
+            The truth of which is hereby vouchsafed and guaranteed by the undersigned.
+        </p>
+
+        <p id="issued">
+            @foreach ($issueSegments as $segment)<span class="{{ $segment['style'] }}">{{ $segment['text'] }}</span>@endforeach
+        </p>
+
+        @if (($sessionId ?? null) == 9)
+        <div class="signature">
+            <img src="{{ public_path('images/jtf.png') }}" alt="Signature">
+            <p class="name">JULIUS T. FOJAS</p>
+            <p class="position">Laboratory Head</p>
+        </div>
+        @else
+        <div class="signature">
+            <img src="{{ public_path('images/esig.png') }}" alt="Signature">
+            <p class="name">NUHMAN M. ALJANI</p>
+            <p class="position">Provincial S&T Director</p>
+        </div>
+        @endif
     </div>
 </body>
 </html>
