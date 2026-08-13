@@ -221,7 +221,7 @@
         </div>
         @else
         <div class="signature">
-            <img src="{{ public_path('images/esig.png') }}" alt="Signature">
+            <img src="{{ public_path('images/nma.png') }}" alt="Signature">
             <p class="name">NUHMAN M. ALJANI</p>
             <p class="position">Provincial S&T Director</p>
         </div>
