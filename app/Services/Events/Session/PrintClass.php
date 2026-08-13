@@ -81,15 +81,20 @@ class PrintClass
 
         foreach ($data->attendees as $attendee) {
             if (!empty($attendee->participant->detail->signature)) {
-                $attendee->participant->detail->signature_base64 = ($attendee->participant->detail->signature) ? $this->convertToBase64($attendee->participant->detail->signature) : null;
+                $attendee->participant->detail->signature_base64 = $this->convertToBase64($attendee->participant->detail->signature);
             }
             if (!empty($attendee->image)) {
-                $attendee->image_base64 = ($attendee->image) ? $this->convertToBase64($attendee->image) : null;
-            }
-            if (!empty($attendee->participant->detail->avatar)) {
-                $attendee->participant->detail->avatar_base64 = ($attendee->participant->detail->avatar) ? $this->convertToBase64($attendee->participant->detail->avatar) : null;
+                $attendee->image_base64 = $this->convertToBase64($attendee->image);
             }
         }
+
+        // Avatars are stored as full S3 URLs, so converting them one at a time
+        // in the loop above (like signature/image) means a blocking network
+        // request per attendee. For large sessions that alone can run past
+        // nginx's proxy timeout and the browser sees a 504 even though PHP's
+        // own execution time limit is disabled above. Fetch them concurrently
+        // instead, same approach as the participants/reservees print.
+        $this->attachAttendeeAvatars($data->attendees);
 
         $url = $_SERVER['HTTP_HOST'].'/verification/documents/'.$data->code;
         $result = new Builder(
@@ -269,6 +274,35 @@ class PrintClass
             if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
                 $mime = $response->header('Content-Type') ?: 'image/jpeg';
                 $item->participant->detail->avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($response->body());
+            }
+        }
+    }
+
+    private function attachAttendeeAvatars($attendees)
+    {
+        $withAvatar = $attendees->filter(fn ($a) => !empty($a->participant->detail->avatar));
+
+        $remote = $withAvatar->filter(fn ($a) => filter_var($a->participant->detail->avatar, FILTER_VALIDATE_URL));
+        $local = $withAvatar->reject(fn ($a) => filter_var($a->participant->detail->avatar, FILTER_VALIDATE_URL));
+
+        foreach ($local as $attendee) {
+            $attendee->participant->detail->avatar_base64 = $this->convertToBase64($attendee->participant->detail->avatar);
+        }
+
+        if ($remote->isEmpty()) {
+            return;
+        }
+
+        $responses = Http::pool(fn ($pool) => $remote->map(
+            fn ($a) => $pool->as($a->id)->timeout(15)->get($a->participant->detail->avatar)
+        )->all());
+
+        foreach ($remote as $attendee) {
+            $response = $responses[$attendee->id] ?? null;
+
+            if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
+                $mime = $response->header('Content-Type') ?: 'image/jpeg';
+                $attendee->participant->detail->avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($response->body());
             }
         }
     }
