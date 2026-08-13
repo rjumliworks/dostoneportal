@@ -157,6 +157,7 @@
 
         .signature img {
             width: 160px;
+            margin-bottom: -50px;
         }
 
         .signature p {
