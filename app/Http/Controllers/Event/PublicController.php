@@ -10,6 +10,7 @@ use App\Models\Participant;
 use App\Models\EventSession;
 use App\Services\DropdownClass;
 use App\Models\EventSessionParticipant;
+use App\Models\EventSessionAttendance;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -241,7 +242,12 @@ class PublicController extends Controller
                     }
                 }
 
-                $attendance = EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)->whereNotNull('attended_at')->exists();
+                // Attendance is tracked per calendar day (event_session_attendances)
+                // so a check-in on an earlier day of a multi-day session doesn't
+                // block subsequent days.
+                $attendance = EventSessionAttendance::where('session_id',$request->session_id)->where('participant_id',$user->id)
+                    ->whereDate('date', Carbon::today())
+                    ->whereNotNull('attended_at')->exists();
                 if($attendance){
                     $data = [
                         'name' => $user->name,
@@ -303,6 +309,22 @@ class PublicController extends Controller
         $path = 'images/participants/'.$user->code.'/'.$filename;
 
         Storage::disk('public')->putFileAs('participants/'.$user->code.'/attendance/', $file, $filename);
+
+        EventSessionAttendance::updateOrCreate(
+            [
+                'session_id' => $request->session_id,
+                'participant_id' => $user->id,
+                'date' => Carbon::parse($datetime)->toDateString(),
+            ],
+            [
+                'attended_at' => $datetime,
+                'image' => $path,
+            ]
+        );
+
+        // Registration row keeps mirroring the latest attendance so existing
+        // status/attended_at based reporting (capacity counts, admin lists)
+        // is unaffected by this change.
         EventSessionParticipant::where('session_id',$request->session_id)->where('participant_id',$user->id)
         ->update([
             'attended_at' => $datetime,

@@ -18,6 +18,7 @@ use App\Models\EventExhibitor;
 use App\Models\EventExhibitorVisitor;
 use App\Models\EventSessionQuestion;
 use App\Models\EventSessionParticipant;
+use App\Models\EventSessionAttendance;
 use App\Http\Resources\Api\AttendanceResource;
 use App\Http\Resources\Api\Events\Session\FeedbackResource;
 use App\Http\Resources\Api\Events\Session\QuestionResource;
@@ -200,21 +201,30 @@ class SessionController extends Controller
             ], 404);
         }
 
-        $attendance = EventSessionParticipant::where('participant_id', $request->participant_id)
+        $isRegistered = EventSessionParticipant::where('participant_id', $request->participant_id)
             ->where('session_id', $session_id)
-            ->first();
+            ->exists();
 
-        if (!$attendance) {
+        if (!$isRegistered) {
             return response()->json([
                 'status' => false,
                 'message' => 'You are not a registered participant.'
             ], 400);
         }
 
+        // Attendance is tracked per calendar day so multi-day sessions don't
+        // block a participant just because they already checked in on an
+        // earlier day of the same session.
+        $alreadyToday = EventSessionAttendance::where('participant_id', $request->participant_id)
+            ->where('session_id', $session_id)
+            ->whereDate('date', now()->toDateString())
+            ->whereNotNull('attended_at')
+            ->exists();
+
         return response()->json([
             'status' => true,
-            'already' => (bool) $attendance->attended_at,
-            'message' => $attendance->attended_at ? 'Attendance already recorded for this participant.' : null,
+            'already' => $alreadyToday,
+            'message' => $alreadyToday ? 'Attendance already recorded for this participant today.' : null,
         ]);
     }
 
@@ -328,11 +338,11 @@ class SessionController extends Controller
                 ], 404);
             }
 
-            $attendance = EventSessionParticipant::where('participant_id', $request->participant_id)
+            $registration = EventSessionParticipant::where('participant_id', $request->participant_id)
                 ->where('session_id', $session_id)
                 ->first();
 
-            if (!$attendance) {
+            if (!$registration) {
                 $participant = Participant::select('id','firstname','lastname')->where('id',$request->participant_id)->first();
                 $data = [
                     'participant_id' => $request->participant_id,
@@ -347,18 +357,27 @@ class SessionController extends Controller
                 ], 400);
             }
 
-            if ($attendance->attended_at) {
+            // Attendance is tracked per calendar day (event_session_attendances)
+            // so a check-in on an earlier day of a multi-day session doesn't
+            // block subsequent days — only today's record is checked here.
+            $today = now()->toDateString();
+            $todayAttendance = EventSessionAttendance::where('participant_id', $request->participant_id)
+                ->where('session_id', $session_id)
+                ->whereDate('date', $today)
+                ->first();
+
+            if ($todayAttendance && $todayAttendance->attended_at) {
                 $participant = Participant::select('id','firstname','lastname')->where('id',$request->participant_id)->first();
                 $data = [
                     'participant_id' => $request->participant_id,
                     'name' => $participant->firstname.' '.$participant->lastname,
                     'type' => 'already',
-                    'message' => 'Your attendance has already been recorded'
+                    'message' => 'Your attendance has already been recorded for today'
                 ];
                 broadcast(new SessionEvent($data,'attendance-error',$randomkey));
                 return response()->json([
                     'status' => false,
-                    'message' => 'Attendance already recorded for this participant.'
+                    'message' => 'Attendance already recorded for this participant today.'
                 ], 400);
             }
 
@@ -378,13 +397,28 @@ class SessionController extends Controller
                 ], 422);
             }
 
-            $attendance->image = $verify['path'];
-            $attendance->attended_at = now();
-            $attendance->status_id = 8;
+            EventSessionAttendance::updateOrCreate(
+                [
+                    'participant_id' => $request->participant_id,
+                    'session_id' => $session_id,
+                    'date' => $today,
+                ],
+                [
+                    'image' => $verify['path'],
+                    'attended_at' => now(),
+                ]
+            );
 
-            if ($attendance->save()) {
+            // Registration row keeps mirroring the latest attendance so
+            // existing status/attended_at based reporting (capacity counts,
+            // admin lists, attendees()) is unaffected by this change.
+            $registration->image = $verify['path'];
+            $registration->attended_at = now();
+            $registration->status_id = 8;
+
+            if ($registration->save()) {
                 $latest = EventSessionParticipant::with('participant.detail','session')->where('session_id', $session_id)
-                ->where('id', $attendance->id)
+                ->where('id', $registration->id)
                 ->first();
                 broadcast(new SessionEvent(new AttendanceResource($latest),'attendance',$randomkey));
                 return response()->json([
