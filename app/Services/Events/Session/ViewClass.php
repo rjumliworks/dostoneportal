@@ -4,6 +4,7 @@ namespace App\Services\Events\Session;
 
 use Hashids\Hashids;
 use App\Models\EventSession;
+use App\Models\EventSessionAttendance;
 use App\Http\Resources\Event\Session\ViewResource;
 
 class ViewClass
@@ -28,13 +29,12 @@ class ViewClass
         return $data;
     }
 
-    public function view($id){
-       
+    public function view($id, $todayOnly = false){
+
         $hashids = new Hashids('krad',10);
         $key = $hashids->decode($id);
 
-        $data = new ViewResource(
-           EventSession::with([
+        $session = EventSession::with([
                 'venue','detail','schedules',
                 'participants' => function ($q) {
                     $q->orderBy('created_at', 'DESC');
@@ -57,9 +57,24 @@ class ViewClass
                 'event.detail.barangay:code,name',
                 'questions.participant.detail'
             ])
-            ->where('id',$key[0])->first()
-        );
-        return $data;
+            ->where('id',$key[0])->first();
+
+        // The scanning/kiosk page shows a running list of who has checked in
+        // "today" — sessions can span multiple days, so that list must come
+        // from event_session_attendances (one row per participant per day)
+        // instead of the session-wide `attendees` relation, which only knows
+        // each participant's most recent check-in.
+        if ($todayOnly && $session) {
+            $todaysAttendees = EventSessionAttendance::with('participant.detail.affiliation')
+                ->where('session_id', $session->id)
+                ->whereDate('date', now()->toDateString())
+                ->whereNotNull('attended_at')
+                ->orderBy('attended_at', 'DESC')
+                ->get();
+            $session->setRelation('attendees', $todaysAttendees);
+        }
+
+        return new ViewResource($session);
     }
 
 
