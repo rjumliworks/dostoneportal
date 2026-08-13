@@ -16,6 +16,29 @@ use App\Jobs\ParticipantApprovedJob;
 
 class UpdateClass
 {
+    public function sendCertificate($request){
+        $data = EventSessionParticipant::with('participant')
+            ->where('session_id', $request->session_id)
+            ->where('participant_id', $request->participant_id)
+            ->first();
+
+        if (!$data) {
+            return [
+                'data' => null,
+                'message' => 'Participant record not found for this session.',
+                'info' => 'error',
+            ];
+        }
+
+        (new \App\Services\Events\Session\CertificateClass())->send($request->session_id, $request->participant_id);
+
+        return [
+            'data' => new ParticipantListResource($data),
+            'message' => 'Certificate email queued for '.$data->participant->name.'.',
+            'info' => 'success',
+        ];
+    }
+
     public function participant($request){
         $data = EventSessionParticipant::with('participant','status')
         ->where('session_id',$request->session_id)

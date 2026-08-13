@@ -111,7 +111,39 @@
         </b-row>
     </b-modal>
 
-        <div class="table-responsive table-card" style="height: calc(100vh - 520px);">
+    <b-modal
+        v-model="confirmMail"
+        hide-footer
+        header-class="p-0"
+        body-class="p-0"
+        class="v-modal-custom"
+        content-class="border-0"
+        centered
+        hide-header-close
+    >
+        <b-row class="g-0">
+            <b-col lg="12">
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-sm mx-auto mb-3">
+                        <div class="avatar-title rounded-circle bg-warning-subtle text-warning">
+                            <i class="ri-mail-send-line fs-24"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-semibold fs-14">Send Certificate Email?</h4>
+                    <p class="text-muted fs-12 mb-4">
+                        This will manually send the certificate of appearance and participation to
+                        <strong>{{ mailTarget ? mailTarget.name : '' }}</strong> ({{ mailTarget ? mailTarget.email : '' }}).
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-light" @click="confirmMail = false" :disabled="mailForm.processing">Cancel</button>
+                        <button class="btn btn-warning" @click="sendCertificateMail" :disabled="mailForm.processing">Send</button>
+                    </div>
+                </div>
+            </b-col>
+        </b-row>
+    </b-modal>
+
+    <div class="table-responsive table-card" style="height: calc(100vh - 520px);">
             <table class="table table-nowrap align-middle mb-0">
             
                 <thead class="bg-primary text-white thead-fixed">
@@ -146,6 +178,9 @@
                         <td class="text-end">
                             <b-button @click="openView(list,index)" variant="success" class="me-1" v-b-tooltip.hover title="View Participant" size="sm">
                                 <i class="ri-eye-fill align-bottom"></i>
+                            </b-button>
+                            <b-button @click="openMail(list)" variant="warning" v-b-tooltip.hover title="Send Certificate Email" size="sm">
+                                <i class="ri-mail-send-line align-bottom"></i>
                             </b-button>
                         </td>
                     </tr>
@@ -182,6 +217,13 @@ export default {
             approveAllForm: useForm({
                 id: null,
                 option: 'approve-all'
+            }),
+            confirmMail: false,
+            mailTarget: null,
+            mailForm: useForm({
+                session_id: null,
+                participant_id: null,
+                option: 'send-certificate'
             })
         }
     },
@@ -241,6 +283,20 @@ export default {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.confirmApproveAll = false;
+                },
+            });
+        },
+        openMail(list){
+            this.mailTarget = list;
+            this.mailForm.session_id = list.session_id;
+            this.mailForm.participant_id = list.participant_id;
+            this.confirmMail = true;
+        },
+        sendCertificateMail(){
+            this.mailForm.put('/sessions/update', {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.confirmMail = false;
                 },
             });
         },

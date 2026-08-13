@@ -109,6 +109,9 @@ class SessionController extends Controller
                 case 'approve-all':
                     return $this->update->approveAll($request);
                 break;
+                case 'send-certificate':
+                    return $this->update->sendCertificate($request);
+                break;
             }
         });
         
