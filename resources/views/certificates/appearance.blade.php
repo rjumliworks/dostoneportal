@@ -198,7 +198,8 @@
         <h1 class="title">CERTIFICATE OF APPEARANCE</h1>
 
         <p style="text-align: justify; font-size: 15px; line-height: 1.4; margin-top: 60px;">
-            This is to certify that <b><ins>{{ $recipientName }}</ins></b> of <b><ins>{{ $affiliationName }}</ins></b> Appeared at <b><ins>{{ $venueText }}</ins></b> on <b><ins>{{ $sessionDateText }}</ins></b> to participate<b><ins> {{ $eventName }}.</ins></b>
+            This is to certify that <b><ins>{{ $recipientName }}</ins></b> of <b><ins>{{ $affiliationName }}</ins></b> Appeared at <b><ins>{{ $venueText }}</ins></b> on <b><ins>{{ $sessionDateText }}</ins></b> to participate in the<b><ins> ZamPen Regional Science, Technology, and Innovation Week 2026
+(Zampen RSTW 2026).</ins></b>
         </p>
 
         <p class="compliance">
