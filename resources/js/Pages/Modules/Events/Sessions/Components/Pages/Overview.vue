@@ -3,8 +3,8 @@
         <div class="col-lg-12">
             <div class="row g-3">
                 <div class="col-md-6">
-                   <div class="card border shadow-none bg-light-subtle" style="cursor: pointer;">
-                        <div class="card-body" @click="openPrintParticipants">
+                   <div class="card border shadow-none bg-light-subtle">
+                        <div class="card-body">
                             <div class="d-flex mb-n3">
                                 <div class="flex-shrink-0 me-3">
                                     <div style="height:2rem;width:2rem;">
@@ -18,7 +18,12 @@
                                     <p class="text-muted text-truncate-two-lines fs-11">Generate the attendance report for this session.</p>
                                 </div>
                                 <div class="flex-shrink-0 text-end mt-1">
-                                    <i class="ri-download-cloud-fill fs-18 text-primary"></i>
+                                    <a href="javascript:void(0);" title="Download PDF" @click="openPrintParticipants" class="text-primary me-2">
+                                        <i class="ri-file-pdf-2-fill fs-18"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" title="Download Excel" @click="openPrintParticipantsExcel" class="text-success">
+                                        <i class="ri-file-excel-2-fill fs-18"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -347,6 +352,9 @@
         methods: {
             openPrintParticipants(){
                 window.open('/sessions?option=attendance&type=session&id='+this.selected.id);
+            },
+            openPrintParticipantsExcel(){
+                window.open('/sessions?option=attendance-excel&type=session&id='+this.selected.id);
             },
             openPrintCsf(){
                 window.open('/sessions?option=csf&type=session&id='+this.selected.id);

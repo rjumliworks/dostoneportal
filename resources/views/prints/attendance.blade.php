@@ -155,12 +155,18 @@
                             <small style="color: gray;">{{$attendee->attended_at ?? '' }}</small>
                         </td>
                         <td style="text-align: center;">
-                            {{ $attendee->participant->detail->affiliation ?? '' }}<br>
+                            @php
+                                $affiliation = $attendee->participant->detail->affiliation ?? null;
+                                $affiliationText = ($affiliation?->name === 'Others')
+                                    ? $attendee->participant->detail->others
+                                    : $affiliation?->name;
+                            @endphp
+                            {{ $affiliationText ?? '' }}<br>
                             <small style="color: gray;">{{ $attendee->participant->detail->designation ?? '' }}</small>
                         </td>
                         <td style="text-align: center;">
                             {{ $attendee->participant->email ?? '' }}<br>
-                            <small style="color: gray;">{{ $attendee->participant->contact_no ?? '' }}</small>
+                            <small style="color: gray;">{{ $attendee->participant->mobile ?? '' }}</small>
                         </td>
                         <td>{{ $attendee->participant->detail->sex->name[0] ?? '' }}</td>
                         <td>{{ $attendee->participant->detail->age ?? '-' }}</td>

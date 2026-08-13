@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
+use App\Exports\AttendanceExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PrintClass
 {
@@ -128,6 +130,15 @@ class PrintClass
             $canvas->text($x, $y, $text, $font, $size);
         });
         return $pdf->stream(strtolower($data->title).'-attendance.pdf');
+    }
+
+    public function attendanceExcel($request){
+        ini_set('memory_limit', '1G');
+        ini_set('max_execution_time', 0);
+        $id = $request->id;
+        $data = EventSession::with('attendees.participant.detail.sex')->where('id', $id)->first();
+
+        return Excel::download(new AttendanceExport($data->attendees), strtolower($data->title).'-attendance.xlsx');
     }
 
     public function participants($request){

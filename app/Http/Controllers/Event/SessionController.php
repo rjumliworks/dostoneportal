@@ -37,6 +37,9 @@ class SessionController extends Controller
             case 'attendance':
                 return $this->print->attendance($request);
             break;
+            case 'attendance-excel':
+                return $this->print->attendanceExcel($request);
+            break;
             case 'participants':
                 return $this->print->participants($request);
             break;
