@@ -10,8 +10,22 @@ class EventCsfEntry extends Model
         'rate',
         'comment',
         'attribute',
-        'participant_id'
+        'participant_id',
+        'guest_name',
+        'guest_email',
+        'guest_affiliation',
+        'guest_designation',
     ];
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->participant?->name ?? $this->guest_name;
+    }
+
+    public function getDisplayAvatarAttribute()
+    {
+        return $this->participant?->detail?->avatar;
+    }
 
     public function feedbackable()
     {

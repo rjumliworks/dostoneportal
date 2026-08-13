@@ -22,7 +22,7 @@ class CertificateController extends Controller
             ['text' => 'For the active participation during the session ', 'style' => 'plain'],
             ['text' => '"'.$data->session->title.'"', 'style' => 'event'],
             ['text' => ' conducted as part of the ', 'style' => 'plain'],
-        ], $data);
+        ], $data->session);
 
         $pdf = \PDF::loadView('certificates.appreciation', [
             'recipientName' => $recipientName,

@@ -2,7 +2,7 @@
 
 namespace App\Services\Certificates;
 
-use App\Models\EventSessionParticipant;
+use App\Models\EventSession;
 use App\Models\Participant;
 use Carbon\Carbon;
 
@@ -29,17 +29,17 @@ class CertificateComposer
      * @param  list<array{text: string, style: string}>  $opening
      * @return list<array{text: string, style: string}>
      */
-    public function bodySegments(array $opening, EventSessionParticipant $data): array
+    public function bodySegments(array $opening, EventSession $session): array
     {
         return [
             ...$opening,
-            ['text' => $data->session->title, 'style' => 'event'],
+            ['text' => $session->title, 'style' => 'event'],
             ['text' => ' session of ', 'style' => 'plain'],
-            ['text' => $data->session->event->name, 'style' => 'event'],
+            ['text' => $session->event->name, 'style' => 'event'],
             ['text' => ', held on ', 'style' => 'plain'],
-            ['text' => Carbon::parse($data->session->schedules[0]->date)->format('j F Y'), 'style' => 'event'],
+            ['text' => Carbon::parse($session->schedules[0]->date)->format('j F Y'), 'style' => 'event'],
             ['text' => ' at ', 'style' => 'plain'],
-            ['text' => $data->session->venue->establishment.', '.$data->session->venue->address.'.', 'style' => 'venue'],
+            ['text' => $session->venue->establishment.', '.$session->venue->address.'.', 'style' => 'venue'],
         ];
     }
 

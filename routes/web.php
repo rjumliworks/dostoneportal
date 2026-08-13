@@ -23,6 +23,8 @@ Route::domain('rstw2026.' . config('app.app_host'))->as('rstw2026.')->group(func
     Route::get('/registration/{key}/success', [App\Http\Controllers\Event\PublicController::class, 'success'])->name('success');
     Route::get('/search', [App\Http\Controllers\Event\PublicController::class, 'search']);
     Route::get('/session/{key}', [App\Http\Controllers\Event\SessionController::class, 'view']);
+    Route::get('/session/{key}/csf', [App\Http\Controllers\Event\SessionController::class, 'csf']);
+    Route::post('/session/{key}/csf', [App\Http\Controllers\Event\SessionController::class, 'csfStore']);
     Route::post('/recognize', [App\Http\Controllers\Event\PublicController::class, 'recognize']);
     Route::post('/register', [App\Http\Controllers\Event\RegistrationController::class, 'store']);
     Route::get('/opening', [App\Http\Controllers\Event\PublicController::class, 'opening']);

@@ -99,6 +99,26 @@
                         </div>
                     </div>
 
+                    <div class="d-flex p-2 pt-0">
+                        <div class="flex-shrink-0">
+                            <a :href="selected.csf_qr" target="_blank" rel="noopener noreferrer">
+                                <div style="width: 55px; height: 55px;">
+                                    <img :src="selected.csf_qr" alt="csf-qr" class="img-thumbnail">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="flex-grow-1 ms-2">
+                            <a
+                                :href="selected.csf_link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn mt-2 w-100 btn-primary"
+                            >
+                                Public CSF Form
+                            </a>
+                        </div>
+                    </div>
+
                     <hr class="text-muted mt-2">
                     <p class="ms-3 mb-0 text-primary fs-11 fw-semibold">Settings</p>
                     <hr class="text-muted mb-2">

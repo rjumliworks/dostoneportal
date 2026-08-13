@@ -8,6 +8,7 @@ use App\Services\Events\Session\PrintClass;
 use App\Services\Events\Session\ViewClass;
 use App\Services\Events\Session\SaveClass;
 use App\Services\Events\Session\UpdateClass;
+use App\Services\Events\Session\CsfClass;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Event\SessionRequest;
@@ -16,14 +17,15 @@ class SessionController extends Controller
 {
      use HandlesTransaction;
 
-    protected $view, $save, $dropdown, $update, $print;
+    protected $view, $save, $dropdown, $update, $print, $csf;
 
-    public function __construct(DropdownClass $dropdown, ViewClass $view, SaveClass $save, UpdateClass $update, PrintClass $print){
+    public function __construct(DropdownClass $dropdown, ViewClass $view, SaveClass $save, UpdateClass $update, PrintClass $print, CsfClass $csf){
         $this->save = $save;
         $this->view = $view;
         $this->print = $print;
         $this->update = $update;
         $this->dropdown = $dropdown;
+        $this->csf = $csf;
     }
 
     public function index(Request $request){
@@ -127,6 +129,32 @@ class SessionController extends Controller
         return inertia('Public/Events/Session',[
             'session' => $this->view->view($key, true),
             'statuses' => $this->dropdown->statuses('Attendance'),
+        ]);
+    }
+
+    public function csf($key){
+        return inertia('Public/Events/SessionCsf',[
+            'session' => $this->csf->view($key),
+        ]);
+    }
+
+    public function csfStore(Request $request, $key){
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'affiliation' => 'required|string',
+            'designation' => 'required|string',
+            'comment' => 'nullable|string',
+            'questions' => 'required|array|min:1',
+            'questions.*.id' => 'required|integer|exists:event_csf_questions,id',
+            'questions.*.rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $this->csf->submit($request, $key);
+
+        return back()->with([
+            'message' => 'Thank you for your feedback!',
+            'status' => true,
         ]);
     }
 }

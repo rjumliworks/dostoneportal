@@ -22,6 +22,7 @@ class ViewResource extends JsonResource
         $encryptedKey = Crypt::encryptString($key);
         $reg_link = config('app.registration_url') . '/registration/' . $encryptedKey;
         $attendance_link = config('app.registration_url') . '/session/' . $key;
+        $csf_link = config('app.registration_url') . '/session/' . $key . '/csf';
 
         $result = (new Builder(
             writer: new PngWriter(),
@@ -45,11 +46,23 @@ class ViewResource extends JsonResource
         ))->build();
         $reg_qr = 'data:image/png;base64,' . base64_encode($result1->getString());
 
+        $result2 = (new Builder(
+            writer: new PngWriter(),
+            data: $csf_link,
+            size: 500,
+            margin: 5,
+            logoPath: public_path('images/qrlogo.png'),
+            logoResizeToWidth: 80
+        ))->build();
+        $csf_qr = 'data:image/png;base64,' . base64_encode($result2->getString());
+
         return [
             'qr' => $qr,
             'attendance_link' => $attendance_link,
             'reg_link' => $reg_link,
             'reg_qr' => $reg_qr,
+            'csf_link' => $csf_link,
+            'csf_qr' => $csf_qr,
             'id' => $this->id,
             'key' => $key,
             'randomkey' => $randomkey,

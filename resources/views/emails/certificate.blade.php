@@ -47,7 +47,7 @@
                             </p>
 
                             <h1 style="margin: 0 0 14px; color: #1a202c; font-size: 19px; font-weight: 700;">
-                                Thank you, {{ $data->participant->firstname }}!
+                                Thank you, {{ $data->recipientName }}!
                             </h1>
 
                             <p style="margin: 0 0 20px; color: #4a5568; font-size: 12px; line-height: 1.3;">
