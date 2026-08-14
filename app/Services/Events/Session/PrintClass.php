@@ -5,6 +5,7 @@ namespace App\Services\Events\Session;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\EventSession;
+use App\Models\EventSessionAttendance;
 use App\Models\EventCsfEntry;
 use App\Models\EventCsfQuestion;
 use App\Models\EventExhibitor;
@@ -79,24 +80,57 @@ class PrintClass
         ini_set('memory_limit', '1G');
         ini_set('max_execution_time', 0);
         $id = $request->id;
-        $data = EventSession::with('attendees.participant.detail.sex','venue','schedules','managers','event')->where('id',$id)->first();
+        $data = EventSession::with('venue','schedules','managers','event')->where('id',$id)->first();
 
-        foreach ($data->attendees as $attendee) {
-            if (!empty($attendee->participant->detail->signature)) {
-                $attendee->participant->detail->signature_base64 = $this->convertToBase64($attendee->participant->detail->signature);
+        $dates = $data->schedules->pluck('date')->unique()->sort()->values();
+        $dailyAttendance = null;
+
+        if ($dates->count() > 1) {
+            // Multi-day sessions record a separate check-in AND photo per
+            // calendar day in event_session_attendances. The single
+            // event_session_participants row only mirrors whichever day was
+            // checked in most recently (see SessionController@attendance), so
+            // each day's sheet has to read from here to show that day's real
+            // attendees and photos instead of repeating the same one.
+            $dailyAttendance = EventSessionAttendance::with('participant.detail.sex', 'participant.detail.affiliation')
+                ->where('session_id', $id)
+                ->whereNotNull('attended_at')
+                ->get()
+                ->groupBy('date');
+
+            foreach ($dailyAttendance as $records) {
+                foreach ($records as $record) {
+                    if (!empty($record->participant->detail->signature)) {
+                        $record->participant->detail->signature_base64 = $this->convertToBase64($record->participant->detail->signature);
+                    }
+                    if (!empty($record->image)) {
+                        $record->image_base64 = $this->convertToBase64($record->image);
+                    }
+                }
+
+                $this->attachAttendeeAvatars($records);
             }
-            if (!empty($attendee->image)) {
-                $attendee->image_base64 = $this->convertToBase64($attendee->image);
+        } else {
+            $data->load('attendees.participant.detail.sex');
+
+            foreach ($data->attendees as $attendee) {
+                if (!empty($attendee->participant->detail->signature)) {
+                    $attendee->participant->detail->signature_base64 = $this->convertToBase64($attendee->participant->detail->signature);
+                }
+                if (!empty($attendee->image)) {
+                    $attendee->image_base64 = $this->convertToBase64($attendee->image);
+                }
             }
+
+            // Avatars are stored as full S3 URLs, so converting them one at a
+            // time in the loop above (like signature/image) means a blocking
+            // network request per attendee. For large sessions that alone can
+            // run past nginx's proxy timeout and the browser sees a 504 even
+            // though PHP's own execution time limit is disabled above. Fetch
+            // them concurrently instead, same approach as the
+            // participants/reservees print.
+            $this->attachAttendeeAvatars($data->attendees);
         }
-
-        // Avatars are stored as full S3 URLs, so converting them one at a time
-        // in the loop above (like signature/image) means a blocking network
-        // request per attendee. For large sessions that alone can run past
-        // nginx's proxy timeout and the browser sees a 504 even though PHP's
-        // own execution time limit is disabled above. Fetch them concurrently
-        // instead, same approach as the participants/reservees print.
-        $this->attachAttendeeAvatars($data->attendees);
 
         $url = $_SERVER['HTTP_HOST'].'/verification/documents/'.$data->code;
         $result = new Builder(
@@ -112,7 +146,8 @@ class PrintClass
         $array = [
             'qrCodeImage' => $base64Image,
             'date' => $this->dateRangeText($data->schedules),
-            'dates' => $data->schedules->pluck('date')->unique()->sort()->values(),
+            'dates' => $dates,
+            'dailyAttendance' => $dailyAttendance,
             'head' => $data->managers->firstWhere('type', 'Head'),
             'data' => $data
         ];
@@ -285,7 +320,7 @@ class PrintClass
 
             if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
                 $mime = $response->header('Content-Type') ?: 'image/jpeg';
-                $item->participant->detail->avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($response->body());
+                $item->participant->detail->avatar_base64 = $this->toBase64Image($response->body(), $mime);
             }
         }
     }
@@ -314,7 +349,7 @@ class PrintClass
 
             if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
                 $mime = $response->header('Content-Type') ?: 'image/jpeg';
-                $attendee->participant->detail->avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($response->body());
+                $attendee->participant->detail->avatar_base64 = $this->toBase64Image($response->body(), $mime);
             }
         }
     }
@@ -326,7 +361,7 @@ class PrintClass
         if (Storage::disk('public')->exists($path)) {
             $file = Storage::disk('public')->get($path);
             $mime = Storage::disk('public')->mimeType($path);
-            return 'data:' . $mime . ';base64,' . base64_encode($file);
+            return $this->toBase64Image($file, $mime);
         }
 
         // Attendance captures were previously written to
@@ -339,7 +374,7 @@ class PrintClass
             if (Storage::disk('public')->exists($legacyPath)) {
                 $file = Storage::disk('public')->get($legacyPath);
                 $mime = Storage::disk('public')->mimeType($legacyPath);
-                return 'data:' . $mime . ';base64,' . base64_encode($file);
+                return $this->toBase64Image($file, $mime);
             }
         }
 
@@ -348,12 +383,62 @@ class PrintClass
             try {
                 $file = file_get_contents($path);
                 $mime = @mime_content_type($path) ?: 'image/png';
-                return 'data:' . $mime . ';base64,' . base64_encode($file);
+                return $this->toBase64Image($file, $mime);
             } catch (\Exception $e) {
                 return null;
             }
         }
 
         return null;
+    }
+
+    // The print only ever displays these at 80px wide, but avatars/attendance
+    // captures are stored at full camera/upload resolution. Embedding them at
+    // full size is what made multi-day sheets (one full image per attendee
+    // per day) slow enough to hit nginx's gateway timeout, so everything
+    // routed through here is downscaled first — same visual result, a
+    // fraction of the bytes for dompdf to decode and embed.
+    private function toBase64Image(string $binary, string $mime): string
+    {
+        [$resized, $resizedMime] = $this->resizeImageBinary($binary, $mime);
+
+        return 'data:' . $resizedMime . ';base64,' . base64_encode($resized);
+    }
+
+    private function resizeImageBinary(string $binary, string $mime, int $maxDimension = 200): array
+    {
+        if (!function_exists('imagecreatefromstring')) {
+            return [$binary, $mime];
+        }
+
+        $source = @imagecreatefromstring($binary);
+
+        if (!$source) {
+            return [$binary, $mime];
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+
+        if ($width <= $maxDimension && $height <= $maxDimension) {
+            imagedestroy($source);
+            return [$binary, $mime];
+        }
+
+        $ratio = min($maxDimension / $width, $maxDimension / $height);
+        $newWidth = max(1, (int) round($width * $ratio));
+        $newHeight = max(1, (int) round($height * $ratio));
+
+        $resized = imagecreatetruecolor($newWidth, $newHeight);
+        imagecopyresampled($resized, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        ob_start();
+        imagejpeg($resized, null, 75);
+        $output = ob_get_clean();
+
+        imagedestroy($source);
+        imagedestroy($resized);
+
+        return $output ? [$output, 'image/jpeg'] : [$binary, $mime];
     }
 }

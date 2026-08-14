@@ -149,7 +149,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data['attendees'] as $attendee)
+                @php
+                    $rows = $dailyAttendance
+                        ? ($dailyAttendance[$day] ?? collect())
+                        : $data['attendees'];
+                @endphp
+                @foreach ($rows as $attendee)
                     <tr style="text-align: center;">
                         <td>{{ $loop->iteration }}</td>
                         <td>
@@ -176,23 +181,15 @@
                         <td>{{ $attendee->is_pwd ? '✔' : '' }}</td>
                         <td>{{ $attendee->is_ip ? '✔' : '' }}</td>
                         <td>
-                            @if ($loop->parent->first)
                             <img src="{{ $attendee->participant->detail->avatar_base64 }}" style="width:80px; height:auto;" alt="Photo">
                             <!-- @if(!empty($attendee->participant->detail->signature_base64))
                                 <img src="{{ $attendee->participant->detail->signature_base64 }}" style="width:80px; height:auto;" alt="Signature">
                             @else
                                 <span>No signature</span>
                             @endif -->
-                            @endif
                         </td>
                         <td>
-                            {{-- Attendance is captured once per participant, not per day, so the
-                            same photo would otherwise be re-embedded on every day's sheet. That
-                            duplication is what pushed a 3-day session's PDF render past nginx's
-                            gateway timeout, so it's shown once, on the first day's sheet only. --}}
-                            @if ($loop->parent->first)
                             <img src="{{ $attendee->image_base64 }}" style="width:80px; height:auto;" alt="Photo">
-                            @endif
                         </td>
                     </tr>
                 @endforeach
