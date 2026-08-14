@@ -98,6 +98,26 @@ class PrintClass
                 ->get()
                 ->groupBy('date');
 
+            // The manual/admin QR flow (UpdateClass::attendance) only ever
+            // marks event_session_participants — it never writes a matching
+            // event_session_attendances row — so those check-ins wouldn't
+            // appear on any day's sheet otherwise. There's no per-day
+            // information on that record to place it correctly, so it's
+            // merged into the first schedule day, skipping anyone already
+            // accounted for via event_session_attendances.
+            $data->load('attendees.participant.detail.sex', 'attendees.participant.detail.affiliation');
+
+            $trackedParticipantIds = $dailyAttendance->flatten(1)->pluck('participant_id')->unique();
+
+            $legacyOnly = $data->attendees->reject(
+                fn ($attendee) => $trackedParticipantIds->contains($attendee->participant_id)
+            )->values();
+
+            if ($legacyOnly->isNotEmpty()) {
+                $firstDay = $dates->first();
+                $dailyAttendance->put($firstDay, $dailyAttendance->get($firstDay, collect())->concat($legacyOnly));
+            }
+
             foreach ($dailyAttendance as $records) {
                 foreach ($records as $record) {
                     if (!empty($record->participant->detail->signature)) {

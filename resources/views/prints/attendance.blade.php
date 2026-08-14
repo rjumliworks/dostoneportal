@@ -66,7 +66,7 @@
                 <tr style="text-align: center;">
                     <td width="33.3%"><span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$head['user']['profile']['firstname']}} {{$head['user']['profile']['middlename'][0]}}. {{$head['user']['profile']['lastname']}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 50%;">Name and Signature </br><span style="color: gray;">(Facilitated By)</span></td>
                     <td width="33.3%" style="border-left-style: hidden; border-right-style: hidden;"> </td>
-                    <td width="33.3%"><span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">THELMA E. DIEGO</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 50%;">Unit Head </br><span style="color: gray;">(Noted By)</span></td>
+                    <td width="33.3%"><span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">NUHMAN M. ALJANI</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 50%;">Provincial S&T Director</br><span style="color: gray;">(Noted By)</span></td>
                 </tr>
             </tbody>
         </table>
