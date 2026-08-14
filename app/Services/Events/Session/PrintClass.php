@@ -112,9 +112,10 @@ class PrintClass
         $array = [
             'qrCodeImage' => $base64Image,
             'date' => $this->dateRangeText($data->schedules),
+            'dates' => $data->schedules->pluck('date')->unique()->sort()->values(),
             'head' => $data->managers->firstWhere('type', 'Head'),
             'data' => $data
-        ]; 
+        ];
 
         $pdf = \PDF::loadView('prints.attendance',$array)->setPaper('a4', 'landscape');
         $pdf->output();

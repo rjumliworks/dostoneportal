@@ -86,7 +86,9 @@
     </div>
 
 
-    <div class="content">
+    @php $days = (isset($dates) && count($dates) > 1) ? $dates : [$date]; @endphp
+    @foreach ($days as $day)
+    <div class="content @if(!$loop->last) page-break @endif">
         <div class="header">
            <div style="font-family:Arial;">
                 <table  style="width:100%; border:none; border-collapse:collapse; margin-bottom:15px; margin-top: -20px;">
@@ -111,20 +113,20 @@
 
             <table class="table" style="border: 1px solid black; margin-top: 10px;">
                 <thead style="background-color:#c8c8c8; padding: 5px; font-size: 10px;">
-                    <tr>    
+                    <tr>
                         <th style="vertical-align: middle;" width="52%">SESSION</th>
                         <th style="vertical-align: middle;" width="25%">VENUE</th>
-                        <th style="vertical-align: middle;" width="23%">INCLUSIVE DATE</th>
+                        <th style="vertical-align: middle;" width="23%">{{ count($days) > 1 ? 'DATE' : 'INCLUSIVE DATE' }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="font-size: 12px;">
                         <td style="text-align: center;">{{$data['title']}}</td>
                         <td style="text-align: center;">{{$data['venue']['name']}}, {{$data['venue']['establishment']}}</td>
-                        <td style="text-align: center;">{{$date}}</td>
+                        <td style="text-align: center;">{{ count($days) > 1 ? date('F j, Y', strtotime($day)) : $day }}</td>
                     </tr>
                 </tbody>
-            </table>  
+            </table>
         </div>
         <table class="table" style="border: 1px solid black; margin-top: 15px;">
             <thead style="background-color:#c8c8c8; padding: 5px; font-size: 10px;">
@@ -190,7 +192,8 @@
 
         </table>
     </div>
+    @endforeach
 
-    
+
 </body>
 </html>
