@@ -79,7 +79,7 @@
             <tr>
                 <td style="border-right-style: hidden; width: 3%; text-align: right;"> <img src="<?php echo $qrCodeImage; ?>"  width="30" height="30" alt="QR Code"></td>
                 <td style="border-right-style: hidden;" style="width: 50%; text-align: left; font-size: 10px;"><br/> <span style="font-weight: bold; color: #072388;">{{$data['code']}}</span></td>
-                <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">FM-FOS-SET F11 (front page) <br/>Rev 02/07-01-23 <br/>Generated on: {{ now()->format('F j, Y g:i A') }}</td>
+                <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">FM-FOS-SET F11 (front page) <br/>Rev 02/07-01-23</td>
                 
             </tr>
         </table>
@@ -109,6 +109,7 @@
                 </table>
                 <center style="margin-top: 8px; font-size: 11px;  color:#000; font-weight: bold; padding: 2px;">ATTENDANCE SHEET</center>
                 <center style="font-size: 11px; background-color: #097eeb; color:#fff; font-weight: bold; padding: 2px; text-transform: uppercase; ">{{$data['event']['name']}}</center>
+                <center style="font-size: 9px; color:#555; margin-top: 3px;">Generated on: {{ now()->format('F j, Y g:i A') }}</center>
             </div>
 
             <table class="table" style="border: 1px solid black; margin-top: 10px;">
