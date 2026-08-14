@@ -6,6 +6,7 @@ use Hashids\Hashids;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\EventSession;
 use App\Models\EventSessionAttendance;
+use App\Models\EventSessionParticipant;
 use App\Models\EventCsfEntry;
 use App\Models\EventCsfQuestion;
 use App\Models\EventExhibitor;
@@ -285,6 +286,121 @@ class PrintClass
         ])->setPaper('a4', 'portrait');
 
         return $pdf->stream('session-links.pdf');
+    }
+
+    public function summary($request)
+    {
+        ini_set('memory_limit', '1G');
+        ini_set('max_execution_time', 0);
+
+        $ids = array_filter(explode(',', (string) $request->ids));
+
+        $sessions = EventSession::with(['venue', 'schedules', 'detail', 'event', 'participants', 'attendees'])
+            ->whereIn('id', $ids)
+            ->orderBy('title')
+            ->get();
+
+        $event = $sessions->first()?->event;
+
+        $rows = $sessions->map(fn ($session) => $this->buildSessionSummaryRow($session));
+
+        $multiDaySessions = $rows->where('is_multi_day', true)->values();
+        $singleDaySessions = $rows->where('is_multi_day', false)->values();
+
+        $overallRegisteredIds = $rows->flatMap(fn ($row) => $row['registered_ids'])->unique();
+        $overallWarmBodyIds = $rows->flatMap(fn ($row) => $row['warm_body_ids'])->unique();
+
+        $totalCapacity = $rows->sum('capacity');
+        $totalRegistered = $rows->sum('registered');
+        $totalWarmBodies = $rows->sum('warm_bodies');
+
+        $array = [
+            'event' => $event,
+            'multiDaySessions' => $multiDaySessions,
+            'singleDaySessions' => $singleDaySessions,
+            'totalCapacity' => $totalCapacity,
+            'totalRegistered' => $totalRegistered,
+            'totalWarmBodies' => $totalWarmBodies,
+            'overallCapacityPercent' => $totalCapacity ? round(($totalRegistered / $totalCapacity) * 100, 1) : null,
+            'overallAttendancePercent' => $totalRegistered ? round(($totalWarmBodies / $totalRegistered) * 100, 1) : null,
+            'overallParticipants' => $overallRegisteredIds->count(),
+            'overallWarmBodies' => $overallWarmBodyIds->count(),
+            'printedAt' => now()->format('F j, Y g:i A'),
+        ];
+
+        $pdf = \PDF::loadView('prints.sessions-summary', $array)->setPaper('a4', 'landscape');
+
+        $name = $event ? strtolower(str_replace(' ', '-', $event->name)) : 'event';
+        return $pdf->stream($name.'-sessions-summary.pdf');
+    }
+
+    // One row of the summary report per session. Multi-day sessions (more
+    // than one distinct date in their schedules) get a per-day attendance
+    // breakdown and a "warm bodies" figure — the count of unique people who
+    // showed up on at least one day, since summing each day's attendance
+    // would double-count anyone who checked in more than once.
+    private function buildSessionSummaryRow($session)
+    {
+        $dates = $session->schedules->pluck('date')->unique()->sort()->values();
+        $isMultiDay = $dates->count() > 1;
+
+        $registeredIds = $session->participants
+            ->whereNotIn('status_id', EventSessionParticipant::CAPACITY_EXCLUDED_STATUSES)
+            ->pluck('participant_id')
+            ->unique();
+
+        $capacity = optional($session->detail)->capacity;
+        $perDay = collect();
+
+        if ($isMultiDay) {
+            $attendanceByDate = EventSessionAttendance::where('session_id', $session->id)
+                ->whereNotNull('attended_at')
+                ->get()
+                ->groupBy('date');
+
+            // Manual/admin QR check-ins only ever touch
+            // event_session_participants and never write a matching
+            // event_session_attendances row (see attendance() above), so fold
+            // anyone missed that way into the first scheduled day — same
+            // fallback the attendance sheet uses.
+            $trackedIds = $attendanceByDate->flatten(1)->pluck('participant_id')->unique();
+            $legacyOnly = $session->attendees->reject(
+                fn ($a) => $trackedIds->contains($a->participant_id)
+            );
+
+            if ($legacyOnly->isNotEmpty()) {
+                $firstDay = $dates->first();
+                $attendanceByDate->put($firstDay, $attendanceByDate->get($firstDay, collect())->concat(
+                    $legacyOnly->map(fn ($a) => (object) ['participant_id' => $a->participant_id])
+                ));
+            }
+
+            foreach ($dates as $date) {
+                $perDay->put($date, $attendanceByDate->get($date, collect())->pluck('participant_id')->unique()->count());
+            }
+
+            $warmBodyIds = $attendanceByDate->flatten(1)->pluck('participant_id')->unique();
+        } else {
+            $warmBodyIds = $session->attendees->pluck('participant_id')->unique();
+        }
+
+        $registered = $registeredIds->count();
+        $warmBodies = $warmBodyIds->count();
+
+        return [
+            'title' => $session->title,
+            'venue' => $session->venue,
+            'is_multi_day' => $isMultiDay,
+            'dates' => $dates,
+            'per_day' => $perDay,
+            'capacity' => $capacity,
+            'registered' => $registered,
+            'warm_bodies' => $warmBodies,
+            'registered_ids' => $registeredIds,
+            'warm_body_ids' => $warmBodyIds,
+            'capacity_percent' => $capacity ? round(($registered / $capacity) * 100, 1) : null,
+            'attendance_percent' => $registered ? round(($warmBodies / $registered) * 100, 1) : null,
+        ];
     }
 
     private  function dateRangeText($schedules) {

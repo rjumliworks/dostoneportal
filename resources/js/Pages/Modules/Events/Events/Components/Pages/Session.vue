@@ -5,6 +5,9 @@
                 <div class="input-group mb-1">
                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                     <input type="text"  placeholder="Search Session" class="form-control" style="width: 30%;">
+                    <b-button type="button" variant="soft-danger" class="ms-1" :disabled="sessions.length === 0" @click="printSummary" v-b-tooltip.hover title="Print sessions summary report">
+                        <i class="ri-printer-fill align-bottom me-1"></i> Print Summary
+                    </b-button>
                     <b-button type="button" variant="primary" @click="openCreate">
                         <i class="ri-add-circle-fill align-bottom me-1"></i> Create
                     </b-button>
@@ -88,7 +91,11 @@ export default {
         },
         openPrint(list){
              window.open('/sessions?option=print&type=session&id='+list.id);
-        },  
+        },
+        printSummary(){
+            const ids = this.sessions.map(list => list.id).join(',');
+            window.open('/sessions?option=summary&ids='+ids, '_blank', 'noopener');
+        },
         dateRange(schedules) {
             if (!schedules || schedules.length === 0) return 'No date';
 
