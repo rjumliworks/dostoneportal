@@ -322,7 +322,7 @@ class PrintClass
             'totalRegistered' => $totalRegistered,
             'totalWarmBodies' => $totalWarmBodies,
             'overallCapacityPercent' => $totalCapacity ? round(($totalRegistered / $totalCapacity) * 100, 1) : null,
-            'overallAttendancePercent' => $totalRegistered ? round(($totalWarmBodies / $totalRegistered) * 100, 1) : null,
+            'overallAttendancePercent' => $totalCapacity ? round(($totalWarmBodies / $totalCapacity) * 100, 1) : null,
             'overallParticipants' => $overallRegisteredIds->count(),
             'overallWarmBodies' => $overallWarmBodyIds->count(),
             'printedAt' => now()->format('F j, Y g:i A'),
@@ -399,7 +399,7 @@ class PrintClass
             'registered_ids' => $registeredIds,
             'warm_body_ids' => $warmBodyIds,
             'capacity_percent' => $capacity ? round(($registered / $capacity) * 100, 1) : null,
-            'attendance_percent' => $registered ? round(($warmBodies / $registered) * 100, 1) : null,
+            'attendance_percent' => $capacity ? round(($warmBodies / $capacity) * 100, 1) : null,
         ];
     }
 
