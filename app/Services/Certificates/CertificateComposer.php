@@ -3,6 +3,7 @@
 namespace App\Services\Certificates;
 
 use App\Models\EventSession;
+use App\Models\EventSessionSchedule;
 use App\Models\Participant;
 use Carbon\Carbon;
 
@@ -37,10 +38,46 @@ class CertificateComposer
             ['text' => ' session of ', 'style' => 'plain'],
             ['text' => $session->event->name, 'style' => 'event'],
             ['text' => ', held on ', 'style' => 'plain'],
-            ['text' => Carbon::parse($session->schedules[0]->date)->format('j F Y'), 'style' => 'event'],
+            ['text' => $this->dateRangeText($session->schedules), 'style' => 'event'],
             ['text' => ' at ', 'style' => 'plain'],
             ['text' => $session->venue->establishment.', '.$session->venue->address.'.', 'style' => 'venue'],
         ];
+    }
+
+    /**
+     * Collapses a session's schedule dates into a single readable string, e.g.
+     * "12 August 2026" for a one-day session, "12-14 August 2026" when the
+     * days share a month, or "30 August - 2 September 2026" when they don't.
+     * Pass $dayFirst = false for the "August 12-14, 2026" ordering instead.
+     *
+     * @param  iterable<EventSessionSchedule>  $schedules
+     */
+    public function dateRangeText(iterable $schedules, bool $dayFirst = true): string
+    {
+        $dates = collect($schedules)->map(fn ($schedule) => Carbon::parse($schedule->date))->sort();
+
+        $start = $dates->first();
+        $end = $dates->last();
+
+        if ($start->isSameDay($end)) {
+            return $dayFirst ? $start->format('j F Y') : $start->format('F d, Y');
+        }
+
+        if ($start->isSameMonth($end)) {
+            return $dayFirst
+                ? $start->format('j').'-'.$end->format('j F Y')
+                : $start->format('F d').'-'.$end->format('d, Y');
+        }
+
+        if ($start->isSameYear($end)) {
+            return $dayFirst
+                ? $start->format('j F').' - '.$end->format('j F Y')
+                : $start->format('F d').' - '.$end->format('F d, Y');
+        }
+
+        return $dayFirst
+            ? $start->format('j F Y').' - '.$end->format('j F Y')
+            : $start->format('F d, Y').' - '.$end->format('F d, Y');
     }
 
     /**

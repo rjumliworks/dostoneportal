@@ -30,8 +30,6 @@ class CertificateClass
             ['text' => ' the ', 'style' => 'plain'],
         ], $data->session);
 
-        $sessionDate = optional($data->session->schedules->first())->date;
-
         $pdf1 = \PDF::loadView('certificates.appearance', [
             'sessionId' => $session,
             'recipientName' => $recipientName,
@@ -42,7 +40,7 @@ class CertificateClass
             'affiliationName' => optional($data->participant->detail->affiliation)->name,
             'eventName' => $data->session->event->name,
             'venueText' => $data->session->venue->establishment.', '.$data->session->venue->address,
-            'sessionDateText' => $sessionDate ? \Carbon\Carbon::parse($sessionDate)->format('F d, Y') : '',
+            'sessionDateText' => $data->session->schedules->isNotEmpty() ? $composer->dateRangeText($data->session->schedules, false) : '',
         ])->setPaper('a4');
         $pdfContent1 = base64_encode($pdf1->output());
 
@@ -93,8 +91,6 @@ class CertificateClass
             ['text' => ' the ', 'style' => 'plain'],
         ], $session);
 
-        $sessionDate = optional($session->schedules->first())->date;
-
         $pdf1 = \PDF::loadView('certificates.appearance', [
             'sessionId' => $session->id,
             'recipientName' => $recipientName,
@@ -105,7 +101,7 @@ class CertificateClass
             'affiliationName' => $affiliationName,
             'eventName' => $session->event->name,
             'venueText' => $session->venue->establishment.', '.$session->venue->address,
-            'sessionDateText' => $sessionDate ? \Carbon\Carbon::parse($sessionDate)->format('F d, Y') : '',
+            'sessionDateText' => $session->schedules->isNotEmpty() ? $composer->dateRangeText($session->schedules, false) : '',
         ])->setPaper('a4');
         $pdfContent1 = base64_encode($pdf1->output());
 
