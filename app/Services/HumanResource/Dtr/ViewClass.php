@@ -26,6 +26,9 @@ class ViewClass
             ->when($request->date, function ($query, $date) {
                 $query ->where('date',$date);
             })
+            ->when($request->month, function ($query, $month) {
+                $query->whereMonth('date', $month);
+            })
             ->when($request->station, function ($query, $station) {
                 $query ->where('station_id',$station);
             })

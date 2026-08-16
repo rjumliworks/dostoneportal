@@ -27,11 +27,15 @@
                     <b-col lg>
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                            <input type="text" v-model="filter.keyword" placeholder="Search Dtr" class="form-control" style="width: 50%;">
-                            <input type="date" v-model="filter.date" class="form-control">
+                            <input type="text" v-model="filter.keyword" placeholder="Search Dtr" class="form-control" style="width: 40%;">
+                            <input type="date" style="width: 15%;" v-model="filter.date" class="form-control">
+                            <Multiselect class="white" style="width: 15%;" :options="months" v-model="filter.month" label="name" :searchable="true" placeholder="Select Month" />
                             <Multiselect class="white" style="width: 15%;" :options="stations" v-model="filter.station" label="others" :searchable="true" placeholder="Select Stations" />
-                            <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;"> 
+                            <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;">
                                 <i class="ri ri-printer-fill search-icon"></i>
+                            </span>
+                            <span @click="openFix()" class="input-group-text" v-b-tooltip.hover title="Fix / Recheck Records" style="cursor: pointer;">
+                                <i class="bx bx-wrench search-icon"></i>
                             </span>
                             <b-button type="button" variant="primary" @click="openGenerate()">
                                 <i class="bx bx-refresh search-icon"></i> Generate
@@ -117,18 +121,20 @@
     <View @update="updateList" ref="view"/>
     <Generate ref="generate"/>
     <Print :stations="stations" ref="print"/>
+    <Fix :stations="stations" @update="fetch" ref="fix"/>
 </BRow>
 </template>
 <script>
 import _ from 'lodash';
 import View from './Modals/View.vue';
 import Print from './Modals/Print.vue';
+import Fix from './Modals/Fix.vue';
 import Generate from './Modals/Generate.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, View, Generate, Print, Multiselect },
+    components: { PageHeader, Pagination, View, Generate, Print, Fix, Multiselect },
     props: ['counts','stations'],
     data(){
         return {
@@ -139,9 +145,24 @@ export default {
             filter: {
                 keyword: null,
                 date: null,
+                month: null,
                 station: null,
                 status: null
             },
+            months: [
+                { value: 1, name: 'January' },
+                { value: 2, name: 'February' },
+                { value: 3, name: 'March' },
+                { value: 4, name: 'April' },
+                { value: 5, name: 'May' },
+                { value: 6, name: 'June' },
+                { value: 7, name: 'July' },
+                { value: 8, name: 'August' },
+                { value: 9, name: 'September' },
+                { value: 10, name: 'October' },
+                { value: 11, name: 'November' },
+                { value: 12, name: 'December' }
+            ],
             type: null,
             index: null
         }
@@ -151,6 +172,15 @@ export default {
             this.checkSearchStr(newVal);
         },
         "filter.date"(newVal){
+            if(newVal){
+                this.filter.month = null;
+            }
+            this.fetch();
+        },
+        "filter.month"(newVal){
+            if(newVal){
+                this.filter.date = null;
+            }
             this.fetch();
         },
         "filter.station"(newVal){
@@ -170,6 +200,7 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     date: this.filter.date,
+                    month: this.filter.month,
                     status: this.filter.status,
                     station: this.filter.station,
                     count: 10,
@@ -218,6 +249,9 @@ export default {
         },
         openPrint(){
             this.$refs.print.show();
+        },
+        openFix(){
+            this.$refs.fix.show();
         },
         updateList(data){
             this.lists[this.index] = data;

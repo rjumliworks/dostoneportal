@@ -67,6 +67,9 @@ class DtrController extends Controller
                 case 'recheck':
                     return $this->update->recheck($request);
                 break;
+                case 'bulk_recheck':
+                    return $this->update->bulkRecheck($request);
+                break;
             }
         });
 

@@ -155,6 +155,41 @@ class UpdateClass
         ];
     }
 
+    public function bulkRecheck($request){
+        $query = Dtr::query();
+
+        if($request->from && $request->to){
+            $query->whereBetween('date', [$request->from, $request->to]);
+        }elseif($request->month && $request->year){
+            $query->whereMonth('date', $request->month)->whereYear('date', $request->year);
+        }else{
+            return [
+                'data' => null,
+                'message' => 'Error occured',
+                'info' => 'Please select a date range or a month/year to fix.',
+                'status' => false,
+            ];
+        }
+
+        $query->when($request->station, function ($query, $station) {
+            $query->where('station_id', $station);
+        });
+
+        $ids = $query->pluck('id');
+
+        foreach($ids as $id){
+            Artisan::call('dtr', ['id' => $id]);
+        }
+
+        $count = $ids->count();
+
+        return [
+            'data' => null,
+            'message' => 'DTR records fixed successfully.',
+            'info' => "Rechecked and fixed {$count} DTR record(s).",
+        ];
+    }
+
     public function recheck($request){
         $dtr = Dtr::where('id',$request->id)->first();
 
