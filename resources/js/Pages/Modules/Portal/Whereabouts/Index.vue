@@ -97,7 +97,7 @@
                      <div class="d-flex justify-content-between mb-n1">
                         <span class="text-muted">Work Schedule</span>
                         <span class="text-end text-truncate ms-3">
-                            {{ list.organization.shift.name }}
+                            {{ list.organization.shift?.name ?? 'No Work Schedule' }}
                         </span>
                     </div>
                 </div>
@@ -279,7 +279,7 @@
                     <div class="row g-0 text-center fs-10">
                         <div class="col-md-12">
                             <div class="p-3 border border-dashed border-start-0">
-                                <h5 class="mb-1 fs-12">{{ filteredEmployees.filter(e => e.organization?.shift?.id === list.value).length }}</h5>
+                                <h5 class="mb-1 fs-12">{{ employeesForShift(list).length }}</h5>
                                 <p class="text-muted mb-0">No. of Employees</p>
                             </div>
                         </div>
@@ -295,11 +295,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="employee in filteredEmployees.filter(e => e.organization?.shift?.id === list.value)" :key="employee.id">
+                                <tr v-for="employee in employeesForShift(list)" :key="employee.id">
                                     <td>
                                         <img
                                             :src="employee.avatar"
-                                            class="rounded-circle"    
+                                            class="rounded-circle"
                                             style="width:28px;height:28px;object-fit:cover;"
                                             alt="Avatar"
                                         >
@@ -499,14 +499,10 @@ export default {
     },
     computed: {
         sortedShifts() {
-            return [...this.dropdowns.shifts].sort((a, b) => {
-                const countA = this.filteredEmployees.filter(
-                    e => e.organization?.shift?.id === a.value
-                ).length;
-
-                const countB = this.filteredEmployees.filter(
-                    e => e.organization?.shift?.id === b.value
-                ).length;
+            const shifts = [...this.dropdowns.shifts, { value: 'no-shift', name: 'No Work Schedule' }];
+            return shifts.sort((a, b) => {
+                const countA = this.employeesForShift(a).length;
+                const countB = this.employeesForShift(b).length;
 
                 return countB - countA; // Highest to lowest
             });
@@ -613,6 +609,12 @@ export default {
         toggleSortPosition() {
             this.sort = 'lists';
             this.sortPosition = this.sortPosition === 'asc' ? 'desc' : 'asc';
+        },
+        employeesForShift(list) {
+            if (list.value === 'no-shift') {
+                return this.filteredEmployees.filter(e => !e.organization?.shift?.id);
+            }
+            return this.filteredEmployees.filter(e => e.organization?.shift?.id === list.value);
         }
     }
 };
