@@ -9,11 +9,20 @@ use App\Models\User;
 use App\Models\Visitor;
 use App\Models\VisitorLogs;
 use App\Models\ListDropdown;
+use App\Models\ShiftRotation;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class SaveClass
 {
+    // Security guards on the rotating 24/7 shift (Morning/Afternoon/Night) — not bound by the
+    // office AM/PM time-in cutoffs below, since their shift can start as late as 11 PM.
+    // Membership is managed in the "Guard Shift Rotation" screen under Executive.
+    private function isGuard($userId)
+    {
+        return ShiftRotation::where('is_active', 1)->where('user_id', $userId)->exists();
+    }
+
     public function recognize($request){
         $type = $request->type;
         $request->validate(['image' => 'required|image']);
@@ -157,7 +166,7 @@ class SaveClass
                             $status = 'Disabled Overlap';
                             break;
                         }
-                        if($date->hour >= 12) {
+                        if($date->hour >= 12 && !$this->isGuard($user->id)) {
                             $status = 'Disabled AM';
                             break;
                         }
@@ -184,7 +193,7 @@ class SaveClass
                     case 'Time In (pm)':
                         if (!empty(json_decode($dtr->pm_out_at))) {
                             $status = "Disabled Overlap";
-                        }else if($date->hour >= 17) {
+                        }else if($date->hour >= 17 && !$this->isGuard($user->id)) {
                             $status = "Disabled";
                         }else if($dtr->pm_in_at){
                             $status = 'Duplicate';
@@ -217,7 +226,7 @@ class SaveClass
                     break;
                 }
             }else{
-                if($type == 'Time In (am)'){
+                if($type == 'Time In (am)' && !$this->isGuard($user->id)){
                     if($date->hour >= 12){
                         return [
                             'data' => null,

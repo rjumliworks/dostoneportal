@@ -145,6 +145,7 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);
     Route::resource('/shifts', App\Http\Controllers\Executive\ShiftController::class);
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
+    Route::resource('/shift-rotations', App\Http\Controllers\Executive\ShiftRotationController::class)->except(['create', 'show', 'edit']);
     Route::get('/rekognition/test', [App\Http\Controllers\Executive\RekognitionController::class, 'test']);
     Route::get('/rekognition/check', [App\Http\Controllers\Executive\RekognitionController::class, 'check']);
     Route::get('/rekognition/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'delete']);

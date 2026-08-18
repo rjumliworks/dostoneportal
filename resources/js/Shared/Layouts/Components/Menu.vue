@@ -250,6 +250,13 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/shift-rotations" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/ShiftRotations') }">
+                    <i class="ri-shield-user-line"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Guard Shift Rotation</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <BLink class="nav-link menu-link" href="#sidebarDashboards"
                     :class="{'active': $page.url.startsWith('Modules/System/References') }"
                     data-bs-toggle="collapse" role="button" :aria-expanded="$page.url.startsWith('/references')" aria-controls="sidebarDashboards">
