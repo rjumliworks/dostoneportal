@@ -24,8 +24,19 @@
                 </div>
             </div>
 
-            <h5 v-if="post.title" class="fs-12 fw-semibold text-primary">{{ post.title }}</h5>
-            <div class="fs-12 post-content" v-html="post.content"></div>
+            <div v-if="post.type_id === SIGNATORY_POST_TYPE_ID" class="d-flex align-items-start gap-3">
+                <div class="flex-shrink-0">
+                    <img src="/images/thumbnails/preview.jpg" alt="Signatory document" class="rounded" style="width: 110px; height: 140px; object-fit: cover;">
+                </div>
+                <div class="flex-grow-1 min-w-0">
+                    <h5 v-if="post.title" class="fs-12 fw-semibold text-primary">{{ post.title }}</h5>
+                    <div class="fs-12 post-content" v-html="post.content"></div>
+                </div>
+            </div>
+            <template v-else>
+                <h5 v-if="post.title" class="fs-12 fw-semibold text-primary">{{ post.title }}</h5>
+                <div class="fs-12 post-content" v-html="post.content"></div>
+            </template>
 
             <div class="d-flex align-items-center justify-content-between border-top border-bottom py-2 my-3 fs-12 text-muted">
                 <span>{{ post.reactions_count }} reaction{{ post.reactions_count === 1 ? '' : 's' }}</span>
@@ -86,6 +97,8 @@
 <script>
 import simplebar from "simplebar-vue";
 import ReactionPicker from '@/Shared/Components/ReactionPicker.vue';
+
+const SIGNATORY_POST_TYPE_ID = 203; // Special Order posts created from the Signatory module
 
 export default {
     components: { simplebar, ReactionPicker },

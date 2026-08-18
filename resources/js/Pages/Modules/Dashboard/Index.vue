@@ -464,8 +464,19 @@
                                     </div>
                                 </div>
                                 <div class="mt-3 post-content-preview" style="cursor: pointer;" @click="openPost(post)">
-                                    <h5 v-if="post.title" class="mb-1 fs-14 fw-semibold text-primary">{{ post.title }}</h5>
-                                    <p class="fs-12 text-muted text-truncate-two-lines mb-0" v-html="post.content"></p>
+                                    <div v-if="isSignatoryPost(post)" class="d-flex align-items-start gap-2">
+                                        <div class="flex-shrink-0">
+                                            <img :src="signatoryThumbnail" alt="Signatory document" class="rounded" style="width: 70px; height: 90px; object-fit: cover;">
+                                        </div>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <h5 v-if="post.title" class="mb-1 fs-14 fw-semibold text-primary">{{ post.title }}</h5>
+                                            <p class="fs-12 text-muted text-truncate-two-lines mb-0" v-html="post.content"></p>
+                                        </div>
+                                    </div>
+                                    <template v-else>
+                                        <h5 v-if="post.title" class="mb-1 fs-14 fw-semibold text-primary">{{ post.title }}</h5>
+                                        <p class="fs-12 text-muted text-truncate-two-lines mb-0" v-html="post.content"></p>
+                                    </template>
                                 </div>
                             </div>
                             <div class="card-footer border-top border-top-dashed mb-n2 fs-12 d-flex align-items-center justify-content-between">
@@ -743,6 +754,8 @@ import CreatePost from './Modals/CreatePost.vue';
 import ViewPost from './Modals/ViewPost.vue';
 import ReactionPicker from '@/Shared/Components/ReactionPicker.vue';
 
+const SIGNATORY_POST_TYPE_ID = 203; // Special Order posts created from the Signatory module
+
 const WHEREABOUTS_ORDER = ['Present', 'Absent', 'OB/On Travel', 'Suspension', 'Holiday'];
 const WHEREABOUTS_META = {
     'Present': { icon: 'ri-checkbox-circle-fill', color: 'success' },
@@ -820,6 +833,9 @@ export default {
         },
         currentMonth() {
             return new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+        },
+        signatoryThumbnail() {
+            return '/images/thumbnails/preview.jpg';
         }
     },
     created(){
@@ -852,6 +868,9 @@ export default {
         },
         openPost(post){
             this.$refs.viewPostModal.show(post.id);
+        },
+        isSignatoryPost(post){
+            return post.type_id === SIGNATORY_POST_TYPE_ID;
         },
         onPostUpdated(postId, payload){
             const post = this.posts.data.find(p => p.id === postId);
