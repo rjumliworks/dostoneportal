@@ -466,11 +466,11 @@
                                 <div class="mt-3 post-content-preview" style="cursor: pointer;" @click="openPost(post)">
                                     <div v-if="isSignatoryPost(post)" class="d-flex align-items-start gap-2">
                                         <div class="flex-shrink-0">
-                                            <img :src="signatoryThumbnail" alt="Signatory document" class="rounded" style="width: 70px; height: 90px; object-fit: cover;">
+                                            <img :src="signatoryThumbnail" alt="Signatory document" class="rounded img-thumbnail" style="width: 90px; height: 110px; object-fit: cover;">
                                         </div>
                                         <div class="flex-grow-1 min-w-0">
                                             <h5 v-if="post.title" class="mb-1 fs-14 fw-semibold text-primary">{{ post.title }}</h5>
-                                            <p class="fs-12 text-muted text-truncate-two-lines mb-0" v-html="post.content"></p>
+                                            <p class="fs-12 text-muted signatory-content-clamp mb-0" v-html="post.content"></p>
                                         </div>
                                     </div>
                                     <template v-else>
@@ -888,6 +888,16 @@ export default {
     height: 24px;
     flex: 0 0 24px;
     position: relative;
+}
+
+.signatory-content-clamp {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: normal;
 }
 
 .post-content-preview :deep(img) {
