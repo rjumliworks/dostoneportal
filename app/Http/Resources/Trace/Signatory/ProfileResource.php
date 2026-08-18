@@ -11,7 +11,11 @@ class ProfileResource extends JsonResource
     {
         return [
             'avatar' => $this->profile?->avatar ?? asset('images/avatars/avatar.jpg'),
-            'name' => $this->profile?->name ?? $this->username
+            'name' => $this->profile?->name ?? $this->username,
+            'fullname' => $this->profile?->fullname,
+            'sex' => $this->profile?->sex?->name,
+            'division' => $this->organization?->division?->name,
+            'position' => $this->organization?->position?->name,
         ];
     }
 }

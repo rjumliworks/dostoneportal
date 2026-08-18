@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PostComment extends Model
 {
+    use SoftDeletes;
+
+    protected $fillable = ['comment', 'parent_id', 'user_id', 'post_id'];
+
     public function post()
     {
         return $this->belongsTo(Post::class);

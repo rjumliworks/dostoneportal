@@ -415,7 +415,7 @@ class DropdownClass
     }
 
     public function users($keyword,$is_regular = null){
-        $data =  User::with('profile')
+        $data =  User::with('profile.suffix','profile.sex')
         ->with('organization.position','organization.division')
         ->when(!is_null($is_regular) && $is_regular == 1, function ($query) {
             $query->whereHas('organization', function ($query) {
@@ -432,6 +432,8 @@ class DropdownClass
                 'value' => $item->id,
                 'signatory' => $item->signatory,
                 'name' => $item->profile->lastname . ', ' . $item->profile->firstname . ' ' . mb_substr($item->profile->middlename, 0, 1) . '.',
+                'fullname' => $item->profile->fullname,
+                'sex' => optional($item->profile->sex)->name,
                 'position' => optional($item->organization->position)->name,
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,

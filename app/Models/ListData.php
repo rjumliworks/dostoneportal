@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ListData extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name', 'type', 'is_active'];
+    public $timestamps = false;
 }

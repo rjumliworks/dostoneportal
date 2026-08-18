@@ -4,11 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <title inertia>DOST-IX</title>
-        <meta name="description" content="Laboratory Information Management System">
-        <meta name="keywords" content="DOST, LIMS, ONELAB">
+        <meta name="description" content="OneApp - Unified Information Management System integrating multiple DOST information systems into one centralized platform.">
+        <meta name="keywords" content="DOST, OneApp, Unified Information Management System">
         <meta name="author" content="Krad">
         <meta property="og:title" content="OneApp - Unified Information Management System">
-        <meta property="og:description" content="Management Information System">
+        <meta property="og:description" content="A unified platform that brings together multiple DOST information systems into one centralized application.">
+        <meta property="og:type" content="website">
         <meta property="og:image" content="URL to the template's logo or featured image">
         <meta property="og:url" content="URL to the template's webpage">
         <meta name="twitter:card" content="summary_large_image">

@@ -56,7 +56,9 @@ class RegularClass
         $cutoff_id = $request->cutoff_id;
         
         $data =  User::with([
-            'profile:id,user_id,firstname,middlename,lastname,suffix_id',
+            'profile:id,user_id,firstname,middlename,lastname,suffix_id,sex_id',
+            'profile.suffix:id,name',
+            'profile.sex:id,name',
             'organization.position',
             'organization.division',
             'organization.type',
@@ -80,13 +82,15 @@ class RegularClass
             return [
                 'value' => $item->id,
                 'name' => $item->profile->name,
+                'fullname' => $item->profile->fullname,
+                'sex' => optional($item->profile->sex)->name,
                 'position' => optional($item->organization->position)->name,
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,
                 'type' => $item->organization->type->name,
                 'avatar' => ($item->profile && $item->profile->avatar && $item->profile->avatar !== 'noavatar.jpg')
-                ? asset('storage/' . $item->profile->avatar) 
-                : asset('images/avatars/avatar.jpg'), 
+                ? asset('storage/' . $item->profile->avatar)
+                : asset('images/avatars/avatar.jpg'),
                 'already_in_payroll' => $alreadyInPayroll
             ];
         });

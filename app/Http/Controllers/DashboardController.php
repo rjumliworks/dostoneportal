@@ -34,6 +34,7 @@ class DashboardController extends Controller
                 default:
                     return inertia('Modules/Dashboard/Index',[
                         'birthdays' => $this->view->birthdays(),
+                        'posts' => $this->view->posts(),
                         'dtr' => $this->view->dtr(),
                         'designations' => $this->view->designations(),
                         'attendance' => $this->view->attendance(),

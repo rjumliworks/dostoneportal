@@ -114,6 +114,8 @@ class ContractualClass
         
         $data =  User::with([
             'profile',
+            'profile.suffix',
+            'profile.sex',
             'organization.shift.times',
             'organization.position',
             'organization.division',
@@ -321,11 +323,13 @@ class ContractualClass
             return [
                 'value' => $item->id,
                 'name' => $item->profile->name,
+                'fullname' => $item->profile->fullname,
+                'sex' => optional($item->profile->sex)->name,
                 'position' => optional($item->organization->position)->name,
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,
                 'type' => $item->organization->type->name,
-                'avatar' => $item->profile->avatar, 
+                'avatar' => $item->profile->avatar,
                 'already_in_payroll' => $alreadyInPayroll,
                 'dtrs' => $alreadyInPayroll ? [] : $dates
             ];

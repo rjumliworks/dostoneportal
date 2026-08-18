@@ -6,12 +6,14 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Models\User;
 use App\Models\Dtr;
+use App\Models\Post;
 use App\Models\OrgChart;
 use App\Models\UserProfile;
 use App\Models\Schedule;
 use App\Models\Request;
 use App\Models\UserOrganization;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\HumanResource\Dtr\IndexResource;
 use App\Http\Resources\Trace\Signatory\ListResource;
 
@@ -28,6 +30,19 @@ class ViewClass
                 'birthdate' => $user->birthdate,
             ];
         });
+    }
+
+    public function posts(){
+        $data = Post::with([
+                'user.profile',
+                'reactions' => fn ($q) => $q->where('user_id', Auth::id())->with('reaction'),
+            ])
+            ->withCount(['comments', 'reactions'])
+            ->latest()
+            ->limit(20)
+            ->get();
+
+        return PostResource::collection($data);
     }
 
     public function dtr(){

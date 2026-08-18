@@ -447,146 +447,42 @@
                         </div>
                     </div>
 
-                    <div class="col-xxl-12 col-sm-6 project-card">
-                        <div class="card card-height-100" style="border-radius: 10px;">
-                            <div class="card-body">
-                                <div class="bookmark-icon position-absolute top-0 end-0 p-3">
-                                    <BButton variant="link" class="btn-icon" @click="toggleLike(list)" data-bs-toggle="button" aria-pressed="true">
-                                        <i class="mdi mdi-cards-heart fs-16"></i>
-                                    </BButton>
-                                </div>
-                                <div class="d-flex flex-column h-100">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="avatar-xs">
-                                                <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
-                                                    <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="fs-13 fw-semibold mb-0">{{ $page.props.user.data.name }}</h6>
-                                            <p class="fs-11 text-muted mb-0">May 26 at 5:40 PM</p>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex mb-2 mt-4">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xl">
-                                                <span class="avatar-title bg-warning-subtle rounded p-2">
-                                                    <img src="assets/images/brands/slack.png" alt="" class="img-fluid p-1">
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h5 class="mb-1 fs-14 fw-semibold text-primary">Announcement Notice</h5>
-                                            <p class="fs-12 text-muted text-truncate-two-lines mb-3">This announcement is currently a placeholder and not yet finalized. Content is under development.</p>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                            <div class="card-footer border-top border-top-dashed mb-n2 fs-12" style="cursor: pointer; border-radius: 10px;" @click="openView(list)">
-                                <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 2</p>
-                                <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart text-danger align-middle"></i> 5</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-12 col-sm-6 project-card">
+                    <div class="col-xxl-12 col-sm-6 project-card" v-for="post in posts.data" :key="'post-' + post.id">
                         <div class="card card-height-100">
                             <div class="card-body">
-                                <div class="bookmark-icon position-absolute top-0 end-0 p-3"> 
-                                    <BButton variant="link" class="btn-icon" @click="toggleLike(list)" data-bs-toggle="button" aria-pressed="true">
-                                        <i class="mdi mdi-cards-heart fs-16"></i>
-                                    </BButton>
-                                </div>
-                                <div class="d-flex flex-column h-100">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="avatar-xs">
-                                                <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
-                                                    <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
-                                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-xs">
+                                            <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
+                                                <img class="rounded-circle header-profile-user" :src="post.user.avatar" @error="setDefaultImage($event)" :alt="post.user.name">
                                             </div>
                                         </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="fs-13 fw-semibold mb-0">{{ $page.props.user.data.name }}</h6>
-                                            <p class="fs-11 text-muted mb-0">May 26 at 5:40 PM</p>
-                                        </div>
                                     </div>
-                                    <div class="d-flex mb-2 mt-4">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xl">
-                                                <span class="avatar-title bg-warning-subtle rounded p-2">
-                                                    <img src="assets/images/brands/slack.png" alt="" class="img-fluid p-1">
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h5 class="mb-1 fs-14 fw-semibold text-primary">Please see DOST Special Order No. 575, Series of 2026</h5>
-                                            <p class="fs-12 text-muted text-truncate-two-lines mb-3">Re: Designation of Mr. RICARDO J. APOLINARIO III, Chief Science Research Specialist as Officer-in-Charge, Office of the Regional Director, DOST - Zamboanga Peninsula For your information. Thank you.</p>
-                                        </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="fs-13 fw-semibold mb-0">{{ post.user.name }}</h6>
+                                        <p class="fs-11 text-muted mb-0">{{ post.posted_at }}</p>
                                     </div>
-                                  
                                 </div>
-
+                                <div class="mt-3 post-content-preview" style="cursor: pointer;" @click="openPost(post)">
+                                    <h5 v-if="post.title" class="mb-1 fs-14 fw-semibold text-primary">{{ post.title }}</h5>
+                                    <p class="fs-12 text-muted text-truncate-two-lines mb-0" v-html="post.content"></p>
+                                </div>
                             </div>
-                              <div class="card-footer border-top border-top-dashed mb-n2 fs-12" style="cursor: pointer;" @click="openView(list)">
-                            <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 2</p>
-                            <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart text-danger align-middle"></i> 5</p>
-                        </div>
+                            <div class="card-footer border-top border-top-dashed mb-n2 fs-12 d-flex align-items-center justify-content-between">
+                                <ReactionPicker :post-id="post.id" :reaction-types="reactions" :my-reaction="post.my_reaction" @updated="(payload) => onPostUpdated(post.id, payload)" />
+                                <button type="button" class="btn btn-sm btn-light" @click="openPost(post)">
+                                    <i class="ri-message-3-line align-middle me-1"></i>{{ post.comments_count }} comment{{ post.comments_count === 1 ? '' : 's' }}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-xxl-12 col-sm-6 project-card">
-                        <div class="card card-height-100">
-                            <div class="card-body">
-                                <div class="bookmark-icon position-absolute top-0 end-0 p-3"> 
-                                    <BButton variant="link" class="btn-icon" @click="toggleLike(list)" data-bs-toggle="button" aria-pressed="true">
-                                        <i class="mdi mdi-cards-heart fs-16"></i>
-                                    </BButton>
-                                </div>
-                                <div class="d-flex flex-column h-100">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="avatar-xs">
-                                                <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-15">
-                                                    <img class="rounded-circle header-profile-user" :src="$page.props.user.data.avatar" @error="setDefaultImage($event)" :alt="$page.props.user.data.username">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="fs-13 fw-semibold mb-0">{{ $page.props.user.data.name }}</h6>
-                                            <p class="fs-11 text-muted mb-0">May 26 at 5:40 PM</p>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex mb-2 mt-4">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar-xl">
-                                                <span class="avatar-title bg-warning-subtle rounded p-2">
-                                                    <img src="assets/images/brands/slack.png" alt="" class="img-fluid p-1">
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h5 class="mb-1 fs-14 fw-semibold text-primary">Please see DOST SPECIAL ORDER No. 081, Series of 2026</h5>
-                                            <p class="fs-12 text-muted text-truncate-two-lines mb-3">Re: Constitution of the Artificial Intelligence (AI) Focal Persons of the Department of Science and Technology Regional Office IX (DOST IX)
-For your information.</p>
-                                        </div>
-                                    </div>
-                                  
-                                </div>
-
-                            </div>
-                              <div class="card-footer border-top border-top-dashed mb-n2 fs-12" style="cursor: pointer;" @click="openView(list)">
-                            <p class="fw-medium mb-0 mt-n1 float-end"><i class="ri-message-3-fill text-primary align-middle"></i> 2</p>
-                            <p class="fw-medium mb-0 mt-n1"><i class="mdi mdi-heart text-danger align-middle"></i> 5</p>
-                        </div>
+                    <div v-if="!posts.data.length" class="col-xxl-12">
+                        <div class="text-center text-muted py-5">
+                            <i class="ri-file-list-3-line fs-24 d-block mb-2"></i>
+                            <p class="fs-12 mb-0">No post found.</p>
                         </div>
                     </div>
-
-                    
                 </div>
             </simplebar>
         </div>
@@ -837,12 +733,15 @@ For your information.</p>
 
     <Whereabouts ref="whereaboutsModal" />
     <CreatePost ref="createPostModal" @posted="handleNewPost" />
+    <ViewPost ref="viewPostModal" :reaction-types="reactions" @updated="(payload) => onPostUpdated(payload.id, payload)" />
 </template>
 <script>
 import simplebar from "simplebar-vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Whereabouts from './Modals/Whereabouts.vue';
 import CreatePost from './Modals/CreatePost.vue';
+import ViewPost from './Modals/ViewPost.vue';
+import ReactionPicker from '@/Shared/Components/ReactionPicker.vue';
 
 const WHEREABOUTS_ORDER = ['Present', 'Absent', 'OB/On Travel', 'Suspension', 'Holiday'];
 const WHEREABOUTS_META = {
@@ -854,8 +753,8 @@ const WHEREABOUTS_META = {
 };
 
 export default {
-    components: { PageHeader, simplebar, Whereabouts, CreatePost },
-    props: ['birthdays','dtr','designations', 'attendance','whereabouts'],
+    components: { PageHeader, simplebar, Whereabouts, CreatePost, ViewPost, ReactionPicker },
+    props: ['birthdays','dtr','designations', 'attendance','whereabouts','posts','reactions'],
     data(){
         return {
             whereabouts: [],
@@ -951,6 +850,16 @@ export default {
         handleNewPost(post){
             this.myPosts.unshift(post);
         },
+        openPost(post){
+            this.$refs.viewPostModal.show(post.id);
+        },
+        onPostUpdated(postId, payload){
+            const post = this.posts.data.find(p => p.id === postId);
+            if (!post) return;
+            if (payload.reactions_count !== undefined) post.reactions_count = payload.reactions_count;
+            if (payload.my_reaction !== undefined) post.my_reaction = payload.my_reaction;
+            if (payload.comments_count !== undefined) post.comments_count = payload.comments_count;
+        },
     }
 }
 </script>
@@ -960,6 +869,14 @@ export default {
     height: 24px;
     flex: 0 0 24px;
     position: relative;
+}
+
+.post-content-preview :deep(img) {
+    max-width: 100%;
+    max-height: 160px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 6px;
 }
 
 .avatar-img {

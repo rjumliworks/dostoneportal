@@ -92,6 +92,11 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('/requests', App\Http\Controllers\Portal\RequestController::class);
     Route::resource('/whereabouts', App\Http\Controllers\Portal\WhereaboutController::class);
     Route::resource('/schedules', App\Http\Controllers\Portal\ScheduleController::class);
+
+    Route::get('/posts/{post}', [App\Http\Controllers\PostController::class, 'show']);
+    Route::get('/posts/{post}/print', [App\Http\Controllers\PostController::class, 'print']);
+    Route::post('/posts/{post}/react', [App\Http\Controllers\PostController::class, 'react']);
+    Route::post('/posts/{post}/comments', [App\Http\Controllers\PostController::class, 'comment']);
 });
 
 Route::middleware(['role:Asset Management Officer'])->group(function () {

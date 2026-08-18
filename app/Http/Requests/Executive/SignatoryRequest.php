@@ -17,7 +17,7 @@ class SignatoryRequest extends FormRequest
     {
         switch($this->option){
             case 'signatory':
-                return [
+                $rules = [
                     'signatory_id' => ['required', 'exists:org_signatories,id'],
                     'user_id' => ['required', 'exists:users,id'],
                     'start_at' => [
@@ -30,7 +30,14 @@ class SignatoryRequest extends FormRequest
                         ),
                     ],
                     'end_at' => ['required', 'date', 'after_or_equal:start_at'],
+                    'create_post' => ['sometimes', 'boolean'],
                 ];
+
+                if ($this->boolean('create_post')) {
+                    $rules['content'] = ['required', 'string'];
+                }
+
+                return $rules;
             break;
             case 'designate':
                 $rules = [

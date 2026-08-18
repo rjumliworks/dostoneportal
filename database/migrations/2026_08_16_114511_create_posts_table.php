@@ -24,8 +24,9 @@ return new class extends Migration
             $table->unsignedSmallInteger('visibility_id');
             $table->foreign('visibility_id')->references('id')->on('list_data')->onDelete('cascade');
             $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -170,6 +170,7 @@ export default {
         },
         reload(){
             router.reload({ only: ['selected'] });
+            this.fetch();
         }
     }
 }

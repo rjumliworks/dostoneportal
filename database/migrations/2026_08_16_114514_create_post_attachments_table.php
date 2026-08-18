@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_reactions', function (Blueprint $table) {
+        Schema::create('post_attachments', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->unsignedSmallInteger('reaction_id');
-            $table->foreign('reaction_id')->references('id')->on('list_data')->onDelete('cascade');
-            $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('path');
+            $table->string('mime_type', 100);
+            $table->unsignedBigInteger('size');
+            $table->string('text')->nullable();
+            $table->json('meta')->nullable();
+            $table->unsignedSmallInteger('kind_id');
+            $table->foreign('kind_id')->references('id')->on('list_data')->onDelete('restrict');
             $table->unsignedBigInteger('post_id');
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['user_id', 'post_id']);
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('post_reactions');
+        Schema::dropIfExists('post_attachments');
     }
 };
