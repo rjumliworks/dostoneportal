@@ -11,9 +11,16 @@
                                     <BCol md>
                                         <BRow class="align-items-center g-3">
                                             <BCol md="auto">
-                                                <div style="height: 3.5rem; width: 3.5rem;">
+                                                <div class="profile-user position-relative d-inline-block" style="height: 3.5rem; width: 3.5rem;">
                                                     <div class="avatar-title bg-white rounded-circle">
                                                         <img :src="user.avatar" alt="" class="avatar-sm rounded-circle">
+                                                    </div>
+                                                    <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+                                                        <a href="javascript:void(0);" class="profile-photo-edit avatar-xs" @click="$refs.avatarCrop.show()">
+                                                            <span class="avatar-title rounded-circle bg-light text-body">
+                                                                <i class="ri-camera-fill"></i>
+                                                            </span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </BCol>
@@ -54,12 +61,14 @@
             </BRow>
         </div>
     </div>
+    <AvatarCrop ref="avatarCrop" :code="user.code" />
 </template>
 <script>
 import Main from './Components/Main.vue';
 import Sidebar from './Components/Sidebar.vue';
+import AvatarCrop from '@/Pages/Auth/Profile/Modals/AvatarCrop.vue';
 export default {
-    components: { Main, Sidebar },
+    components: { Main, Sidebar, AvatarCrop },
     props:['user_data','dropdowns'],
     data(){
         return {

@@ -64,6 +64,9 @@ class UserController extends Controller
                 case 'user':
                     return $this->save->store($request);
                 break;
+                case 'avatar':
+                    return $this->save->avatar($request);
+                break;
                 case 'file':
                     return $this->rekognition->store($request);
                 break;

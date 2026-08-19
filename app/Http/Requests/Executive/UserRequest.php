@@ -23,6 +23,12 @@ class UserRequest extends FormRequest
                 'kradworkz' => 'nullable|string',
             ];
         }
+        if ($this->option === 'avatar') {
+            return [
+                'code' => 'required|string',
+                'image' => 'required|image|mimes:jpeg,png|max:2048',
+            ];
+        }
         return [
             //
         ];

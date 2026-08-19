@@ -78,6 +78,9 @@ const VIEWPORT_SIZE = 260;
 const OUTPUT_SIZE = 500;
 
 export default {
+    props: {
+        code: { type: String, default: null },
+    },
     data() {
         return {
             showModal: false,
@@ -263,7 +266,14 @@ export default {
 
             canvas.toBlob((blob) => {
                 this.form.image = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
-                this.form.post('/photo', {
+
+                const isAdmin = !!this.code;
+                if (isAdmin) {
+                    this.form.code = this.code;
+                    this.form.option = 'avatar';
+                }
+
+                this.form.post(isAdmin ? '/users' : '/photo', {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.$emit('uploaded');

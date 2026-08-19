@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\UserRole;
 // use App\Jobs\MailJob;
 use App\Http\Resources\UserResource;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Storage;
 
 class SaveClass
 {
@@ -29,6 +32,25 @@ class SaveClass
             'data' => new UserResource($data),
             'message' => 'User update was successful!', 
             'info' => "You've successfully updated the selected user."
+        ];
+    }
+
+    public function avatar($request){
+        $user = User::with('profile')->findOrFail($request->id);
+
+        $manager = new ImageManager(new Driver());
+        $encoded = $manager->read($request->file('image'))->cover(300, 300)->toWebp(80);
+
+        $path = 'oneportal/avatars/' . $user->username . '.webp';
+        Storage::disk('s3')->put($path, (string) $encoded);
+
+        $user->profile->avatar = $path;
+        $user->profile->save();
+
+        return [
+            'data' => new UserResource($user),
+            'message' => 'Profile picture updated successfully.',
+            'info' => "The user's profile image has been changed to the new photo."
         ];
     }
 
