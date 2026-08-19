@@ -13,6 +13,7 @@ use App\Models\UserCredential;
 use App\Models\UserInformation;
 use App\Models\ListAcademic;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\HumanResource\Employee\IndexResource;
 
@@ -135,10 +136,8 @@ class SaveClass
                     ]);
                     if($role){
                         $this->information($data->id);
+                        Artisan::call('credits:generate', ['user' => $data->id]);
                     }
-                    // $leave = $data->leaves()->create([
-                    //     ''
-                    // ]);
                 }
             }
         }

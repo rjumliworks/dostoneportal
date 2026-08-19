@@ -29,6 +29,7 @@ class ViewResource extends JsonResource
             'credentials' => $this->credentials,
             'contracts' => $this->contracts,
             'deductions' => $this->deductions,
+            'credits' => $this->credits,
             'created_at' => $this->created_at
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Services\Portal\Whereabouts;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\ListDropdown;
+use App\Models\OrgChart;
 use App\Http\Resources\Portal\Whereabouts\ListResource;
 
 class ViewClass
@@ -42,6 +43,7 @@ class ViewClass
                 ->when($request->station, fn($q) => $q->where('station_id', $request->station))
                 ->when($request->unit, fn($q) => $q->where('unit_id', $request->unit));
         });
+        $query->whereNotIn('id', OrgChart::excludedFromAttendance());
         $query->orderBy(UserProfile::select('lastname')->whereColumn('user_profiles.user_id', 'users.id'),'ASC');
         $data = ListResource::collection($query->get());
         return $data;

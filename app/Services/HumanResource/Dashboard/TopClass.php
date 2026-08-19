@@ -5,6 +5,7 @@ namespace App\Services\HumanResource\Dashboard;
 use App\Models\Dtr;
 use App\Models\User;
 use App\Models\Schedule;
+use App\Models\OrgChart;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Http\Resources\DefaultResource;
@@ -23,6 +24,7 @@ class TopClass
             ->whereHas('organization', function ($q) {
                 $q->where('type_id', 16)->where('status_id', 2);
             })
+            ->whereNotIn('id', OrgChart::excludedFromAttendance())
             ->get();
 
         // Compute absences: no DTR entry on a working day = 1 absence, is_halfday = 0.5 absence
@@ -51,6 +53,7 @@ class TopClass
             ->whereHas('organization', function ($q) {
                 $q->where('type_id', 16)->where('status_id', 2);
             })
+            ->whereNotIn('id', OrgChart::excludedFromAttendance())
             ->get();
 
         // Compute lates: DTR tardiness/undertime not zero, only counting completed DTRs
@@ -87,6 +90,7 @@ class TopClass
             ->whereHas('organization', function ($q) {
                 $q->where('type_id', 16)->where('status_id', 2);
             })
+            ->whereNotIn('id', OrgChart::excludedFromAttendance())
             ->withSum(['dtrs as undertime_minutes' => function ($q) use ($startOfMonth, $endOfMonth) {
                 $q->whereBetween('date', [$startOfMonth, $endOfMonth])->where('is_completed', 1);
             }], 'undertime')
@@ -143,6 +147,7 @@ class TopClass
             ->whereHas('user.organization', function ($q) {
                 $q->where('type_id', 16)->where('status_id', 2);
             })
+            ->whereNotIn('user_id', OrgChart::excludedFromAttendance())
             ->orderBy('date')
             ->get()
             ->map(function ($dtr) {
@@ -175,6 +180,7 @@ class TopClass
             ->whereHas('organization', function ($q) {
                 $q->where('type_id', 16)->where('status_id', 2);
             })
+            ->whereNotIn('id', OrgChart::excludedFromAttendance())
             ->get();
 
         return $users

@@ -2,6 +2,7 @@
 
 namespace App\Services\HumanResource\Employee;
 
+use Carbon\Carbon;
 use Hashids\Hashids;
 use App\Models\User;
 use App\Models\UserProfile;
@@ -74,6 +75,9 @@ class ViewClass
             ->with('credentials.name','credentials.type')
             ->with('contracts.division','contracts.position','contracts.unit','contracts.station','contracts.type','contracts.status','contracts.salary')
             ->with('deductions.deduction')
+            ->with(['credits' => function ($q) {
+                $q->where('year', Carbon::now()->year)->where('is_active',1);
+            }, 'credits.leave'])
             // ->with('contracts.division','contracts.position','contracts.unit','contracts.station','contracts.type','contracts.status')
             // ->with('information','academics.level','credentials.type','credentials.name')
             ->where('id',$id)->first()

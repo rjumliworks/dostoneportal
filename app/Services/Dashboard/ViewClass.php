@@ -21,6 +21,9 @@ class ViewClass
 {
     public function birthdays(){
         return UserProfile::where('birthmonth', date('m'))
+        ->whereHas('user.organization', function ($query) {
+            $query->where('status_id', 2);
+        })
         ->get()
         ->map(function ($user) {
             return [
@@ -240,6 +243,7 @@ class ViewClass
             ->whereHas('organization', function ($query) {
                 $query->where('status_id',2);
             })
+            ->whereNotIn('id', OrgChart::excludedFromAttendance())
             ->get();
 
         // reused overlap check: a schedule/request-date range that covers today

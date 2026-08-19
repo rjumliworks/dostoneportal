@@ -6,12 +6,14 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Models\Dtr;
 use App\Models\User;
+use App\Models\OrgChart;
 
 class BarClass
 {
     public function chart($request)
     {
         $today = Carbon::today();
+        $excludedUserIds = OrgChart::excludedFromAttendance();
 
         $currentWeek = $request->week ? Carbon::parse($request->week) : $today;
 
@@ -25,7 +27,9 @@ class BarClass
 
         $totalUsers = User::whereHas('organization', function ($q) {
             // $q->where('status_id', 2);
-        })->count();
+        })
+            ->whereNotIn('id', $excludedUserIds)
+            ->count();
 
         $categories = [];
         $present = [];
@@ -49,9 +53,9 @@ class BarClass
             }
 
 
-            $presentCount = Dtr::whereDate('date', $date)->distinct('user_id')->count('user_id');
+            $presentCount = Dtr::whereDate('date', $date)->whereNotIn('user_id', $excludedUserIds)->distinct('user_id')->count('user_id');
 
-            $lateCount = Dtr::whereDate('date', $date)->where(function ($q) {
+            $lateCount = Dtr::whereDate('date', $date)->whereNotIn('user_id', $excludedUserIds)->where(function ($q) {
                     $q->where('undertime', '!=', 0)
                         ->orWhere('tardiness', '!=', 0);
                 }) ->distinct('user_id')->count('user_id');

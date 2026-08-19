@@ -44,6 +44,13 @@ class OrgChart extends Model
         return $this->morphOne('App\Models\OrgSignatory', 'designationable');
     }
 
+    // user_ids exempt from attendance checking, lates, absences, and whereabouts reporting
+    // designation_id 43 = Regional Director (see LeaveClass::signatory())
+    public static function excludedFromAttendance(): array
+    {
+        return static::where('designation_id', 43)->where('is_active', 1)->pluck('user_id')->filter()->values()->all();
+    }
+
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
         ->logOnly(['user_id','oic_id','is_oic','is_active'])

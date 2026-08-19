@@ -43,7 +43,7 @@ class CreditController extends Controller
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'credit':
-                    return $this->save->store($request);
+                    return $this->save->store();
                 break;
             }
         });
