@@ -102,6 +102,8 @@ export default {
             cameraError: null,
             form: useForm({
                 image: null,
+                code: null,
+                option: null,
             }),
         };
     },
