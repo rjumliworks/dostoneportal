@@ -24,6 +24,8 @@ class ShowClass
             'mode',
             'expense',
             'event.type','event.audience','event.mode','event.user.profile:user_id,firstname,middlename,lastname',
+            'event.request.location.region:code,name,region','event.request.location.province:code,name','event.request.location.municipality:code,name','event.request.location.barangay:code,name',
+            'event.request.dates',
             'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',

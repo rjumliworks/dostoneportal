@@ -44,6 +44,12 @@ class TravelResource extends JsonResource
             'expenses' => $this->expense_items,
             'comments' => CommentResource::collection($this->request->comments),
             'location' => $this->request->location ? new LocationResource($this->request->location) : null,
+            'destination' => $this->event?->request?->location ? new LocationResource($this->event->request->location) : null,
+            'event_date' => $this->event?->request?->dates?->first() ? [
+                'start' => $this->event->request->dates->first()->start,
+                'end' => $this->event->request->dates->first()->end,
+                'time' => $this->event->request->dates->first()->time,
+            ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

@@ -260,13 +260,14 @@ class DropdownClass
     }
 
     public function request_events($keyword){
-        $data = RequestEvent::with('type','audience','mode','request.location')
+        $data = RequestEvent::with('type','audience','mode','request.location','request.dates')
         ->when($keyword, function ($query) use ($keyword){
             $query->where('title', 'like', '%' . $keyword . '%');
         })
         ->orderByDesc('id')
         ->limit(20)->get()->map(function ($item) {
             $location = optional($item->request)->location;
+            $dates = optional($item->request)->dates;
             return [
                 'value' => $item->id,
                 'name' => $item->title,
@@ -278,6 +279,14 @@ class DropdownClass
                     'name' => $location->barangay?->name.', '.$location->municipality?->name,
                     'address' => $location->address,
                 ] : null,
+                'dates' => $dates ? $dates->map(function ($date) {
+                    return [
+                        'start' => $date->start,
+                        'end' => $date->end,
+                        'time' => $date->time,
+                        'time_of_day' => $date->time_of_day,
+                    ];
+                }) : [],
             ];
         });
         return $data;

@@ -26,13 +26,13 @@
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="mb-0 text-muted fs-12">Purpose :</p>
                             <h6 class="fw-semibold fs-12 mb-1"> {{ information.purpose }} </h6>
-                            <span class="badge bg-primary-subtle text-primary me-1" v-if="information.event?.type">{{ information.event.type.name }}</span>
+                            <!-- <span class="badge bg-primary-subtle text-primary me-1" v-if="information.event?.type">{{ information.event.type.name }}</span>
                             <span class="badge bg-info-subtle text-info me-1" v-if="information.event?.audience">{{ information.event.audience.name }}</span>
-                            <span class="badge bg-secondary-subtle text-secondary" v-if="information.event?.mode">{{ information.event.mode.name }}</span>
+                            <span class="badge bg-secondary-subtle text-secondary" v-if="information.event?.mode">{{ information.event.mode.name }}</span> -->
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="d-flex border border-dashed rounded p-3">
                         <div class="flex-shrink-0 avatar-xs align-self-center me-3">
                             <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-map-pin-fill"></i>
@@ -40,11 +40,11 @@
                         </div>
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="mb-0 text-muted fs-12">Destination :</p>
-                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.location?.name || 'Not specified' }} </h6>
+                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.destination?.name || 'Not specified' }} </h6>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="d-flex border border-dashed rounded p-3">
                         <div class="flex-shrink-0 avatar-xs align-self-center me-3">
                             <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-calendar-todo-fill"></i>
@@ -53,6 +53,47 @@
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="mb-0 text-muted fs-12">Travel Date(s) :</p>
                             <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{formatDateRange(information.start, information.end)}} </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex border border-dashed rounded p-3">
+                        <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                            <div class="avatar-title bg-light rounded-circle fs-16 text-primary">
+                                <i class="ri-alarm-fill"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <p class="mb-0 text-muted fs-12">Departure Time :</p>
+                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.time }} </h6>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-6">
+                    <div class="d-flex border border-dashed rounded p-3">
+                        <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                            <div class="avatar-title bg-light rounded-circle fs-16 text-primary">
+                                <i v-if="information.mode.name == 'Public Conveyance'" class="ri-flight-takeoff-fill"></i>
+                                <i v-if="information.mode.name == 'Official Vehicle'" class="ri-car-fill"></i>
+                                <i v-if="information.mode.name == 'Vehicle Rental'" class="ri-bus-fill"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <p class="mb-0 text-muted fs-12">Mode of Travel :</p>
+                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.mode.name }} </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="d-flex border border-dashed rounded p-3">
+                        <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                            <div class="avatar-title bg-light rounded-circle fs-16 text-primary">
+                                <i class="ri-hand-coin-fill"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <p class="mb-0 text-muted fs-12">Expense Type :</p>
+                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.expense.name }} : <span v-for="(list,index) in information.expenses" v-bind:key="index" class="me-1 badge bg-success border text-white fw-normal fs-10">{{ list.name }}</span></h6>
                         </div>
                     </div>
                 </div>
@@ -86,62 +127,6 @@
                             <i class="mdi mdi-circle-medium me-1 text-muted"></i> {{ list.name }}
                         </li>
                     </ul>
-                </div>
-            </div>
-            <hr class="text-muted mt-0"/>
-                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">Other Details</p>
-            <hr class="text-muted mb-0"/>
-            <div class="row g-3 p-3">
-                <div class="col-md-4">
-                    <div class="d-flex border border-dashed rounded p-3">
-                        <div class="flex-shrink-0 avatar-xs align-self-center me-3">
-                            <div class="avatar-title bg-light rounded-circle fs-16 text-primary">
-                                <i class="ri-hand-coin-fill"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 overflow-hidden">
-                            <p class="mb-0 text-muted fs-12">Expense Type :</p>
-                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.expense.name }} </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex border border-dashed rounded p-3">
-                        <div class="flex-shrink-0 avatar-xs align-self-center me-3">
-                            <div class="avatar-title bg-light rounded-circle fs-16 text-primary">
-                                <i v-if="information.mode.name == 'Public Conveyance'" class="ri-flight-takeoff-fill"></i>
-                                <i v-if="information.mode.name == 'Official Vehicle'" class="ri-car-fill"></i>
-                                <i v-if="information.mode.name == 'Vehicle Rental'" class="ri-bus-fill"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 overflow-hidden">
-                            <p class="mb-0 text-muted fs-12">Mode of Travel :</p>
-                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.mode.name }} </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex border border-dashed rounded p-3">
-                        <div class="flex-shrink-0 avatar-xs align-self-center me-3">
-                            <div class="avatar-title bg-light rounded-circle fs-16 text-primary">
-                                <i class="ri-alarm-fill"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 overflow-hidden">
-                            <p class="mb-0 text-muted fs-12">Departure Time :</p>
-                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.time }} </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="border border-dashed rounded p-3">
-                        <h6 class="fs-12">Expenses :</h6>
-                        <ul class="list-unstyled fs-12 mb-0">
-                            <li class="py-0 fw-semibold" v-for="(list,index) in information.expenses" v-bind:key="index">
-                                <i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> {{ list.name }}
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
