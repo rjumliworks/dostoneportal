@@ -17,7 +17,7 @@ class PdsRequest extends FormRequest
             case 'academic':
                 return [
                     'school_id' => 'required',
-                    'course_id' => 'required',
+                    'course_id' => 'required_unless:level_id,218,113',
                     'level_id' => 'required',
                     'is_ongoing' => 'required|boolean',
                     'attended_from' => 'nullable|digits:4',

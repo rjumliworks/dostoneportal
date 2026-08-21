@@ -34,10 +34,11 @@ class ReservationResource extends JsonResource
             'signatories' => SignatoryResource::collection($this->request->signatories),
             'employee' => $this->request->user->profile->firstname.' '.$this->request->user->profile->lastname,
             'tags' => TagResource::collection($this->request->tags),
+            'event' => $this->event,
             'comments' => CommentResource::collection($this->request->comments),
             'approved' => $this->approved,
             'vehicle' => $this->vehicle,
-            'location' => new LocationResource($this->request->location),
+            'location' => $this->request->location ? new LocationResource($this->request->location) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

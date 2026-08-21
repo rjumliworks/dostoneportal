@@ -5,6 +5,7 @@ namespace App\Services\Portal\Request;
 use Carbon\Carbon;
 use App\Models\OrgChart;
 use App\Models\Request;
+use App\Models\RequestEvent;
 use App\Models\RequestTravel;
 use App\Models\RequestReport;
 use App\Models\RequestSignatory;
@@ -12,6 +13,8 @@ use App\Models\RequestSignatory;
 class TravelClass
 {
     public function store($request){
+        $event = RequestEvent::find($request->event_id);
+
         $data = Request::create([
             'code' => $this->generateCode(),
             'type_id' => 156,
@@ -80,15 +83,19 @@ class TravelClass
                 'time' => $request->time,
             ]);
 
-            $data->detail()->create($request->only([
-                'purpose', 'remarks'
-            ]));
-            $data->location()->create($request->only([
-                'address','longitude','latitude','barangay_code','municipality_code','province_code','region_code'
-            ]));
+            $data->detail()->create([
+                'purpose' => $request->purpose,
+                'remarks' => $request->remarks,
+            ]);
+            if($request->filled('address')){
+                $data->location()->create($request->only([
+                    'address','longitude','latitude','barangay_code','municipality_code','province_code','region_code'
+                ]));
+            }
 
             $travelData = [
                 'code' => $this->generateTravelCode(),
+                'event_id' => $event->id,
                 'mode_id' => $request->mode_id,
                 'transpo_id' => $request->transpo_id,
                 'expense_id' => $request->expense_id,
@@ -191,6 +198,7 @@ class TravelClass
         $data = Request::with([
             'travel.mode',
             'travel.expense',
+            'travel.event.type','travel.event.audience','travel.event.mode',
             'reservation.vehicle',
             'type',
             'dates',
@@ -247,8 +255,8 @@ class TravelClass
             'date' => $formattedDateRange,
             'duration' => $dayDuration = ($start->diffInDays($end) + 1) . ' ' . (($start->diffInDays($end) + 1) === 1 ? 'day' : 'days'),
             'expenses' => $data->travel->expense_items, 
-            'destination' => $data->location->barangay->name.', '.$data->location->municipality->name,
-            'venue' => $data->location->address,
+            'destination' => $data->location ? $data->location->barangay->name.', '.$data->location->municipality->name : 'N/A',
+            'venue' => $data->location->address ?? 'N/A',
             'employees' => $employees,
             'signatories' => $this->sign($data->signatories),
             'signatory' => $this->signatory($data->signatories),

@@ -164,6 +164,17 @@
 
             return $normal;
         }
+
+    // Normalizes "Not Available" / "n/a" (any case) to a greyed-out "N/A" so
+    // placeholder values read consistently no matter how they were entered.
+    function naText($text)
+        {
+            $t = trim((string) ($text ?? ''));
+            if ($t === '' || in_array(strtolower($t), ['n/a', 'na', 'not available'], true)) {
+                return '<span style="color:#999;">N/A</span>';
+            }
+            return e($t);
+        }
 @endphp
 
 {{-- ============================================================ PAGE 1 ============================================================ --}}
@@ -376,16 +387,38 @@
         <td style="width:7%;">From</td>
         <td style="width:7%;">To</td>
     </tr>
+     @php
+        function fitFont6($text, $normal = 10)
+        {
+            $length = strlen($text ?? '');
+            if ($length > 30) {
+                return 9;
+            }
+            return $normal;
+        }
+        function fitFont7($text, $normal = 10)
+        {
+            $length = strlen($text ?? '');
+            if ($length > 30) {
+                return 8;
+            }
+            return $normal;
+        }
+    @endphp
     @foreach($education as $levelName => $rows)
+    @php
+        $longestSchool = $rows->map(fn($r) => $r->school->name ?? '')->sortByDesc(fn($n) => strlen($n))->first() ?? '';
+        $longestCourse = $rows->map(fn($r) => $r->course->name ?? '')->sortByDesc(fn($n) => strlen($n))->first() ?? '';
+    @endphp
     <tr style="height:24px;">
         <td class="bg-gray text-xs" style="vertical-align:middle;">{{ $levelName }}</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->school->name ?? 'N/A' }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->course->name ?? 'N/A' }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->attended_from ?? 'N/A' }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->attended_to ?? 'N/A' }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->units_earned ?: 'N/A' }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->is_ongoing ? 'Ongoing' : ($r->graduated_at ?? 'N/A') }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
-        <td class="text-center">@forelse($rows as $r){{ $r->honors ?: 'N/A' }}@if(!$loop->last)<br>@endif @empty N/A @endforelse</td>
+        <td class="text-center" style="font-size: {{ fitFont6($longestSchool) }}px;">@forelse($rows as $r){!! naText($r->school->name ?? 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
+        <td class="text-center" style="font-size: {{ fitFont7($longestCourse) }}px;">@forelse($rows as $r){!! naText($r->course->name ?? 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
+        <td class="text-center">@forelse($rows as $r){!! naText($r->attended_from ?? 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
+        <td class="text-center">@forelse($rows as $r){!! naText($r->attended_to ?? 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
+        <td class="text-center">@forelse($rows as $r){!! naText($r->units_earned ?: 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
+        <td class="text-center">@forelse($rows as $r){!! $r->is_ongoing ? 'Ongoing' : naText($r->graduated_at ?? 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
+        <td class="text-center">@forelse($rows as $r){!! naText($r->honors ?: 'N/A') !!}@if(!$loop->last)<br>@endif @empty {!! naText('N/A') !!} @endforelse</td>
     </tr>
     @endforeach
     <tr><td colspan="8" class="cont">(Continue on separate sheet if necessary)</td></tr>

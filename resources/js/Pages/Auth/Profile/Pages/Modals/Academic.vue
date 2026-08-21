@@ -1,26 +1,27 @@
 <template>
-    <b-modal v-model="showModal" header-class="p-3 bg-light" :title="(editable) ? 'Update Education' : 'Add Education'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" size="lg" header-class="p-3 bg-light" :title="(editable) ? 'Update Education' : 'Add Education'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow class="g-3 mt-n1">
-                <BCol lg="12" class="mt-1">
+                
+                <BCol lg="6" class="mt-1">
                     <InputLabel value="Level" :message="form.errors.level_id"/>
                     <Multiselect :options="levels" :searchable="true" label="name" v-model="form.level_id" placeholder="Select Level" @input="handleInput('level_id')"/>
+                </BCol>
+                <BCol lg="3" class="mt-1">
+                    <InputLabel value="Attended From" :message="form.errors.attended_from"/>
+                    <TextInput v-model="form.attended_from" v-maska data-maska="####" type="text" class="form-control" placeholder="Year" @input="handleInput('attended_from')" :light="true" />
+                </BCol>
+                <BCol lg="3" class="mt-1">
+                    <InputLabel value="Attended To" :message="form.errors.attended_to"/>
+                    <TextInput v-model="form.attended_to" v-maska data-maska="####" type="text" class="form-control" placeholder="Year" @input="handleInput('attended_to')" :light="true" />
                 </BCol>
                 <BCol lg="12" class="mt-1">
                     <InputLabel value="School" :message="form.errors.school_id"/>
                     <Multiselect :options="schools" v-model="form.school_id" @search-change="fetchSchool" label="name" @input="handleInput('school_id')" :searchable="true" placeholder="Search School"/>
                 </BCol>
-                <BCol lg="12" class="mt-1">
+                <BCol lg="12" class="mt-2 mb-2" v-if="showCourse">
                     <InputLabel value="Basic Education / Degree / Course" :message="form.errors.course_id"/>
                     <Multiselect :options="courses" v-model="form.course_id" @search-change="fetchCourse" label="name" @input="handleInput('course_id')" :searchable="true" placeholder="Search Course"/>
-                </BCol>
-                <BCol lg="6" class="mt-1">
-                    <InputLabel value="Attended From" :message="form.errors.attended_from"/>
-                    <TextInput v-model="form.attended_from" v-maska data-maska="####" type="text" class="form-control" placeholder="Year" @input="handleInput('attended_from')" :light="true" />
-                </BCol>
-                <BCol lg="6" class="mt-1">
-                    <InputLabel value="Attended To" :message="form.errors.attended_to"/>
-                    <TextInput v-model="form.attended_to" v-maska data-maska="####" type="text" class="form-control" placeholder="Year" @input="handleInput('attended_to')" :light="true" />
                 </BCol>
                 <BCol lg="12"><hr class="text-muted mt-n1 mb-n4"/></BCol>
                 <BCol lg="12" style="margin-top: 13px; margin-bottom: -10px;">
@@ -46,7 +47,7 @@
                     <InputLabel value="Highest Level / Units Earned" :message="form.errors.units_earned"/>
                     <TextInput v-model="form.units_earned" type="text" class="form-control" placeholder="e.g. 3rd Year" @input="handleInput('units_earned')" :light="true" />
                 </BCol>
-                <BCol lg="12" class="mt-1 mb-2">
+                <BCol lg="6" class="mt-0">
                     <InputLabel value="Scholarship / Academic Honors Received"/>
                     <TextInput v-model="form.honors" type="text" class="form-control" placeholder="N/A if none" :light="true" />
                 </BCol>
@@ -92,6 +93,21 @@ export default {
             courses: [],
             showModal: false,
             editable: false
+        }
+    },
+    computed: {
+        showCourse(){
+            const level = this.levels?.find(l => l.value === this.form.level_id);
+            const name = level?.name?.trim().toLowerCase();
+            return name !== 'elementary' && name !== 'junior high school';
+        }
+    },
+    watch: {
+        'form.level_id'(){
+            if (!this.showCourse) {
+                this.form.course_id = null;
+                this.courses = [];
+            }
         }
     },
     methods: {

@@ -13,6 +13,11 @@ class RequestReservation extends Model
         'driver_id'
     ];
 
+    public function event()
+    {
+        return $this->belongsTo('App\Models\RequestEvent', 'event_id', 'id');
+    }
+
     public function vehicle()
     {
         return $this->belongsTo('App\Models\AssetVehicle', 'vehicle_id', 'id');

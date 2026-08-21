@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex align-items-center justify-content-between mb-3">
             <h5 class="fs-14 text-primary mb-0">Civil Service Eligibility</h5>
-            <b-button variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
+            <b-button class="mb-2" variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
         </div>
         <div class="table-responsive table-card">
             <table class="table align-middle table-striped table-centered mb-0">
@@ -35,7 +35,7 @@
                 </tbody>
             </table>
         </div>
-        <Modal ref="modal" @success="$emit('refresh')"/>
+        <Modal :eligibility-types="dropdowns.eligibilities" ref="modal" @success="$emit('refresh')"/>
     </div>
 </template>
 <script>
@@ -43,7 +43,7 @@ import { router } from '@inertiajs/vue3';
 import Modal from '@/Pages/Auth/Profile/Pages/Modals/Eligibility.vue';
 export default {
     components: { Modal },
-    props: ['data'],
+    props: ['data', 'dropdowns'],
     computed: {
         rows(){ return this.data.eligibilities || []; }
     },

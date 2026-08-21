@@ -29,7 +29,9 @@ class SearchController extends Controller
                 'salaries' => $this->dropdown->salaries(),
                 'statuses' => $this->dropdown->statuses('Status'),
                 'employment_statuses' => $this->dropdown->datas('Employment Status'),
-                'regions' => $this->dropdown->regions()
+                'regions' => $this->dropdown->regions(),
+                'levels' => $this->dropdown->datas('Level'),
+                'eligibilities' => $this->dropdown->datas('Eligibility')
             ],
         ];
     }
@@ -57,6 +59,9 @@ class SearchController extends Controller
             break;
             case 'drivers':
                 return $this->dropdown->drivers($request->keyword);
+            break;
+            case 'events':
+                return $this->dropdown->request_events($request->keyword);
             break;
             case 'schools':
                 return $this->dropdown->schools($request->keyword);

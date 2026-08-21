@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 550px;" header-class="p-3 bg-light" :title="(editable) ? 'Update Address' : 'Add Address'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" @shown="onShown" style="--vz-modal-width: 550px;" header-class="p-3 bg-light" :title="(editable) ? 'Update Address' : 'Add Address'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow>
                 <BCol lg="12">
@@ -20,9 +20,13 @@
                             <InputLabel value="Barangay" :message="form.errors.barangay_code"/>
                             <Multiselect :options="barangays" object v-model="form.barangay" label="name" :searchable="true" placeholder="Select Barangay" />
                         </BCol>
-                        <BCol lg="12" class="mt-1">
+                        <BCol lg="6" class="mt-1">
                             <InputLabel value="Street, Landmark, Block, Lot, Unit"/>
                             <TextInput v-model="form.address" type="text" class="form-control" placeholder="Please enter st.,road" @input="handleInput('address')" :light="true" />
+                        </BCol>
+                        <BCol lg="6" class="mt-1">
+                            <InputLabel value="Zip Code"/>
+                            <TextInput v-model="form.zip_code" type="text" class="form-control" :light="true" />
                         </BCol>
                     </BRow>  
                 </BCol>
@@ -58,6 +62,7 @@ export default {
             currentUrl: window.location.origin,
             form: useForm({
                 address: null,
+                zip_code: null,
                 region: null,
                 province: null,
                 municipality: null,
@@ -73,6 +78,7 @@ export default {
             showModal: false,
             editable: false,
             selected: null,
+            pendingPin: null,
         }
     },
     watch: {
@@ -82,20 +88,20 @@ export default {
                 this.form.municipality = null;
                 this.form.barangay = null;
             }
-            this.fetchProvince(newVal);
+            this.fetchProvince(newVal?.value);
         },
         "form.province"(newVal){
             if(!newVal){
                 this.form.municipality = null;
                 this.form.barangay = null;
             }
-            this.fetchMunicipality(newVal);
+            this.fetchMunicipality(newVal?.value);
         },
         "form.municipality"(newVal){
             if(!newVal){
                 this.form.barangay = null;
             }
-            this.fetchBarangay(newVal);
+            this.fetchBarangay(newVal?.value);
         },
         "form.barangay": function (val) {
             if (val) {
@@ -152,12 +158,31 @@ export default {
             this.form.longitude = this.coordinates.lng;
             this.form.latitude = this.coordinates.lat;
         },
-        openEdit(region){
+        onShown(){
             this.$refs.map.view();
-            this.form.region = region;
-            this.fetchProvince(region);
+            if (this.pendingPin) {
+                this.$refs.map.setPin(this.pendingPin.lat, this.pendingPin.lng);
+            } else {
+                this.$refs.map.empty();
+            }
+        },
+        openEdit(selection = null){
+            this.editable = !!selection;
+            this.form.region = selection?.region ?? null;
+            this.form.province = selection?.province ?? null;
+            this.form.municipality = selection?.municipality ?? null;
+            this.form.barangay = selection?.barangay ?? null;
+            this.form.address = selection?.info ?? null;
+            this.form.zip_code = selection?.zip_code ?? null;
+            this.form.latitude = selection?.latitude ?? null;
+            this.form.longitude = selection?.longitude ?? null;
+
+            this.pendingPin = (selection?.latitude && selection?.longitude)
+                ? { lat: parseFloat(selection.latitude), lng: parseFloat(selection.longitude) }
+                : null;
+
             this.showModal = true;
-        },  
+        },
         submit(){
             const address = `${this.form.address}, ${this.form.barangay.name}, ${this.form.municipality.name}, ${this.form.province.name}, ${this.form.region.name}`;
             this.$emit('submit', {
@@ -165,6 +190,7 @@ export default {
                 index: this.index,
                 form: {
                     info: this.form.address,
+                    zip_code: this.form.zip_code,
                     region: this.form.region,
                     province: this.form.province,
                     municipality: this.form.municipality,
@@ -179,9 +205,11 @@ export default {
             this.form.municipality = null;
             this.form.barangay = null;
             this.form.address = null;
+            this.form.zip_code = null;
             this.hide();
         },
         fetchProvince(code){
+            if(!code){ this.provinces = []; return; }
             axios.get('/search',{
                 params: {
                     option: 'provinces',
@@ -194,6 +222,7 @@ export default {
             .catch(err => console.log(err));
         },
         fetchMunicipality(code){
+            if(!code){ this.municipalities = []; return; }
             axios.get('/search',{
                 params: {
                     option: 'municipalities',
@@ -206,6 +235,7 @@ export default {
             .catch(err => console.log(err));
         },
         fetchBarangay(code){
+            if(!code){ this.barangays = []; return; }
             axios.get('/search',{
                 params: {
                     option: 'barangays',

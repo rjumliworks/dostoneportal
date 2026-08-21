@@ -6,23 +6,23 @@
                     <InputLabel value="Title of L&D Intervention / Training Program" :message="form.errors.title"/>
                     <TextInput v-model="form.title" type="text" class="form-control" @input="handleInput('title')" :light="true" />
                 </BCol>
-                <BCol lg="6">
+                <BCol lg="6" class="mt-0">
                     <InputLabel value="From" :message="form.errors.start_at"/>
                     <TextInput v-model="form.start_at" type="date" class="form-control" @input="handleInput('start_at')" :light="true" />
                 </BCol>
-                <BCol lg="6">
+                <BCol lg="6" class="mt-0">
                     <InputLabel value="To" :message="form.errors.end_at"/>
                     <TextInput v-model="form.end_at" type="date" class="form-control" @input="handleInput('end_at')" :light="true" />
                 </BCol>
-                <BCol lg="6">
+                <BCol lg="6" class="mt-0">
                     <InputLabel value="Number of Hours" :message="form.errors.hours"/>
                     <TextInput v-model="form.hours" type="number" class="form-control" @input="handleInput('hours')" :light="true" />
                 </BCol>
-                <BCol lg="6">
+                <BCol lg="6" class="mt-0">
                     <InputLabel value="Type of L&D" :message="form.errors.type"/>
                     <TextInput v-model="form.type" type="text" class="form-control" placeholder="Managerial / Supervisory / Technical" @input="handleInput('type')" :light="true" />
                 </BCol>
-                <BCol lg="12">
+                <BCol lg="12" class="mt-0">
                     <InputLabel value="Conducted / Sponsored By" :message="form.errors.sponsored_by"/>
                     <TextInput v-model="form.sponsored_by" type="text" class="form-control" @input="handleInput('sponsored_by')" :light="true" />
                 </BCol>

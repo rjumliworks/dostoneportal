@@ -70,7 +70,7 @@
             <Edit :addresses="addresses" v-if="activeTab === 2"/>
             <Family :information="userInformation" v-if="activeTab === 3"/>
             <Academic :lists="academics" :levels="dropdowns.levels" v-if="activeTab === 4"/>
-            <Eligibility :lists="eligibilities" v-if="activeTab === 5"/>
+            <Eligibility :lists="eligibilities" :eligibility-types="dropdowns.eligibilities" v-if="activeTab === 5"/>
             <WorkExperience :lists="workExperiences" :contracts="contracts" v-if="activeTab === 6"/>
             <VoluntaryWork :lists="voluntaryWorks" v-if="activeTab === 7"/>
             <Training :lists="trainings" v-if="activeTab === 8"/>

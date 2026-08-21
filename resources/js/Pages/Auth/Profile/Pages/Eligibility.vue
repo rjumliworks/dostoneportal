@@ -14,7 +14,7 @@
                 <p class="text-muted text-truncate-two-lines fs-12">Career service, board/bar, RA 1080, and other eligibilities.</p>
             </div>
             <div class="flex-shrink-0">
-                <b-button variant="primary" size="sm" @click="openCreate()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
+                <b-button variant="primary" class="mb-2" size="sm" @click="openCreate()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
             </table>
         </div>
     </div>
-    <Modal ref="modal" @success="refresh"/>
+    <Modal :eligibility-types="eligibilityTypes" ref="modal" @success="refresh"/>
 </div>
 </template>
 <script>
@@ -60,7 +60,7 @@ import { router } from '@inertiajs/vue3';
 import Modal from './Modals/Eligibility.vue';
 export default {
     components: { Modal },
-    props: ['lists'],
+    props: ['lists', 'eligibilityTypes'],
     methods: {
         openCreate(){
             this.$refs.modal.show();

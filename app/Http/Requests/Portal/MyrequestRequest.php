@@ -38,10 +38,19 @@ class MyrequestRequest extends FormRequest
                     // 'document' => 'required_if:type.required_document,1',
                 ];
             break;
+            case 'event':
+                return [
+                    'title' => 'required|string|max:255',
+                    'type_id' => 'required|integer|exists:list_events,id',
+                    'audience_id' => 'required|integer|exists:list_data,id',
+                    'mode_id' => 'required|integer|exists:list_data,id',
+                    'is_host' => 'sometimes|boolean',
+                ];
+            break;
             case 'travel':
                 return [
-                    'purpose' => 'sometimes|required',
-                    'destination' => 'sometimes|required',
+                    'event_id' => 'required|integer|exists:request_events,id',
+                    'purpose' => 'required|string|max:255',
                     'expenses' => 'required|array|min:1',
                     'tags' => 'required|array|min:1',
                     'expense_id' => 'sometimes|required|integer',
@@ -51,20 +60,27 @@ class MyrequestRequest extends FormRequest
                     'date' => 'sometimes|required',
                     'time' => 'sometimes|required',
                     'remarks' => 'nullable|string',
-                    'address' => 'sometimes|nullable|string|max:200',
-                    'region_code' => 'sometimes|required',
-                    'province_code' => 'sometimes|required',
-                    'municipality_code' => 'sometimes|required',
-                    'barangay_code' => 'sometimes|required',
-                    'longitude' => 'sometimes|required',
-                    'latitude' => 'sometimes|required',
+                    'address' => 'nullable|string|max:200',
+                    'region_code' => 'nullable|string',
+                    'province_code' => 'nullable|string',
+                    'municipality_code' => 'nullable|string',
+                    'barangay_code' => 'nullable|string',
+                    'longitude' => 'nullable|numeric',
+                    'latitude' => 'nullable|numeric',
                     // 'document' => 'nullable|mimes:pdf|max:2000'
                 ];
             break;
             case 'reservation':
                 return [
-                    'purpose' => 'sometimes|required',
-                    'address' => 'sometimes|required',
+                    'event_id' => 'required|integer|exists:request_events,id',
+                    'purpose' => 'required|string|max:255',
+                    'address' => 'nullable|string|max:200',
+                    'region_code' => 'nullable|string',
+                    'province_code' => 'nullable|string',
+                    'municipality_code' => 'nullable|string',
+                    'barangay_code' => 'nullable|string',
+                    'longitude' => 'nullable|numeric',
+                    'latitude' => 'nullable|numeric',
                     'tags' => 'required|array|min:1',
                     'date' => 'sometimes|required',
                     'time' => 'sometimes|required',
@@ -180,15 +196,29 @@ class MyrequestRequest extends FormRequest
                     'document.max' => 'The document size may not exceed 2MB.',
                 ];
             break;
+            case 'event':
+                return [
+                    'title.required' => 'Please provide the event title/purpose.',
+                    'title.max' => 'Title must not exceed 255 characters.',
+
+                    'type_id.required' => 'Please select an activity type.',
+                    'type_id.exists' => 'The selected activity type is invalid.',
+
+                    'audience_id.required' => 'Please select an audience.',
+                    'audience_id.exists' => 'The selected audience is invalid.',
+
+                    'mode_id.required' => 'Please select a mode.',
+                    'mode_id.exists' => 'The selected mode is invalid.',
+                ];
+            break;
             case 'travel':
                 return [
-                    'purpose.required' => 'Please provide the purpose of travel.',
+                    'event_id.required' => 'Please tag or create an event for this travel.',
+                    'event_id.exists' => 'The selected event is invalid.',
+
+                    'purpose.required' => 'Please provide the purpose of this travel.',
                     'purpose.string' => 'Purpose must be a valid text.',
                     'purpose.max' => 'Purpose must not exceed 255 characters.',
-
-                    'destination.required' => 'Please enter your travel destination.',
-                    'destination.string' => 'Destination must be a valid text.',
-                    'destination.max' => 'Destination must not exceed 255 characters.',
 
                     'remarks.string' => 'Remarks must be a valid text.',
                     'remarks.max' => 'Remarks must not exceed 255 characters.',
@@ -220,9 +250,10 @@ class MyrequestRequest extends FormRequest
             break;
             case 'reservation':
                 return [
-                    'address.required' => 'Please provide the destination.',
+                    'event_id.required' => 'Please tag or create an event for this reservation.',
+                    'event_id.exists' => 'The selected event is invalid.',
 
-                    'purpose.required' => 'Please provide the purpose of travel.',
+                    'purpose.required' => 'Please provide the purpose of this reservation.',
                     'purpose.string' => 'Purpose must be a valid text.',
                     'purpose.max' => 'Purpose must not exceed 255 characters.',
 

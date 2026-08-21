@@ -2,14 +2,16 @@
     <div>
         <h5 class="fs-14 text-primary mb-1">Government Issued ID Numbers</h5>
         <p class="text-muted fs-12 mb-3">Leave blank any you don't have yet — you can add these later from your Profile page.</p>
-        <form class="customform">
-            <BRow class="g-3">
-                <BCol lg="4" v-for="(account, index) in form.accounts" :key="account.name">
-                    <InputLabel :value="account.name" :message="form.errors['accounts.'+index+'.number']"/>
-                    <TextInput v-model="account.number" type="text" class="form-control" :light="true"/>
-                </BCol>
-            </BRow>
-        </form>
+        <div class="card-body bg-light-subtle p-4 rounded-3">
+            <form class="customform">
+                <BRow class="g-3 mt-1">
+                    <BCol lg="3" class="mt-0" v-for="(account, index) in form.accounts" :key="account.name">
+                        <InputLabel :value="account.name" :message="form.errors['accounts.'+index+'.number']"/>
+                        <TextInput v-model="account.number" type="text" class="form-control"/>
+                    </BCol>
+                </BRow>
+            </form>
+        </div>
     </div>
 </template>
 <script>
@@ -28,11 +30,24 @@ const DEFAULT_ACCOUNTS = [
     { name: 'LandBank', number: null, deduction: null, is_contribution: false },
 ];
 
+function normalizeAccounts(value){
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string') {
+        try {
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed)) return parsed;
+        } catch (e) {
+            // legacy double-encoded/corrupted data, fall through to default
+        }
+    }
+    return [];
+}
+
 export default {
     components: { TextInput, InputLabel },
     props: ['data'],
     data(){
-        const existing = this.data.userInformation?.accounts || [];
+        const existing = normalizeAccounts(this.data.userInformation?.accounts);
         const accounts = DEFAULT_ACCOUNTS.map(def => {
             const match = existing.find(a => a.name === def.name);
             return match ? { ...def, ...match } : { ...def };

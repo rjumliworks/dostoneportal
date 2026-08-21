@@ -23,6 +23,7 @@ class ShowClass
         $data = RequestTravel::with([
             'mode',
             'expense',
+            'event.type','event.audience','event.mode','event.user.profile:user_id,firstname,middlename,lastname',
             'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
@@ -105,6 +106,7 @@ class ShowClass
 
         $data = RequestReservation::with([
             'vehicle',
+            'event.type','event.audience','event.mode','event.user.profile:user_id,firstname,middlename,lastname',
             'approved.user.profile:user_id,firstname,middlename,lastname',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar',

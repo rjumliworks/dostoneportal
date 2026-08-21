@@ -1,7 +1,7 @@
 <template>
     <b-modal v-model="showModal" header-class="p-3 bg-light" :title="(editable) ? 'Update Work Experience' : 'Add Work Experience'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
-            <BRow class="g-3 mt-n1">
+            <BRow class="g-3 mt-n4">
                 <BCol lg="6">
                     <InputLabel value="From" :message="form.errors.start_at"/>
                     <TextInput v-model="form.start_at" type="date" class="form-control" @input="handleInput('start_at')" :light="true" />
@@ -14,23 +14,23 @@
                         <label class="form-check-label fs-12" for="is_present">Present</label>
                     </div>
                 </BCol>
-                <BCol lg="12">
+                <BCol lg="12" class="mt-n1">
                     <InputLabel value="Position Title" :message="form.errors.position_title"/>
                     <TextInput v-model="form.position_title" type="text" class="form-control" @input="handleInput('position_title')" :light="true" />
                 </BCol>
-                <BCol lg="12">
+                <BCol lg="12" class="mt-0">
                     <InputLabel value="Department / Agency / Office / Company" :message="form.errors.department_agency"/>
                     <TextInput v-model="form.department_agency" type="text" class="form-control" @input="handleInput('department_agency')" :light="true" />
                 </BCol>
-                <BCol lg="4">
+                <BCol lg="4" class="mt-0">
                     <InputLabel value="Monthly Salary" :message="form.errors.monthly_salary"/>
                     <TextInput v-model="form.monthly_salary" type="number" class="form-control" @input="handleInput('monthly_salary')" :light="true" />
                 </BCol>
-                <BCol lg="4">
+                <BCol lg="4" class="mt-0">
                     <InputLabel value="Salary / Pay Grade" :message="form.errors.salary_grade"/>
                     <TextInput v-model="form.salary_grade" type="text" class="form-control" placeholder="00-0" @input="handleInput('salary_grade')" :light="true" />
                 </BCol>
-                <BCol lg="4">
+                <BCol lg="4" class="mt-0">
                     <InputLabel value="Status of Appointment" :message="form.errors.appointment_status"/>
                     <TextInput v-model="form.appointment_status" type="text" class="form-control" placeholder="e.g. Permanent" @input="handleInput('appointment_status')" :light="true" />
                 </BCol>

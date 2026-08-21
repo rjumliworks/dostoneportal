@@ -31,7 +31,7 @@ export default {
     methods: {
         view(){
             setTimeout(() => {
-                this.$refs.mymap.leafletObject.invalidateSize(); 
+                this.$refs.mymap?.leafletObject?.invalidateSize();
             }, 100);
         },
         setMarker(event){
@@ -67,6 +67,11 @@ export default {
                     }
                 );
             }
+        },
+        setPin(lat, lng, zoom = 15) {
+            this.coordinates = { lat, lng };
+            this.markerLatLng = this.coordinates;
+            this.flyTo(lat, lng, zoom);
         }
     }
 };

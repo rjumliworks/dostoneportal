@@ -110,6 +110,7 @@ class ProfileController extends Controller
             'userInformation' => $information,
             'dropdowns' => [
                 'levels' => $this->dropdown->datas('Level'),
+                'eligibilities' => $this->dropdown->datas('Eligibility'),
             ],
         ];
     }
@@ -139,6 +140,7 @@ class ProfileController extends Controller
             'data' => $result['data'] ?? [],
             'message' => $result['message'],
             'info' => $result['info'] ?? '',
+            'status' => $result['status'],
         ]);
     }
 

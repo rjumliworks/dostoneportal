@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex align-items-center justify-content-between mb-3">
             <h5 class="fs-14 text-primary mb-0">Educational Background</h5>
-            <b-button variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
+            <b-button class="mb-2" variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
         </div>
         <div class="table-responsive table-card">
             <table class="table align-middle table-striped table-centered mb-0">

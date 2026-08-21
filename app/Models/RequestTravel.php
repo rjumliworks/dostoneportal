@@ -27,6 +27,11 @@ class RequestTravel extends Model
         'expenses' => 'array'
     ];
 
+    public function event()
+    {
+        return $this->belongsTo('App\Models\RequestEvent', 'event_id', 'id');
+    }
+
     public function mode()
     {
         return $this->belongsTo('App\Models\ListData', 'mode_id', 'id');

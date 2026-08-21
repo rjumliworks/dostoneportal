@@ -83,7 +83,7 @@ import Overtime from './Overtime.vue';
 import Training from './Training.vue';
 export default {
     components : { Travel, Vehicle, Leave, Overtime, Training },
-    props: ['leave_dropdowns','travel_dropdowns','vehicle_dropdowns'],
+    props: ['leave_dropdowns','travel_dropdowns','vehicle_dropdowns','event_dropdowns'],
     data(){
         return {
             currentUrl: window.location.origin,

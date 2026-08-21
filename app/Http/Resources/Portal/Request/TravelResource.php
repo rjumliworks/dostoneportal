@@ -38,11 +38,12 @@ class TravelResource extends JsonResource
             'signatories' => SignatoryResource::collection($this->request->signatories),
             'employee' => $this->request->user->profile->firstname.' '.$this->request->user->profile->lastname,
             'mode' => $this->mode,
+            'event' => $this->event,
             'tags' => TagResource::collection($this->request->tags),
             'expense' => $this->expense,
             'expenses' => $this->expense_items,
             'comments' => CommentResource::collection($this->request->comments),
-            'location' => new LocationResource($this->request->location),
+            'location' => $this->request->location ? new LocationResource($this->request->location) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

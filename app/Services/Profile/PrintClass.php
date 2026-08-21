@@ -47,13 +47,16 @@ class PrintClass
 
         $otherByType = $user->otherInformation->groupBy('type');
 
-        // The paper form has five fixed LEVEL rows; map each academic record into
-        // the matching slot so the table keeps its exact shape no matter what the
-        // user selected from the (differently-named) Level dropdown.
-        $education = [
+        // The paper form has five fixed LEVEL rows. Bucket each academic record into
+        // the matching slot (same keyword matching as before) purely to keep the row
+        // order matching the form's Elementary -> ... -> Graduate Studies progression,
+        // but label each row with the level(s) the user actually entered rather than
+        // the generic bucket name.
+        $buckets = [
             'ELEMENTARY' => collect(),
             'SECONDARY' => collect(),
             'VOCATIONAL / TRADE COURSE' => collect(),
+            'ASSOCIATE' => collect(),
             'COLLEGE' => collect(),
             'GRADUATE STUDIES' => collect(),
         ];
@@ -63,12 +66,36 @@ class PrintClass
                 str_contains($level, 'elementary'), str_contains($level, 'primary') => 'ELEMENTARY',
                 str_contains($level, 'high school'), str_contains($level, 'secondary') => 'SECONDARY',
                 str_contains($level, 'vocational'), str_contains($level, 'trade'), str_contains($level, 'technical') => 'VOCATIONAL / TRADE COURSE',
-                str_contains($level, 'bachelor'), str_contains($level, 'associate'), str_contains($level, 'college') => 'COLLEGE',
+                str_contains($level, 'associate') => 'ASSOCIATE',
+                str_contains($level, 'bachelor'), str_contains($level, 'college') => 'COLLEGE',
                 str_contains($level, 'master'), str_contains($level, 'doctor'), str_contains($level, 'graduate'), str_contains($level, 'post') => 'GRADUATE STUDIES',
                 default => 'VOCATIONAL / TRADE COURSE',
             };
-            $education[$slot]->push($a);
+            $buckets[$slot]->push($a);
         }
+
+        // Rows with real entries are labeled with the level(s) the user actually
+        // picked (e.g. "Bachelor's Degree" instead of "COLLEGE").
+        $education = collect($buckets)
+            ->filter(fn ($rows) => $rows->isNotEmpty())
+            ->mapWithKeys(function ($rows, $slot) {
+                $label = $rows->pluck('level.name')->filter()->unique()->implode(' / ') ?: $slot;
+                return [$label => $rows];
+            });
+
+        // The form only has five printed lines. If the user entered fewer than five
+        // distinct levels, pad back up with blank Vocational / Graduate Studies rows
+        // (in that order, skipping whichever already has real data) so the table
+        // keeps its familiar five-row shape.
+        foreach (['VOCATIONAL / TRADE COURSE', 'GRADUATE STUDIES'] as $filler) {
+            if ($education->count() >= 5) {
+                break;
+            }
+            if ($buckets[$filler]->isEmpty()) {
+                $education[$filler] = collect();
+            }
+        }
+        $education = $education->take(5);
 
         $declaration = $user->declaration;
         $questions = [

@@ -25,7 +25,10 @@
                         </div>
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="mb-0 text-muted fs-12">Purpose :</p>
-                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.purpose }} </h6>
+                            <h6 class="fw-semibold fs-12 mb-1"> {{ information.purpose }} </h6>
+                            <span class="badge bg-primary-subtle text-primary me-1" v-if="information.event?.type">{{ information.event.type.name }}</span>
+                            <span class="badge bg-info-subtle text-info me-1" v-if="information.event?.audience">{{ information.event.audience.name }}</span>
+                            <span class="badge bg-secondary-subtle text-secondary" v-if="information.event?.mode">{{ information.event.mode.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -37,7 +40,7 @@
                         </div>
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="mb-0 text-muted fs-12">Destination :</p>
-                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.location.name }} </h6>
+                            <h6 class="text-truncate fw-semibold fs-12 mb-0"> {{ information.location?.name || 'Not specified' }} </h6>
                         </div>
                     </div>
                 </div>

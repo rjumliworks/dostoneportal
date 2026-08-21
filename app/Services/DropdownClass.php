@@ -8,6 +8,7 @@ use App\Models\Shift;
 use App\Models\ListRole;
 use App\Models\ListUnit;
 use App\Models\ListData;
+use App\Models\ListAcademic;
 use App\Models\ListStatus;
 use App\Models\ListDropdown;
 use App\Models\ListSalary;
@@ -22,6 +23,7 @@ use App\Models\LocationDistrict;
 use App\Models\LocationBarangay;
 use App\Models\Schedule;
 use App\Models\ListEvent;
+use App\Models\RequestEvent;
 
 class DropdownClass
 {  
@@ -203,6 +205,34 @@ class DropdownClass
         return $data;
     }
 
+    public function schools($keyword){
+        $data = ListAcademic::where('type_id', 173)
+        ->when($keyword, function ($query) use ($keyword){
+            $query->where('name', 'like', '%' . $keyword . '%');
+        })
+        ->limit(20)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
+    public function courses($keyword){
+        $data = ListAcademic::where('type_id', 174)
+        ->when($keyword, function ($query) use ($keyword){
+            $query->where('name', 'like', '%' . $keyword . '%');
+        })
+        ->limit(20)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
     public function units($code){
         $data = ListUnit::when($code, function ($query) use ($code){
             $query->where('division_id',$code);
@@ -224,6 +254,30 @@ class DropdownClass
                 'name' => $item->name,
                 'days' => $item->days,
                 'hours' => $item->hours
+            ];
+        });
+        return $data;
+    }
+
+    public function request_events($keyword){
+        $data = RequestEvent::with('type','audience','mode','request.location')
+        ->when($keyword, function ($query) use ($keyword){
+            $query->where('title', 'like', '%' . $keyword . '%');
+        })
+        ->orderByDesc('id')
+        ->limit(20)->get()->map(function ($item) {
+            $location = optional($item->request)->location;
+            return [
+                'value' => $item->id,
+                'name' => $item->title,
+                'type' => $item->type,
+                'audience' => $item->audience,
+                'mode' => $item->mode,
+                'is_host' => $item->is_host,
+                'location' => $location ? [
+                    'name' => $location->barangay?->name.', '.$location->municipality?->name,
+                    'address' => $location->address,
+                ] : null,
             ];
         });
         return $data;

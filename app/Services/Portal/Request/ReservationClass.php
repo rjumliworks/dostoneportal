@@ -3,11 +3,14 @@
 namespace App\Services\Portal\Request;
 
 use App\Models\Request;
+use App\Models\RequestEvent;
 use App\Models\RequestSignatory;
 
 class ReservationClass
 {
     public function store($request){
+        $event = RequestEvent::find($request->event_id);
+
         $data = Request::create([
             'code' => $this->generateRequestCode(),
             'type_id' => 157,
@@ -75,13 +78,17 @@ class ReservationClass
                 'time' => $request->time,
             ]);
 
-            $data->detail()->create($request->only([
-                'purpose', 'remarks'
-            ]));
-            $data->location()->create($request->only([
-                'address','longitude','latitude','barangay_code','municipality_code','province_code','region_code'
-            ]));
+            $data->detail()->create([
+                'purpose' => $request->purpose,
+                'remarks' => $request->remarks,
+            ]);
+            if($request->filled('address')){
+                $data->location()->create($request->only([
+                    'address','longitude','latitude','barangay_code','municipality_code','province_code','region_code'
+                ]));
+            }
             $data->reservation()->create([
+                'event_id' => $event->id,
                 'vehicle_id' => $request->vehicle['value'],
                 'driver_id' => $request->vehicle['driver_id']
             ]);

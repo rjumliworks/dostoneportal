@@ -13,6 +13,7 @@ class RequestEvent extends Model
         'mode_id',
         'type_id',
         'request_id',
+        'user_id',
         'is_host',
         'is_managed'
     ];
@@ -46,6 +47,16 @@ class RequestEvent extends Model
 
     public function getCreatedAgoAttribute()
     {
-        return $this->created_at->diffForHumans();
+        return \Carbon\Carbon::parse($this->attributes['created_at'])->diffForHumans();
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return date('M d, Y g:i a', strtotime($value));
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return date('M d, Y g:i a', strtotime($value));
     }
 }

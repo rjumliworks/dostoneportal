@@ -11,6 +11,7 @@ use App\Services\Portal\Request\CtoClass;
 use App\Services\Portal\Request\SaveClass;
 use App\Services\Portal\Request\ViewClass;
 use App\Services\Portal\Request\ShowClass;
+use App\Services\Portal\Request\EventClass;
 use App\Services\Portal\Request\LeaveClass;
 use App\Services\Portal\Request\PrintClass;
 use App\Services\Portal\Request\TravelClass;
@@ -22,16 +23,17 @@ class RequestController extends Controller
 {
     use HandlesTransaction;
 
-    public $view,$save,$dropdown,$show,$cto,$leave,$print,$travel,$reservation,$training;
+    public $view,$save,$dropdown,$show,$cto,$leave,$print,$travel,$reservation,$training,$event;
 
     public function __construct(
         CtoClass $cto,
-        SaveClass $save, 
-        ViewClass $view, 
-        ShowClass $show, 
+        SaveClass $save,
+        ViewClass $view,
+        ShowClass $show,
         LeaveClass $leave,
         PrintClass $print,
         TravelClass $travel,
+        EventClass $event,
         TrainingClass $training,
         ReservationClass $reservation,
         DropdownClass $dropdown
@@ -43,6 +45,7 @@ class RequestController extends Controller
         $this->leave = $leave;
         $this->print = $print;
         $this->travel = $travel;
+        $this->event = $event;
         $this->training = $training;
         $this->reservation = $reservation;
         $this->dropdown = $dropdown;
@@ -80,8 +83,13 @@ class RequestController extends Controller
                     'vehicle_dropdowns' => [
                         'transportations' => $this->dropdown->datas('Public Conveyance'),
                         'regions' => $this->dropdown->regions()
+                    ],
+                    'event_dropdowns' => [
+                        'types' => $this->dropdown->event_list(),
+                        'audiences' => $this->dropdown->datas('Audience'),
+                        'modes' => $this->dropdown->datas('Event Mode')
                     ]
-                ]); 
+                ]);
         }   
     }
 
@@ -103,8 +111,15 @@ class RequestController extends Controller
                 case 'training':
                     return $this->training->store($request);
                 break;
+                case 'event':
+                    return $this->event->store($request);
+                break;
             }
         });
+
+        if($request->option == 'event'){
+            return response()->json($result);
+        }
 
         return back()->with([
             'data' => $result['data'],

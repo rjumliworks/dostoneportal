@@ -44,7 +44,7 @@
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
                                 <!-- @click="openCreate" -->
-                                <b-button type="button" variant="primary" disabled>
+                                <b-button type="button" variant="primary" @click="openCreate">
                                     <i class="ri-add-circle-fill align-bottom me-1"></i> Create
                                 </b-button>
                             </div>
@@ -188,9 +188,10 @@
         </div>
     </BRow>
     <Create @update="fetch()"
-    :vehicle_dropdowns="vehicle_dropdowns" 
+    :vehicle_dropdowns="vehicle_dropdowns"
     :travel_dropdowns="travel_dropdowns"
     :leave_dropdowns="leave_dropdowns"
+    :event_dropdowns="event_dropdowns"
     ref="create"/>
 </template>
 <script>
@@ -201,7 +202,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, Create },
-    props: ['counts','leave_dropdowns','travel_dropdowns','vehicle_dropdowns','dropdowns'],
+    props: ['counts','leave_dropdowns','travel_dropdowns','vehicle_dropdowns','event_dropdowns','dropdowns'],
     data(){
         return {
             currentUrl: window.location.origin,

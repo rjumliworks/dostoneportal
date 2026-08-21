@@ -1,16 +1,16 @@
 <template>
     <b-modal v-model="showModal" header-class="p-3 bg-light" :title="(editable) ? 'Update Reference' : 'Add Reference'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
-            <BRow class="g-3 mt-n1">
+            <BRow class="g-3 mt-n4">
                 <BCol lg="12">
                     <InputLabel value="Name" :message="form.errors.name"/>
                     <TextInput v-model="form.name" type="text" class="form-control" @input="handleInput('name')" :light="true" />
                 </BCol>
-                <BCol lg="12">
+                <BCol lg="12" class="mt-0">
                     <InputLabel value="Office / Residential Address" :message="form.errors.address"/>
                     <TextInput v-model="form.address" type="text" class="form-control" @input="handleInput('address')" :light="true" />
                 </BCol>
-                <BCol lg="12">
+                <BCol lg="12" class="mt-0">
                     <InputLabel value="Contact No. and/or Email" :message="form.errors.contact"/>
                     <TextInput v-model="form.contact" type="text" class="form-control" @input="handleInput('contact')" :light="true" />
                 </BCol>

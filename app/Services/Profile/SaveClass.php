@@ -141,6 +141,15 @@ class SaveClass
         $payload = $request->except(['option', 'id']);
         $payload['user_id'] = \Auth::id();
 
+        // Elementary and Junior High School don't have a degree/course — fall back to a
+        // "Not Available" list_academics record (type_id 174) instead of leaving it blank,
+        // since course_id is a required, non-nullable foreign key.
+        if ($request->option === 'academic' && in_array((int) ($payload['level_id'] ?? null), [218, 113], true) && empty($payload['course_id'])) {
+            $payload['course_id'] = \App\Models\ListAcademic::firstOrCreate(
+                ['name' => 'Not Available', 'type_id' => 174]
+            )->id;
+        }
+
         if ($request->filled('id')) {
             $record = $model::where('id', $request->id)->where('user_id', \Auth::id())->firstOrFail();
             $record->update($payload);

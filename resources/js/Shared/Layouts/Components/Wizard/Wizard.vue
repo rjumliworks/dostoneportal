@@ -24,7 +24,7 @@
                             <div class="progress-bar bg-primary" :style="{width: progressPercent + '%'}"></div>
                         </div>
 
-                        <div style="min-height: 320px; max-height: calc(100vh - 420px); overflow-y: auto;" class="pe-1">
+                        <div class="pe-1">
                             <component
                                 :is="steps[currentStep-1].component"
                                 :data="pdsData"

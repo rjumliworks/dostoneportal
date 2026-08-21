@@ -14,11 +14,7 @@
                         </div>
                     </div>
                 </BCol>
-                <BCol lg="6">
-                    <InputLabel value="Zip Code"/>
-                    <TextInput v-model="form.permanent.zip_code" type="text" class="form-control" :light="true"/>
-                </BCol>
-                <BCol lg="12"><hr class="text-muted mb-n2"/></BCol>
+                <BCol lg="12"><hr class="text-muted mb-0 mt-n1"/></BCol>
                 <BCol lg="10" style="margin-top: 13px; margin-bottom: -12px;" class="fs-12" :class="(form.errors.is_same) ? 'text-danger' : ''">Is your Permanent Address the same as your Home Address? Please indicate yes or no.</BCol>
                 <BCol lg="2" style="margin-top: 13px; margin-bottom: -12px;">
                     <div class="row">
@@ -38,7 +34,7 @@
                 </BCol>
                 <BCol lg="12"><hr class="text-muted mt-n2"/></BCol>
                 <template v-if="form.is_same === false">
-                    <BCol lg="12">
+                    <BCol lg="12" class="mt-n2">
                         <div class="d-flex">
                             <div style="width: 100%;">
                                 <InputLabel value="Home Address" :message="form.errors['home.address']"/>
@@ -48,10 +44,6 @@
                                 <b-button @click="addLocation('home')" type="button" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
                             </div>
                         </div>
-                    </BCol>
-                    <BCol lg="6">
-                        <InputLabel value="Zip Code"/>
-                        <TextInput v-model="form.home.zip_code" type="text" class="form-control" :light="true"/>
                     </BCol>
                 </template>
             </BRow>
@@ -64,6 +56,26 @@ import { useForm } from '@inertiajs/vue3';
 import Location from '@/Shared/Layouts/Components/Modals/Location.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
+
+function toSelection(a){
+    if (!a) return null;
+    return {
+        info: a.address ?? null,
+        zip_code: a.zip_code ?? null,
+        region: a.region ? { value: a.region_code, name: a.region.name } : null,
+        province: a.province ? { value: a.province_code, name: a.province.name } : null,
+        municipality: a.municipality ? { value: a.municipality_code, name: a.municipality.name } : null,
+        barangay: a.barangay ? { value: a.barangay_code, name: a.barangay.name } : null,
+        latitude: a.latitude ?? null,
+        longitude: a.longitude ?? null,
+    };
+}
+
+function formatLabel(selection){
+    if (!selection) return null;
+    return [selection.info, selection.barangay?.name, selection.municipality?.name, selection.province?.name, selection.region?.name].filter(Boolean).join(', ');
+}
+
 export default {
     components: { Location, TextInput, InputLabel },
     props: ['data', 'dropdowns'],
@@ -71,10 +83,14 @@ export default {
         const addresses = this.data.addresses || [];
         const permanent = addresses.find(a => a.is_permanent) || null;
         const home = addresses.find(a => !a.is_permanent) || null;
+        const permanentSelection = toSelection(permanent);
+        const homeSelection = toSelection(home);
         return {
             type: null,
-            permanentLabel: permanent ? permanent.address : null,
-            homeLabel: home ? home.address : null,
+            permanentSelection,
+            homeSelection,
+            permanentLabel: formatLabel(permanentSelection),
+            homeLabel: formatLabel(homeSelection),
             form: useForm({
                 permanent: {
                     address: permanent?.address ?? null,
@@ -104,12 +120,14 @@ export default {
     methods: {
         addLocation(type){
             this.type = type;
-            this.$refs.location.openEdit(null);
+            this.$refs.location.openEdit(type === 'permanent' ? this.permanentSelection : this.homeSelection);
         },
         handleSubmit(data){
             if (this.type === 'permanent') {
+                this.permanentSelection = data.form;
                 this.permanentLabel = data.address;
                 this.form.permanent.address = data.form.info;
+                this.form.permanent.zip_code = data.form.zip_code;
                 this.form.permanent.region_code = data.form.region.value;
                 this.form.permanent.province_code = data.form.province.value;
                 this.form.permanent.municipality_code = data.form.municipality.value;
@@ -118,8 +136,10 @@ export default {
                 this.form.permanent.longitude = data.form.longitude;
                 this.form.clearErrors('permanent.address');
             } else {
+                this.homeSelection = data.form;
                 this.homeLabel = data.address;
                 this.form.home.address = data.form.info;
+                this.form.home.zip_code = data.form.zip_code;
                 this.form.home.region_code = data.form.region.value;
                 this.form.home.province_code = data.form.province.value;
                 this.form.home.municipality_code = data.form.municipality.value;
