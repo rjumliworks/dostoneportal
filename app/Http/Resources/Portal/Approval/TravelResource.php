@@ -29,6 +29,7 @@ class TravelResource extends JsonResource
             'status' => $this->status,
             'employee' => $this->request->user->profile->firstname.' '.$this->request->user->profile->lastname,
             'mode' => $this->request->travel->mode,
+            'event' => $this->request->travel->event,
             'tags' => TagResource::collection($this->request->tags),
             'expense' => $this->request->travel->expense,
             'expenses' => $this->request->travel->expense_items, 
@@ -44,7 +45,13 @@ class TravelResource extends JsonResource
             'is_disapproved' => $this->is_disapproved,
             'is_approval_only' => $this->is_approval_only,
             'statuses' => StatusResource::collection($this->statusable),
-            'location' => new LocationResource($this->request->location),
+            'location' => $this->request->location ? new LocationResource($this->request->location) : null,
+            'destination' => $this->request->travel->event?->request?->location ? new LocationResource($this->request->travel->event->request->location) : null,
+            'event_date' => $this->request->travel->event?->request?->dates?->first() ? [
+                'start' => $this->request->travel->event->request->dates->first()->start,
+                'end' => $this->request->travel->event->request->dates->first()->end,
+                'time' => $this->request->travel->event->request->dates->first()->time,
+            ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

@@ -9,11 +9,26 @@ use App\Models\RequestEvent;
 use App\Models\RequestTravel;
 use App\Models\RequestReport;
 use App\Models\RequestSignatory;
+use App\Services\DropdownClass;
 
 class TravelClass
 {
+    protected $dropdown;
+
+    public function __construct(DropdownClass $dropdown){
+        $this->dropdown = $dropdown;
+    }
+
     public function store($request){
         $event = RequestEvent::find($request->event_id);
+
+        $employeeIds = array_map(fn($user) => intval($user['value']), $request->tags ?? []);
+        $conflicts = $this->dropdown->travelConflicts($employeeIds, $request->date);
+
+        if($conflicts->isNotEmpty()){
+            $names = $conflicts->pluck('name')->implode(', ');
+            throw new \Exception("Cannot submit: {$names} already has a travel order covering the selected date(s).");
+        }
 
         $data = Request::create([
             'code' => $this->generateCode(),

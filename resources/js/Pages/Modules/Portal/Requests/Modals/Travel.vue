@@ -237,7 +237,7 @@
                 <div class="tab-pane fade" :class="activeTab == 4 && 'show active'">
                     <div class="mb-n2 mt-0">
                         <h5 class="fs-12 mb-0 text-primary fw-semibold"><i class="ri-team-fill me-1"></i>Employees</h5>
-                        <p class="fs-10 text-muted">Please check the expenses that apply to this travel request. <span class="text-danger">{{ form.errors.expenses }}</span></p>
+                        <p class="fs-10 text-muted">Select all employees who are part of this travel.</p>
                     </div>
                     <div class="border border-dashed bg-light-subtle rounded p-3">
                         <BRow class="g-3">
@@ -259,18 +259,41 @@
                                     placeholder="Select Employee"
                                     ref="multiselect2"
                                     />
-                                <p class="fs-11 text-muted mt-2">Select all employees who are part of this travel.</p>
+                                <p class="fs-11 text-muted mt-2">Select all employees who are part of this travel. Availability is checked when you submit.</p>
                             </BCol>
                         </BRow>
                     </div>
                 </div>
 
                 <div class="tab-pane fade" :class="activeTab == 5 && 'show active'">
-                    <!-- <div class="mb-n2 mt-0">
-                        <h5 class="fs-12 mb-1 text-primary fw-semibold"><i class="ri-checkbox-circle-line me-1"></i>Review and Submit</h5>
-                        <p class="fs-10 text-muted">Please verify all details are correct before submitting.</p>
-                    </div> -->
-                    <div class="border border-dashed bg-light-subtle rounded p-3 review-summary">
+                    <template v-if="submitErrors.length || conflicts.length">
+                        <div class="mb-2 mt-n2 text-center">
+                            <div class="avatar-sm mx-auto mb-2">
+                                <span class="avatar-title bg-danger-subtle text-danger rounded-circle fs-20">
+                                    <i class="ri-error-warning-fill"></i>
+                                </span>
+                            </div>
+                            <h5 class="fs-13 mb-1 fw-semibold">Please Fix the Following</h5>
+                            <p class="fs-11 text-muted mb-0">Your travel request could not be submitted.</p>
+                        </div>
+                        <div class="border border-dashed border-danger-subtle bg-danger-subtle rounded p-3">
+                            <ul v-if="submitErrors.length" class="mb-0 ps-3 fs-12">
+                                <li v-for="(err, i) in submitErrors" :key="'e'+i" class="mb-1">
+                                    {{ err.message }} <b-button variant="link" type="button" size="sm" class="p-0 fs-11 text-decoration-none align-baseline" @click="toggleTab(err.tab, err.progress)">Fix</b-button>
+                                </li>
+                            </ul>
+                            <div v-if="conflicts.length" :class="submitErrors.length ? 'mt-2 pt-2 border-top border-danger-subtle' : ''">
+                                <p class="fs-12 fw-semibold mb-1 text-danger">Employee schedule conflicts</p>
+                                <ul class="mb-1 ps-3 fs-12">
+                                    <li v-for="(c, i) in conflicts" :key="'c'+i">
+                                        <strong>{{ c.name }}</strong> already has travel order <strong>{{ c.code }}</strong> on {{ c.start }}<span v-if="c.end && c.end !== c.start"> - {{ c.end }}</span>.
+                                    </li>
+                                </ul>
+                                <b-button variant="link" type="button" size="sm" class="p-0 fs-11 text-decoration-none" @click="toggleTab(4, 75)">Update Employees</b-button>
+                            </div>
+                        </div>
+                    </template>
+                    <div v-else class="border border-dashed bg-light-subtle rounded p-3 review-summary">
 
                         <div class="d-flex align-items-start justify-content-between mt-n2">
                             <div class="overflow-hidden">
@@ -359,23 +382,23 @@
         <template v-slot:footer>
             <template v-if="activeTab == 1">
                 <b-button @click="hide" type="button" variant="light">Cancel</b-button>
-                <b-button @click="toggleTab(2, 25)" type="button" variant="primary" :disabled="!canProceedStep1">Next</b-button>
+                <b-button @click="toggleTab(2, 25)" type="button" variant="primary">Next</b-button>
             </template>
             <template v-else-if="activeTab == 2">
                 <b-button @click="toggleTab(1, 0)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="toggleTab(3, 50)" type="button" variant="primary" class="ms-auto" :disabled="!canProceedStep2">Next</b-button>
+                <b-button @click="toggleTab(3, 50)" type="button" variant="primary" class="ms-auto">Next</b-button>
             </template>
             <template v-else-if="activeTab == 3">
                 <b-button @click="toggleTab(2, 25)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="toggleTab(4, 75)" type="button" variant="primary" class="ms-auto" :disabled="!canProceedStep3">Next</b-button>
+                <b-button @click="toggleTab(4, 75)" type="button" variant="primary" class="ms-auto">Next</b-button>
             </template>
             <template v-else-if="activeTab == 4">
                 <b-button @click="toggleTab(3, 50)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="toggleTab(5, 100)" type="button" variant="primary" class="ms-auto" :disabled="!canProceedStep4">Next</b-button>
+                <b-button @click="toggleTab(5, 100)" type="button" variant="primary" class="ms-auto">Next</b-button>
             </template>
             <template v-else>
                 <b-button @click="toggleTab(4, 75)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="submit()" type="button" variant="success" class="ms-auto" :disabled="form.processing">
+                <b-button @click="submit()" type="button" variant="success" class="ms-auto" :disabled="form.processing || checkingConflicts">
                     <i class="ri-checkbox-circle-fill align-middle me-1"></i>Submit
                 </b-button>
             </template>
@@ -440,31 +463,15 @@ export default {
             eventResults: [],
             eventLoading: false,
             activeTab: 1,
-            progressbarvalue: 0
+            progressbarvalue: 0,
+            conflicts: [],
+            checkingConflicts: false,
+            submitErrors: []
         }
     },
     computed: {
         eventDates() {
             return this.selectedEvent?.dates || [];
-        },
-        canProceedStep1() {
-            return !!this.selectedEvent;
-        },
-        canProceedStep2() {
-            return !!(
-                this.form.purpose &&
-                this.form.date &&
-                this.form.time &&
-                this.form.mode_id &&
-                (this.form.mode_id != 151 || this.form.transpo_id) &&
-                (this.form.mode_id != 150 || (this.form.vehicle && this.form.driver_id))
-            );
-        },
-        canProceedStep3() {
-            return !!(this.form.expense_id && this.form.expenses && this.form.expenses.length > 0);
-        },
-        canProceedStep4() {
-            return this.form.tags && this.form.tags.length > 0;
         },
         selectedExpenseType() {
             return this.dropdowns?.expenses?.find(e => e.value == this.form.expense_id);
@@ -509,8 +516,51 @@ export default {
         toggleTab(tab, value) {
             this.activeTab = tab;
             this.progressbarvalue = value;
+            if (tab !== 5) {
+                this.submitErrors = [];
+                this.conflicts = [];
+            }
         },
-        submit(){
+        validateForSubmit() {
+            const errors = [];
+            if (!this.selectedEvent) errors.push({ message: 'Please select an event.', tab: 1, progress: 0 });
+            if (!this.form.purpose) errors.push({ message: 'Purpose is required.', tab: 2, progress: 25 });
+            if (!this.form.date) errors.push({ message: 'Travel date is required.', tab: 2, progress: 25 });
+            if (!this.form.time) errors.push({ message: 'Departure time is required.', tab: 2, progress: 25 });
+            if (!this.form.mode_id) errors.push({ message: 'Mode of travel is required.', tab: 2, progress: 25 });
+            if (this.form.mode_id == 151 && !this.form.transpo_id) errors.push({ message: 'Transportation is required.', tab: 2, progress: 25 });
+            if (this.form.mode_id == 150 && !this.form.vehicle) errors.push({ message: 'Vehicle is required.', tab: 2, progress: 25 });
+            if (this.form.mode_id == 150 && !this.form.driver_id) errors.push({ message: 'Driver is required.', tab: 2, progress: 25 });
+            if (!this.form.expense_id) errors.push({ message: 'Travel expense type is required.', tab: 3, progress: 50 });
+            if (!this.form.expenses || !this.form.expenses.length) errors.push({ message: 'Please select at least one applicable expense.', tab: 3, progress: 50 });
+            if (!this.form.tags || !this.form.tags.length) errors.push({ message: 'Please select at least one employee.', tab: 4, progress: 75 });
+            return errors;
+        },
+        async submit(){
+            this.submitErrors = this.validateForSubmit();
+            this.conflicts = [];
+
+            if (this.form.tags.length && this.form.date) {
+                this.checkingConflicts = true;
+                try {
+                    const { data } = await axios.post('/requests-travel-conflicts', {
+                        employees: this.form.tags.map(t => t.value),
+                        date: this.form.date
+                    });
+                    this.conflicts = data;
+                } catch (err) {
+                    console.log(err);
+                } finally {
+                    this.checkingConflicts = false;
+                }
+            }
+
+            if (this.submitErrors.length || this.conflicts.length) {
+                this.activeTab = 5;
+                this.progressbarvalue = 100;
+                return;
+            }
+
             this.form.post('/requests',{
                 preserveScroll: true,
                 forceFormData: true,
@@ -531,6 +581,8 @@ export default {
             this.resetEvent();
             this.vehicles = [];
             this.drivers = [];
+            this.conflicts = [];
+            this.checkingConflicts = false;
             this.toggleTab(1, 0);
         },
         checkEventSearchStr: _.debounce(function(string) {

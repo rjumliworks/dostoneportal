@@ -24,6 +24,7 @@ use App\Models\LocationBarangay;
 use App\Models\Schedule;
 use App\Models\ListEvent;
 use App\Models\RequestEvent;
+use App\Models\RequestTag;
 
 class DropdownClass
 {  
@@ -290,6 +291,54 @@ class DropdownClass
             ];
         });
         return $data;
+    }
+
+    public function travelConflicts($employeeIds, $date){
+        $employeeIds = array_filter((array) $employeeIds);
+
+        if(empty($employeeIds) || !$date){
+            return [];
+        }
+
+        if(strpos($date, ' to ') !== false) {
+            [$start, $end] = explode(' to ', $date);
+        } else {
+            $start = $end = $date;
+        }
+
+        $start = Carbon::parse($start)->startOfDay();
+        $end = Carbon::parse($end)->endOfDay();
+
+        $conflicts = RequestTag::with('user.profile', 'request.dates', 'request.travel')
+        ->whereIn('user_id', $employeeIds)
+        ->whereHas('request', function ($query) use ($start, $end) {
+            $query->where('type_id', 156)
+            ->whereHas('dates', function ($q) use ($start, $end) {
+                $q->where(function ($q2) use ($start, $end) {
+                    $q2->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function ($q3) use ($start, $end) {
+                        $q3->where('start', '<=', $start)
+                        ->where('end', '>=', $end);
+                    });
+                });
+            });
+        })
+        ->get()
+        ->map(function ($tag) {
+            $requestDate = $tag->request->dates->first();
+            return [
+                'user_id' => $tag->user_id,
+                'name' => $tag->user->profile->firstname.' '.$tag->user->profile->lastname,
+                'code' => $tag->request->travel->code ?? $tag->request->code,
+                'start' => $requestDate?->start,
+                'end' => $requestDate?->end,
+            ];
+        })
+        ->unique('user_id')
+        ->values();
+
+        return $conflicts;
     }
 
     public function event_list()

@@ -129,6 +129,12 @@ class RequestController extends Controller
         ]);
     }
 
+    public function checkTravelConflicts(Request $request){
+        return response()->json(
+            $this->dropdown->travelConflicts($request->employees ?? [], $request->date)
+        );
+    }
+
     public function show($string){
         $string = Crypt::decryptString($string);
         $parts = explode("krad", $string);
