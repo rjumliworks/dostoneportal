@@ -10,21 +10,21 @@ class EventClass
     {
         $data = RequestEvent::create([
             'title' => $request->title,
-            'type_id' => $request->type_id,
             'audience_id' => $request->audience_id,
             'mode_id' => $request->mode_id,
             'is_host' => $request->is_host ?? 0,
             'user_id' => \Auth::user()->id,
             'status_id' => 27
         ]);
+        $data->types()->sync([$request->type_id]);
 
-        $data->load('type', 'audience', 'mode');
+        $data->load('types', 'audience', 'mode');
 
         return [
             'data' => [
                 'value' => $data->id,
                 'name' => $data->title,
-                'type' => $data->type,
+                'types' => $data->types,
                 'audience' => $data->audience,
                 'mode' => $data->mode,
                 'is_host' => $data->is_host,

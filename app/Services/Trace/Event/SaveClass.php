@@ -5,7 +5,9 @@ namespace App\Services\Trace\Event;
 use Carbon\Carbon;
 use App\Models\Event;
 use App\Models\Request;
+use App\Models\RequestEvent;
 use App\Models\RequestReport;
+use App\Http\Resources\Trace\Event\IndexResource;
 
 class SaveClass
 {
@@ -29,35 +31,8 @@ class SaveClass
             'type_id' => 192,
             'user_id' => \Auth::user()->id
         ]);
-        if($data){ 
-            if($request->date_type != 'Multiple Dates (non-continuous)'){
-                $dates = $request->dates;
-                $allWholeDay = array_reduce($dates, function ($carry, $item) {
-                    return $carry && ($item['timeOfDay'] === 'Whole Day');
-                }, true);
-
-                if ($allWholeDay) {
-                    $dates = array_column($dates, 'date');
-                    $start = min($dates);
-                    $end = max($dates);
-
-                    $data->dates()->create([
-                        'start' => $start,
-                        'end' => $end,
-                        'time' => '08:00',
-                    ]);
-                } else {
-                    foreach($dates as $date){
-                        $data->dates()->create([
-                            'start' => $date['date'],
-                            'end' => $date['date'],
-                            'time' => '08:00',
-                            'time_of_day' => $date['timeOfDay']
-                        ]);
-                    }
-                    
-                }
-            }
+        if($data){
+            $this->saveDates($data, $request);
 
             $data->detail()->create($request->only([
                 'purpose', 'remarks'
@@ -71,11 +46,12 @@ class SaveClass
                 'is_host' => $request->is_host,
                 'is_managed' => $request->is_managed,
                 'mode_id' => $request->mode_id,
-                'type_id' => $request->type_id,
                 'audience_id' => $request->audience_id,
-                'status_id' => 26
+                'status_id' => 26,
+                'user_id' => \Auth::user()->id
             ];
-            $data->event()->create($eventData);
+            $event = $data->event()->create($eventData);
+            $event->types()->sync($request->types);
 
             if ($request->is_managed) {
                 $this->createManagedEvent($request);
@@ -86,9 +62,81 @@ class SaveClass
 
         return [
             'data' => $data,
-            'message' => 'Event created Successfully', 
+            'message' => 'Event created Successfully',
             'info' => "Your travel schedule has been submitted. Keep an eye on your notifications for any approvals or updates."
         ];
+    }
+
+    public function update($request){
+        $event = RequestEvent::with('request')->findOrFail($request->id);
+        $data = $event->request;
+
+        $event->update([
+            'title' => $request->title,
+            'is_host' => $request->is_host,
+            'is_managed' => $request->is_managed,
+            'mode_id' => $request->mode_id,
+            'audience_id' => $request->audience_id,
+        ]);
+        $event->types()->sync($request->types);
+
+        $data->dates()->delete();
+        $this->saveDates($data, $request);
+
+        $data->detail()->update($request->only([
+            'purpose', 'remarks'
+        ]));
+        $data->location()->update($request->only([
+            'address','longitude','latitude','barangay_code','municipality_code','province_code','region_code'
+        ]));
+
+        $this->report($data->id);
+
+        return [
+            'data' => new IndexResource(
+                RequestEvent::with([
+                    'mode','types','audience',
+                    'request.tags.user:id',
+                    'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.tags.status',
+                    'request.tags.user.organization.division','request.tags.user.organization.unit','request.tags.user.organization.position',
+                    'request.dates',
+                    'request.location',
+                    'request.detail',
+                ])->find($event->id)
+            ),
+            'message' => 'Event updated Successfully',
+            'info' => "The event details have been updated."
+        ];
+    }
+
+    private function saveDates($data, $request){
+        if($request->date_type != 'Multiple Dates (non-continuous)'){
+            $dates = $request->dates;
+            $allWholeDay = array_reduce($dates, function ($carry, $item) {
+                return $carry && ($item['timeOfDay'] === 'Whole Day');
+            }, true);
+
+            if ($allWholeDay) {
+                $dates = array_column($dates, 'date');
+                $start = min($dates);
+                $end = max($dates);
+
+                $data->dates()->create([
+                    'start' => $start,
+                    'end' => $end,
+                    'time' => '08:00',
+                ]);
+            } else {
+                foreach($dates as $date){
+                    $data->dates()->create([
+                        'start' => $date['date'],
+                        'end' => $date['date'],
+                        'time' => '08:00',
+                        'time_of_day' => $date['timeOfDay']
+                    ]);
+                }
+            }
+        }
     }
 
     private function createManagedEvent($request){
@@ -128,7 +176,7 @@ class SaveClass
 
     public function report($id){
         $data = Request::with([
-            'event.mode','event.type','event.audience',
+            'event.mode','event.types','event.audience',
             'dates',
             'detail',
             'tags.user:id','tags.user.profile:user_id,firstname,middlename,lastname,avatar','tags.user.organization.division','tags.user.organization.position','tags.user.organization.unit',
@@ -174,7 +222,7 @@ class SaveClass
             'purpose' => $data->detail->purpose,
             'remarks' => $data->detail->remarks,
             'title' => $data->event->title, 
-            'type' => $data->event->type->name, 
+            'type' => $data->event->types->pluck('name')->implode(', '),
             'mode' => $data->event->mode->name, 
             'audience' => $data->event->audience->name, 
             'time' => $data->dates[0]->time,

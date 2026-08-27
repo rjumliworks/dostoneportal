@@ -24,6 +24,8 @@ class LocationResource extends JsonResource
             'province' => $this->province,
             'municipality' => $this->municipality,
             'barangay' => $this->barangay,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
         ];
     }
 }

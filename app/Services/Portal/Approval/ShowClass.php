@@ -51,7 +51,7 @@ class ShowClass
             'statusable',
             'request.travel.mode',
             'request.travel.expense',
-            'request.travel.event.type','request.travel.event.audience','request.travel.event.mode',
+            'request.travel.event.types','request.travel.event.audience','request.travel.event.mode',
             'request.travel.event.request.location.region:code,name,region','request.travel.event.request.location.province:code,name','request.travel.event.request.location.municipality:code,name','request.travel.event.request.location.barangay:code,name',
             'request.travel.event.request.dates',
             'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',

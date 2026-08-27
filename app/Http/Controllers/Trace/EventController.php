@@ -64,6 +64,23 @@ class EventController extends Controller
         ]);
     }
 
+    public function update(EventRequest $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            switch($request->option){
+                case 'event':
+                    return $this->save->update($request);
+                break;
+            }
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
     public function show($string){
         $string = Crypt::decryptString($string);
         $parts = explode("krad", $string);

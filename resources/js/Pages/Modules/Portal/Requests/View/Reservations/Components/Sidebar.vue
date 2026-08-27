@@ -26,7 +26,7 @@
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="mb-0 text-muted fs-12">Purpose :</p>
                             <h6 class="fw-semibold fs-12 mb-1"> {{ information.purpose }} </h6>
-                            <span class="badge bg-primary-subtle text-primary me-1" v-if="information.event?.type">{{ information.event.type.name }}</span>
+                            <span class="badge bg-primary-subtle text-primary me-1" v-for="(type,index) in information.event?.types" v-bind:key="index">{{ type.name }}</span>
                             <span class="badge bg-info-subtle text-info me-1" v-if="information.event?.audience">{{ information.event.audience.name }}</span>
                             <span class="badge bg-secondary-subtle text-secondary" v-if="information.event?.mode">{{ information.event.mode.name }}</span>
                         </div>

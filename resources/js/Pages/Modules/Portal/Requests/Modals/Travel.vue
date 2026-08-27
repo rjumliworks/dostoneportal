@@ -64,7 +64,7 @@
                                     <div class="flex-grow-1 overflow-hidden">
                                         <h5 class="fw-semibold fs-14 text-primary mb-1">{{ selectedEvent.name }}</h5>
                                         <div class="d-flex flex-wrap gap-1 mb-2">
-                                            <span v-if="selectedEvent.type" class="badge bg-primary-subtle text-primary fs-10">{{ selectedEvent.type.name }}</span>
+                                            <span v-for="(type,index) in selectedEvent.types" v-bind:key="index" class="badge bg-primary-subtle text-primary fs-10">{{ type.name }}</span>
                                             <span v-if="selectedEvent.audience" class="badge bg-info-subtle text-info fs-10">{{ selectedEvent.audience.name }}</span>
                                             <span v-if="selectedEvent.mode" class="badge bg-secondary-subtle text-secondary fs-10">{{ selectedEvent.mode.name }}</span>
                                             <span v-if="selectedEvent.is_host" class="badge bg-success-subtle text-success fs-10">Host</span>

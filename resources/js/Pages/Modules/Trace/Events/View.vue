@@ -17,7 +17,7 @@
                                                     <div class="hstack gap-3 flex-wrap">
                                                         <div><i class="ri-qr-code-fill align-bottom me-1"></i> {{information.code}}</div>
                                                         <div class="vr" style="width: 1px;"></div>
-                                                        <div><span class="text-muted">Type : </span> <span class="fw-medium">{{information.type.name}}</span></div>
+                                                        <div><span class="text-muted">Type : </span> <span class="fw-medium">{{information.types.map(t => t.name).join(', ')}}</span></div>
                                                         <div class="vr" style="width: 1px;"></div>
                                                         <div><span class="text-muted">Mode : </span> <span class="fw-medium">{{information.mode.name}}</span></div>
                                                         <div class="vr" style="width: 1px;"></div>

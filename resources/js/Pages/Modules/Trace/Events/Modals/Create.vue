@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 700px;" header-class="p-3 bg-light" title="Create Event" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 700px;" header-class="p-3 bg-light" :title="(!editable) ? 'Create Event' : 'Edit Event'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
             
         <form class="customform">
             <BRow class="g-3">
@@ -23,15 +23,15 @@
                         </span>
                     </div>
                 </BCol>
-                <BCol lg="4" class="mt-1">
-                    <InputLabel for="name" value="Type" :message="form.errors.type_id"/>
-                    <Multiselect :options="dropdowns.types" :searchable="true" label="name" v-model="form.type_id" placeholder="Select Type" @input="handleInput('type_id')"/>
+                <BCol lg="12" class="mt-1">
+                    <InputLabel for="name" value="Type" :message="form.errors.types"/>
+                    <Multiselect :options="dropdowns.types" mode="tags" :searchable="true" label="name" v-model="form.types" placeholder="Select Type" @input="handleInput('types')"/>
                 </BCol>
-                <BCol lg="4" class="mt-1">
+                <BCol lg="6" class="mt-1">
                     <InputLabel for="name" value="Mode" :message="form.errors.mode_id"/>
                     <Multiselect :options="dropdowns.modes" :searchable="true" label="name" v-model="form.mode_id" placeholder="Select Mode" @input="handleInput('mode_id')"/>
                 </BCol>
-                <BCol lg="4" class="mt-1">
+                <BCol lg="6" class="mt-1">
                     <InputLabel for="name" value="Audience" :message="form.errors.audience_id"/>
                     <Multiselect :options="dropdowns.audiences" :searchable="true" label="name" v-model="form.audience_id" placeholder="Select Audience" @input="handleInput('audience_id')"/>
                 </BCol>
@@ -155,12 +155,14 @@ export default {
     data(){
         return {
             address: null,
+            editable: false,
             form: useForm({
+                id: null,
                 title: null,
                 purpose: null,
                 audience_id: null,
                 mode_id: null,
-                type_id: null,
+                types: [],
                 timeOfDay: 'Whole Day',
                 date: null,
                 dates: [],
@@ -284,20 +286,65 @@ export default {
     methods: { 
         show(data){
             this.selected = data;
+            this.editable = false;
+            this.form.reset();
+            this.form.clearErrors();
+            this.address = null;
+            this.date = null;
+            this.dateType = null;
+            this.showModal = true;
+        },
+        update(data){
+            this.editable = true;
+            this.form.id = data.id;
+            this.form.title = data.title;
+            this.form.purpose = data.purpose;
+            this.form.audience_id = data.audience?.id;
+            this.form.mode_id = data.mode?.id;
+            this.form.types = (data.types || []).map(type => type.id);
+            this.form.is_host = data.is_host;
+            this.form.is_managed = data.is_managed;
+
+            this.address = data.location?.name;
+            this.form.address = data.location?.address;
+            this.form.region_code = data.location?.region?.code;
+            this.form.province_code = data.location?.province?.code;
+            this.form.municipality_code = data.location?.municipality?.code;
+            this.form.barangay_code = data.location?.barangay?.code;
+            this.form.latitude = data.location?.latitude;
+            this.form.longitude = data.location?.longitude;
+
+            this.dateType = (data.start === data.end) ? 'Single Day' : 'Range';
+            this.$nextTick(() => {
+                this.date = (this.dateType === 'Single Day') ? data.start : `${data.start} to ${data.end}`;
+            });
+
             this.showModal = true;
         },
         submit(){
             this.form.date = this.date;
             this.form.date_type = this.dateType;
-            this.form.post('/activities',{
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    this.$emit('update',true);
-                    this.form.clearErrors();
-                    this.form.reset();
-                    this.hide();
-                },
-            });
+            if(!this.editable){
+                this.form.post('/activities',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('update',true);
+                        this.form.clearErrors();
+                        this.form.reset();
+                        this.hide();
+                    },
+                });
+            }else{
+                this.form.put('/activities/update',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('update',this.$page.props.flash.data);
+                        this.form.clearErrors();
+                        this.form.reset();
+                        this.hide();
+                    },
+                });
+            }
         },
         formatDate(date) {
             const d = new Date(date);
@@ -356,6 +403,7 @@ export default {
             this.form.errors[field] = false;
         },
         hide(){
+            this.editable = false;
             this.showModal = false;
         }
     }

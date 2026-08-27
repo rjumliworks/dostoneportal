@@ -88,7 +88,7 @@
                                         <p class="fs-12 text-muted mb-0">{{list.location.name}}</p>
                                     </td>
                                      <td class="text-center">{{ list.tags.length }}</td>
-                                    <td class="text-center">{{ list.type.name }}</td>
+                                    <td class="text-center">{{ (list.types || []).map(type => type.name).join(', ') }}</td>
                                     <td class="text-center">{{ list.mode.name }}</td>
                                     <td class="text-center">{{formatDateRange(list.start, list.end)}}</td>
                                     <td class="text-end">

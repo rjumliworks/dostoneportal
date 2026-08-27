@@ -24,7 +24,7 @@ class ViewClass
         // $user_id = \Auth::user()->id;
         // $division_id = \Auth::user()->organization->division_id;
         $data = RequestEvent::with([
-            'mode','type','audience',
+            'mode','types','audience',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.tags.status',
             'request.tags.user.organization.division','request.tags.user.organization.unit','request.tags.user.organization.position',
@@ -34,7 +34,7 @@ class ViewClass
         ])
         ->when($request->audience, fn($q, $audience) => $q->where('audience_id', $audience))
         ->when($request->mode, fn($q, $mode) => $q->where('mode_id', $mode))
-        ->when($request->type, fn($q, $type) => $q->where('type_id', $type))
+        ->when($request->type, fn($q, $type) => $q->whereHas('types', fn($q2) => $q2->where('list_events.id', $type)))
         ->when($request->keyword, function ($query, $keyword) {
             $query->whereHas('request.user.profile', function ($q) use ($keyword) {
                 $q->whereRaw('LOWER(lastname) LIKE ?', ['%' . strtolower($keyword) . '%']);
@@ -55,7 +55,7 @@ class ViewClass
         $id = $hashids->decode($code);
       
         $data = RequestEvent::with([
-            'mode','type','audience',
+            'mode','types','audience',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.dates',

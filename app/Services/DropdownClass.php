@@ -261,7 +261,7 @@ class DropdownClass
     }
 
     public function request_events($keyword){
-        $data = RequestEvent::with('type','audience','mode','request.location','request.dates')
+        $data = RequestEvent::with('types','audience','mode','request.location','request.dates')
         ->when($keyword, function ($query) use ($keyword){
             $query->where('title', 'like', '%' . $keyword . '%');
         })
@@ -272,7 +272,7 @@ class DropdownClass
             return [
                 'value' => $item->id,
                 'name' => $item->title,
-                'type' => $item->type,
+                'types' => $item->types,
                 'audience' => $item->audience,
                 'mode' => $item->mode,
                 'is_host' => $item->is_host,

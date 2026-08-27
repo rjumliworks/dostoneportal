@@ -213,7 +213,7 @@ class TravelClass
         $data = Request::with([
             'travel.mode',
             'travel.expense',
-            'travel.event.type','travel.event.audience','travel.event.mode',
+            'travel.event.types','travel.event.audience','travel.event.mode',
             'travel.event.request.location.region:code,name,region','travel.event.request.location.province:code,name','travel.event.request.location.municipality:code,name','travel.event.request.location.barangay:code,name',
             'reservation.vehicle',
             'type',

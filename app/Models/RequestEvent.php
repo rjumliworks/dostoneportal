@@ -11,7 +11,6 @@ class RequestEvent extends Model
         'status_id',
         'audience_id',
         'mode_id',
-        'type_id',
         'request_id',
         'user_id',
         'is_host',
@@ -20,9 +19,9 @@ class RequestEvent extends Model
 
     protected $appends = ['created_ago'];
 
-    public function type()
+    public function types()
     {
-        return $this->belongsTo('App\Models\ListEvent', 'type_id', 'id');
+        return $this->belongsToMany('App\Models\ListEvent', 'request_event_types', 'request_event_id', 'type_id');
     }
 
     public function mode()
