@@ -17,8 +17,8 @@ class ShowClass
 {
     public function reservation($code){
         $hashids = new Hashids('krad',10);
-        $id = $hashids->decode($code);
-        
+        $id = $hashids->decode($code)[0];
+
         $data = RequestSignatory::with([
             'status',
             'statusable',
@@ -43,7 +43,7 @@ class ShowClass
 
     public function travel($code){
         $hashids = new Hashids('krad',10);
-        $id = $hashids->decode($code);
+        $id = $hashids->decode($code)[0];
 
         $data = RequestSignatory::with([
             'division',
@@ -73,7 +73,7 @@ class ShowClass
 
     public function overtime($code){
         $hashids = new Hashids('krad',10);
-        $id = $hashids->decode($code);
+        $id = $hashids->decode($code)[0];
 
         $data = RequestSignatory::with([
             'status',

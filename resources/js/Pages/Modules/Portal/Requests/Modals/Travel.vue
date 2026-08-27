@@ -76,7 +76,8 @@
                                         </b-button>
                                     </div>
                                 </div>
-                                <hr class="my-2"/>
+                                <!-- <hr class="text-muted mb-2 mt-2"/> -->
+                                <div class="border border-dashed rounded p-3 mt-2">
                                 <p class="mb-1 fs-12 text-muted">
                                     <i class="ri-map-pin-fill align-bottom me-1"></i>
                                     {{ selectedEvent.location?.name || 'No location set for this event' }}<span v-if="selectedEvent.location?.address">, {{ selectedEvent.location.address }}</span>
@@ -88,7 +89,14 @@
                                 <p v-else class="mb-0 fs-12 text-muted">
                                     <i class="ri-calendar-event-fill align-bottom me-1"></i>No date set for this event
                                 </p>
+                                </div>
+                                <!-- <hr class="mb-n2 mt-2 text-muted"/> -->
+                                <div class="mt-3">
+                                    <InputLabel value="Purpose" :message="form.errors.purpose"/>
+                                    <Textarea v-model="form.purpose" class="travel-purpose" style="height: 70px;" placeholder="Please enter the purpose of this travel" @input="handleInput('purpose')"/>
+                                </div>
                             </div>
+                           
                         </BCol>
                     </BRow>
                 </div>
@@ -101,21 +109,6 @@
                     <div class="border border-dashed bg-light-subtle rounded p-3">
                     <BRow class="g-3 mt-n4">
                         <BCol md="6">
-                            <InputLabel value="Purpose" :message="form.errors.purpose"/>
-                            <Textarea v-model="form.purpose" class="travel-purpose" style="height: 70px;" placeholder="Please enter the purpose of this travel" @input="handleInput('purpose')"/>
-                        </BCol>
-                        <BCol md="6">
-                            <InputLabel value="Attachment"/>
-                            <file-pond class="travel-attachment" name="pdf" ref="pond" allow-multiple="false" max-files="1" accepted-file-types="application/pdf"
-                            label-idle='Drag &amp; Drop your PDF or <span class="filepond--label-action">Browse</span>'
-                            :allow-process="false" @addfile="handleAddFile"/>
-                        </BCol>
-
-                        <BCol lg="12">
-                            <hr class="text-muted mt-0 mb-0"/>
-                        </BCol>
-
-                        <BCol lg="6" class="mt-2">
                             <label>Travel Date <span v-if="form.errors.date" class="text-danger" style="font-size: 9px;">({{ form.errors.date }})</span></label>
                             <div>
                                 <flat-pickr ref="datepicker"
@@ -128,13 +121,20 @@
                             </div>
                         </BCol>
 
-                        <BCol lg="6" class="mt-2">
+                        <BCol md="6">
                             <InputLabel for="name" value="Departure Time" :message="form.errors.time"/>
                             <TextInput id="name" v-model="form.time" type="time" class="form-control" placeholder="Please enter time" @input="handleInput('time')"/>
                         </BCol>
-                        <BCol lg="12" class="mt-0">
+
+                        <BCol md="6" class="mt-0">
                             <InputLabel for="name" value="Remarks" :message="form.errors.remarks"/>
-                            <TextInput id="name" v-model="form.remarks" type="text" class="form-control" placeholder="Please enter remarks" @input="handleInput('remarks')"/>
+                            <Textarea id="name" v-model="form.remarks" style="height: 70px;" placeholder="Please enter remarks" @input="handleInput('remarks')"/>
+                        </BCol>
+                        <BCol md="6" class="mt-0 mb-2">
+                            <InputLabel value="Attachment"/>
+                            <file-pond class="travel-attachment" name="pdf" ref="pond" allow-multiple="false" max-files="1" accepted-file-types="application/pdf"
+                            label-idle='Drag &amp; Drop your PDF or <span class="filepond--label-action">Browse</span>'
+                            :allow-process="false" @addfile="handleAddFile"/>
                         </BCol>
 
                         <BCol :lg="(form.mode_id == 150) ? 4 : (form.mode_id == 151 ? 6 : 12)" class="mt-0">
@@ -300,9 +300,13 @@
                                 <span class="text-muted fs-10 fw-semibold">EVENT</span>
                                 <h6 class="fs-12 fw-semibold mb-1 text-truncate">{{ selectedEvent?.name || '—' }}</h6>
                                 <div class="d-flex flex-wrap align-items-center gap-2 fs-10 text-muted">
-                                    <span v-if="selectedEvent?.type" class="badge bg-primary-subtle text-primary fs-10">{{ selectedEvent.type.name }}</span>
+                                    <!-- <span v-if="selectedEvent?.type" class="badge bg-primary-subtle text-primary fs-10">{{ selectedEvent.type.name }}</span> -->
                                     <span v-if="selectedEvent"><i class="ri-map-pin-fill align-bottom me-1"></i>{{ selectedEvent.location?.name || 'No location set' }}</span>
                                     <span v-if="eventDates.length"><i class="ri-calendar-event-fill align-bottom me-1"></i>{{ eventDates[0].start }}<span v-if="eventDates[0].end && eventDates[0].end !== eventDates[0].start"> - {{ eventDates[0].end }}</span></span>
+                                </div>
+                                <div class="mt-1">
+                                    <div class="fs-10 text-muted">Purpose</div>
+                                    <div class="fs-11" :title="form.purpose">{{ form.purpose || '—' }}</div>
                                 </div>
                             </div>
                             <b-button variant="link" type="button" size="sm" class="p-0 fs-10 text-decoration-none flex-shrink-0 ms-2" @click="toggleTab(1, 0)">Edit</b-button>
@@ -315,10 +319,6 @@
                             <b-button variant="link" type="button" size="sm" class="p-0 fs-10 text-decoration-none" @click="toggleTab(2, 25)">Edit</b-button>
                         </div>
                         <BRow class="g-2">
-                            <BCol md="6">
-                                <div class="fs-10 text-muted">Purpose</div>
-                                <div class="fs-11" :title="form.purpose">{{ form.purpose || '—' }}</div>
-                            </BCol>
                             <BCol md="3" cols="6">
                                 <div class="fs-10 text-muted">Date</div>
                                 <div class="fs-11">{{ form.date || '—' }}</div>
@@ -382,19 +382,19 @@
         <template v-slot:footer>
             <template v-if="activeTab == 1">
                 <b-button @click="hide" type="button" variant="light">Cancel</b-button>
-                <b-button @click="toggleTab(2, 25)" type="button" variant="primary">Next</b-button>
+                <b-button @click="toggleTab(2, 25)" type="button" variant="primary" :disabled="!step1Valid">Next</b-button>
             </template>
             <template v-else-if="activeTab == 2">
                 <b-button @click="toggleTab(1, 0)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="toggleTab(3, 50)" type="button" variant="primary" class="ms-auto">Next</b-button>
+                <b-button @click="toggleTab(3, 50)" type="button" variant="primary" class="ms-auto" :disabled="!step2Valid">Next</b-button>
             </template>
             <template v-else-if="activeTab == 3">
                 <b-button @click="toggleTab(2, 25)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="toggleTab(4, 75)" type="button" variant="primary" class="ms-auto">Next</b-button>
+                <b-button @click="toggleTab(4, 75)" type="button" variant="primary" class="ms-auto" :disabled="!step3Valid">Next</b-button>
             </template>
             <template v-else-if="activeTab == 4">
                 <b-button @click="toggleTab(3, 50)" type="button" variant="link" class="text-decoration-none">Back</b-button>
-                <b-button @click="toggleTab(5, 100)" type="button" variant="primary" class="ms-auto">Next</b-button>
+                <b-button @click="toggleTab(5, 100)" type="button" variant="primary" class="ms-auto" :disabled="!step4Valid">Next</b-button>
             </template>
             <template v-else>
                 <b-button @click="toggleTab(4, 75)" type="button" variant="link" class="text-decoration-none">Back</b-button>
@@ -490,6 +490,21 @@ export default {
         },
         employeeNames() {
             return (this.form.tags || []).map(t => t.name);
+        },
+        step1Valid() {
+            return !!this.selectedEvent && !!this.form.purpose;
+        },
+        step2Valid() {
+            if (!this.form.date || !this.form.time || !this.form.mode_id) return false;
+            if (this.form.mode_id == 151 && !this.form.transpo_id) return false;
+            if (this.form.mode_id == 150 && (!this.form.vehicle || !this.form.driver_id)) return false;
+            return true;
+        },
+        step3Valid() {
+            return !!this.form.expense_id && !!(this.form.expenses && this.form.expenses.length);
+        },
+        step4Valid() {
+            return !!(this.form.tags && this.form.tags.length);
         }
     },
     watch: {
@@ -524,7 +539,7 @@ export default {
         validateForSubmit() {
             const errors = [];
             if (!this.selectedEvent) errors.push({ message: 'Please select an event.', tab: 1, progress: 0 });
-            if (!this.form.purpose) errors.push({ message: 'Purpose is required.', tab: 2, progress: 25 });
+            if (!this.form.purpose) errors.push({ message: 'Purpose is required.', tab: 1, progress: 0 });
             if (!this.form.date) errors.push({ message: 'Travel date is required.', tab: 2, progress: 25 });
             if (!this.form.time) errors.push({ message: 'Departure time is required.', tab: 2, progress: 25 });
             if (!this.form.mode_id) errors.push({ message: 'Mode of travel is required.', tab: 2, progress: 25 });

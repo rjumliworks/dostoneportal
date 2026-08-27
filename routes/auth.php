@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index']);
     Route::get('/profile/onboarding', [ProfileController::class, 'onboarding']);
     Route::post('/profile', [ProfileController::class, 'store']);
+    Route::post('/profile/certificate/verify-password', [ProfileController::class, 'verifyCertificatePassword']);
     Route::post('/otp', [ProfileController::class, 'otp']);
     Route::put('/profile/updated', [ProfileController::class, 'update']);
     Route::get('/profile/security', [ProfileController::class, 'security']);

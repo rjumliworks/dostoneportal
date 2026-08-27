@@ -23,6 +23,9 @@
                         <BListGroupItem :active="activeTab === 3" href="#" class="list-group-item-action" @click="show(3)">
                             <i class="ri-history-line align-middle me-2"></i>Activity History
                         </BListGroupItem>
+                        <BListGroupItem :active="activeTab === 4" href="#" class="list-group-item-action" @click="show(4)">
+                            <i class="ri-shield-star-line align-middle me-2"></i>Digital Certificate
+                        </BListGroupItem>
                     </b-list-group>
                     <hr class="text-muted">
                     <Link href="/profile" class="btn btn-soft-secondary w-100">
@@ -36,6 +39,7 @@
             <Security v-if="activeTab === 1"/>
             <AuthenticationLog v-if="activeTab === 2"/>
             <ActivityLog v-if="activeTab === 3"/>
+            <Certificate v-if="activeTab === 4"/>
         </div>
     </div>
 </template>
@@ -44,9 +48,10 @@ import { Link } from "@inertiajs/vue3"
 import Security from '../Pages/Security.vue';
 import ActivityLog from '../Pages/ActivityLog.vue';
 import AuthenticationLog from "../Pages/AuthenticationLog.vue";
+import Certificate from '../Pages/Certificate.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { Link, PageHeader, AuthenticationLog, ActivityLog, Security },
+    components: { Link, PageHeader, AuthenticationLog, ActivityLog, Security, Certificate },
     data() {
         return {
             activeTab: 1,

@@ -15,14 +15,9 @@
                                                 <div>
                                                     <h4 class="fw-bold">{{ information.event?.title || information.purpose }} </h4>
                                                     <div class="hstack gap-3 flex-wrap">
-                                                        <div><i class="ri-qr-code-fill align-bottom me-1"></i> {{information.code}}</div>
-                                                        <div class="vr" style="width: 1px;"></div>
-                                                        <div v-if="information.event_date"><span class="text-muted">Event Date : </span> <span class="fw-medium">{{information.event_date.start}}<span v-if="information.event_date.end && information.event_date.end !== information.event_date.start"> - {{information.event_date.end}}</span></span></div>
-                                                        <div v-if="information.event_date" class="vr" style="width: 1px;"></div>
-                                                        <div><span class="text-muted">Date Created : </span> <span class="fw-medium">{{information.created_at}}</span></div>
-                                                        <div class="vr" style="width: 1px;"></div>
-                                                        <div><span class="text-muted">Created By : </span> <span class="fw-medium">{{information.employee}}</span></div>
-                                                        <div class="vr"></div>
+                                                        <div v-if="information.destination"><span class="text-muted"><i class="ri-map-pin-fill align-bottom me-1"></i> </span> <span class="fw-medium">{{information.destination.name}}</span></div>
+                                                        <div v-if="information.destination && information.event_date" class="vr" style="width: 1px;"></div>
+                                                        <div v-if="information.event_date"><span class="text-muted"><i class="ri-calendar-event-fill align-bottom me-1"></i> </span> <span class="fw-medium">{{information.event_date.start}}<span v-if="information.event_date.end && information.event_date.end !== information.event_date.start"> - {{information.event_date.end}}</span></span></div>
                                                     </div>
                                                 </div>
                                             </BCol>

@@ -28,8 +28,8 @@
                                 <div class="input-group mb-1">
                                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                     <input type="text" v-model="filter.keyword" placeholder="Search Vehicle" class="form-control" style="width: 50%;">
-                                    <!-- <input type="text" v-model="filter.year" placeholder="Enter Year" class="form-control" style="width: 5%;"> -->
-                                    <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                    <Multiselect class="white" style="width: 17%;" :options="dropdowns.types" v-model="filter.type" label="name" :searchable="true" placeholder="Select Type" />
+                                    <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                         <i class="bx bx-refresh search-icon"></i>
                                     </span>
                                     <b-button type="button" variant="primary" @click="openCreate">
@@ -44,8 +44,14 @@
                             <div class="flex-grow-1">
                                 <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                                     <li class="nav-item">
-                                        <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                        <i class="ri-apps-2-line me-1 align-bottom"></i> All Surveys
+                                        <BLink @click="viewStatus(null,null)" class="nav-link py-3" :class="(this.index == null) ? 'active' : ''" data-bs-toggle="tab" role="tab" aria-selected="true">
+                                        <i class="ri-apps-2-line me-1 align-bottom"></i> All Vehicles
+                                        </BLink>
+                                    </li>
+                                    <li class="nav-item" v-for="(list,index) in dropdowns.statuses" v-bind:key="index">
+                                        <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? 'text-secondary active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                            <i :class="icons[index]" class="me-1 align-bottom"></i>
+                                            {{ list.name }} <BBadge v-if="counts[index] > 0" :class="list.bg" class="align-middle ms-1">{{counts[index]}}</BBadge>
                                         </BLink>
                                     </li>
                                 </ul>
@@ -81,7 +87,7 @@
                                         </td>
                                         <td class="text-center">-</td>
                                         <td class="text-center">{{ list.plate }}</td>
-                                        <td class="text-center">{{ list.type }}</td>
+                                        <td class="text-center">{{ list.type.name }}</td>
                                         <td class="text-center">{{ list.acquired_at }}</td>
                                         <td class="text-center">
                                             <span :class="'badge '+list.status.bg+' '+list.status.type">{{list.status.name}}</span>
@@ -141,25 +147,36 @@
     import Pagination from "@/Shared/Components/Pagination.vue";
     export default {
         components: { PageHeader, Pagination, Multiselect, Create },
-        props: ['dropdowns'],
+        props: ['dropdowns','counts'],
         data(){
             return {
                 currentUrl: window.location.origin,
+                icons: ['ri-checkbox-circle-fill','ri-road-map-fill','ri-tools-fill'],
                 lists: [],
                 meta: {},
                 links: {},
                 filter: {
                     year: null,
-                    semester: null
+                    semester: null,
+                    type: null,
+                    status: null
                 },
                 index: null,
                 units: []
             }
-        }, 
+        },
+        watch: {
+            "filter.type"(newVal){
+                this.fetch();
+            },
+            "filter.keyword"(newVal){
+                this.checkSearchStr(newVal);
+            }
+        },
         created(){
            this.fetch();
         },
-        methods: { 
+        methods: {
             openCreate(){
                 this.$refs.create.show();
             },
@@ -171,7 +188,8 @@
                 axios.get(page_url,{
                     params : {
                         keyword: this.filter.keyword,
-                        station: this.filter.station,
+                        type: this.filter.type,
+                        status: this.filter.status,
                         count: 10,
                         option: 'lists'
                     }
@@ -180,10 +198,15 @@
                     if(response){
                         this.lists = response.data.data;
                         this.meta = response.data.meta;
-                        this.links = response.data.links;          
+                        this.links = response.data.links;
                     }
                 })
                 .catch(err => console.log(err));
+            },
+            viewStatus(index,status){
+                this.index = index;
+                this.filter.status = status;
+                this.fetch();
             },
         }
     }

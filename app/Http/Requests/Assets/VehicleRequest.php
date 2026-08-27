@@ -22,7 +22,12 @@ class VehicleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'plate' => ['required', 'string', 'max:255'],
+            'type_id' => ['required', 'integer', 'exists:list_data,id'],
+            'status_id' => ['required', 'integer', 'exists:list_statuses,id'],
+            'station_id' => ['required', 'integer', 'exists:list_dropdowns,id'],
+            'acquired_at' => ['nullable', 'date'],
         ];
     }
 }

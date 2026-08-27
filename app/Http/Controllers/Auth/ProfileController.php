@@ -22,6 +22,7 @@ use App\Services\Profile\ViewClass;
 use App\Services\Profile\SaveClass;
 use App\Services\Profile\PrintClass;
 use App\Services\DropdownClass;
+use App\Services\Common\Signing\CertificateVerifier;
 use App\Http\Requests\Auth\ProfileRequest;
 use App\Http\Requests\Auth\PdsRequest;
 use Illuminate\Validation\Rules\Password;
@@ -34,13 +35,14 @@ class ProfileController extends Controller
 {
     use HandlesTransaction;
 
-    public $view, $save, $dropdown, $print;
+    public $view, $save, $dropdown, $print, $certificateVerifier;
 
-    public function __construct(ViewClass $view, SaveClass $save, DropdownClass $dropdown, PrintClass $print){
+    public function __construct(ViewClass $view, SaveClass $save, DropdownClass $dropdown, PrintClass $print, CertificateVerifier $certificateVerifier){
         $this->view = $view;
         $this->save = $save;
         $this->dropdown = $dropdown;
         $this->print = $print;
+        $this->certificateVerifier = $certificateVerifier;
     }
 
     public function index(Request $request){
@@ -60,6 +62,9 @@ class ProfileController extends Controller
             break;
             case 'download':
                 return $this->print->pds(\Auth::id());
+            break;
+            case 'certificate-password-check':
+                return $this->checkCertificatePassword($request);
             break;
             default:
             return inertia('Auth/Profile/Index', $this->loadProfileData(\Auth::user()->id));
@@ -155,7 +160,7 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         if($request->option == 'certificate'){
-           
+
             $request->validate([
                 'p12' => 'required|file'
             ]);
@@ -174,29 +179,65 @@ class ProfileController extends Controller
                 // Store in S3
                 $path = $file->storeAs('', $filename, 's3');
 
-                // Get full URL if needed
-                $url = Storage::disk('s3')->url($path);
-
-                // Find or create the UserCertificate
-                $certificate = UserCertificate::updateOrCreate(
+                // Find or create the UserCertificate.
+                // A newly uploaded certificate invalidates any previous password check.
+                UserCertificate::updateOrCreate(
                     ['user_id' => $user->id],
                     [
                         'file' => $path, // save the S3 path
-                        'password' => 'rstlD057rubber',
+                        'is_checked' => false,
                     ]
                 );
 
-                   return [
-                        'data' => [],
-                        'message' => 'Profile picture updated successfully.', 
-                        'info' => "The user's profile image has been changed to the new photo."
-                    ];
+                return [
+                    'data' => [],
+                    'message' => 'Certificate uploaded successfully.',
+                    'info' => "The user's PNPKI certificate has been updated."
+                ];
+            });
+        }else if($request->option == 'certificate_password'){
+            $request->validate([
+                'password' => 'required|string|min:4'
+            ]);
+
+            $user = User::with('certificate')->find(\Auth::user()->id);
+            $isChecked = false;
+
+            if ($user->certificate && $user->certificate->file) {
+                $verification = $this->certificateVerifier->verify($user->certificate->file, $request->password);
+
+                if ($verification['checked'] && !$verification['valid']) {
+                    throw ValidationException::withMessages([
+                        'password' => 'The password you entered does not match your uploaded PNPKI certificate.',
+                    ]);
+                }
+
+                $isChecked = $verification['checked'] && $verification['valid'];
+            }
+
+            $result = $this->handleTransaction(function () use ($request, $isChecked) {
+
+                $user = User::find(\Auth::user()->id);
+
+                UserCertificate::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'password' => $request->password,
+                        'is_checked' => $isChecked,
+                    ]
+                );
+
+                return [
+                    'data' => [],
+                    'message' => 'Certificate password saved successfully.',
+                    'info' => 'The PNPKI certificate password has been updated.'
+                ];
             });
         }else if($request->option == 'signature'){
             $request->validate([
                 'signature' => 'required'
             ]);
-           
+
             $result = $this->handleTransaction(function () use ($request) {
 
                 $user = User::find(\Auth::user()->id);
@@ -209,22 +250,19 @@ class ProfileController extends Controller
                 // Store in S3
                 $path = $file->storeAs('', $filename, 's3');
 
-                // Get full URL if needed
-                $url = Storage::disk('s3')->url($path);
-
                 // Find or create the UserCertificate
-                $certificate = UserCertificate::updateOrCreate(
+                UserCertificate::updateOrCreate(
                     ['user_id' => $user->id],
                     [
                         'signature' => $path
                     ]
                 );
 
-                   return [
-                        'data' => [],
-                        'message' => 'Profile picture updated successfully.', 
-                        'info' => "The user's profile image has been changed to the new photo."
-                    ];
+                return [
+                    'data' => [],
+                    'message' => 'Signature uploaded successfully.',
+                    'info' => "The user's e-signature has been updated."
+                ];
             });
         }else{
             $request->validate([
@@ -238,14 +276,14 @@ class ProfileController extends Controller
             $result = $this->handleTransaction(function () use ($request) {
                 return $this->save->save($request);
             });
-
-            return back()->with([
-                'data' => $result['data'],
-                'message' => $result['message'],
-                'info' => $result['info'],
-                'status' => $result['status'],
-            ]);
         }
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
     }
 
     public function update( ProfileRequest $request){
@@ -323,6 +361,48 @@ class ProfileController extends Controller
             'success' => true,
             'message' => 'Verification code sent.'
         ]);
+    }
+
+    protected function checkCertificatePassword(Request $request)
+    {
+        $user = User::with('certificate')->find(\Auth::user()->id);
+        $certificate = $user->certificate;
+
+        if (!$certificate || !$certificate->file || !$certificate->password) {
+            return response()->json([
+                'checked' => false,
+                'valid' => true,
+            ]);
+        }
+
+        $verification = $this->certificateVerifier->verify($certificate->file, $certificate->password);
+
+        if ($verification['checked'] && $certificate->is_checked !== $verification['valid']) {
+            $certificate->update(['is_checked' => $verification['valid']]);
+        }
+
+        return response()->json($verification);
+    }
+
+    public function verifyCertificatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        $user = User::with('certificate')->find(\Auth::user()->id);
+        $certificate = $user->certificate;
+
+        if (!$certificate || !$certificate->file) {
+            return response()->json([
+                'checked' => false,
+                'valid' => true,
+            ]);
+        }
+
+        $verification = $this->certificateVerifier->verify($certificate->file, $request->password);
+
+        return response()->json($verification);
     }
 
 }

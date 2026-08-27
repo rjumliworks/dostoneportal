@@ -29,10 +29,13 @@ class VehicleController extends Controller
             break;
             default:
                 return inertia('Modules/Assets/Vehicles/Index',[
+                    'counts' => $this->view->counts($this->dropdown->statuses('Vehicle')),
                     'dropdowns' => [
-                        'stations' => $this->dropdown->stations()
+                        'stations' => $this->dropdown->stations(),
+                        'types' => $this->dropdown->datas('Vehicle'),
+                        'statuses' => $this->dropdown->statuses('Vehicle')
                     ]
-                ]); 
+                ]);
         }   
     }
 

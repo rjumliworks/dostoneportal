@@ -19,6 +19,17 @@
             </div>
         </div>
 
+        <div v-if="related.length" class="border border-dashed rounded p-3 mt-3 text-start">
+            <p class="fs-12 fw-semibold text-primary mb-2">
+                <i class="ri-file-copy-2-line align-bottom me-1"></i>
+                This request has {{ related.length }} other pending signatory request(s) for the same request. Approve them too?
+            </p>
+            <div class="form-check mb-1" v-for="item in related" :key="item.id">
+                <input class="form-check-input" type="checkbox" :id="'related-'+item.id" :value="item.id" v-model="selectedRelated">
+                <label class="form-check-label fs-12" :for="'related-'+item.id">{{ item.division }}</label>
+            </div>
+        </div>
+
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
             <b-button @click="submit" variant="success" :disabled="form.processing" block>
@@ -47,6 +58,8 @@
                 type: null,
                 showModal: false,
                 cameraStream: null,
+                related: [],
+                selectedRelated: [],
             };
         },
         methods: {
@@ -55,7 +68,21 @@
                 this.form.request_id = request_id;
                 this.form.type = type;
                 this.type = type;
+                this.related = [];
+                this.selectedRelated = [];
                 this.showModal = true;
+                this.fetchRelated(id, request_id);
+            },
+
+            async fetchRelated(id, request_id) {
+                try {
+                    const { data } = await axios.get("/approvals", {
+                        params: { option: "related", id, request_id, status_id: this.form.status_id },
+                    });
+                    this.related = data;
+                } catch (error) {
+                    console.log(error);
+                }
             },
 
             async submit() {
@@ -70,7 +97,28 @@
                     // 2️⃣ Attach photo to form
                     this.form.photo = photo;
 
-                    // 3️⃣ Submit to backend
+                    // 3️⃣ Approve any additionally selected related signatories first
+                    try {
+                        for (const relatedId of this.selectedRelated) {
+                            const { data } = await axios.put("/approvals/update", {
+                                id: relatedId,
+                                request_id: this.form.request_id,
+                                type: this.form.type,
+                                status_id: this.form.status_id,
+                                photo: photo,
+                                option: "status",
+                            });
+                            if (data.message !== "Request Status Updated") {
+                                throw new Error(data.info || data.message);
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Related approval error:", error);
+                        alert(error?.message || "Failed to approve one or more related requests. Please try again.");
+                        return;
+                    }
+
+                    // 4️⃣ Submit to backend
                     this.form.put("/approvals/update", {
                         preserveScroll: true,
                         onSuccess: () => {

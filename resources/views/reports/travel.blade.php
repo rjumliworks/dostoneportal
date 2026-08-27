@@ -280,11 +280,11 @@
                                 @if($sign['division'] != 'Office of the Regional Director')
                                     <div style="position: absolute; bottom: 0; width: 100%;">
                                         <span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">
-                                            {{  ($data['signatory']['recommended'][$loop->index]['name']) }}
+                                            {{ $sign['recommended']['name'] }}
                                         </span>
                                         <hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">
                                         <div style="font-size: 10px;">
-                                            {{  ($data['signatory']['recommended'][$loop->index]['role']) }}
+                                            {{ $sign['recommended']['role'] }}
                                         </div>
                                     </div>
                                 @endif
@@ -307,11 +307,11 @@
                                 {{-- Name and designation --}}
                                 <div style="position: absolute; bottom: 0; width: 100%;">
                                     <span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">
-                                        {{ $data['signatory']['approved']['name']}}
+                                        {{ $sign['approved']['name'] }}
                                     </span>
                                     <hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">
                                     <div style="font-size: 10px;">
-                                       {{  $data['signatory']['approved']['role'] }}
+                                       {{ $sign['approved']['role'] }}
                                     </div>
                                 </div>
                             </div>

@@ -6,6 +6,7 @@ use App\Models\OrgChart;
 use App\Models\ListLeave;
 use App\Models\ListDropdown;
 use App\Models\RequestReport;
+use App\Models\RequestTag;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
 
@@ -62,6 +63,18 @@ class PrintClass
                 $pdf = \PDF::loadView('reports.leave', $array)->setPaper('a4', 'portrait');
             break;
             case 'Travel Order':
+                // Only print the division page for the logged-in user's own tag on this
+                // request, instead of every division's page. Falls back to the full
+                // multi-division document when the current user isn't a tagged employee
+                // (e.g. the requester filing on someone else's behalf).
+                $currentTag = RequestTag::where('request_id', $id)->where('user_id', auth()->id())->first();
+                if ($currentTag && !empty($array['data']['signatories'])) {
+                    $array['data']['signatories'] = collect($array['data']['signatories'])
+                        ->filter(fn($sign) => $sign['division_id'] == $currentTag->division_id)
+                        ->values()
+                        ->all();
+                }
+
                 $pdf = \PDF::loadView('reports.travel', $array)->setPaper('a4', 'portrait');
             break;
             case 'Vehicle Reservation':

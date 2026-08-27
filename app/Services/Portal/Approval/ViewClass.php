@@ -6,9 +6,53 @@ use App\Models\Request;
 use App\Models\RequestSignatory;
 use App\Models\OrgSignatory;
 use App\Http\Resources\Portal\Approval\IndexResource;
+use Hashids\Hashids;
 
 class ViewClass
 {
+    public function related($request){
+        $hashids = new Hashids('krad', 10);
+        $signatoryId = $hashids->decode($request->id)[0] ?? null;
+        $requestId = $hashids->decode($request->request_id)[0] ?? null;
+
+        if (!$signatoryId || !$requestId) {
+            return [];
+        }
+
+        $statusId = $request->status_id;
+        $prerequisite = ($statusId == 26) ? 25 : 24;
+
+        $query = RequestSignatory::with('division')
+            ->where('request_id', $requestId)
+            ->where('id', '!=', $signatoryId)
+            ->where('status_id', $prerequisite)
+            ->where('is_disapproved', 0);
+
+        if ($statusId != 26) {
+            // Mirrors SaveClass::status() division resolution exactly, so anything
+            // shown here will actually be accepted when the batch action is submitted.
+            $division = OrgSignatory::where(function ($q) {
+                    $q->where('user_id', \Auth::user()->id)
+                        ->orWhere('oic_id', \Auth::user()->id);
+                })
+                ->where('is_active', 1)
+                ->first()?->designationable?->assigned;
+
+            if (!$division) {
+                return [];
+            }
+
+            $query->where('division_id', $division->id);
+        }
+
+        return $query->get()->map(function ($signatory) use ($hashids) {
+            return [
+                'id' => $hashids->encode($signatory->id),
+                'code' => $signatory->code,
+                'division' => $signatory->division->name ?? 'N/A',
+            ];
+        })->values();
+    }
     public function lists($request){
         $signatories = OrgSignatory::with('designationable')->where('user_id',\Auth::user()->id)->orWhere('oic_id',\Auth::user()->id)->where('is_active',1)->get(); 
         

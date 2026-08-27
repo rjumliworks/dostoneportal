@@ -214,6 +214,7 @@ class TravelClass
             'travel.mode',
             'travel.expense',
             'travel.event.type','travel.event.audience','travel.event.mode',
+            'travel.event.request.location.region:code,name,region','travel.event.request.location.province:code,name','travel.event.request.location.municipality:code,name','travel.event.request.location.barangay:code,name',
             'reservation.vehicle',
             'type',
             'dates',
@@ -269,9 +270,11 @@ class TravelClass
             'time' => $data->dates[0]->time,
             'date' => $formattedDateRange,
             'duration' => $dayDuration = ($start->diffInDays($end) + 1) . ' ' . (($start->diffInDays($end) + 1) === 1 ? 'day' : 'days'),
-            'expenses' => $data->travel->expense_items, 
-            'destination' => $data->location ? $data->location->barangay->name.', '.$data->location->municipality->name : 'N/A',
-            'venue' => $data->location->address ?? 'N/A',
+            'expenses' => $data->travel->expense_items,
+            'destination' => ($destination = $data->location ?? $data->travel->event?->request?->location)
+                ? trim(collect([$destination->barangay?->name, $destination->municipality?->name])->filter()->implode(', ')) ?: 'N/A'
+                : 'N/A',
+            'venue' => $destination->address ?? 'N/A',
             'employees' => $employees,
             'signatories' => $this->sign($data->signatories),
             'signatory' => $this->signatory($data->signatories),
@@ -326,6 +329,22 @@ class TravelClass
         $signatoriesFormatted = [];
 
         foreach ($signatories as $signatory) {
+            $division = $signatory->division->others ?? ($signatory->division->name ?? '');
+
+            $recommendedRole = null;
+            if ($signatory->recommended) {
+                $recommendedRole = $signatory->recommended->is_designated
+                    ? 'Assistant Regional Director (' . $division . ')'
+                    : 'OIC - Assistant Regional Director (' . $division . ')';
+            }
+
+            $approvedRole = null;
+            if ($signatory->approved) {
+                $approvedRole = $signatory->approved->is_designated
+                    ? 'Regional Director'
+                    : 'OIC - Regional Director';
+            }
+
             $signatoriesFormatted[] = [
                 'code' => $signatory->code,
                 'division' => $signatory->division->name ?? 'n/a',
@@ -334,13 +353,13 @@ class TravelClass
                     'name' => $signatory->recommended?->user->profile->fullname,
                     'signature' => $signatory->recommended?->user->profile->signature,
                     'date' =>  $signatory->recommended_date,
-                    'role' => null
+                    'role' => $recommendedRole
                 ],
                 'approved' => [
                     'name' => $signatory->approved?->user->profile->fullname,
                     'signature' => $signatory->approved?->user->profile->signature,
                     'date' => $signatory->approved_date,
-                    'role' => null
+                    'role' => $approvedRole
                 ]
             ];
         }

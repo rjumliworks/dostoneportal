@@ -12,8 +12,8 @@
                     <TextInput id="name" v-model="form.plate" type="text" class="form-control" placeholder="Please enter plate" @input="handleInput('plate')" :light="true"/>
                 </BCol>
                 <BCol lg="6" class="mt-0">
-                    <InputLabel for="Type" value="Type" :message="form.errors.type"/>
-                    <TextInput id="name" v-model="form.type" type="text" class="form-control" placeholder="Please enter type" @input="handleInput('type')" :light="true"/>
+                    <InputLabel for="Type" value="Type" :message="form.errors.type_id"/>
+                    <Multiselect :options="dropdowns.types" :searchable="true" label="name" v-model="form.type_id" placeholder="Select Type" @input="handleInput('type_id')"/>
                 </BCol>
                 <BCol lg="12" class="mt-0">
                     <InputLabel for="name" value="Station" :message="form.errors.station_id"/>
@@ -45,7 +45,7 @@ export default {
             address: null,
             form: useForm({
                 name: null,
-                type: null,
+                type_id: null,
                 plate: null,
                 status_id: 21,
                 station_id: null,

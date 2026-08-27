@@ -16,8 +16,19 @@
             <BCol lg="12" class="mt-3">
                 <Textarea id="name" v-model="form.reason" type="text" rows="3" placeholder="Add reason" class="form-control" :class="{ 'is-invalid': form.errors.reason }" @input="handleInput('reason')" :light="true"/>
             </BCol>
-            
         </BRow>
+
+        <div v-if="related.length" class="border border-dashed rounded p-3 mx-2 mb-2 text-start">
+            <p class="fs-12 fw-semibold text-primary mb-2">
+                <i class="ri-file-copy-2-line align-bottom me-1"></i>
+                This request has {{ related.length }} other pending signatory request(s) for the same request. Disapprove them too?
+            </p>
+            <div class="form-check mb-1" v-for="item in related" :key="item.id">
+                <input class="form-check-input" type="checkbox" :id="'related-'+item.id" :value="item.id" v-model="selectedRelated">
+                <label class="form-check-label fs-12" :for="'related-'+item.id">{{ item.division }}</label>
+            </div>
+        </div>
+
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
             <b-button @click="submit('ok')" variant="danger" :disabled="form.processing" block>Submit</b-button>
@@ -44,6 +55,8 @@ import Textarea from '@/Shared/Components/Forms/Textarea.vue';
                 type: null,
                 showModal: false,
                 cameraStream: null,
+                related: [],
+                selectedRelated: [],
             };
         },
         methods: {
@@ -52,7 +65,21 @@ import Textarea from '@/Shared/Components/Forms/Textarea.vue';
                 this.form.request_id = request_id;
                 this.form.type = type;
                 this.type = type;
+                this.related = [];
+                this.selectedRelated = [];
                 this.showModal = true;
+                this.fetchRelated(id, request_id);
+            },
+
+            async fetchRelated(id, request_id) {
+                try {
+                    const { data } = await axios.get("/approvals", {
+                        params: { option: "related", id, request_id, status_id: this.form.status_id },
+                    });
+                    this.related = data;
+                } catch (error) {
+                    console.log(error);
+                }
             },
 
             async submit() {
@@ -67,7 +94,29 @@ import Textarea from '@/Shared/Components/Forms/Textarea.vue';
                     // 2️⃣ Attach photo to form
                     this.form.photo = photo;
 
-                    // 3️⃣ Submit to backend
+                    // 3️⃣ Disapprove any additionally selected related signatories first
+                    try {
+                        for (const relatedId of this.selectedRelated) {
+                            const { data } = await axios.put("/approvals/update", {
+                                id: relatedId,
+                                request_id: this.form.request_id,
+                                type: this.form.type,
+                                status_id: this.form.status_id,
+                                photo: photo,
+                                reason: this.form.reason,
+                                option: "status",
+                            });
+                            if (data.message !== "Request Status Updated") {
+                                throw new Error(data.info || data.message);
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Related disapproval error:", error);
+                        alert(error?.message || "Failed to disapprove one or more related requests. Please try again.");
+                        return;
+                    }
+
+                    // 4️⃣ Submit to backend
                     this.form.put("/approvals/update", {
                         preserveScroll: true,
                         onSuccess: () => {

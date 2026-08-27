@@ -28,6 +28,9 @@ class ApprovalController extends Controller
             case 'lists':
                 return $this->view->lists($request);
             break;
+            case 'related':
+                return $this->view->related($request);
+            break;
             default:
                 return inertia('Modules/Portal/Approvals/Index',[
                     'count' => $this->view->count()
@@ -78,7 +81,14 @@ class ApprovalController extends Controller
                 break;
             }
         });
-        
+
+        // Plain AJAX calls (e.g. batch-processing related signatories) don't carry
+        // Inertia's request headers, so answer with JSON instead of a back() redirect
+        // that would otherwise get auto-followed into an unrelated full page render.
+        if (! $request->header('X-Inertia')) {
+            return response()->json($result);
+        }
+
         return back()->with([
             'data' => $result['data'],
             'message' => $result['message'],
