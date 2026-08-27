@@ -328,7 +328,7 @@ export default {
                 this.form.post('/activities',{
                     preserveScroll: true,
                     onSuccess: (response) => {
-                        this.$emit('update',true);
+                        this.$emit('create',this.$page.props.flash.data);
                         this.form.clearErrors();
                         this.form.reset();
                         this.hide();

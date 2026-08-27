@@ -61,7 +61,7 @@ class SaveClass
         }
 
         return [
-            'data' => $data,
+            'data' => new IndexResource($this->loadedEvent($event->id)),
             'message' => 'Event created Successfully',
             'info' => "Your travel schedule has been submitted. Keep an eye on your notifications for any approvals or updates."
         ];
@@ -93,20 +93,22 @@ class SaveClass
         $this->report($data->id);
 
         return [
-            'data' => new IndexResource(
-                RequestEvent::with([
-                    'mode','types','audience',
-                    'request.tags.user:id',
-                    'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.tags.status',
-                    'request.tags.user.organization.division','request.tags.user.organization.unit','request.tags.user.organization.position',
-                    'request.dates',
-                    'request.location',
-                    'request.detail',
-                ])->find($event->id)
-            ),
+            'data' => new IndexResource($this->loadedEvent($event->id)),
             'message' => 'Event updated Successfully',
             'info' => "The event details have been updated."
         ];
+    }
+
+    private function loadedEvent($id){
+        return RequestEvent::with([
+            'mode','types','audience',
+            'request.tags.user:id',
+            'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.tags.status',
+            'request.tags.user.organization.division','request.tags.user.organization.unit','request.tags.user.organization.position',
+            'request.dates',
+            'request.location',
+            'request.detail',
+        ])->find($id);
     }
 
     private function saveDates($data, $request){

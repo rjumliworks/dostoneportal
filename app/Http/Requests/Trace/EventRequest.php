@@ -17,7 +17,7 @@ class EventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'sometimes|required|integer|exists:request_events,id',
+            'id' => 'nullable|integer|exists:request_events,id',
             'title' => 'sometimes|required',
             'purpose' => 'sometimes|required',
             'types' => 'sometimes|required|array|min:1',

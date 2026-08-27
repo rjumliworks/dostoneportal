@@ -112,7 +112,7 @@
             </div>
         </div>
     </BRow>
-    <Create @update="updateUser" :dropdowns="dropdowns" ref="create"/>
+    <Create @create="addEvent" @update="updateUser" :dropdowns="dropdowns" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
@@ -209,6 +209,9 @@ export default {
         openEdit(data,index){
             this.index = index;
             this.$refs.create.update(data);
+        },
+        addEvent(data){
+            this.lists.unshift(data);
         },
         updateUser(data){
             this.lists[this.index] = data;
