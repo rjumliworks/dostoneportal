@@ -10,6 +10,10 @@ class MyrequestRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        if ($this->option === 'travel') {
+            return \Auth::user()->hasRole('Administrator');
+        }
+
         return true;
     }
 
@@ -49,7 +53,8 @@ class MyrequestRequest extends FormRequest
             break;
             case 'travel':
                 return [
-                    'event_id' => 'required|integer|exists:request_events,id',
+                    'events' => 'required|array|min:1',
+                    'events.*' => 'integer|exists:request_events,id',
                     'purpose' => 'required|string|max:255',
                     'expenses' => 'required|array|min:1',
                     'tags' => 'required|array|min:1',
@@ -213,8 +218,8 @@ class MyrequestRequest extends FormRequest
             break;
             case 'travel':
                 return [
-                    'event_id.required' => 'Please tag or create an event for this travel.',
-                    'event_id.exists' => 'The selected event is invalid.',
+                    'events.required' => 'Please tag or create at least one event for this travel.',
+                    'events.*.exists' => 'One of the selected events is invalid.',
 
                     'purpose.required' => 'Please provide the purpose of this travel.',
                     'purpose.string' => 'Purpose must be a valid text.',

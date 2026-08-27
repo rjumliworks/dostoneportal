@@ -13,7 +13,7 @@
                                           
                                             <BCol md>
                                                 <div>
-                                                    <h4 class="fw-bold">{{ information.event?.title || information.purpose }} </h4>
+                                                    <h4 class="fw-bold">{{ (information.events?.length > 1) ? eventTypesSummary(information.events) : (information.events?.[0]?.title || information.purpose) }} </h4>
                                                     <div class="hstack gap-3 flex-wrap">
                                                         <!-- <div><i class="ri-qr-code-fill align-bottom me-1"></i> {{information.code}}</div>
                                                         <div class="vr" style="width: 1px;"></div> -->
@@ -73,6 +73,10 @@ export default {
         }
     },
     methods: {
+        eventTypesSummary(events) {
+            const names = (events || []).flatMap(e => (e.types || []).map(t => t.name));
+            return [...new Set(names)].join(', ');
+        },
         back(){
             this.$inertia.visit('/travels');
         },

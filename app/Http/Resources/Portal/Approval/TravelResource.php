@@ -29,10 +29,24 @@ class TravelResource extends JsonResource
             'status' => $this->status,
             'employee' => $this->request->user->profile->firstname.' '.$this->request->user->profile->lastname,
             'mode' => $this->request->travel->mode,
-            'event' => $this->request->travel->event,
+            'events' => $this->request->travel->events->map(function ($event) {
+                $firstDate = $event->request?->dates?->first();
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'types' => $event->types,
+                    'audience' => $event->audience,
+                    'mode' => $event->mode,
+                    'is_host' => $event->is_host,
+                    'location' => $event->request?->location ? new LocationResource($event->request->location) : null,
+                    'start' => $firstDate?->start,
+                    'end' => $firstDate?->end,
+                    'time' => $firstDate?->time,
+                ];
+            }),
             'tags' => TagResource::collection($this->request->tags),
             'expense' => $this->request->travel->expense,
-            'expenses' => $this->request->travel->expense_items, 
+            'expenses' => $this->request->travel->expense_items,
             'comments' => CommentResource::collection($this->request->comments),
             // 'signatories' => $this->request->signatories,
             'approved' => new SigResource($this->approved),
@@ -46,11 +60,11 @@ class TravelResource extends JsonResource
             'is_approval_only' => $this->is_approval_only,
             'statuses' => StatusResource::collection($this->statusable),
             'location' => $this->request->location ? new LocationResource($this->request->location) : null,
-            'destination' => $this->request->travel->event?->request?->location ? new LocationResource($this->request->travel->event->request->location) : null,
-            'event_date' => $this->request->travel->event?->request?->dates?->first() ? [
-                'start' => $this->request->travel->event->request->dates->first()->start,
-                'end' => $this->request->travel->event->request->dates->first()->end,
-                'time' => $this->request->travel->event->request->dates->first()->time,
+            'destination' => $this->request->travel->events->first()?->request?->location ? new LocationResource($this->request->travel->events->first()->request->location) : null,
+            'event_date' => $this->request->travel->events->first()?->request?->dates?->first() ? [
+                'start' => $this->request->travel->events->first()->request->dates->first()->start,
+                'end' => $this->request->travel->events->first()->request->dates->first()->end,
+                'time' => $this->request->travel->events->first()->request->dates->first()->time,
             ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

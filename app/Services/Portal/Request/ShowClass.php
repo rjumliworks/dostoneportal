@@ -23,9 +23,9 @@ class ShowClass
         $data = RequestTravel::with([
             'mode',
             'expense',
-            'event.types','event.audience','event.mode','event.user.profile:user_id,firstname,middlename,lastname',
-            'event.request.location.region:code,name,region','event.request.location.province:code,name','event.request.location.municipality:code,name','event.request.location.barangay:code,name',
-            'event.request.dates',
+            'events.types','events.audience','events.mode','events.user.profile:user_id,firstname,middlename,lastname',
+            'events.request.location.region:code,name,region','events.request.location.province:code,name','events.request.location.municipality:code,name','events.request.location.barangay:code,name',
+            'events.request.dates',
             'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',

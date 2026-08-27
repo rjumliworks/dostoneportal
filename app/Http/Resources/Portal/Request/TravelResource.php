@@ -38,17 +38,31 @@ class TravelResource extends JsonResource
             'signatories' => SignatoryResource::collection($this->request->signatories),
             'employee' => $this->request->user->profile->firstname.' '.$this->request->user->profile->lastname,
             'mode' => $this->mode,
-            'event' => $this->event,
+            'events' => $this->events->map(function ($event) {
+                $firstDate = $event->request?->dates?->first();
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'types' => $event->types,
+                    'audience' => $event->audience,
+                    'mode' => $event->mode,
+                    'is_host' => $event->is_host,
+                    'location' => $event->request?->location ? new LocationResource($event->request->location) : null,
+                    'start' => $firstDate?->start,
+                    'end' => $firstDate?->end,
+                    'time' => $firstDate?->time,
+                ];
+            }),
             'tags' => TagResource::collection($this->request->tags),
             'expense' => $this->expense,
             'expenses' => $this->expense_items,
             'comments' => CommentResource::collection($this->request->comments),
             'location' => $this->request->location ? new LocationResource($this->request->location) : null,
-            'destination' => $this->event?->request?->location ? new LocationResource($this->event->request->location) : null,
-            'event_date' => $this->event?->request?->dates?->first() ? [
-                'start' => $this->event->request->dates->first()->start,
-                'end' => $this->event->request->dates->first()->end,
-                'time' => $this->event->request->dates->first()->time,
+            'destination' => $this->events->first()?->request?->location ? new LocationResource($this->events->first()->request->location) : null,
+            'event_date' => $this->events->first()?->request?->dates?->first() ? [
+                'start' => $this->events->first()->request->dates->first()->start,
+                'end' => $this->events->first()->request->dates->first()->end,
+                'time' => $this->events->first()->request->dates->first()->time,
             ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

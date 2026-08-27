@@ -43,60 +43,62 @@
             <div class="tab-content">
                 <div class="tab-pane fade" :class="activeTab == 1 && 'show active'">
                     <BRow class="g-3">
-                        <BCol lg="12" v-if="!selectedEvent">
-                            <InputLabel value="Event" :message="form.errors.event_id"/>
+                        <BCol lg="12">
+                            <InputLabel value="Event" :message="form.errors.events"/>
                             <Multiselect
-                                v-model="selectedEvent"
+                                v-model="selectedEvents"
                                 :options="eventResults"
-                                mode="single"
+                                mode="tags"
                                 object
+                                :multiple="true"
                                 :searchable="true"
                                 :loading="eventLoading"
                                 label="name"
                                 @search-change="checkEventSearchStr"
+                                :preserve-search="true"
+                                :filter-results="false"
                                 placeholder="Search by event title"
                             />
-                            <p class="fs-11 text-muted mt-2">Search and select the event this travel is related to.</p>
+                            <p class="fs-11 text-muted mt-2">Search and select one or more events this travel is related to.</p>
                         </BCol>
-                        <BCol lg="12" v-else>
-                            <div class="border border-dashed bg-light-subtle rounded p-3">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-grow-1 overflow-hidden">
-                                        <h5 class="fw-semibold fs-14 text-primary mb-1">{{ selectedEvent.name }}</h5>
-                                        <div class="d-flex flex-wrap gap-1 mb-2">
-                                            <span v-for="(type,index) in selectedEvent.types" v-bind:key="index" class="badge bg-primary-subtle text-primary fs-10">{{ type.name }}</span>
-                                            <span v-if="selectedEvent.audience" class="badge bg-info-subtle text-info fs-10">{{ selectedEvent.audience.name }}</span>
-                                            <span v-if="selectedEvent.mode" class="badge bg-secondary-subtle text-secondary fs-10">{{ selectedEvent.mode.name }}</span>
-                                            <span v-if="selectedEvent.is_host" class="badge bg-success-subtle text-success fs-10">Host</span>
+                        <BCol lg="12" v-if="selectedEvents.length" class="mt-2">
+                            <div class="selected-events-list" style="max-height: 170px; overflow-y: auto;">
+                                <div v-for="(event, index) in selectedEvents" :key="event.value" class="border border-dashed bg-light-subtle rounded p-3" :class="{ 'mt-2': index > 0 }">
+                                    <div class="d-flex align-items-start">
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h5 class="fw-semibold fs-14 text-primary mb-1">{{ event.name }}</h5>
+                                            <div class="d-flex flex-wrap gap-1 mb-2">
+                                                <span v-for="(type,i) in event.types" v-bind:key="i" class="badge bg-primary-subtle text-primary fs-10">{{ type.name }}</span>
+                                                <span v-if="event.audience" class="badge bg-info-subtle text-info fs-10">{{ event.audience.name }}</span>
+                                                <span v-if="event.mode" class="badge bg-secondary-subtle text-secondary fs-10">{{ event.mode.name }}</span>
+                                                <span v-if="event.is_host" class="badge bg-success-subtle text-success fs-10">Host</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <b-button @click="removeEvent(index)" type="button" variant="light" size="sm" v-b-tooltip.hover title="Remove Event">
+                                                <i class="ri-close-line"></i>
+                                            </b-button>
                                         </div>
                                     </div>
-                                    <div class="flex-shrink-0">
-                                        <b-button @click="resetEvent" type="button" variant="light" size="sm" v-b-tooltip.hover title="Change Event">
-                                            <i class="ri-close-line"></i>
-                                        </b-button>
+                                    <div class="border border-dashed rounded p-3 mt-2">
+                                    <p class="mb-1 fs-12 text-muted">
+                                        <i class="ri-map-pin-fill align-bottom me-1"></i>
+                                        {{ event.location?.name || 'No location set for this event' }}<span v-if="event.location?.address">, {{ event.location.address }}</span>
+                                    </p>
+                                    <p v-if="(event.dates || []).length" v-for="(d, i) in event.dates" :key="i" class="mb-0 fs-12 text-muted">
+                                        <i class="ri-calendar-event-fill align-bottom me-1"></i>
+                                        {{ d.start }}<span v-if="d.end && d.end !== d.start"> - {{ d.end }}</span><span v-if="d.time"> &middot; {{ d.time }}</span>
+                                    </p>
+                                    <p v-else class="mb-0 fs-12 text-muted">
+                                        <i class="ri-calendar-event-fill align-bottom me-1"></i>No date set for this event
+                                    </p>
                                     </div>
                                 </div>
-                                <!-- <hr class="text-muted mb-2 mt-2"/> -->
-                                <div class="border border-dashed rounded p-3 mt-2">
-                                <p class="mb-1 fs-12 text-muted">
-                                    <i class="ri-map-pin-fill align-bottom me-1"></i>
-                                    {{ selectedEvent.location?.name || 'No location set for this event' }}<span v-if="selectedEvent.location?.address">, {{ selectedEvent.location.address }}</span>
-                                </p>
-                                <p v-if="eventDates.length" v-for="(d, i) in eventDates" :key="i" class="mb-0 fs-12 text-muted">
-                                    <i class="ri-calendar-event-fill align-bottom me-1"></i>
-                                    {{ d.start }}<span v-if="d.end && d.end !== d.start"> - {{ d.end }}</span><span v-if="d.time"> &middot; {{ d.time }}</span>
-                                </p>
-                                <p v-else class="mb-0 fs-12 text-muted">
-                                    <i class="ri-calendar-event-fill align-bottom me-1"></i>No date set for this event
-                                </p>
-                                </div>
-                                <!-- <hr class="mb-n2 mt-2 text-muted"/> -->
-                                <div class="mt-3">
-                                    <InputLabel value="Purpose" :message="form.errors.purpose"/>
-                                    <Textarea v-model="form.purpose" class="travel-purpose" style="height: 70px;" placeholder="Please enter the purpose of this travel" @input="handleInput('purpose')"/>
-                                </div>
                             </div>
-                           
+                        </BCol>
+                        <BCol lg="12" class="mt-2">
+                            <InputLabel value="Purpose" :message="form.errors.purpose"/>
+                            <Textarea v-model="form.purpose" class="travel-purpose" style="height: 70px;" placeholder="Please enter the purpose of this travel" @input="handleInput('purpose')"/>
                         </BCol>
                     </BRow>
                 </div>
@@ -297,11 +299,10 @@
 
                         <div class="d-flex align-items-start justify-content-between mt-n2">
                             <div class="overflow-hidden">
-                                <span class="text-muted fs-10 fw-semibold">EVENT</span>
-                                <h6 class="fs-12 fw-semibold mb-1 text-truncate">{{ selectedEvent?.name || '—' }}</h6>
+                                <span class="text-muted fs-10 fw-semibold">EVENT{{ selectedEvents.length > 1 ? 'S' : '' }}</span>
+                                <h6 class="fs-12 fw-semibold mb-1 text-truncate">{{ selectedEvents.length ? selectedEvents.map(e => e.name).join(', ') : '—' }}</h6>
                                 <div class="d-flex flex-wrap align-items-center gap-2 fs-10 text-muted">
-                                    <!-- <span v-if="selectedEvent?.type" class="badge bg-primary-subtle text-primary fs-10">{{ selectedEvent.type.name }}</span> -->
-                                    <span v-if="selectedEvent"><i class="ri-map-pin-fill align-bottom me-1"></i>{{ selectedEvent.location?.name || 'No location set' }}</span>
+                                    <span v-if="selectedEvents.length"><i class="ri-map-pin-fill align-bottom me-1"></i>{{ selectedEvents[0].location?.name || 'No location set' }}</span>
                                     <span v-if="eventDates.length"><i class="ri-calendar-event-fill align-bottom me-1"></i>{{ eventDates[0].start }}<span v-if="eventDates[0].end && eventDates[0].end !== eventDates[0].start"> - {{ eventDates[0].end }}</span></span>
                                 </div>
                                 <div class="mt-1">
@@ -433,7 +434,7 @@ export default {
             currentUrl: window.location.origin,
             form: useForm({
                 document: null,
-                event_id: null,
+                events: [],
                 purpose: null,
                 remarks: null,
                 date: null,
@@ -459,7 +460,7 @@ export default {
             drivers: [],
             isLoading: false,
             showModal: false,
-            selectedEvent: null,
+            selectedEvents: [],
             eventResults: [],
             eventLoading: false,
             activeTab: 1,
@@ -471,7 +472,7 @@ export default {
     },
     computed: {
         eventDates() {
-            return this.selectedEvent?.dates || [];
+            return this.selectedEvents[0]?.dates || [];
         },
         selectedExpenseType() {
             return this.dropdowns?.expenses?.find(e => e.value == this.form.expense_id);
@@ -492,7 +493,7 @@ export default {
             return (this.form.tags || []).map(t => t.name);
         },
         step1Valid() {
-            return !!this.selectedEvent && !!this.form.purpose;
+            return !!(this.selectedEvents && this.selectedEvents.length) && !!this.form.purpose;
         },
         step2Valid() {
             if (!this.form.date || !this.form.time || !this.form.mode_id) return false;
@@ -520,8 +521,11 @@ export default {
         'form.date'(val) {
             this.handleTransportFetch();
         },
-        selectedEvent(val){
-            this.form.event_id = val?.value ?? null;
+        selectedEvents: {
+            handler(val){
+                this.form.events = (val || []).map(e => e.value);
+            },
+            deep: true
         }
     },
     methods: {
@@ -538,7 +542,7 @@ export default {
         },
         validateForSubmit() {
             const errors = [];
-            if (!this.selectedEvent) errors.push({ message: 'Please select an event.', tab: 1, progress: 0 });
+            if (!this.selectedEvents.length) errors.push({ message: 'Please select at least one event.', tab: 1, progress: 0 });
             if (!this.form.purpose) errors.push({ message: 'Purpose is required.', tab: 1, progress: 0 });
             if (!this.form.date) errors.push({ message: 'Travel date is required.', tab: 2, progress: 25 });
             if (!this.form.time) errors.push({ message: 'Departure time is required.', tab: 2, progress: 25 });
@@ -586,14 +590,17 @@ export default {
                 },
             });
         },
-        resetEvent(){
-            this.selectedEvent = null;
+        removeEvent(index){
+            this.selectedEvents.splice(index, 1);
+        },
+        resetEvents(){
+            this.selectedEvents = [];
             this.eventResults = [];
         },
         resetAll(){
             this.form.clearErrors();
             this.form.reset();
-            this.resetEvent();
+            this.resetEvents();
             this.vehicles = [];
             this.drivers = [];
             this.conflicts = [];

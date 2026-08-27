@@ -5,7 +5,6 @@ namespace App\Services\Portal\Request;
 use Carbon\Carbon;
 use App\Models\OrgChart;
 use App\Models\Request;
-use App\Models\RequestEvent;
 use App\Models\RequestTravel;
 use App\Models\RequestReport;
 use App\Models\RequestSignatory;
@@ -20,8 +19,6 @@ class TravelClass
     }
 
     public function store($request){
-        $event = RequestEvent::find($request->event_id);
-
         $employeeIds = array_map(fn($user) => intval($user['value']), $request->tags ?? []);
         $conflicts = $this->dropdown->travelConflicts($employeeIds, $request->date);
 
@@ -110,14 +107,14 @@ class TravelClass
 
             $travelData = [
                 'code' => $this->generateTravelCode(),
-                'event_id' => $event->id,
                 'mode_id' => $request->mode_id,
                 'transpo_id' => $request->transpo_id,
                 'expense_id' => $request->expense_id,
                 'expenses' => array_map('intval', $request->expenses)
             ];
             $travel = $data->travel()->create($travelData);
-          
+            $travel->events()->sync($request->events);
+
             if($request->mode_id == 150){
                 $data->reservation()->create([
                     'vehicle_id' => $request->vehicle['value'],
@@ -213,8 +210,8 @@ class TravelClass
         $data = Request::with([
             'travel.mode',
             'travel.expense',
-            'travel.event.types','travel.event.audience','travel.event.mode',
-            'travel.event.request.location.region:code,name,region','travel.event.request.location.province:code,name','travel.event.request.location.municipality:code,name','travel.event.request.location.barangay:code,name',
+            'travel.events.types','travel.events.audience','travel.events.mode',
+            'travel.events.request.location.region:code,name,region','travel.events.request.location.province:code,name','travel.events.request.location.municipality:code,name','travel.events.request.location.barangay:code,name',
             'reservation.vehicle',
             'type',
             'dates',
@@ -271,7 +268,7 @@ class TravelClass
             'date' => $formattedDateRange,
             'duration' => $dayDuration = ($start->diffInDays($end) + 1) . ' ' . (($start->diffInDays($end) + 1) === 1 ? 'day' : 'days'),
             'expenses' => $data->travel->expense_items,
-            'destination' => ($destination = $data->location ?? $data->travel->event?->request?->location)
+            'destination' => ($destination = $data->location ?? $data->travel->events->first()?->request?->location)
                 ? trim(collect([$destination->barangay?->name, $destination->municipality?->name])->filter()->implode(', ')) ?: 'N/A'
                 : 'N/A',
             'venue' => $destination->address ?? 'N/A',

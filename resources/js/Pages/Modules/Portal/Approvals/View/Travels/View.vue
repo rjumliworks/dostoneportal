@@ -13,7 +13,7 @@
                                           
                                             <BCol md>
                                                 <div>
-                                                    <h4 class="fw-bold">{{ information.event?.title || information.purpose }} </h4>
+                                                    <h4 class="fw-bold">{{ (information.events?.length > 1) ? eventTypesSummary(information.events) : (information.events?.[0]?.title || information.purpose) }} </h4>
                                                     <div class="hstack gap-3 flex-wrap">
                                                         <div v-if="information.destination"><span class="text-muted"><i class="ri-map-pin-fill align-bottom me-1"></i> </span> <span class="fw-medium">{{information.destination.name}}</span></div>
                                                         <div v-if="information.destination && information.event_date" class="vr" style="width: 1px;"></div>
@@ -84,6 +84,10 @@ export default {
         }
     },
     methods: {
+        eventTypesSummary(events) {
+            const names = (events || []).flatMap(e => (e.types || []).map(t => t.name));
+            return [...new Set(names)].join(', ');
+        },
         back(){
             this.$inertia.visit('/travels');
         },

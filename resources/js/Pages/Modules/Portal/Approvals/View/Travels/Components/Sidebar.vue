@@ -17,6 +17,24 @@
         </div>
         <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 342px); overflow-x: hidden; overflow-y: auto;">
             <div class="row g-3 p-3">
+                <div class="col-md-12" v-if="information.events && information.events.length > 1">
+                    <simplebar style="max-height: 170px; overflow-x: hidden;">
+                        <div class="d-flex border border-dashed bg-light-subtle rounded p-3" v-for="(event, index) in information.events" :key="event.id" :class="{ 'mt-2': index > 0 }">
+                            <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-calendar-2-fill"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="mb-0 text-muted fs-12">Event :</p>
+                                <h6 class="fw-semibold fs-12 mb-1"> {{ event.title }} </h6>
+                                <div class="d-flex flex-wrap align-items-center gap-2 fs-11 text-muted">
+                                    <span v-if="event.start"><i class="ri-calendar-event-fill align-bottom me-1"></i>{{ event.start }}<span v-if="event.end && event.end !== event.start"> - {{ event.end }}</span></span>
+                                    <span v-if="event.location?.name"><i class="ri-map-pin-fill align-bottom me-1"></i>{{ event.location.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </simplebar>
+                </div>
                 <div class="col-md-12">
                     <div class="d-flex border border-dashed bg-light-subtle rounded p-3">
                         <div class="flex-shrink-0 avatar-xs align-self-center me-3">
@@ -120,7 +138,9 @@
     </div>
 </template>
 <script>
+import simplebar from "simplebar-vue";
 export default {
+    components: { simplebar },
     props: ['information'],
     data(){
         return {

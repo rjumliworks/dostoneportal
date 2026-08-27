@@ -14,7 +14,6 @@ class RequestTravel extends Model
 
     protected $fillable = [
         'code',
-        'event_id',
         'mode_id',
         'transpo_id',
         'expense_id',
@@ -27,9 +26,9 @@ class RequestTravel extends Model
         'expenses' => 'array'
     ];
 
-    public function event()
+    public function events()
     {
-        return $this->belongsTo('App\Models\RequestEvent', 'event_id', 'id');
+        return $this->belongsToMany('App\Models\RequestEvent', 'request_travel_events', 'request_travel_id', 'event_id');
     }
 
     public function mode()
