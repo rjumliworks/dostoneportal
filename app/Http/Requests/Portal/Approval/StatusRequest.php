@@ -18,7 +18,7 @@ class StatusRequest extends FormRequest
             'request_id' => 'sometimes|required',
             'status_id' => 'sometimes|required',
             'type' => 'sometimes|required',
-            'photo' => 'sometimes|required',
+            'photo' => 'nullable',
             'reason' => 'sometimes|required_if:status_id,30',
         ];
     }

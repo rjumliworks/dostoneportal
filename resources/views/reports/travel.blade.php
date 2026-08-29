@@ -267,10 +267,10 @@
                                 <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
                                     @if($sign['division'] != 'Office of the Regional Director')
                                         @if(!empty($sign['recommended']['signature']))
-                                            <img 
-                                                src="{{ public_path('storage/profile-signatures/' . $sign['recommended']['signature']) }}" 
-                                                alt="Signature" 
-                                                style="height: 60px; width: auto;"
+                                            <img
+                                                src="{{ $sign['recommended']['signature'] }}"
+                                                alt="Signature"
+                                                style="height: 80px; width: auto;"
                                             >
                                         @endif
                                     @endif
@@ -284,7 +284,7 @@
                                         </span>
                                         <hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">
                                         <div style="font-size: 10px;">
-                                            {{ $sign['recommended']['role'] }}
+                                            {{ (!empty($sign['recommended']['name']) && empty($sign['recommended']['role'])) ? 'Assistant Regional Director (' . $sign['division'] . ')' : ($sign['recommended']['role'] ?? '') }}
                                         </div>
                                     </div>
                                 @endif
@@ -296,10 +296,10 @@
                                 {{-- Signature container --}}
                                 <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
                                      @if(!empty($sign['approved']['signature']))
-                                        <img 
-                                            src="{{ public_path('storage/profile-signatures/' . $sign['approved']['signature']) }}" 
-                                            alt="Signature" 
-                                            style="height: 60px; width: auto;"
+                                        <img
+                                            src="{{ $sign['approved']['signature'] }}"
+                                            alt="Signature"
+                                            style="height: 80px; width: auto;"
                                         >
                                     @endif
                                 </div>
@@ -311,7 +311,7 @@
                                     </span>
                                     <hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">
                                     <div style="font-size: 10px;">
-                                       {{ $sign['approved']['role'] }}
+                                       {{ (!empty($sign['approved']['name']) && empty($sign['approved']['role'])) ? 'Regional Director' : ($sign['approved']['role'] ?? '') }}
                                     </div>
                                 </div>
                             </div>

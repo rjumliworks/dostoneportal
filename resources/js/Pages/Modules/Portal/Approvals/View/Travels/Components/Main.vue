@@ -139,6 +139,55 @@
                                             </div>
                                         </div>
                                     </template>
+                                    <template v-if="menu == 'Employees'">
+                                        <div class="card-body bg-white rounded-bottom p-0">
+                                            <div class="table-responsive table-card" style="height: calc(100vh - 592px); overflow: auto;" v-if="employeesTab === 'division'">
+                                                <table class="table align-middle table-striped table-centered mb-0">
+                                                    <thead class="table-light thead-fixed">
+                                                        <tr class="fs-11">
+                                                            <th style="width: 5%;" class="text-center">#</th>
+                                                            <th>Employee</th>
+                                                            <th style="width: 30%;">Position</th>
+                                                            <th style="width: 15%;" class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="fs-12">
+                                                        <tr v-for="(tag, i) in matchingTags" :key="tag.id">
+                                                            <td class="text-center">{{ i + 1 }}</td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="flex-shrink-0 avatar-xxs">
+                                                                        <img :src="tag.avatar" alt="" class="avatar-img rounded-circle">
+                                                                    </div>
+                                                                    <div class="flex-grow-1 ms-2 overflow-hidden">
+                                                                        <h6 class="mb-0 fs-12 text-truncate" :class="{ 'text-muted text-decoration-line-through': !tag.is_joined }">{{ tag.name }}</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-muted">{{ tag.position }}</td>
+                                                            <td class="text-center">
+                                                                <button type="button"
+                                                                    class="btn btn-sm fs-10 py-0 px-2"
+                                                                    :class="tag.is_joined ? 'btn-soft-danger' : 'btn-soft-success'"
+                                                                    :disabled="togglingTagId === tag.id"
+                                                                    @click="toggleTag(tag)">
+                                                                    {{ tag.is_joined ? 'Remove' : 'Add' }}
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="avatar-group p-3" style="height: calc(100vh - 592px); overflow: auto;" v-else>
+                                                <div class="avatar-group-item material-shadow" v-for="(list, i) of nonMatchingTags" :key="i">
+                                                    <a href="javascript: void(0);" class="d-inline-block"
+                                                    v-b-tooltip.hover="{title: list.name, placement: 'top', customClass: 'my-tooltip-class'}">
+                                                        <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
                                     <Signatories :information="information" :statuses="information.statuses" v-if="menu == 'Signatories'" />
                                     <Attachment :information="information" v-if="menu == 'Attachment'" />
                                 </div>
@@ -196,7 +245,10 @@ import simplebar from "simplebar-vue";
 import Multiselect from "@vueform/multiselect";
 export default {
     components: { simplebar, Multiselect, Signatories, Attachment },
-    props: ['information'],
+    props: {
+        information: { type: Object, required: true },
+        employeesTab: { type: String, default: 'division' }
+    },
     data(){
         return {
             form: useForm({
@@ -206,9 +258,10 @@ export default {
                 option: 'comment'
             }),
             menus: [
-                'Home','Signatories','Attachment'
+                'Home','Employees','Signatories','Attachment'
             ],
             menu: 'Home',
+            togglingTagId: null,
             replyuser: null,
             now: dayjs()
         }
@@ -226,6 +279,12 @@ export default {
         approvalStatus() {
             const allApproved = this.information.every(s => s.approved_id !== null);
             return allApproved ? 1 : 0;
+        },
+        matchingTags() {
+            return this.sortTags(this.information.tags.filter(tag => tag.division === this.information.division.id));
+        },
+        nonMatchingTags() {
+            return this.sortTags(this.information.tags.filter(tag => tag.division !== this.information.division.id));
         }
     },
     mounted() {
@@ -258,7 +317,34 @@ export default {
         },
         timeAgo(date) {
             return dayjs(date).from(this.now);
-        }
+        },
+        sortTags(tags) {
+            return [...tags].sort((a, b) => {
+                if (a.is_regular !== b.is_regular) return a.is_regular ? -1 : 1;
+                return (b.salary || 0) - (a.salary || 0);
+            });
+        },
+        async toggleTag(tag){
+            this.togglingTagId = tag.id;
+            try {
+                const { data } = await axios.put('/approvals/update', {
+                    option: 'tag',
+                    tag_id: tag.id,
+                    signatory_id: this.information.key,
+                    is_joined: !tag.is_joined,
+                });
+                if (data.message === 'Employee Updated') {
+                    tag.is_joined = data.data.is_joined;
+                } else {
+                    alert(data.info || data.message);
+                }
+            } catch (error) {
+                console.error('Toggle employee error:', error);
+                alert('Unable to update the employee. Please try again.');
+            } finally {
+                this.togglingTagId = null;
+            }
+        },
     }
 }
 </script>

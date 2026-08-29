@@ -4,6 +4,7 @@ namespace App\Services\HumanResource\Survey;
 
 use Hashids\Hashids;
 use App\Models\User;
+use App\Models\OrgChart;
 use App\Models\ListData;
 use App\Models\Survey;
 use App\Models\SurveyAnswer;
@@ -46,14 +47,16 @@ class ViewClass
     {
         $hashids = new Hashids('krad', 10);
         $id = $hashids->decode($code)[0];
+        $excluded = OrgChart::excludedFromAttendance();
 
         $statuses = ListData::where('is_active', 1)
             ->where('type', 'Employment Status')
             ->whereNot('id',18)
             ->get()
-            ->map(function ($item) use ($id) {
+            ->map(function ($item) use ($id, $excluded) {
 
                 $result = User::where('users.is_active', 1)
+                    ->whereNotIn('users.id', $excluded)
                     ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
                     ->where('user_organizations.type_id', $item->id)
                     ->leftJoin('survey_answers', function ($join) use ($id) {
@@ -73,6 +76,7 @@ class ViewClass
                     : 0;
 
                 $notSubmitted = User::where('users.is_active', 1)
+                    ->whereNotIn('users.id', $excluded)
                     ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
                     ->where('user_organizations.type_id', $item->id)
                     ->whereNotExists(function ($query) use ($id) {
@@ -104,6 +108,7 @@ class ViewClass
             });
 
         $overall = User::where('users.is_active', 1)
+            ->whereNotIn('users.id', $excluded)
             ->leftJoin('survey_answers', function ($join) use ($id) {
                 $join->on('users.id', '=', 'survey_answers.user_id')
                     ->where('survey_answers.survey_id', $id);
@@ -120,10 +125,11 @@ class ViewClass
 
         return [
             'answered' => SurveyAnswer::where('survey_id', $id)
+                ->whereNotIn('user_id', $excluded)
                 ->distinct('user_id')
                 ->count('user_id'),
 
-            'active' => User::where('is_active', 1)->count(),
+            'active' => User::where('is_active', 1)->whereNotIn('id', $excluded)->count(),
 
             'rating' => $ratingPercentage . '%',
 
@@ -134,10 +140,12 @@ class ViewClass
     public function question()
     {
         $survey_id = $this->activeSurveyId();
-        $eligible = User::where('is_active', 1)->count();
-        $body = SurveyQuestion::leftJoin('survey_answers', function ($join) use ($survey_id) {
+        $excluded = OrgChart::excludedFromAttendance();
+        $eligible = User::where('is_active', 1)->whereNotIn('id', $excluded)->count();
+        $body = SurveyQuestion::leftJoin('survey_answers', function ($join) use ($survey_id, $excluded) {
             $join->on('survey_questions.id', '=', 'survey_answers.question_id')
-                ->where('survey_answers.survey_id', $survey_id);
+                ->where('survey_answers.survey_id', $survey_id)
+                ->whereNotIn('survey_answers.user_id', $excluded);
         })
         ->selectRaw("
             survey_questions.id,
@@ -169,9 +177,13 @@ class ViewClass
     public function station()
     {
         $survey_id = $this->activeSurveyId();
+        $excluded = OrgChart::excludedFromAttendance();
         $body = ListDropdown::where('classification', 'Station')
             ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.station_id')
-            ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
+            ->leftJoin('users', function ($join) use ($excluded) {
+                $join->on('user_organizations.user_id', '=', 'users.id')
+                    ->whereNotIn('users.id', $excluded);
+            })
             ->leftJoin('survey_answers', function ($join) use ($survey_id) {
                 $join->on('users.id', '=', 'survey_answers.user_id')
                     ->where('survey_answers.survey_id', $survey_id);
@@ -203,9 +215,13 @@ class ViewClass
     public function division()
     {
         $survey_id = $this->activeSurveyId();
+        $excluded = OrgChart::excludedFromAttendance();
         $body = ListDropdown::where('classification', 'Division')
             ->leftJoin('user_organizations', 'list_dropdowns.id', '=', 'user_organizations.division_id')
-            ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
+            ->leftJoin('users', function ($join) use ($excluded) {
+                $join->on('user_organizations.user_id', '=', 'users.id')
+                    ->whereNotIn('users.id', $excluded);
+            })
             ->leftJoin('survey_answers', function ($join) use ($survey_id) {
                 $join->on('users.id', '=', 'survey_answers.user_id')
                     ->where('survey_answers.survey_id', $survey_id);
@@ -238,9 +254,13 @@ class ViewClass
     public function unit($request)
     {
         $survey_id = $this->activeSurveyId();
+        $excluded = OrgChart::excludedFromAttendance();
         $body = ListUnit::where('list_units.is_active', 1)
             ->leftJoin('user_organizations', 'list_units.id', '=', 'user_organizations.unit_id')
-            ->leftJoin('users', 'user_organizations.user_id', '=', 'users.id')
+            ->leftJoin('users', function ($join) use ($excluded) {
+                $join->on('user_organizations.user_id', '=', 'users.id')
+                    ->whereNotIn('users.id', $excluded);
+            })
             ->leftJoin('survey_answers', function ($join) use ($survey_id) {
                 $join->on('users.id', '=', 'survey_answers.user_id')
                     ->where('survey_answers.survey_id', $survey_id);
@@ -273,9 +293,10 @@ class ViewClass
             
              // or your survey id variable
 
-            $body->each(function ($item) use ($survey_id) {
+            $body->each(function ($item) use ($survey_id, $excluded) {
 
                 $item->not_submitted = User::where('users.is_active', 1)
+                    ->whereNotIn('users.id', $excluded)
                     ->join('user_organizations', 'users.id', '=', 'user_organizations.user_id')
                     ->where('user_organizations.unit_id', $item->id)
                     ->whereNotExists(function ($query) use ($survey_id) {

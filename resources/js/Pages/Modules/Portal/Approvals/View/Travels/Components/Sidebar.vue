@@ -100,37 +100,51 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <hr class="text-muted mt-0"/>
-            <div class="align-items-center d-flex">
-                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold flex-grow-1">Assigned {{$page.props.user.data.signatory.designationable.assigned.others}} Employees for this Travel</p>
-                <div class="flex-shrink-0 pe-3">
-                    <p class="ms-3 mb-0 text-primary fs-12 fw-semibold flex-grow-1">Other Division Employees</p>
-                </div>
-            </div>
-            <hr class="text-muted mb-0"/>
-            <div class="d-flex justify-content-between">
-                <div class="avatar-group p-3 ms-2">
-                    <div class="avatar-group-item material-shadow"
-                        v-for="(list, index) of matchingTags"
-                        :key="index">
-                        <a href="javascript: void(0);"
-                        class="d-inline-block"
-                        v-b-tooltip.hover="{title: list.name, placement: 'top', customClass: 'my-tooltip-class'}">
-                            <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
-                        </a>
-                    </div>
-                </div>
-
-                <div class="avatar-group p-3 ms-2">
-                    <div class="avatar-group-item material-shadow"
-                        v-for="(list, index) of nonMatchingTags"
-                        :key="index">
-                        <a href="javascript: void(0);"
-                        class="d-inline-block"
-                        v-b-tooltip.hover="{title: list.name, placement: 'top', customClass: 'my-tooltip-class'}">
-                            <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
-                        </a>
+                <div class="col-md-12">
+                    <div class="card bg-light-subtle shadow-none border">
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-2">
+                                    <div style="height:2rem;width:2rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2">
+                                            <i class="ri-group-2-fill text-primary fs-20"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-12"><span class="text-body">Assigned Employees</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11">View the employees assigned to this travel order and their related travel details.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-white rounded-bottom shadow-none mb-0">
+                            <div class="step-arrow-nav mt-0">
+                                <ul class="nav nav-pills nav-justified custom-nav" role="tablist">
+                                    <li class="nav-item" role="presentation" v-for="(menu, index) in menus" :key="index">
+                                        <button class="nav-link fs-12 p-3" :class="(tabKey(index) === employeesTab) ? 'active' : ''"
+                                            type="button" role="tab" @click="$emit('update:employeesTab', tabKey(index))">
+                                            {{ menu.name }}
+                                            <span class="badge bg-primary ms-1 position-relative" style="top: -2px;">{{ menu.tags.length }}</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body bg-white rounded-bottom">
+                            <div class="tab-content">
+                                <div class="tab-pane" :class="(tabKey(index) === employeesTab) ? 'show active' : ''" v-for="(menu, index) in menus" :key="index">
+                                    <div class="avatar-group">
+                                        <div class="avatar-group-item material-shadow" v-for="(list, i) of menu.tags" :key="i">
+                                            <a href="javascript: void(0);" class="d-inline-block"
+                                            v-b-tooltip.hover="{title: list.name, placement: 'top', customClass: 'my-tooltip-class'}">
+                                                <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,10 +155,14 @@
 import simplebar from "simplebar-vue";
 export default {
     components: { simplebar },
-    props: ['information'],
+    props: {
+        information: { type: Object, required: true },
+        employeesTab: { type: String, default: 'division' }
+    },
+    emits: ['update:employeesTab'],
     data(){
         return {
-            showName: false
+            showName: false,
         }
     },
     computed: {
@@ -162,13 +180,25 @@ export default {
             return chunks;
         },
         matchingTags() {
-            return this.information.tags.filter(tag => tag.division === this.information.division.id);
+            return this.sortTags(this.information.tags.filter(tag => tag.division === this.information.division.id));
         },
         nonMatchingTags() {
-            return this.information.tags.filter(tag => tag.division !== this.information.division.id);
-        } 
+            return this.sortTags(this.information.tags.filter(tag => tag.division !== this.information.division.id));
+        },
+        menus() {
+            return [
+                { name: this.$page.props.user.data.signatory.designationable.assigned.others, tags: this.matchingTags },
+                { name: 'Other Division', tags: this.nonMatchingTags },
+            ];
+        }
     },
     methods: {
+        sortTags(tags) {
+            return [...tags].sort((a, b) => {
+                if (a.is_regular !== b.is_regular) return a.is_regular ? -1 : 1;
+                return (b.salary || 0) - (a.salary || 0);
+            });
+        },
         formatDateRange(start, end) {
             const startDate = new Date(start);
             const endDate = new Date(end);
@@ -181,8 +211,11 @@ export default {
             return startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             }
 
-            const year = startDate.getFullYear(); 
+            const year = startDate.getFullYear();
             return `${startStr}-${endStr}, ${year}`;
+        },
+        tabKey(index) {
+            return index === 0 ? 'division' : 'other';
         },
     }
 }

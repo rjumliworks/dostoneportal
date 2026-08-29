@@ -95,8 +95,8 @@ class TrainingClass
             'user:id',
             'user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'signatories.division',
-            'signatories.approved.user.profile','signatories.approved.signatory.designationable.designation',
-            'signatories.recommended.user.profile','signatories.recommended.signatory.designationable.designation'
+            'signatories.approved.user.profile','signatories.approved.user.certificate','signatories.approved.signatory.designationable.designation',
+            'signatories.recommended.user.profile','signatories.recommended.user.certificate','signatories.recommended.signatory.designationable.designation'
         ])
         ->where('id',$id)
         ->first();
@@ -124,7 +124,7 @@ class TrainingClass
         if($data->signatories[0]->approved){
             $approved = [
                 'name' => $data->signatories[0]->approved->user->profile->fullname,
-                'signature' => $data->signatories[0]->approved->user->profile->signature,
+                'signature' => $data->signatories[0]->approved->user?->certificate?->signature,
                 'role' => ($data->signatories[0]->approved->is_designated) ? 'Regional Director' : 'OIC - Regional Director'
             ];
         }else{
@@ -134,7 +134,7 @@ class TrainingClass
         if($data->signatories[0]->recommended){
             $recommended = [
                 'name' => $data->signatories[0]->recommended->user->profile->fullname,
-                'signature' => $data->signatories[0]->recommended->user->profile->signature,
+                'signature' => $data->signatories[0]->recommended->user?->certificate?->signature,
                 'role' => ($data->signatories[0]->recommended->is_designated) ? 'Assistant Regional Director' : 'OIC - Assistant Regional Director',
                 'division' => $data->signatories[0]->division->others
             ];
@@ -209,13 +209,13 @@ class TrainingClass
                 'division_id' => $signatory->division->id ?? null,
                 'recommended' => [
                     'name' => $signatory->recommended?->user->profile->fullname,
-                    'signature' => $signatory->recommended?->user->profile->signature,
+                    'signature' => $signatory->recommended?->user?->certificate?->signature,
                     'date' =>  $signatory->recommended_date,
                     'role' => null
                 ],
                 'approved' => [
                     'name' => $signatory->approved?->user->profile->fullname,
-                    'signature' => $signatory->approved?->user->profile->signature,
+                    'signature' => $signatory->approved?->user?->certificate?->signature,
                     'date' => $signatory->approved_date,
                     'role' => null
                 ]

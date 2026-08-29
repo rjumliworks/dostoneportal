@@ -79,6 +79,9 @@ class ApprovalController extends Controller
                 case 'status':
                     return $this->save->status($request);
                 break;
+                case 'tag':
+                    return $this->save->tag($request);
+                break;
             }
         });
 

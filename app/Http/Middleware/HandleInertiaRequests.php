@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\User;
+use App\Models\OrgChart;
 use App\Models\Survey;
 use App\Models\SurveyAnswer;
 use App\Models\SurveyQuestion;
@@ -32,7 +33,7 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             $status = $user->profile->is_completed;
 
-            if($activeSurvey){
+            if($activeSurvey && !in_array($user->id, OrgChart::excludedFromAttendance())){
             $survey_id = $activeSurvey->id;
             $hasAnswered = SurveyAnswer::where('user_id', $user->id)
                 ->where('survey_id', $activeSurvey->id)

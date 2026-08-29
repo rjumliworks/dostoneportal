@@ -217,7 +217,7 @@ class TravelClass
             'dates',
             'detail',
             'tags.user:id','tags.user.profile:user_id,firstname,middlename,lastname,avatar','tags.user.organization.division','tags.user.organization.position','tags.user.organization.unit',
-            'signatories.division','signatories.approved.user.profile:user_id,firstname,middlename,lastname,suffix_id,signature','signatories.recommended.user.profile:user_id,firstname,middlename,lastname,suffix_id,signature',
+            'signatories.division','signatories.approved.user.profile:user_id,firstname,middlename,lastname,suffix_id','signatories.approved.user.certificate','signatories.recommended.user.profile:user_id,firstname,middlename,lastname,suffix_id','signatories.recommended.user.certificate',
             'location.region:code,name,region','location.province:code,name','location.municipality:code,name','location.barangay:code,name'
         ])
         ->where('id',$id)
@@ -348,13 +348,13 @@ class TravelClass
                 'division_id' => $signatory->division->id ?? null,
                 'recommended' => [
                     'name' => $signatory->recommended?->user->profile->fullname,
-                    'signature' => $signatory->recommended?->user->profile->signature,
+                    'signature' => $signatory->recommended?->user?->certificate?->signature,
                     'date' =>  $signatory->recommended_date,
                     'role' => $recommendedRole
                 ],
                 'approved' => [
                     'name' => $signatory->approved?->user->profile->fullname,
-                    'signature' => $signatory->approved?->user->profile->signature,
+                    'signature' => $signatory->approved?->user?->certificate?->signature,
                     'date' => $signatory->approved_date,
                     'role' => $approvedRole
                 ]

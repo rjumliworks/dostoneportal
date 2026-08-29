@@ -225,9 +225,9 @@
                                 {{-- Signature container --}}
                                 <div style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);">
                                     @if(!empty($data['signatories'][0]['recommended']['signature']))
-                                        <img 
-                                            src="{{ public_path('storage/profile-signatures/' . $data['signatories'][0]['recommended']['signature']) }}" 
-                                            alt="Signature" 
+                                        <img
+                                            src="{{ $data['signatories'][0]['recommended']['signature'] }}"
+                                            alt="Signature"
                                             style="height: 60px; width: auto;"
                                         >
                                     @endif
@@ -251,9 +251,9 @@
                                 {{-- Signature container --}}
                                 <div style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);">
                                     @if(!empty($data['signatories'][0]['approved']['signature']))
-                                        <img 
-                                            src="{{ public_path('storage/profile-signatures/' . $data['signatories'][0]['approved']['signature']) }}" 
-                                            alt="Signature" 
+                                        <img
+                                            src="{{ $data['signatories'][0]['approved']['signature'] }}"
+                                            alt="Signature"
                                             style="height: 60px; width: auto;"
                                         >
                                     @endif

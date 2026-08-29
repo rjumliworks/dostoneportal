@@ -125,7 +125,7 @@
             <hr class="text-muted mb-0"/>
             <div class="avatar-group p-3 ms-2" v-if="!showName">
                 <div class="avatar-group-item material-shadow"  v-for="(list, index) of information.tags" :key="index">
-                    <a href="javascript: void(0);" class="d-inline-block" 
+                    <a href="javascript: void(0);" class="d-inline-block"
                     v-b-tooltip.hover="{title: list.name,placement: 'top',customClass: 'my-tooltip-class'}">
                         <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
                     </a>

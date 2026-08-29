@@ -87,12 +87,8 @@
 
             async submit() {
                 try {
-                    // 1️⃣ Capture photo first
+                    // 1️⃣ Capture photo first (skip silently if no camera)
                     const photo = await this.autoCapturePhoto();
-                    if (!photo) {
-                        alert("Camera access failed or denied.");
-                        return;
-                    }
 
                     // 2️⃣ Attach photo to form
                     this.form.photo = photo;

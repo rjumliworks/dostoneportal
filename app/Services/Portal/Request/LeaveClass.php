@@ -233,7 +233,8 @@ class LeaveClass
             'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,avatar,suffix_id',
             'request.tags.user:id',
-            'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,signature,suffix_id',
+            'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'request.tags.user.certificate',
             'request.tags.user.organization.position','request.tags.user.organization.salary','request.tags.user.organization.type',
             'request.type',
             'request.dates',
@@ -241,7 +242,9 @@ class LeaveClass
             'request.user:id',
             'request.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.user.organization.position','request.user.organization.salary','request.user.organization.division','request.user.organization.unit',
-            'request.signatories.division','request.signatories.approved','request.signatories.recommended'
+            'request.signatories.division',
+            'request.signatories.approved.user.profile:user_id,firstname,middlename,lastname,suffix_id','request.signatories.approved.user.certificate',
+            'request.signatories.recommended.user.profile:user_id,firstname,middlename,lastname,suffix_id','request.signatories.recommended.user.certificate'
         ])
         ->where('request_id',$id)
         ->first();
@@ -253,7 +256,7 @@ class LeaveClass
             'lastname' => $user->profile->lastname,
             'middlename' => $user->profile->middlename,
             'firstname' => $user->profile->firstname,
-            'signature' => $user->profile->signature,
+            'signature' => $user->certificate?->signature,
             'position' => $user->organization->position->name ?? 'n/a',
             'salary' => $user->organization->salary->amount ?? 0,
             'position_short' => $user->organization->position->short ?? 'n/a',
@@ -377,13 +380,13 @@ class LeaveClass
                 'division_id' => $signatory->division->id ?? null,
                 'recommended' => [
                     'name' => $signatory->recommended?->user->profile->fullname,
-                    'signature' => $signatory->recommended?->user->profile->signature,
+                    'signature' => $signatory->recommended?->user?->certificate?->signature,
                     'date' =>  $signatory->recommended_date,
                     'role' => null
                 ],
                 'approved' => [
                     'name' => $signatory->approved?->user->profile->fullname,
-                    'signature' => $signatory->approved?->user->profile->signature,
+                    'signature' => $signatory->approved?->user?->certificate?->signature,
                     'date' => $signatory->approved_date,
                     'role' => null
                 ]

@@ -188,21 +188,23 @@
                                     <td>
                                         <br /><br />
                                         <div style="position: relative; display: inline-block; width: 100%;">
-                                            <img 
-                                                src="{{ public_path('storage/profile-signatures/' . $data['employee']['signature']) }}" 
-                                                alt="Signature" 
-                                                style="
-                                                    position: absolute;
-                                                    top: -30px; /* adjust vertical placement */
-                                                    left: 50%;
-                                                    transform: translateX(-50%);
-                                                    height: 60px;
-                                                    width: auto;
-                                                    opacity: 1; /* slightly transparent if you want */
-                                                "
-                                            >
+                                            @if(!empty($data['employee']['signature']))
+                                                <img
+                                                    src="{{ $data['employee']['signature'] }}"
+                                                    alt="Signature"
+                                                    style="
+                                                        position: absolute;
+                                                        top: -30px; /* adjust vertical placement */
+                                                        left: 50%;
+                                                        transform: translateX(-50%);
+                                                        height: 60px;
+                                                        width: auto;
+                                                        opacity: 1; /* slightly transparent if you want */
+                                                    "
+                                                >
+                                            @endif
                                             <input type="text" style="margin-left: 14px; width: 91.5%; height: 8px; outline: 0;border-width: 0 0 1px; border-color: black; margin-top: 14px;">
-                                        </div>    
+                                        </div>
                                         <p style="margin-top: -1px; margin-bottom: 0px; margin-left: 90px;">(Signature of Applicant)</p>
                                     </td>
                                 </tr>
@@ -335,9 +337,9 @@
                                     <td style="text-align: center; padding-top: 20px;">
                                         <div style="position: relative; display: inline-block; width: 100%;">
                                             @if(!empty($data['signatories'][0]['recommended']['signature']))
-                                                <img 
-                                                    src="{{ public_path('storage/profile-signatures/' . $data['signatories'][0]['recommended']['signature']) }}" 
-                                                    alt="Signature" 
+                                                <img
+                                                    src="{{ $data['signatories'][0]['recommended']['signature'] }}"
+                                                    alt="Signature"
                                                     style="
                                                         position: absolute;
                                                         top: -30px; /* adjust vertical placement */
@@ -395,9 +397,9 @@
                         <td colspan="2" style="width: 55%; border-bottom: 1.3px solid black; border-left: 1.3px solid black; border-right: 1.3px solid black; text-align:center;">
                             <div style="position: relative; display: inline-block; width: 100%;">
                                @if(!empty($data['signatories'][0]['approved']['signature']))
-                                    <img 
-                                        src="{{ public_path('storage/profile-signatures/' . $data['signatories'][0]['approved']['signature']) }}" 
-                                        alt="Signature" 
+                                    <img
+                                        src="{{ $data['signatories'][0]['approved']['signature'] }}"
+                                        alt="Signature"
                                         style="
                                             position: absolute;
                                             top: -30px; /* adjust vertical placement */

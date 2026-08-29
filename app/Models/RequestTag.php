@@ -14,6 +14,7 @@ class RequestTag extends Model
         'is_sender_viewed',
         'is_receiver_viewed',
         'is_driver',
+        'is_joined',
         'user_id',
         'division_id',
         'signatory_id',
@@ -57,6 +58,7 @@ class RequestTag extends Model
         ->logOnly([
             'is_sender_viewed',
             'is_receiver_viewed',
+            'is_joined',
             'user_id',
             'request_id'
         ])

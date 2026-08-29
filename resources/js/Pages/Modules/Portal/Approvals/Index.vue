@@ -106,11 +106,16 @@
                                     </td>
                                     <td class="text-center align-middle">
                                         <div class="avatar-group  d-inline-flex justify-content-center">
-                                            <div class="avatar-group-item material-shadow"  v-for="(list, index) of list.tags" :key="index">
-                                                <!-- <a href="javascript: void(0);" class="d-inline-block" 
-                                                v-b-tooltip.hover="{title: list.name,placement: 'top',customClass: 'my-tooltip-class'}"> -->
-                                                    <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
+                                            <div class="avatar-group-item material-shadow"  v-for="(tag, tagIndex) of list.tags.slice(0, 5)" :key="tagIndex">
+                                                <!-- <a href="javascript: void(0);" class="d-inline-block"
+                                                v-b-tooltip.hover="{title: tag.name,placement: 'top',customClass: 'my-tooltip-class'}"> -->
+                                                    <img :src="tag.avatar" alt="" class="rounded-circle avatar-xxs">
                                                 <!-- </a> -->
+                                            </div>
+                                            <div class="avatar-group-item material-shadow" v-if="list.tags.length > 5">
+                                                <div class="avatar-xxs">
+                                                    <span class="avatar-title rounded-circle bg-primary text-white fs-11">+{{ list.tags.length - 5 }}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>

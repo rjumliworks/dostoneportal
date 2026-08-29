@@ -55,10 +55,10 @@
                     </BCard>
                 </BCol>
                 <BCol lg="6">
-                    <Sidebar :information="information_data.data"/>
+                    <Sidebar :information="information_data.data" :employees-tab="employeesTab" @update:employees-tab="employeesTab = $event"/>
                 </BCol>
                 <BCol lg="6">
-                    <Main :information="information_data.data"/>
+                    <Main :information="information_data.data" :employees-tab="employeesTab"/>
                 </BCol>
             </BRow>
         </div>
@@ -80,7 +80,8 @@ export default {
     components: { Main, Sidebar, Edit, Approved, Disapproved, Recommend },
     data(){
         return {
-            information: this.information_data.data
+            information: this.information_data.data,
+            employeesTab: 'division'
         }
     },
     methods: {

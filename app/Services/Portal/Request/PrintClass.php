@@ -6,7 +6,9 @@ use App\Models\OrgChart;
 use App\Models\ListLeave;
 use App\Models\ListDropdown;
 use App\Models\RequestReport;
+use App\Models\RequestSignatory;
 use App\Models\RequestTag;
+use App\Services\Common\Signing\SignatureResolver;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
 
@@ -19,6 +21,8 @@ class PrintClass
 
         $data = RequestReport::where('request_id', $id)->value('information');
         $data = json_decode($data,true);
+        $this->refreshSignatures($data, $id[0] ?? $id);
+        $this->embedSignatures($data);
         $url = request()->getSchemeAndHttpHost() . '/verification/' . $request->key;
         $result = new Builder(
             writer: new PngWriter(),
@@ -110,6 +114,65 @@ class PrintClass
         return response($pdfBinary)
             ->header('Content-Type', 'application/pdf')
              ->header('Content-Disposition', 'inline; filename="' . $data['code'] . '.pdf"');
+    }
+
+    // Older RequestReport snapshots were written before signatures moved to
+    // user_certificates and still hold the legacy local filenames (or none at
+    // all). Rather than trust the frozen snapshot, look up each signatory's
+    // current certificate signature fresh so already-approved requests print
+    // correctly too, without needing to be re-actioned.
+    private function refreshSignatures(&$data, $requestId)
+    {
+        if (!is_array($data)) {
+            return;
+        }
+
+        if (!empty($data['employee']) && is_array($data['employee'])) {
+            $tag = RequestTag::where('request_id', $requestId)->with('user.certificate')->first();
+            if ($tag) {
+                $data['employee']['signature'] = $tag->user?->certificate?->signature;
+            }
+        }
+
+        if (empty($data['signatories']) || !is_array($data['signatories'])) {
+            return;
+        }
+
+        $live = RequestSignatory::where('request_id', $requestId)
+            ->with('recommended.user.certificate', 'approved.user.certificate')
+            ->get()
+            ->keyBy('code');
+
+        foreach ($data['signatories'] as &$sign) {
+            $signatory = $live->get($sign['code'] ?? null);
+            if (!$signatory) {
+                continue;
+            }
+            if (isset($sign['recommended'])) {
+                $sign['recommended']['signature'] = $signatory->recommended?->user?->certificate?->signature;
+            }
+            if (isset($sign['approved'])) {
+                $sign['approved']['signature'] = $signatory->approved?->user?->certificate?->signature;
+            }
+        }
+        unset($sign);
+    }
+
+    // Stored reports keep the raw S3 key under any "signature" leaf. Dompdf can't
+    // fetch remote images (enable_remote is off), so resolve every one of those
+    // keys to an embeddable base64 data URI right before the view renders.
+    private function embedSignatures(&$data)
+    {
+        if (!is_array($data)) {
+            return;
+        }
+
+        $resolver = new SignatureResolver();
+        array_walk_recursive($data, function (&$value, $key) use ($resolver) {
+            if ($key === 'signature' && is_string($value) && $value !== '' && !str_starts_with($value, 'data:')) {
+                $value = $resolver->resolvePath($value);
+            }
+        });
     }
 
     // private function signatory($divisions){

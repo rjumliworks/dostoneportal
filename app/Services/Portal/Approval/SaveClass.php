@@ -13,6 +13,7 @@ use App\Models\RequestLeave;
 use App\Models\OrgSignatory;
 use App\Models\OrgSignatorySchedule;
 use App\Models\RequestSignatory;
+use App\Models\RequestTag;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -146,6 +147,61 @@ class SaveClass
         }
     }
 
+    // Lets a division's recommending signatory drop personnel from their own
+    // division's list of employees tagged on a Travel Order who don't need to
+    // join it. Scoped to the signatory's own division so a signatory can't
+    // touch employees from another division shown alongside theirs.
+    public function tag($request)
+    {
+        try {
+            $hashids = new Hashids('krad', 10);
+            $tagId = $hashids->decode($request->tag_id)[0] ?? null;
+            $signatoryId = $hashids->decode($request->signatory_id)[0] ?? null;
+
+            $signatory = RequestSignatory::find($signatoryId);
+            if (!$signatory) {
+                return [
+                    'data' => null,
+                    'message' => 'Signatory not found',
+                    'info' => 'The signatory record for this request could not be found.',
+                ];
+            }
+
+            $tag = RequestTag::where('id', $tagId)->where('request_id', $signatory->request_id)->first();
+            if (!$tag) {
+                return [
+                    'data' => null,
+                    'message' => 'Employee not found',
+                    'info' => 'The selected employee could not be found on this request.',
+                ];
+            }
+
+            if ($tag->division_id != $signatory->division_id) {
+                return [
+                    'data' => null,
+                    'message' => 'Not authorized',
+                    'info' => 'You can only manage employees within your own division.',
+                ];
+            }
+
+            $tag->update(['is_joined' => (bool) $request->is_joined]);
+
+            return [
+                'data' => ['id' => $request->tag_id, 'is_joined' => (bool) $tag->is_joined],
+                'message' => 'Employee Updated',
+                'info' => $tag->is_joined
+                    ? 'The employee has been added back to this Travel Order.'
+                    : 'The employee has been removed from this Travel Order.',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'data' => null,
+                'message' => 'Update Failed',
+                'info' => 'An error occurred while updating the employee. Please try again later. (' . $e->getMessage() . ')',
+            ];
+        }
+    }
+
     public function leave($id){
         $data = RequestLeave::with('credits.log')->where('request_id',$id)->first();
         $credits = $data->credits;
@@ -189,14 +245,18 @@ class SaveClass
     private function image($request,$id){
         $image = $request->input('photo'); // base64 string
 
+        if (!$image) {
+            return null;
+        }
+
         // Validate format
         if (!preg_match('/^data:image\/(\w+);base64,/', $image, $matches)) {
-            return response()->json(['error' => 'Invalid image format.'], 422);
+            return null;
         }
 
         $type = strtolower($matches[1]); // png, jpg, jpeg, gif
         if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
-            return response()->json(['error' => 'Invalid image type.'], 422);
+            return null;
         }
 
         // Remove header and decode
@@ -240,9 +300,9 @@ class SaveClass
         $information = json_decode($report->information, true);
 
         $signatory = RequestSignatory::
-        with('division','approved.user.profile:user_id,firstname,middlename,lastname,suffix_id,signature','recommended.user.profile:user_id,firstname,middlename,lastname,suffix_id,signature')
+        with('division','approved.user.profile:user_id,firstname,middlename,lastname,suffix_id','approved.user.certificate','recommended.user.profile:user_id,firstname,middlename,lastname,suffix_id','recommended.user.certificate')
         ->where('id',$id)->first();
-     
+
         foreach ($information['signatories'] as $key => $sign) {
             if ($sign['code'] === $signatory->code ) {
                 $signatoriesFormatted = [
@@ -251,20 +311,22 @@ class SaveClass
                     'division_id' => $signatory->division->id ?? null,
                     'recommended' => [
                         'name' => $signatory->recommended?->user?->profile?->fullname,
-                        'signature' => $signatory->recommended?->user?->profile?->signature,
-                        'date' => ($signatory->recommended_date) ? $signatory->recommended_date : null
+                        'signature' => $signatory->recommended?->user?->certificate?->signature,
+                        'date' => ($signatory->recommended_date) ? $signatory->recommended_date : null,
+                        'role' => $sign['recommended']['role'] ?? null,
                     ],
                     'approved' => [
                         'name' => $signatory->approved?->user?->profile?->fullname,
-                        'signature' => $signatory->approved?->user?->profile?->signature,
-                        'date' => ($signatory->approved_date) ? $signatory->approved_date : null
+                        'signature' => $signatory->approved?->user?->certificate?->signature,
+                        'date' => ($signatory->approved_date) ? $signatory->approved_date : null,
+                        'role' => $sign['approved']['role'] ?? null,
                     ]
                 ];
                 if($type == 'recommended'){
                     $role = ($is_designated) ? 'Assistant Regional Director ('.$signatory->division->others.')' : 'OIC - '.'Assistant Regional Director ('.$signatory->division->others.')';
                     $signatoriesFormatted['recommended']['role'] = $role;
                 }else{
-                    $role = ($is_designated) ? '' : 'OIC - '.'Regional Director';
+                    $role = ($is_designated) ? 'Regional Director' : 'OIC - '.'Regional Director';
                     $signatoriesFormatted['approved']['role'] = $role;
                 }
                 $information['signatories'][$key] = $signatoriesFormatted;

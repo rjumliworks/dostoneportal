@@ -57,6 +57,7 @@ class ShowClass
             'request.comments.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id','request.comments.replies.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'request.tags.user:id',
             'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'request.tags.user.organization.position.salary',
             'request.type',
             'request.dates',
             'request.detail',
