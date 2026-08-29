@@ -90,7 +90,7 @@
                                      <td class="text-center">{{ list.tags.length }}</td>
                                     <td class="text-center">{{ (list.types || []).map(type => type.name).join(', ') }}</td>
                                     <td class="text-center">{{ list.mode.name }}</td>
-                                    <td class="text-center">{{formatDateRange(list.start, list.end)}}</td>
+                                    <td class="text-center">{{formatDateRange(list.dates)}}</td>
                                     <td class="text-end">
                                         <b-button @click="openEdit(list,index)" variant="soft-warning" class="me-1" v-b-tooltip.hover title="Edit" size="sm">
                                             <i class="ri-pencil-fill align-bottom"></i>
@@ -188,20 +188,38 @@ export default {
             this.filter.type = type;
             this.fetch();
         },
-          formatDateRange(start, end) {
-            const startDate = new Date(start);
-            const endDate = new Date(end);
+          formatDateRange(dates) {
+            if (!dates || !dates.length) return '';
 
-            const options = { month: 'long', day: 'numeric' };
-            const startStr = startDate.toLocaleDateString('en-US', options);
-            const endStr = endDate.toLocaleDateString('en-US', { day: 'numeric' });
+            if (dates.length === 1) {
+                const start = dates[0].start;
+                const end = dates[0].end;
+                const startDate = new Date(start);
+                const endDate = new Date(end);
 
-            if (start === end) {
-            return startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                if (start === end) {
+                    return startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                }
+
+                const options = { month: 'long', day: 'numeric' };
+                const startStr = startDate.toLocaleDateString('en-US', options);
+                const endStr = endDate.toLocaleDateString('en-US', { day: 'numeric' });
+                const year = startDate.getFullYear(); // assume same year
+                return `${startStr}-${endStr}, ${year}`;
             }
 
-            const year = startDate.getFullYear(); // assume same year
-            return `${startStr}-${endStr}, ${year}`;
+            // Multiple non-continuous dates
+            const parsed = dates.map(d => new Date(d.start)).sort((a, b) => a - b);
+            const sameMonth = parsed.every(d => d.getMonth() === parsed[0].getMonth() && d.getFullYear() === parsed[0].getFullYear());
+
+            if (sameMonth) {
+                const month = parsed[0].toLocaleDateString('en-US', { month: 'long' });
+                const year = parsed[0].getFullYear();
+                const days = parsed.map(d => d.getDate()).join(', ');
+                return `${month} ${days}, ${year}`;
+            }
+
+            return parsed.map(d => d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })).join(', ');
         },
         openCreate(){
             this.$refs.create.show();

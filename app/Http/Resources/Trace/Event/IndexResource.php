@@ -31,6 +31,11 @@ class IndexResource extends JsonResource
             'start' => $this->request->dates[0]->start,
             'end' => $this->request->dates[0]->end,
             'time' => $this->request->dates[0]->time,
+            'dates' => $this->request->dates->map(fn ($date) => [
+                'start' => $date->start,
+                'end' => $date->end,
+                'timeOfDay' => $date->time_of_day ?? 'Whole Day',
+            ])->values(),
             'types' => $this->types,
             'audience' => $this->audience,
             'mode' => $this->mode,

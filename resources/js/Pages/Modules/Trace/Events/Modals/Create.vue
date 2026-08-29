@@ -314,9 +314,17 @@ export default {
             this.form.latitude = data.location?.latitude;
             this.form.longitude = data.location?.longitude;
 
-            this.dateType = (data.start === data.end) ? 'Single Day' : 'Range';
+            const dates = data.dates || [];
+            this.dateType = (dates.length > 1)
+                ? 'Multiple Dates (non-continuous)'
+                : ((data.start === data.end) ? 'Single Day' : 'Range');
+
             this.$nextTick(() => {
-                this.date = (this.dateType === 'Single Day') ? data.start : `${data.start} to ${data.end}`;
+                if (this.dateType === 'Multiple Dates (non-continuous)') {
+                    this.date = dates.map(d => this.formatDate(new Date(d.start))).join(',');
+                } else {
+                    this.date = (this.dateType === 'Single Day') ? data.start : `${data.start} to ${data.end}`;
+                }
             });
 
             this.showModal = true;

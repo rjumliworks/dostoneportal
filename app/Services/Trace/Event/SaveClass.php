@@ -112,32 +112,34 @@ class SaveClass
     }
 
     private function saveDates($data, $request){
+        $dates = $request->dates;
+
         if($request->date_type != 'Multiple Dates (non-continuous)'){
-            $dates = $request->dates;
             $allWholeDay = array_reduce($dates, function ($carry, $item) {
                 return $carry && ($item['timeOfDay'] === 'Whole Day');
             }, true);
 
             if ($allWholeDay) {
-                $dates = array_column($dates, 'date');
-                $start = min($dates);
-                $end = max($dates);
+                $dateValues = array_column($dates, 'date');
+                $start = min($dateValues);
+                $end = max($dateValues);
 
                 $data->dates()->create([
                     'start' => $start,
                     'end' => $end,
                     'time' => '08:00',
                 ]);
-            } else {
-                foreach($dates as $date){
-                    $data->dates()->create([
-                        'start' => $date['date'],
-                        'end' => $date['date'],
-                        'time' => '08:00',
-                        'time_of_day' => $date['timeOfDay']
-                    ]);
-                }
+                return;
             }
+        }
+
+        foreach($dates as $date){
+            $data->dates()->create([
+                'start' => $date['date'],
+                'end' => $date['date'],
+                'time' => '08:00',
+                'time_of_day' => $date['timeOfDay']
+            ]);
         }
     }
 
