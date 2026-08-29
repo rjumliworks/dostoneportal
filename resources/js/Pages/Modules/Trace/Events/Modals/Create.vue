@@ -213,12 +213,7 @@ export default {
                 dateFormat: 'Y-m-d',
                 altInput: true,
                 altFormat: 'F j, Y',
-                minDate: this.isAdmin ? null : new Date().setDate(new Date().getDate() + 1),
-                disable: [
-                    function(date) {
-                        return (date.getDay() === 0 || date.getDay() === 6);
-                    }
-                ]
+                minDate: this.isAdmin ? null : new Date().setDate(new Date().getDate() + 1)
             };
         },
         formattedDate() {
