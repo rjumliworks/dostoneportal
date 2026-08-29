@@ -197,18 +197,6 @@ export default {
                 altFormat: 'F j, Y',
                 minDate:'',
             },
-            multiple: {
-                mode: "multiple",
-                dateFormat: 'Y-m-d',
-                altInput: true,
-                altFormat: 'F j, Y',
-                minDate: new Date().setDate(new Date().getDate() + 1),
-                disable: [
-                    function(date) {
-                        return (date.getDay() === 0 || date.getDay() === 6);
-                    }
-                ]
-            },
             notice: null,
             dateType: null,
             loading: false,
@@ -216,6 +204,23 @@ export default {
         }
     },
     computed: {
+        isAdmin() {
+            return this.$page.props.roles?.includes('Administrator');
+        },
+        multiple() {
+            return {
+                mode: "multiple",
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'F j, Y',
+                minDate: this.isAdmin ? null : new Date().setDate(new Date().getDate() + 1),
+                disable: [
+                    function(date) {
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ]
+            };
+        },
         formattedDate() {
             if (!this.date) return '';
             

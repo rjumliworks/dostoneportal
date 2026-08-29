@@ -18,7 +18,7 @@
         <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 342px); overflow-x: hidden; overflow-y: auto;">
             <div class="row g-3 p-3">
                 <div class="col-md-12" v-if="information.events && information.events.length > 1">
-                    <simplebar style="max-height: 170px; overflow-x: hidden;">
+                    <simplebar style="max-height: 70px; overflow-x: hidden;">
                         <div class=" d-flex border border-dashed bg-info-subtle rounded p-3" v-for="(event, index) in information.events" :key="event.id" :class="{ 'mt-2': index > 0 }">
 
                             <div class="flex-grow-1 overflow-hidden">

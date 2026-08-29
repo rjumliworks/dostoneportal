@@ -41,7 +41,7 @@ class PrintClass
                     ->where('end', '>', $endOfMonth);
             });
         })
-        ->with('dates','detail')
+        ->with('dates','detail','location.municipality','travel.events.request.location.municipality')
         ->get();
 
         $obs = Request::where('type_id',192)
@@ -165,12 +165,13 @@ class PrintClass
                 ];
                 continue;
             }else if($travelToday){
+                $travelLocation = $travelToday->location ?? $travelToday->travel?->events->first()?->request?->location;
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
                     'day' => date('l', $i),
                     'data' => 'OFFICIAL TRAVEL', // adjust if different
-                    'destination' => $travelToday->location->address.', '.$travelToday->location->municipality->name,
+                    'destination' => $travelLocation ? ($travelLocation->address.', '.optional($travelLocation->municipality)->name) : null,
                     'purpose' => $travelToday->detail->purpose,
                     'bg' => 'bg bg-info bg-soft',
                     'is_with' => false,

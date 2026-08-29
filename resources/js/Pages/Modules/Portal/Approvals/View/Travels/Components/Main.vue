@@ -141,13 +141,12 @@
                                     </template>
                                     <template v-if="menu == 'Employees'">
                                         <div class="card-body bg-white rounded-bottom p-0">
-                                            <div class="table-responsive table-card" style="height: calc(100vh - 592px); overflow: auto;" v-if="employeesTab === 'division'">
+                                            <div class="table-responsive table-card" style="height: calc(100vh - 490px); overflow: auto;" v-if="employeesTab === 'division'">
                                                 <table class="table align-middle table-striped table-centered mb-0">
                                                     <thead class="table-light thead-fixed">
                                                         <tr class="fs-11">
                                                             <th style="width: 5%;" class="text-center">#</th>
                                                             <th>Employee</th>
-                                                            <th style="width: 30%;">Position</th>
                                                             <th style="width: 15%;" class="text-center">Action</th>
                                                         </tr>
                                                     </thead>
@@ -157,14 +156,14 @@
                                                             <td>
                                                                 <div class="d-flex align-items-center">
                                                                     <div class="flex-shrink-0 avatar-xxs">
-                                                                        <img :src="tag.avatar" alt="" class="avatar-img rounded-circle">
+                                                                        <img :src="tag.avatar" alt="" class="avatar-xxs avatar-img rounded-circle">
                                                                     </div>
                                                                     <div class="flex-grow-1 ms-2 overflow-hidden">
-                                                                        <h6 class="mb-0 fs-12 text-truncate" :class="{ 'text-muted text-decoration-line-through': !tag.is_joined }">{{ tag.name }}</h6>
+                                                                        <h6 class="mb-0 fs-11 fw-semibold text-primary text-truncate" :class="{ 'text-muted text-decoration-line-through': !tag.is_joined }">{{ tag.name }}</h6>
+                                                                        <p class="fs-10 text-muted mb-0">{{tag.position}}</p>
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td class="text-muted">{{ tag.position }}</td>
                                                             <td class="text-center">
                                                                 <button type="button"
                                                                     class="btn btn-sm fs-10 py-0 px-2"
@@ -178,13 +177,41 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div class="avatar-group p-3" style="height: calc(100vh - 592px); overflow: auto;" v-else>
-                                                <div class="avatar-group-item material-shadow" v-for="(list, i) of nonMatchingTags" :key="i">
-                                                    <a href="javascript: void(0);" class="d-inline-block"
-                                                    v-b-tooltip.hover="{title: list.name, placement: 'top', customClass: 'my-tooltip-class'}">
-                                                        <img :src="list.avatar" alt="" class="rounded-circle avatar-xs">
-                                                    </a>
-                                                </div>
+                                            <div class="table-responsive table-card" style="height: calc(100vh - 490px); overflow: auto;" v-else>
+                                                <table class="table align-middle table-striped table-centered mb-0">
+                                                    <thead class="table-light thead-fixed">
+                                                        <tr class="fs-11">
+                                                            <th style="width: 5%;" class="text-center">#</th>
+                                                            <th>Employee</th>
+                                                            <th style="width: 15%;" class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="fs-12">
+                                                        <tr v-for="(tag, i) in nonMatchingTags" :key="tag.id">
+                                                            <td class="text-center">{{ i + 1 }}</td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="flex-shrink-0 avatar-xxs">
+                                                                        <img :src="tag.avatar" alt="" class="avatar-xxs avatar-img rounded-circle">
+                                                                    </div>
+                                                                    <div class="flex-grow-1 ms-2 overflow-hidden">
+                                                                        <h6 class="mb-0 fs-11 fw-semibold text-primary text-truncate" :class="{ 'text-muted text-decoration-line-through': !tag.is_joined }">{{ tag.name }}</h6>
+                                                                        <p class="fs-10 text-muted mb-0">{{tag.position}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button"
+                                                                    class="btn btn-sm fs-10 py-0 px-2"
+                                                                    :class="tag.is_joined ? 'btn-soft-danger' : 'btn-soft-success'"
+                                                                    :disabled="togglingTagId === tag.id"
+                                                                    @click="toggleTag(tag)">
+                                                                    {{ tag.is_joined ? 'Remove' : 'Add' }}
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </template>

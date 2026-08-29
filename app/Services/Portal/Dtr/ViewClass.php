@@ -104,16 +104,19 @@ class ViewClass
                             ->where('end', '>', $end);
                     });
             })
-            ->with('dates', 'detail', 'location', 'location.municipality')
+            ->with('dates', 'detail', 'location.municipality', 'travel.events.request.location.municipality')
             ->get();
 
         foreach ($travels as $travel) {
+            $location = $travel->location ?? $travel->travel?->events->first()?->request?->location;
+            $address = $location
+                ? ($location->address . ', ' . optional($location->municipality)->name)
+                : 'Official Travel';
+
             foreach ($travel->dates as $travelDate) {
                 $period2 = \Carbon\CarbonPeriod::create($travelDate->start, $travelDate->end ?? $travelDate->start);
                 foreach ($period2 as $day) {
-                    $officialTravel[$day->format('Y-m-d')] =
-                        ($travel->location->address . ', ' . $travel->location->municipality->name)
-                        ?? 'Official Travel';
+                    $officialTravel[$day->format('Y-m-d')] = $address;
                 }
             }
         }
