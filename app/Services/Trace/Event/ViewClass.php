@@ -4,11 +4,32 @@ namespace App\Services\Trace\Event;
 
 use Hashids\Hashids;
 use App\Models\User;
+use App\Models\Request;
 use App\Models\RequestEvent;
 use App\Http\Resources\Trace\Event\IndexResource;
 
 class ViewClass
 {
+    public function groupCount($request){
+        $data = Request::findOrFail($request->id);
+
+        $existingUserIds = $data->tags()->pluck('user_id')->toArray();
+
+        $count = User::where('is_active', 1)
+            ->whereHas('organization', function ($org) use ($request) {
+                if ($request->type === 'group') {
+                    $org->when($request->division_id, fn($q) => $q->where('division_id', $request->division_id))
+                        ->when($request->unit_id, fn($q) => $q->where('unit_id', $request->unit_id));
+                }
+            })
+            ->whereNotIn('id', $existingUserIds)
+            ->count();
+
+        return [
+            'count' => $count
+        ];
+    }
+
     public function counts($types){
         $user_id = \Auth::user()->id;
         foreach($types as $type){

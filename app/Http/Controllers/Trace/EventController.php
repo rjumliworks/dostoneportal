@@ -31,6 +31,9 @@ class EventController extends Controller
             case 'search':
                 return $this->view->search($request);
             break;
+            case 'group_count':
+                return $this->view->groupCount($request);
+            break;
             default:
                 return inertia('Modules/Trace/Events/Index',[
                     'dropdowns' => [
@@ -52,6 +55,15 @@ class EventController extends Controller
                 break;
                 case 'participant':
                     return $this->save->participant($request);
+                break;
+                case 'participants':
+                    return $this->save->participants($request);
+                break;
+                case 'remove_participant':
+                    return $this->save->removeParticipant($request);
+                break;
+                case 'join_participant':
+                    return $this->save->joinParticipant($request);
                 break;
             }
         });

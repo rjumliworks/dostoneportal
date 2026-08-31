@@ -66,7 +66,13 @@
                                     <span :class="'badge '+list.status.bg+' '+list.status.type">{{list.status.name}}</span>
                                 </td>
                                 <td class="text-end">
-                                    <b-button @click="openView(list,'view')" variant="soft-danger" class="me-1" v-b-tooltip.hover title="Remove" size="sm">
+                                    <b-button v-if="list.user_id === currentUserId && !list.is_joined" @click="joinActivity(list)" variant="soft-success" class="me-1" v-b-tooltip.hover title="Accept" size="sm" :disabled="joiningTagId === list.id">
+                                        <i class="ri-check-fill align-bottom"></i>
+                                    </b-button>
+                                    <span v-else-if="list.user_id === currentUserId && list.is_joined" class="badge bg-success-subtle text-success me-1" v-b-tooltip.hover title="You joined this activity">
+                                        <i class="ri-check-double-fill align-bottom"></i> Joined
+                                    </span>
+                                    <b-button v-if="isDmo" @click="removeParticipant(list)" variant="soft-danger" class="me-1" v-b-tooltip.hover title="Remove" size="sm" :disabled="removingTagId === list.id">
                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                     </b-button>
                                 </td>
@@ -88,7 +94,7 @@
             </div>
         </div>
     </div>
-    <Group ref="group"/>
+    <Group :id="information.request_id" ref="group"/>
     <Add :id="information.request_id" :start="information.start" :end="information.end" ref="add"/>
 </template>
 <script>
@@ -102,10 +108,18 @@ export default {
         return {
             lists: [],
             index: null,
-            selectedRow: null
+            selectedRow: null,
+            removingTagId: null,
+            joiningTagId: null
         }
     },
     computed: {
+        isDmo() {
+            return this.$page.props.roles?.includes('Document Management Officer') ?? false;
+        },
+        currentUserId() {
+            return this.$page.props.user?.id ?? null;
+        },
         userOptions() {
             return this.payroll?.payrolls?.map(user => ({
                 value: user.id,
@@ -126,8 +140,26 @@ export default {
         openGroup(){
             this.$refs.group.show();
         },
-        openView(payroll,type){
-            this.$refs.view.show(payroll,type);
+        removeParticipant(tag){
+            if(!confirm(`Remove ${tag.name} from this activity?`)) return;
+            this.removingTagId = tag.id;
+            this.$inertia.post('/activities', {
+                tag_id: tag.id,
+                option: 'remove_participant'
+            }, {
+                preserveScroll: true,
+                onFinish: () => { this.removingTagId = null; }
+            });
+        },
+        joinActivity(tag){
+            this.joiningTagId = tag.id;
+            this.$inertia.post('/activities', {
+                tag_id: tag.id,
+                option: 'join_participant'
+            }, {
+                preserveScroll: true,
+                onFinish: () => { this.joiningTagId = null; }
+            });
         },
         selectRow(index) {
             this.selectedRow = index;

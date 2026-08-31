@@ -85,7 +85,7 @@
                                     <td class="text-center">{{ index + 1 }}</td>
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary">{{list.title}}</h5>
-                                        <p class="fs-12 text-muted mb-0">{{list.location.name}}</p>
+                                        <p class="fs-12 text-muted mb-0">{{ list.location?.name }}</p>
                                     </td>
                                      <td class="text-center">{{ list.tags.length }}</td>
                                     <td class="text-center">{{ (list.types || []).map(type => type.name).join(', ') }}</td>

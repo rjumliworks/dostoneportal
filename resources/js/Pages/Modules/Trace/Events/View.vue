@@ -57,9 +57,9 @@ import List from './Components/List.vue';
 export default {
     components: { List },
     props: ['information_data'],
-    data(){
-        return {
-            information: this.information_data.data
+    computed: {
+        information(){
+            return this.information_data.data
         }
     },
     methods: {

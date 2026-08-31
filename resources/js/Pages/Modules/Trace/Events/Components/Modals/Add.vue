@@ -158,7 +158,7 @@ export default {
         submit(){
             this.form.post('/activities',{
                 preserveScroll: true,
-                onSuccess: (response) => {
+                onSuccess: () => {
                     this.hide();
                 },
             });

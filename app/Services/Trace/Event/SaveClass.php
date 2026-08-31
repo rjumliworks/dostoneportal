@@ -4,13 +4,40 @@ namespace App\Services\Trace\Event;
 
 use Carbon\Carbon;
 use App\Models\Event;
+use App\Models\User;
 use App\Models\Request;
+use App\Models\RequestTag;
 use App\Models\RequestEvent;
 use App\Models\RequestReport;
 use App\Http\Resources\Trace\Event\IndexResource;
 
 class SaveClass
 {
+    public function removeParticipant($request){
+        $tag = RequestTag::findOrFail($request->tag_id);
+        $tag->delete();
+
+        return [
+            'data' => null,
+            'message' => 'Participant removed successfully.',
+            'info' => 'The participant has been removed from this event.'
+        ];
+    }
+
+    public function joinParticipant($request){
+        $tag = RequestTag::where('id', $request->tag_id)
+            ->where('user_id', \Auth::user()->id)
+            ->firstOrFail();
+
+        $tag->update(['is_joined' => true]);
+
+        return [
+            'data' => $tag,
+            'message' => 'Attendance confirmed.',
+            'info' => 'You have been marked as joined for this activity.'
+        ];
+    }
+
     public function participant($request){
         $data = Request::findOrFail($request->id);
         $data->tags()->create([
@@ -22,6 +49,43 @@ class SaveClass
             'data' => $data,
             'message' => 'Participant added successfully.',
             'info' => 'The participant has been added to the event. You may review or update participant details anytime.'
+        ];
+    }
+
+    public function participants($request){
+        $data = Request::findOrFail($request->id);
+
+        $existingUserIds = $data->tags()->pluck('user_id')->toArray();
+
+        $employees = User::where('is_active', 1)
+            ->whereHas('organization', function ($org) use ($request) {
+                if ($request->type === 'group') {
+                    $org->when($request->division_id, fn($q) => $q->where('division_id', $request->division_id))
+                        ->when($request->unit_id, fn($q) => $q->where('unit_id', $request->unit_id));
+                }
+            })
+            ->whereNotIn('id', $existingUserIds)
+            ->with('organization:user_id,division_id')
+            ->get(['id']);
+
+        foreach ($employees as $employee) {
+            $data->tags()->create([
+                'user_id' => $employee->id,
+                'division_id' => optional($employee->organization)->division_id,
+                'status_id' => 36,
+            ]);
+        }
+
+        $count = $employees->count();
+
+        return [
+            'data' => $data,
+            'message' => $count > 0
+                ? $count.' participant(s) added successfully.'
+                : 'No new participants to add.',
+            'info' => $count > 0
+                ? 'The selected employees have been added to the event.'
+                : 'All matching employees are already included in this event.'
         ];
     }
 
