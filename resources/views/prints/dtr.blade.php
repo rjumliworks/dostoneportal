@@ -76,8 +76,7 @@
                 @php
                     $travelGroups = [];
                     $groupCount = 0;
-                    $firstHalf = array_slice($lists, 0, 15, true);
-                      foreach ($firstHalf as $index => $list) {
+                      foreach ($lists as $index => $list) {
                         if (isset($list['data']) && is_string($list['data']) && str_contains($list['data'], 'OFFICIAL TRAVEL')) {
                             $groupCount++;
                         } else {
@@ -100,7 +99,7 @@
                 @foreach($lists as $loopIndex => $list)
                 <tr class="text-center">
                     <td>{{ $loop->iteration }}</td>
-                    
+
                         @if(!$list['is_with'])
                             @php
                                 $isGroupStart = collect($travelGroups)->firstWhere('start', $loopIndex);

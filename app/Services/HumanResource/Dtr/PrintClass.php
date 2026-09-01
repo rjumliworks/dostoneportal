@@ -146,12 +146,26 @@ class PrintClass
             ->map(fn ($day) => $dayNames[$day])
             ->values();
 
-             if($holidayToday && $shift->division_id != 35){
+             if($travelToday){
+                $travelLocation = $travelToday->location ?? $travelToday->travel?->events->first()?->request?->location;
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
                     'day' => date('l', $i),
-                    'data' => 'HOLIDAY', 
+                    'data' => 'OFFICIAL TRAVEL', // adjust if different
+                    'destination' => $travelLocation ? ($travelLocation->address.', '.optional($travelLocation->municipality)->name) : null,
+                    'purpose' => $travelToday->detail->purpose,
+                    'bg' => 'bg bg-info bg-soft',
+                    'is_with' => false,
+                    'travel_group' => $travelToday->id
+                ];
+                continue;
+            }else if($holidayToday && $shift->division_id != 35){
+                $array[] = [
+                    'date' => date('Y-m-d', $i),
+                    'text' => date('F d, Y', $i),
+                    'day' => date('l', $i),
+                    'data' => 'HOLIDAY',
                     'title' => $holidayToday->title,
                     'bg' => 'bg bg-info bg-soft',
                     'is_with' => false
@@ -165,20 +179,6 @@ class PrintClass
                     'data' => 'NON-WORKING DAY',
                     'bg' => 'bg bg-secondary bg-soft',
                     'is_with' => false
-                ];
-                continue;
-            }else if($travelToday){
-                $travelLocation = $travelToday->location ?? $travelToday->travel?->events->first()?->request?->location;
-                $array[] = [
-                    'date' => date('Y-m-d', $i),
-                    'text' => date('F d, Y', $i),
-                    'day' => date('l', $i),
-                    'data' => 'OFFICIAL TRAVEL', // adjust if different
-                    'destination' => $travelLocation ? ($travelLocation->address.', '.optional($travelLocation->municipality)->name) : null,
-                    'purpose' => $travelToday->detail->purpose,
-                    'bg' => 'bg bg-info bg-soft',
-                    'is_with' => false,
-                    'travel_group' => $travelToday->id
                 ];
                 continue;
             }else if($obToday){
