@@ -143,6 +143,7 @@ Route::resource('/surveys', App\Http\Controllers\HumanResource\SurveyController:
 Route::resource('/approvals', App\Http\Controllers\Portal\ApprovalController::class);
 
 Route::middleware(['role:Administrator'])->group(function () {
+    Route::get('/request-monitoring', [App\Http\Controllers\Executive\RequestMonitorController::class, 'index']);
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);
     Route::resource('/shifts', App\Http\Controllers\Executive\ShiftController::class);
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);

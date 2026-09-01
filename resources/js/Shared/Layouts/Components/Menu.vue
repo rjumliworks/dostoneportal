@@ -236,6 +236,13 @@
                     <span data-key="t-menu">Executive Modules</span>
                 </li>
                 <li class="nav-item">
+                    <Link href="/request-monitoring" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/RequestMonitoring') }">
+                    <i class="ri-file-list-3-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Request Monitoring</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <Link href="/users" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Executive/Users') }">
                     <i class="ri-team-fill"></i>
