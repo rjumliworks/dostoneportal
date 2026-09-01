@@ -165,16 +165,18 @@ class PrintClass
                         ->filter()
                         ->implode(', ')
                     : null;
+                $travelEventTitle = $travelToday->travel?->events->first()?->title;
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
                     'day' => date('l', $i),
                     'data' => 'OFFICIAL TRAVEL', // adjust if different
                     'destination' => $travelDestination,
+                    'event_title' => $travelEventTitle,
                     'purpose' => $travelToday->detail->purpose,
                     'bg' => 'bg bg-info bg-soft',
                     'is_with' => false,
-                    'travel_group' => md5(($travelDestination ?? '').'|'.($travelToday->detail->purpose ?? ''))
+                    'travel_group' => md5(($travelEventTitle ?? '').'|'.($travelDestination ?? ''))
                 ];
                 continue;
             }else if($holidayToday && $shift->division_id != 35){

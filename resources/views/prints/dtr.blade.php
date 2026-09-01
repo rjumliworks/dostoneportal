@@ -141,7 +141,7 @@
                                     }
 
                                     // Truncate the destination text if longer than allowed
-                                    $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
+                                    $text = trim(($list['event_title'] ?? '').(($list['event_title'] ?? null) && ($list['destination'] ?? null) ? ' at ' : '').($list['destination'] ?? ''));
                                     if (strlen($text) > $maxChars) {
                                         $text = substr($text, 0, $maxChars) . '...';
                                     }
@@ -178,7 +178,7 @@
                                 </td>
                                 @elseif($list['data'] == 'OFFICIAL TRAVEL')
                                 <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['destination']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
-                                       Official Travel : {{ $list['destination'] }}
+                                       Official Travel : {{ trim(($list['event_title'] ?? '').(($list['event_title'] ?? null) && ($list['destination'] ?? null) ? ' at ' : '').($list['destination'] ?? '')) }}
                                     </td>
                                 @elseif($list['data'] == 'OFFICIAL BUSINESS')
                                 <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['title']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
@@ -337,7 +337,7 @@
                                     }
 
                                     // Truncate the destination text if longer than allowed
-                                    $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
+                                    $text = trim(($list['event_title'] ?? '').(($list['event_title'] ?? null) && ($list['destination'] ?? null) ? ' at ' : '').($list['destination'] ?? ''));
                                     if (strlen($text) > $maxChars) {
                                         $text = substr($text, 0, $maxChars) . '...';
                                     }
@@ -374,7 +374,7 @@
                                 </td>
                                 @elseif($list['data'] == 'OFFICIAL TRAVEL')
                                 <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['destination']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
-                                       Official Travel : {{ $list['destination'] }}
+                                       Official Travel : {{ trim(($list['event_title'] ?? '').(($list['event_title'] ?? null) && ($list['destination'] ?? null) ? ' at ' : '').($list['destination'] ?? '')) }}
                                     </td>
                                 @elseif($list['data'] == 'OFFICIAL BUSINESS')
                                 <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['title']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
@@ -535,7 +535,7 @@
                                     }
 
                                         // Truncate the destination text if longer than allowed
-                                         $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
+                                         $text = trim(($list['event_title'] ?? '').(($list['event_title'] ?? null) && ($list['destination'] ?? null) ? ' at ' : '').($list['destination'] ?? ''));
                                         if (strlen($text) > $maxChars) {
                                             $text = substr($text, 0, $maxChars) . '...';
                                         }
@@ -573,7 +573,7 @@
                                     </td>
                                     @elseif($list['data'] == 'OFFICIAL TRAVEL')
                                     <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['destination']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
-                                        Official Travel : {{ $list['destination'] }}
+                                        Official Travel : {{ trim(($list['event_title'] ?? '').(($list['event_title'] ?? null) && ($list['destination'] ?? null) ? ' at ' : '').($list['destination'] ?? '')) }}
                                     </td>
                                     @elseif($list['data'] == 'OFFICIAL BUSINESS')
                                     <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['title']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
