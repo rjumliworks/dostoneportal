@@ -148,12 +148,19 @@ class PrintClass
 
              if($travelToday){
                 $travelLocation = $travelToday->location ?? $travelToday->travel?->events->first()?->request?->location;
+                $travelAddress = $travelLocation->address ?? null;
+                $isTbaAddress = $travelAddress && strcasecmp(trim($travelAddress), 'TBA') === 0;
+                $travelDestination = $travelLocation
+                    ? collect([$isTbaAddress ? null : $travelAddress, optional($travelLocation->municipality)->name])
+                        ->filter()
+                        ->implode(', ')
+                    : null;
                 $array[] = [
                     'date' => date('Y-m-d', $i),
                     'text' => date('F d, Y', $i),
                     'day' => date('l', $i),
                     'data' => 'OFFICIAL TRAVEL', // adjust if different
-                    'destination' => $travelLocation ? ($travelLocation->address.', '.optional($travelLocation->municipality)->name) : null,
+                    'destination' => $travelDestination,
                     'purpose' => $travelToday->detail->purpose,
                     'bg' => 'bg bg-info bg-soft',
                     'is_with' => false,

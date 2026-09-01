@@ -76,8 +76,17 @@
                 @php
                     $travelGroups = [];
                     $groupCount = 0;
+                    $currentTravelGroup = null;
                       foreach ($lists as $index => $list) {
                         if (isset($list['data']) && is_string($list['data']) && str_contains($list['data'], 'OFFICIAL TRAVEL')) {
+                            if ($groupCount > 0 && ($list['travel_group'] ?? null) !== $currentTravelGroup) {
+                                $travelGroups[] = [
+                                    'start' => $index - $groupCount,
+                                    'count' => $groupCount
+                                ];
+                                $groupCount = 0;
+                            }
+                            $currentTravelGroup = $list['travel_group'] ?? null;
                             $groupCount++;
                         } else {
                             if ($groupCount > 0) {
@@ -87,6 +96,7 @@
                                 ];
                                 $groupCount = 0;
                             }
+                            $currentTravelGroup = null;
                         }
                     }
                     if ($groupCount > 0) {
@@ -264,9 +274,18 @@
                 @php
                     $travelGroups = [];
                     $groupCount = 0;
+                    $currentTravelGroup = null;
                     $firstHalf = array_slice($lists, 0, 15, true);
                       foreach ($firstHalf as $index => $list) {
                         if (isset($list['data']) && is_string($list['data']) && str_contains($list['data'], 'OFFICIAL TRAVEL')) {
+                            if ($groupCount > 0 && ($list['travel_group'] ?? null) !== $currentTravelGroup) {
+                                $travelGroups[] = [
+                                    'start' => $index - $groupCount,
+                                    'count' => $groupCount
+                                ];
+                                $groupCount = 0;
+                            }
+                            $currentTravelGroup = $list['travel_group'] ?? null;
                             $groupCount++;
                         } else {
                             if ($groupCount > 0) {
@@ -276,6 +295,7 @@
                                 ];
                                 $groupCount = 0;
                             }
+                            $currentTravelGroup = null;
                         }
                     }
                     if ($groupCount > 0) {
@@ -453,9 +473,18 @@
                     @php
                         $travelGroups = [];
                         $groupCount = 0;
+                        $currentTravelGroup = null;
                         $secondHalf = array_slice($lists, 15, null, true);
                           foreach ($secondHalf as $index => $list) {
                             if (isset($list['data']) && is_string($list['data']) && str_contains($list['data'], 'OFFICIAL TRAVEL')) {
+                                if ($groupCount > 0 && ($list['travel_group'] ?? null) !== $currentTravelGroup) {
+                                    $travelGroups[] = [
+                                        'start' => $index - $groupCount,
+                                        'count' => $groupCount
+                                    ];
+                                    $groupCount = 0;
+                                }
+                                $currentTravelGroup = $list['travel_group'] ?? null;
                                 $groupCount++;
                             } else {
                                 if ($groupCount > 0) {
@@ -465,6 +494,7 @@
                                     ];
                                     $groupCount = 0;
                                 }
+                                $currentTravelGroup = null;
                             }
                         }
                         if ($groupCount > 0) {
