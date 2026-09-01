@@ -121,11 +121,7 @@
                             @if($isGroupStart)
                                 @php
                                     $count = $isGroupStart['count'];
-                                    $fontSize = 30;
-                                    if ($count == 2) $fontSize = 30;
-                                    elseif ($count == 3) $fontSize = 45;
-                                    elseif ($count == 4) $fontSize = 60;
-                                    elseif ($count == 5) $fontSize = 80;
+                                    $fontSize = min(15 * $count, 140);
 
                                     $maxChars = 52 * $count;
 
@@ -320,11 +316,7 @@
                             @if($isGroupStart)
                                 @php
                                     $count = $isGroupStart['count'];
-                                    $fontSize = 30;
-                                    if ($count == 2) $fontSize = 30;
-                                    elseif ($count == 3) $fontSize = 45;
-                                    elseif ($count == 4) $fontSize = 60;
-                                    elseif ($count == 5) $fontSize = 80;
+                                    $fontSize = min(15 * $count, 140);
 
                                     $maxChars = 52 * $count;
 
@@ -521,11 +513,7 @@
                                 @if($isGroupStart)
                                     @php
                                         $count = $isGroupStart['count'];
-                                        $fontSize = 30;
-                                        if ($count == 2) $fontSize = 30;
-                                        elseif ($count == 3) $fontSize = 45;
-                                        elseif ($count == 4) $fontSize = 60;
-                                        elseif ($count == 5) $fontSize = 80;
+                                        $fontSize = min(15 * $count, 140);
 
                                         $maxChars = 52 * $count;
 
