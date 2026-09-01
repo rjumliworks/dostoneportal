@@ -121,7 +121,10 @@
                             @if($isGroupStart)
                                 @php
                                     $count = $isGroupStart['count'];
-                                    $fontSize = min(15 * $count, 140);
+                                    $bracketHeight = min(18 * $count, 150);
+                                    $bracketRowStep = $bracketHeight / $count;
+                                    $bracketTop = $bracketRowStep / 2;
+                                    $bracketBarHeight = $bracketHeight - $bracketTop - 8;
 
                                     $maxChars = 52 * $count;
 
@@ -139,23 +142,9 @@
                                     <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
                                     style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
 
-                                        <span style="
-                                            position: absolute;
-                                            left: 1px;
-                                            top: 0;
-                                            bottom: 0;
-                                            font-size: {{ $fontSize }}px;
-                                            line-height: 1;
-                                            color: gray;
-                                            display: flex;
-                                            align-items: center;
-                                            pointer-events: none;
-                                            user-select: none;
-                                            font-weight: normal;
-                                            font-family: 'Segoe UI Thin', 'Arial', sans-serif;
-                                            ">
-                                            ]
-                                        </span>
+                                        <div style="position: absolute; left: 9px; top: {{ $bracketTop }}px; width: 2px; height: {{ $bracketBarHeight }}px; background-color: gray; pointer-events: none;"></div>
+                                        <div style="position: absolute; left: 1px; top: {{ $bracketTop }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
+                                        <div style="position: absolute; left: 1px; top: {{ $bracketTop + $bracketBarHeight - 2 }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
 
                                         Official Travel : {{ $text }}
                                     </td>
@@ -316,7 +305,10 @@
                             @if($isGroupStart)
                                 @php
                                     $count = $isGroupStart['count'];
-                                    $fontSize = min(15 * $count, 140);
+                                    $bracketHeight = min(18 * $count, 150);
+                                    $bracketRowStep = $bracketHeight / $count;
+                                    $bracketTop = $bracketRowStep / 2;
+                                    $bracketBarHeight = $bracketHeight - $bracketTop - 8;
 
                                     $maxChars = 52 * $count;
 
@@ -334,23 +326,9 @@
                                     <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
                                     style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
 
-                                        <span style="
-                                            position: absolute;
-                                            left: 1px;
-                                            top: 0;
-                                            bottom: 0;
-                                            font-size: {{ $fontSize }}px;
-                                            line-height: 1;
-                                            color: gray;
-                                            display: flex;
-                                            align-items: center;
-                                            pointer-events: none;
-                                            user-select: none;
-                                            font-weight: normal;
-                                            font-family: 'Segoe UI Thin', 'Arial', sans-serif;
-                                            ">
-                                            ]
-                                        </span>
+                                        <div style="position: absolute; left: 9px; top: {{ $bracketTop }}px; width: 2px; height: {{ $bracketBarHeight }}px; background-color: gray; pointer-events: none;"></div>
+                                        <div style="position: absolute; left: 1px; top: {{ $bracketTop }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
+                                        <div style="position: absolute; left: 1px; top: {{ $bracketTop + $bracketBarHeight - 2 }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
 
                                         Official Travel : {{ $text }}
                                     </td>
@@ -513,7 +491,10 @@
                                 @if($isGroupStart)
                                     @php
                                         $count = $isGroupStart['count'];
-                                        $fontSize = min(15 * $count, 140);
+                                        $bracketHeight = min(18 * $count, 150);
+                                    $bracketRowStep = $bracketHeight / $count;
+                                    $bracketTop = $bracketRowStep / 2;
+                                    $bracketBarHeight = $bracketHeight - $bracketTop - 8;
 
                                         $maxChars = 52 * $count;
 
@@ -532,23 +513,9 @@
                                         <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
                                         style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
 
-                                            <span style="
-                                                position: absolute;
-                                                left: 1px;
-                                                top: 0;
-                                                bottom: 0;
-                                                font-size: {{ $fontSize }}px;
-                                                line-height: 1;
-                                                color: gray;
-                                                display: flex;
-                                                align-items: center;
-                                                pointer-events: none;
-                                                user-select: none;
-                                                font-weight: normal;
-                                                font-family: 'Segoe UI Thin', 'Arial', sans-serif;
-                                                ">
-                                                ]
-                                            </span>
+                                            <div style="position: absolute; left: 9px; top: {{ $bracketTop }}px; width: 2px; height: {{ $bracketBarHeight }}px; background-color: gray; pointer-events: none;"></div>
+                                            <div style="position: absolute; left: 1px; top: {{ $bracketTop }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
+                                            <div style="position: absolute; left: 1px; top: {{ $bracketTop + $bracketBarHeight - 2 }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
 
                                             Official Travel : {{ $text }}
                                         </td>
