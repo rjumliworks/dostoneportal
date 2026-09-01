@@ -30,7 +30,7 @@ class PrintClass
         $end_time = strtotime("+1 month", $start_time);
 
         $startOfMonth = date("$year-$month_number-01");
-        $endOfMonth = date("Y-m-t", strtotime($startOfMonth));
+        $endOfMonth = date("Y-m-t", strtotime($startOfMonth)) . ' 23:59:59';
 
         $travels = Request::where('type_id',156)
         ->whereHas('tags', function ($query) use ($user_id) {
