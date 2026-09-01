@@ -136,7 +136,7 @@
                                         Official Travel : {{ $text }}
                                     </td>
                                 @else
-                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" 
+                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
                                     style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
 
                                         <span style="
@@ -151,10 +151,10 @@
                                             align-items: center;
                                             pointer-events: none;
                                             user-select: none;
-                                            font-weight: 100;
+                                            font-weight: normal;
                                             font-family: 'Segoe UI Thin', 'Arial', sans-serif;
                                             ">
-                                            }
+                                            ]
                                         </span>
 
                                         Official Travel : {{ $text }}
@@ -164,15 +164,15 @@
                                 {{-- Skip cell because it's already merged above --}}
                             @else
                                 @if($division_id != 35 && $list['data'] == 'HOLIDAY')
-                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; font-weight: normal; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
                                 @elseif($division_id != 35 && $list['data'] == 'WORK SUSPENDED')
-                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; font-weight: normal; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
                                 @elseif($list['data'] == 'NON-WORKING DAY')
-                                <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; background: rgba(214, 214, 214, 0.5)">
+                                <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; font-weight: normal; background: rgba(214, 214, 214, 0.5)">
                                     {{$list['data']}}
                                 </td>
                                 @elseif($list['data'] == 'OFFICIAL TRAVEL')
@@ -331,7 +331,7 @@
                                         Official Travel : {{ $text }}
                                     </td>
                                 @else
-                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" 
+                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
                                     style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
 
                                         <span style="
@@ -346,10 +346,10 @@
                                             align-items: center;
                                             pointer-events: none;
                                             user-select: none;
-                                            font-weight: 100;
+                                            font-weight: normal;
                                             font-family: 'Segoe UI Thin', 'Arial', sans-serif;
                                             ">
-                                            }
+                                            ]
                                         </span>
 
                                         Official Travel : {{ $text }}
@@ -359,15 +359,15 @@
                                 {{-- Skip cell because it's already merged above --}}
                             @else
                                 @if($division_id != 35 && $list['data'] == 'HOLIDAY')
-                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; font-weight: normal; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
                                 @elseif($division_id != 35 && $list['data'] == 'WORK SUSPENDED')
-                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                    <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; font-weight: normal; background: rgba(128,128,128, .5)">
                                         {{$list['title']}}
                                     </td>
                                 @elseif($list['data'] == 'NON-WORKING DAY')
-                                <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; background: rgba(214, 214, 214, 0.5)">
+                                <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; font-weight: normal; background: rgba(214, 214, 214, 0.5)">
                                     {{$list['data']}}
                                 </td>
                                 @elseif($list['data'] == 'OFFICIAL TRAVEL')
@@ -529,7 +529,7 @@
                                             Official Travel : {{ $text }}
                                         </td>
                                     @else
-                                        <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" 
+                                        <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
                                         style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
 
                                             <span style="
@@ -544,10 +544,10 @@
                                                 align-items: center;
                                                 pointer-events: none;
                                                 user-select: none;
-                                                font-weight: 100;
+                                                font-weight: normal;
                                                 font-family: 'Segoe UI Thin', 'Arial', sans-serif;
                                                 ">
-                                                }
+                                                ]
                                             </span>
 
                                             Official Travel : {{ $text }}
@@ -557,15 +557,15 @@
                                     {{-- Skip cell because it's already merged above --}}
                                 @else
                                     @if($division_id != 35 && $list['data'] == 'HOLIDAY')
-                                        <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                        <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; font-weight: normal; background: rgba(128,128,128, .5)">
                                             {{$list['title']}}
                                         </td>
                                     @elseif($division_id != 35 && $list['data'] == 'WORK SUSPENDED')
-                                        <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; background: rgba(128,128,128, .5)">
+                                        <td width="80%" colspan="6" style="text-transform: uppercase; letter-spacing: 2px; font-size: 8px; font-weight: normal; background: rgba(128,128,128, .5)">
                                             {{$list['title']}}
                                         </td>
                                     @elseif($list['data'] == 'NON-WORKING DAY')
-                                    <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; background: rgba(214, 214, 214, 0.5)">
+                                    <td width="80%" colspan="6" style="letter-spacing: 8px; font-size: 8px; font-weight: normal; background: rgba(214, 214, 214, 0.5)">
                                         {{$list['data']}}
                                     </td>
                                     @elseif($list['data'] == 'OFFICIAL TRAVEL')
@@ -638,9 +638,9 @@
     left: -5px; /* adjust horizontal position */
     top: 0;
     bottom: 0;
-    width: 10px;
-    border-left: 3px solid black; /* thickness and color of bracket */
-    border-top: 3px solid black;
-    border-bottom: 3px solid black;
+    width: 2px;
+    border-left: 1px solid black; /* thickness and color of bracket */
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
     border-radius: 10px; /* curve the bracket ends */
 }</style>
