@@ -2,7 +2,7 @@
     <b-modal v-model="showModal" style="--vz-modal-width: 750px;" header-class="p-3 bg-light" title="Request" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow class="g-3 p-2 mb-4">
-                <div class="col-sm-6" v-if="$page.props.roles?.includes('Administrator')">
+                <div class="col-sm-6">
                     <div data-bs-toggle="collapse" data-bs-target="#paymentmethodCollapse.show" aria-expanded="false"
                         aria-controls="paymentmethodCollapse">
                         <div class="form-check card-radio">

@@ -171,11 +171,11 @@
                                     {{$list['data']}}
                                 </td>
                                 @elseif($list['data'] == 'OFFICIAL TRAVEL')
-                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['destination']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
                                        Official Travel : {{ $list['destination'] }}
                                     </td>
                                 @elseif($list['data'] == 'OFFICIAL BUSINESS')
-                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['title']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
                                     OB : {{ $list['title'] }}
                                 </td>
                                 @else
@@ -360,11 +360,11 @@
                                     {{$list['data']}}
                                 </td>
                                 @elseif($list['data'] == 'OFFICIAL TRAVEL')
-                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['destination']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
                                        Official Travel : {{ $list['destination'] }}
                                     </td>
                                 @elseif($list['data'] == 'OFFICIAL BUSINESS')
-                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['title']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
                                     OB : {{ $list['title'] }}
                                 </td>
                                 @else
@@ -552,11 +552,11 @@
                                         {{$list['data']}}
                                     </td>
                                     @elseif($list['data'] == 'OFFICIAL TRAVEL')
-                                    <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                    <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['destination']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
                                         Official Travel : {{ $list['destination'] }}
                                     </td>
                                     @elseif($list['data'] == 'OFFICIAL BUSINESS')
-                                    <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                    <td width="80%" colspan="6" style="position: relative; vertical-align: middle;font-size: {{ strlen($list['title']) > 58 ? 8 : 10 }}px; color: gray; overflow: visible;">
                                         OB : {{ $list['title'] }}
                                     </td>
                                     @else
