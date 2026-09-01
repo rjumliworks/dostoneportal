@@ -129,7 +129,7 @@
                                     $maxChars = 52 * $count;
 
                                     // Truncate the destination text if longer than allowed
-                                    $text = ($isGroupStart['count'] == 1) ? $list['destination'] : $list['destination'].' '.$list['purpose'];
+                                    $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
                                     if (strlen($text) > $maxChars) {
                                         $text = substr($text, 0, $maxChars) . '...';
                                     }
@@ -313,7 +313,7 @@
                                     $maxChars = 52 * $count;
 
                                     // Truncate the destination text if longer than allowed
-                                    $text = ($isGroupStart['count'] == 1) ? $list['destination'] : $list['destination'].' '.$list['purpose'];
+                                    $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
                                     if (strlen($text) > $maxChars) {
                                         $text = substr($text, 0, $maxChars) . '...';
                                     }
@@ -499,7 +499,7 @@
                                         $maxChars = 52 * $count;
 
                                         // Truncate the destination text if longer than allowed
-                                         $text = ($isGroupStart['count'] == 1) ? $list['destination'] : $list['destination'].' '.$list['purpose'];
+                                         $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
                                         if (strlen($text) > $maxChars) {
                                             $text = substr($text, 0, $maxChars) . '...';
                                         }
