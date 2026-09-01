@@ -126,7 +126,19 @@
                                     $bracketTop = $bracketRowStep / 2;
                                     $bracketBarHeight = $bracketHeight - $bracketTop - 8;
 
-                                    $maxChars = 52 * $count;
+                                    if ($count <= 2) {
+                                        $travelFontSize = 7;
+                                        $maxChars = 60 * $count;
+                                    } elseif ($count == 3) {
+                                        $travelFontSize = 8;
+                                        $maxChars = 100 * $count;
+                                    } elseif ($count == 4) {
+                                        $travelFontSize = 9;
+                                        $maxChars = 130 * $count;
+                                    } else {
+                                        $travelFontSize = 10;
+                                        $maxChars = 52 * $count;
+                                    }
 
                                     // Truncate the destination text if longer than allowed
                                     $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
@@ -135,12 +147,12 @@
                                     }
                                 @endphp
                                 @if($isGroupStart['count'] == 1)
-                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" style="position: relative; vertical-align: middle;font-size: {{ $travelFontSize }}px; color: gray; overflow: visible;">
                                         Official Travel : {{ $text }}
                                     </td>
                                 @else
                                     <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
-                                    style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
+                                    style="position: relative; vertical-align: middle; text-align: center; font-size: {{ $travelFontSize }}px; color: gray; padding-left: 30px; overflow: visible;">
 
                                         <div style="position: absolute; left: 9px; top: {{ $bracketTop }}px; width: 2px; height: {{ $bracketBarHeight }}px; background-color: gray; pointer-events: none;"></div>
                                         <div style="position: absolute; left: 1px; top: {{ $bracketTop }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
@@ -310,7 +322,19 @@
                                     $bracketTop = $bracketRowStep / 2;
                                     $bracketBarHeight = $bracketHeight - $bracketTop - 8;
 
-                                    $maxChars = 52 * $count;
+                                    if ($count <= 2) {
+                                        $travelFontSize = 7;
+                                        $maxChars = 60 * $count;
+                                    } elseif ($count == 3) {
+                                        $travelFontSize = 8;
+                                        $maxChars = 100 * $count;
+                                    } elseif ($count == 4) {
+                                        $travelFontSize = 9;
+                                        $maxChars = 130 * $count;
+                                    } else {
+                                        $travelFontSize = 10;
+                                        $maxChars = 52 * $count;
+                                    }
 
                                     // Truncate the destination text if longer than allowed
                                     $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
@@ -319,12 +343,12 @@
                                     }
                                 @endphp
                                 @if($isGroupStart['count'] == 1)
-                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                    <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" style="position: relative; vertical-align: middle;font-size: {{ $travelFontSize }}px; color: gray; overflow: visible;">
                                         Official Travel : {{ $text }}
                                     </td>
                                 @else
                                     <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
-                                    style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
+                                    style="position: relative; vertical-align: middle; text-align: center; font-size: {{ $travelFontSize }}px; color: gray; padding-left: 30px; overflow: visible;">
 
                                         <div style="position: absolute; left: 9px; top: {{ $bracketTop }}px; width: 2px; height: {{ $bracketBarHeight }}px; background-color: gray; pointer-events: none;"></div>
                                         <div style="position: absolute; left: 1px; top: {{ $bracketTop }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
@@ -496,7 +520,19 @@
                                     $bracketTop = $bracketRowStep / 2;
                                     $bracketBarHeight = $bracketHeight - $bracketTop - 8;
 
+                                        if ($count <= 2) {
+                                        $travelFontSize = 7;
+                                        $maxChars = 60 * $count;
+                                    } elseif ($count == 3) {
+                                        $travelFontSize = 8;
+                                        $maxChars = 100 * $count;
+                                    } elseif ($count == 4) {
+                                        $travelFontSize = 9;
+                                        $maxChars = 130 * $count;
+                                    } else {
+                                        $travelFontSize = 10;
                                         $maxChars = 52 * $count;
+                                    }
 
                                         // Truncate the destination text if longer than allowed
                                          $text = ($isGroupStart['count'] == 1) ? $list['destination'] : rtrim($list['destination'], '. ').'. '.$list['purpose'];
@@ -506,12 +542,12 @@
                                     @endphp
 
                                    @if($isGroupStart['count'] == 1)
-                                        <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" style="position: relative; vertical-align: middle;font-size: 10px; color: gray; overflow: visible;">
+                                        <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}" style="position: relative; vertical-align: middle;font-size: {{ $travelFontSize }}px; color: gray; overflow: visible;">
                                             Official Travel : {{ $text }}
                                         </td>
                                     @else
                                         <td width="80%" colspan="6" rowspan="{{ $isGroupStart['count'] }}"
-                                        style="position: relative; vertical-align: middle; text-align: center; font-size: 10px; color: gray; padding-left: 30px; overflow: visible;">
+                                        style="position: relative; vertical-align: middle; text-align: center; font-size: {{ $travelFontSize }}px; color: gray; padding-left: 30px; overflow: visible;">
 
                                             <div style="position: absolute; left: 9px; top: {{ $bracketTop }}px; width: 2px; height: {{ $bracketBarHeight }}px; background-color: gray; pointer-events: none;"></div>
                                             <div style="position: absolute; left: 1px; top: {{ $bracketTop }}px; width: 8px; height: 2px; background-color: gray; pointer-events: none;"></div>
