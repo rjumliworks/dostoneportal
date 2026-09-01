@@ -10,10 +10,6 @@ class MyrequestRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        if ($this->option === 'travel') {
-            return \Auth::user()->hasRole('Administrator');
-        }
-
         return true;
     }
 
