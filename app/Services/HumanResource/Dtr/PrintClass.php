@@ -146,7 +146,17 @@ class PrintClass
             ->map(fn ($day) => $dayNames[$day])
             ->values();
 
-             if($travelToday){
+             if ($nonWorkingDays->contains($day) && $shift->division_id != 35) {
+                $array[] = [
+                    'date' => date('Y-m-d', $i),
+                    'text' => date('F d, Y', $i),
+                    'day' => date('l', $i),
+                    'data' => 'NON-WORKING DAY',
+                    'bg' => 'bg bg-secondary bg-soft',
+                    'is_with' => false
+                ];
+                continue;
+            }else if($travelToday){
                 $travelLocation = $travelToday->location ?? $travelToday->travel?->events->first()?->request?->location;
                 $travelAddress = $travelLocation->address ?? null;
                 $isTbaAddress = $travelAddress && strcasecmp(trim($travelAddress), 'TBA') === 0;
@@ -164,7 +174,7 @@ class PrintClass
                     'purpose' => $travelToday->detail->purpose,
                     'bg' => 'bg bg-info bg-soft',
                     'is_with' => false,
-                    'travel_group' => $travelToday->id
+                    'travel_group' => md5(($travelDestination ?? '').'|'.($travelToday->detail->purpose ?? ''))
                 ];
                 continue;
             }else if($holidayToday && $shift->division_id != 35){
@@ -175,16 +185,6 @@ class PrintClass
                     'data' => 'HOLIDAY',
                     'title' => $holidayToday->title,
                     'bg' => 'bg bg-info bg-soft',
-                    'is_with' => false
-                ];
-                continue;
-           }else if ($nonWorkingDays->contains($day) && $shift->division_id != 35) {
-                $array[] = [
-                    'date' => date('Y-m-d', $i),
-                    'text' => date('F d, Y', $i),
-                    'day' => date('l', $i),
-                    'data' => 'NON-WORKING DAY',
-                    'bg' => 'bg bg-secondary bg-soft',
                     'is_with' => false
                 ];
                 continue;
