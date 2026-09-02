@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 700px;" header-class="p-3 bg-light" title="Add Equipment" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 700px;" header-class="p-3 bg-light" :title="(editable) ? 'Update Equipment' : 'Add Equipment'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
 
         <form class="customform">
             <BRow class="g-3">
@@ -14,6 +14,10 @@
                 <BCol lg="6" class="mt-0">
                     <InputLabel for="status" value="Status" :message="form.errors.status_id"/>
                     <Multiselect :options="dropdowns.statuses" :searchable="true" label="name" v-model="form.status_id" placeholder="Select Status" @input="handleInput('status_id')"/>
+                </BCol>
+                <BCol lg="6" class="mt-0">
+                    <InputLabel for="station" value="Station" :message="form.errors.station_id"/>
+                    <Multiselect :options="dropdowns.stations" :searchable="true" label="name" v-model="form.station_id" placeholder="Select Station" @input="handleInput('station_id')"/>
                 </BCol>
                 <BCol lg="6" class="mt-0">
                     <InputLabel for="old_code" value="Old Code (if migrated)" :message="form.errors.old_code"/>
@@ -38,6 +42,10 @@
                 <BCol lg="6" class="mt-0">
                     <InputLabel for="maintenance_plan" value="Maintenance Plan" :message="form.errors.maintenance_plan"/>
                     <TextInput id="maintenance_plan" v-model="form.maintenance_plan" type="text" class="form-control" placeholder="Please enter maintenance plan" @input="handleInput('maintenance_plan')" :light="true"/>
+                </BCol>
+                <BCol lg="6" class="mt-0">
+                    <InputLabel for="maintenance_due" value="Maintenance Due" :message="form.errors.maintenance_due"/>
+                    <TextInput id="maintenance_due" v-model="form.maintenance_due" type="date" class="form-control" @input="handleInput('maintenance_due')" :light="true"/>
                 </BCol>
                 <BCol lg="12" class="mt-0">
                     <InputLabel for="specification" value="Specification / Description"/>
@@ -74,11 +82,14 @@ export default {
     props: ['dropdowns'],
     data(){
         return {
+            id: null,
+            editable: false,
             form: useForm({
                 name: null,
                 old_code: null,
                 type_id: null,
                 status_id: null,
+                station_id: null,
                 maintenance_plan: null,
                 maintenance_due: null,
                 remarks: null,
@@ -93,6 +104,28 @@ export default {
     },
     methods: {
         show(){
+            this.editable = false;
+            this.id = null;
+            this.showModal = true;
+        },
+        edit(data){
+            this.editable = true;
+            this.id = data.id;
+
+            this.form.name = data.name;
+            this.form.old_code = data.old_code;
+            this.form.type_id = data.type_id;
+            this.form.status_id = data.status_id;
+            this.form.station_id = data.station_id;
+            this.form.maintenance_plan = data.maintenance_plan;
+            this.form.maintenance_due = data.maintenance_due;
+            this.form.remarks = data.remarks;
+            this.form.acquired_at = data.acquired_at;
+            this.form.brand = data.detail?.brand ?? null;
+            this.form.model = data.detail?.model ?? null;
+            this.form.price = data.detail?.price ?? null;
+            this.form.specification = data.detail?.specification ? [...data.detail.specification] : [];
+
             this.showModal = true;
         },
         addSpec(){
@@ -102,13 +135,23 @@ export default {
             this.form.specification.splice(index,1);
         },
         submit(){
-            this.form.post('/equipments',{
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    this.$emit('update',true);
-                    this.hide();
-                },
-            });
+            if(this.editable){
+                this.form.put(`/equipments/${this.id}`,{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('update',true);
+                        this.hide();
+                    },
+                });
+            }else{
+                this.form.post('/equipments',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('update',true);
+                        this.hide();
+                    },
+                });
+            }
         },
         handleInput(field) {
             this.form.errors[field] = false;
@@ -117,6 +160,8 @@ export default {
             this.form.clearErrors();
             this.form.reset();
             this.form.specification = [];
+            this.editable = false;
+            this.id = null;
             this.showModal = false;
         }
     }

@@ -10,15 +10,19 @@
             </BCol>
             <BCol lg="12"><hr class="text-muted mt-0 mb-0"/></BCol>
 
-            <BCol lg="4">
+            <BCol lg="3">
                 <p class="fs-12 text-muted mb-1">Code</p>
                 <p class="fs-13 mb-0">{{ selected.code }}</p>
             </BCol>
-            <BCol lg="4">
+            <BCol lg="3">
                 <p class="fs-12 text-muted mb-1">Old Code</p>
                 <p class="fs-13 mb-0">{{ selected.old_code || '-' }}</p>
             </BCol>
-            <BCol lg="4">
+            <BCol lg="3">
+                <p class="fs-12 text-muted mb-1">Station</p>
+                <p class="fs-13 mb-0">{{ selected.station?.name || '-' }}</p>
+            </BCol>
+            <BCol lg="3">
                 <p class="fs-12 text-muted mb-1">Date Acquired</p>
                 <p class="fs-13 mb-0">{{ selected.acquired_at || '-' }}</p>
             </BCol>
@@ -61,8 +65,8 @@
             <BCol lg="12"><hr class="text-muted mt-0 mb-0"/></BCol>
             <BCol lg="12">
                 <p class="fs-12 text-muted mb-1">Currently Assigned To</p>
-                <p v-if="selected.current_assignment?.user" class="fs-13 mb-0">
-                    {{ selected.current_assignment.user.profile?.firstname }} {{ selected.current_assignment.user.profile?.lastname }}
+                <p v-if="selected.current_assignment?.user_name" class="fs-13 mb-0">
+                    {{ selected.current_assignment.user_name }}
                     <span class="text-muted"> - since {{ selected.current_assignment.start_at }}</span>
                 </p>
                 <p v-else class="fs-13 text-muted mb-0">Not assigned</p>

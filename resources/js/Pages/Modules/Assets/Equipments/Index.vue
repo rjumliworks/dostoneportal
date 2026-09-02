@@ -29,6 +29,7 @@
                                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                     <input type="text" v-model="filter.keyword" placeholder="Search Equipment" class="form-control" style="width: 50%;">
                                     <Multiselect class="white" style="width: 17%;" :options="dropdowns.types" v-model="filter.type" label="name" :searchable="true" placeholder="Select Type" />
+                                    <Multiselect class="white" style="width: 17%;" :options="dropdowns.stations" v-model="filter.station" label="name" :searchable="true" placeholder="Select Station" />
                                     <span @click="fetch()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                         <i class="bx bx-refresh search-icon"></i>
                                     </span>
@@ -70,9 +71,9 @@
                                         <th style="width: 3%;"></th>
                                         <th style="width: 12%;">Code</th>
                                         <th>Name</th>
-                                        <th style="width: 15%;">Brand / Model</th>
-                                        <th style="width: 10%;" class="text-center">Price</th>
-                                        <th style="width: 11%;" class="text-center">Date Acquired</th>
+                                        <th style="width: 12%;" class="text-center">Station</th>
+                                        <th style="width: 13%;" class="text-center">Assigned To</th>
+                                        <th style="width: 10%;" class="text-center">Date Acquired</th>
                                         <th style="width: 10%;" class="text-center">Status</th>
                                         <th style="width: 6%;"></th>
                                     </tr>
@@ -85,20 +86,40 @@
                                             <p v-if="list.old_code" class="fs-12 text-muted mb-0">Old: {{ list.old_code }}</p>
                                         </td>
                                         <td>
-                                            <h5 class="fs-13 mb-0 fw-semibold">{{ list.name }}</h5>
+                                            <h5 class="fs-13 mb-0 fw-semibold">{{ list.name }}<span v-if="list.detail?.brand" class="text-muted fw-normal"> ({{ list.detail.brand }})</span></h5>
                                             <p class="fs-12 text-muted mb-0">{{ list.type?.name }}</p>
                                         </td>
-                                        <td class="fs-12">{{ [list.detail?.brand, list.detail?.model].filter(Boolean).join(' - ') || '-' }}</td>
-                                        <td class="text-center">{{ list.detail?.price ? Number(list.detail.price).toLocaleString('en-US',{minimumFractionDigits:2}) : '-' }}</td>
+                                        <td class="text-center fs-12">{{ list.station?.name || '-' }}</td>
+                                        <td class="text-center fs-12">{{ list.current_assignment?.user_name || '-' }}</td>
                                         <td class="text-center">{{ list.acquired_at }}</td>
                                         <td class="text-center">
                                             <span v-if="list.status" :class="'badge '+list.status.bg+' '+list.status.type">{{list.status.name}}</span>
                                         </td>
                                         <td class="text-end">
                                             <div class="d-flex gap-3 justify-content-center">
-                                                <button type="button" class="btn btn-light btn-sm" @click="openView(list)" v-b-tooltip.hover title="View">
-                                                    <i class="ri-eye-fill"></i>
-                                                </button>
+                                                <div class="dropdown">
+                                                    <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }">
+                                                        <template #button-content>
+                                                            <i class="ri-more-fill"></i>
+                                                        </template>
+                                                        <li>
+                                                            <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-eye-fill me-2"></i> View
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a @click="openUpdate(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-edit-2-fill me-2"></i> Update
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <a @click="openAssign(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-user-add-fill me-2"></i> Assign Employee
+                                                            </a>
+                                                        </li>
+                                                    </BDropdown>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -117,16 +138,18 @@
         </BRow>
         <Create :dropdowns="dropdowns" ref="create" @update="onCreated"/>
         <View ref="view"/>
+        <Assign ref="assign" @update="onCreated"/>
     </template>
     <script>
     import _ from 'lodash';
     import Create from './Modals/Create.vue';
     import View from './Modals/View.vue';
+    import Assign from './Modals/Assign.vue';
     import Multiselect from "@vueform/multiselect";
     import PageHeader from '@/Shared/Components/PageHeader.vue';
     import Pagination from "@/Shared/Components/Pagination.vue";
     export default {
-        components: { PageHeader, Pagination, Multiselect, Create, View },
+        components: { PageHeader, Pagination, Multiselect, Create, View, Assign },
         props: ['dropdowns','counts'],
         data(){
             return {
@@ -137,6 +160,7 @@
                 filter: {
                     keyword: null,
                     type: null,
+                    station: null,
                     status: null
                 },
                 index: null
@@ -144,6 +168,9 @@
         },
         watch: {
             "filter.type"(newVal){
+                this.fetch();
+            },
+            "filter.station"(newVal){
                 this.fetch();
             },
             "filter.keyword"(newVal){
@@ -160,6 +187,12 @@
             openView(list){
                 this.$refs.view.show(list);
             },
+            openUpdate(list){
+                this.$refs.create.edit(list);
+            },
+            openAssign(list){
+                this.$refs.assign.show(list);
+            },
             onCreated(){
                 this.fetch();
             },
@@ -172,6 +205,7 @@
                     params : {
                         keyword: this.filter.keyword,
                         type: this.filter.type,
+                        station: this.filter.station,
                         status: this.filter.status,
                         count: 10,
                         option: 'lists'

@@ -103,6 +103,7 @@ Route::middleware(['auth','verified'])->group(function () {
 Route::middleware(['role:Asset Management Officer'])->group(function () {
     Route::resource('/buildings', App\Http\Controllers\Assets\BuildingController::class);
     Route::resource('/equipments', App\Http\Controllers\Assets\EquipmentController::class);
+    Route::post('/equipments/{equipment}/assign', [App\Http\Controllers\Assets\EquipmentController::class, 'assign']);
     Route::resource('/vehicles', App\Http\Controllers\Assets\VehicleController::class);
 });
 

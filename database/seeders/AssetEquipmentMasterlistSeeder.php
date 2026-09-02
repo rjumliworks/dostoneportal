@@ -80,7 +80,7 @@ class AssetEquipmentMasterlistSeeder extends Seeder
                 DB::table('asset_equipment_details')->updateOrInsert(
                     ['equipment_id' => $id],
                     [
-                        'brand'         => $row['brand'],
+                        'brand'         => ucwords(strtolower($row['brand'])),
                         'model'         => $row['model'],
                         'price'         => $row['price'],
                         'specification' => json_encode($row['specification'], JSON_UNESCAPED_UNICODE),

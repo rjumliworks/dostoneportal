@@ -13,6 +13,7 @@ class AssetEquipment extends Model
         'old_code',
         'name',
         'type_id',
+        'station_id',
         'maintenance_plan',
         'maintenance_due',
         'remarks',
@@ -24,6 +25,11 @@ class AssetEquipment extends Model
     public function type()
     {
         return $this->belongsTo('App\Models\ListData', 'type_id', 'id');
+    }
+
+    public function station()
+    {
+        return $this->belongsTo('App\Models\ListDropdown', 'station_id', 'id');
     }
 
     public function status()

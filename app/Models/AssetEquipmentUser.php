@@ -15,6 +15,8 @@ class AssetEquipmentUser extends Model
         'end_at',
     ];
 
+    protected $appends = ['user_name'];
+
     public function equipment()
     {
         return $this->belongsTo('App\Models\AssetEquipment', 'equipment_id', 'id');
@@ -23,5 +25,10 @@ class AssetEquipmentUser extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user?->profile?->fullname;
     }
 }

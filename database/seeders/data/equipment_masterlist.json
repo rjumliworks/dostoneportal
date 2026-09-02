@@ -1,40 +1,7 @@
 [
   {
-    "old_code": "DOST9-EQ-001",
-    "name": "MOTOR VEHICLE (HILUX - MT)",
-    "category": "Motor Vehicle",
-    "acquired_at": "2018-12-29",
-    "remarks": "@DOST IX Compound",
-    "brand": "TOYOTA",
-    "model": "HILUX (G)",
-    "price": 1419769.0,
-    "specification": []
-  },
-  {
-    "old_code": "DOST9-EQ-002",
-    "name": "MOTOR VEHICLE (HILUX - AT)",
-    "category": "Motor Vehicle",
-    "acquired_at": "2021-08-26",
-    "remarks": "@DOST IX Compound",
-    "brand": "TOYOTA",
-    "model": "HILUX (G)",
-    "price": 1499500.0,
-    "specification": []
-  },
-  {
-    "old_code": "DOST9-EQ-003",
-    "name": "MOTOR VEHICLE (STRADA - GL)",
-    "category": "Motor Vehicle",
-    "acquired_at": "2008-04-08",
-    "remarks": "@DOST IX Compound",
-    "brand": "MITSUBISHI",
-    "model": "STRADA GL",
-    "price": 850000.0,
-    "specification": []
-  },
-  {
     "old_code": "DOST9-EQ-006",
-    "name": "AIR CONDITIONER (Technical)",
+    "name": "Technical",
     "category": "Air Conditioner",
     "acquired_at": "2010-05-25",
     "remarks": "@RSTL-Wet Room – Chem Lab",
@@ -47,7 +14,7 @@
   },
   {
     "old_code": "DOST9-EQ-009",
-    "name": "AIR CONDITIONER (Supply Stock Room)",
+    "name": "Supply Stock Room",
     "category": "Air Conditioner",
     "acquired_at": "2023-11-16",
     "remarks": "@Supply Stock Room",
@@ -60,7 +27,7 @@
   },
   {
     "old_code": "DOST9-EQ-010",
-    "name": "SPLIT-TYPE AIR CONDITIONER (Metro Lab)",
+    "name": "Metro Lab",
     "category": "Air Conditioner",
     "acquired_at": "2016-04-14",
     "remarks": "@RSTL-Metrolab c/o MetroLab Tech Manager",
@@ -73,7 +40,7 @@
   },
   {
     "old_code": "DOST9-EQ-011",
-    "name": "AIR CONDITIONER (COA Auditor)",
+    "name": "COA Auditor",
     "category": "Air Conditioner",
     "acquired_at": "2018-04-26",
     "remarks": "@Auditor's Office c/o Auditor",
@@ -86,7 +53,7 @@
   },
   {
     "old_code": "DOST9-EQ-012",
-    "name": "AIR CONDITIONER (Chemical Stock Room)",
+    "name": "Chemical Stock Room",
     "category": "Air Conditioner",
     "acquired_at": "2011-08-01",
     "remarks": "@RSTL c/o Chemlab Tech Manager",
@@ -99,7 +66,7 @@
   },
   {
     "old_code": "DOST9-EQ-014",
-    "name": "AIR CONDITIONER (RSTL Office)",
+    "name": "RSTL Office",
     "category": "Air Conditioner",
     "acquired_at": "2019-05-29",
     "remarks": "@RSTL's Office c/o Chemlab Tech Manager",
@@ -112,7 +79,7 @@
   },
   {
     "old_code": "DOST9-EQ-015",
-    "name": "AIR CONDITIONER (Micro Lab1)",
+    "name": "Micro Lab1",
     "category": "Air Conditioner",
     "acquired_at": "2016-10-05",
     "remarks": "@Microlab c/o Microlab Tech Manager",
@@ -125,7 +92,7 @@
   },
   {
     "old_code": "DOST9-EQ-016",
-    "name": "AIR CONDITIONER (Instrument Room Chem Lab)",
+    "name": "Instrument Room Chem Lab",
     "category": "Air Conditioner",
     "acquired_at": "2016-03-30",
     "remarks": "@Instrument Room-Chemlab c/o Chemlab Tech Manager",
@@ -138,7 +105,7 @@
   },
   {
     "old_code": "DOST9-EQ-017",
-    "name": "AIR CONDITIONER (Wet Room Chem Lab)",
+    "name": "Wet Room Chem Lab",
     "category": "Air Conditioner",
     "acquired_at": "2023-09-26",
     "remarks": "@Wet Room –Chemlab c/o Chemlab Tech Manager",
@@ -151,7 +118,7 @@
   },
   {
     "old_code": "DOST9-EQ-018",
-    "name": "AIR CONDITIONER (Metro Lab)",
+    "name": "Metro Lab",
     "category": "Air Conditioner",
     "acquired_at": "2018-12-19",
     "remarks": "@Metrolab c/o Metrolab Tech Manager",
@@ -164,7 +131,7 @@
   },
   {
     "old_code": "DOST9-EQ-020",
-    "name": "AIR CONDITIONER (Food Lab)",
+    "name": "Food Lab",
     "category": "Air Conditioner",
     "acquired_at": "2018-04-18",
     "remarks": "@Food Lab c/o Microlab Tech Manager",
@@ -177,7 +144,7 @@
   },
   {
     "old_code": "DOST9-EQ-031",
-    "name": "ALL-IN-ONE COMPUTER (FASS BUDG1)",
+    "name": "FASS BUDG1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC29) @FASS Section c/o Budget Officer",
@@ -195,7 +162,7 @@
   },
   {
     "old_code": "DOST9-EQ-032",
-    "name": "ALL-IN-ONE COMPUTER (FASS ACCT1)",
+    "name": "FASS ACCT1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC32) @FASS Section c/o Accountant",
@@ -213,7 +180,7 @@
   },
   {
     "old_code": "DOST9-EQ-033",
-    "name": "ALL-IN-ONE COMPUTER (FASS PURC1)",
+    "name": "FASS PURC1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC34) @FASS Section c/o Purchasing Staff",
@@ -231,7 +198,7 @@
   },
   {
     "old_code": "DOST9-EQ-034",
-    "name": "ALL-IN-ONE COMPUTER (FASS CASH1)",
+    "name": "FASS CASH1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC30) @FASS Section c/o Cashier",
@@ -249,7 +216,7 @@
   },
   {
     "old_code": "DOST9-EQ-035",
-    "name": "COMPUTER (COA AUDITOR1)",
+    "name": "COA AUDITOR1",
     "category": "Desktop Computer",
     "acquired_at": "2018-03-15",
     "remarks": "@Auditor's Office c/o Auditor",
@@ -267,7 +234,7 @@
   },
   {
     "old_code": "DOST9-EQ-036",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC3 METRO1)",
+    "name": "RSTL AIOPC3 METRO1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-09-21",
     "remarks": "(MITHI-2020 AIOPC3) @RSTL-MET Section c/o RSTL-MET",
@@ -285,7 +252,7 @@
   },
   {
     "old_code": "DOST9-EQ-037",
-    "name": "ALL-IN-ONE COMPUTER (FASS ARD)",
+    "name": "FASS ARD",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC25) @FASS Section c/o ARD-FASS",
@@ -303,7 +270,7 @@
   },
   {
     "old_code": "DOST9-EQ-038",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC2 MICRO1)",
+    "name": "RSTL AIOPC2 MICRO1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-09-21",
     "remarks": "(MITHI-2020 AIOPC2) @RSTL Section c/o RSTL Unit",
@@ -321,7 +288,7 @@
   },
   {
     "old_code": "DOST9-EQ-039",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC5 CHEM1)",
+    "name": "RSTL AIOPC5 CHEM1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-09-21",
     "remarks": "(MITHI-2020 AIOPC5) @RSTL Section c/o RSTL Unit",
@@ -339,7 +306,7 @@
   },
   {
     "old_code": "DOST9-EQ-040",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC6 CHEM2)",
+    "name": "RSTL AIOPC6 CHEM2",
     "category": "All-in-One Computer",
     "acquired_at": "2021-09-21",
     "remarks": "(MITHI-2020 AIOPC6) @RSTL Section c/o RSTL Unit",
@@ -357,7 +324,7 @@
   },
   {
     "old_code": "DOST9-EQ-041",
-    "name": "SERVER COMPUTER (HANDA)",
+    "name": "HANDA",
     "category": "Server Computer",
     "acquired_at": "2017-06-02",
     "remarks": "ASSEMBLED (MITHI-2016 TS-HDPC3) @Server Room c/o ICT",
@@ -375,7 +342,7 @@
   },
   {
     "old_code": "DOST9-EQ-042",
-    "name": "SERVER COMPUTER (ENGAS)",
+    "name": "ENGAS",
     "category": "Server Computer",
     "acquired_at": "2017-06-02",
     "remarks": "ASSEMBLED (MITHI-2016 TS-HDPC4) @Server Room c/o ICT",
@@ -393,7 +360,7 @@
   },
   {
     "old_code": "DOST9-EQ-043",
-    "name": "LAPTOP COMPUTER (FASS ARD)",
+    "name": "FASS ARD",
     "category": "Laptop Computer",
     "acquired_at": "2020-12-18",
     "remarks": "(MITHI-2020 2in1PC2) @FASS Section c/o ARD-FASS",
@@ -411,7 +378,7 @@
   },
   {
     "old_code": "DOST9-EQ-044",
-    "name": "LAPTOP COMPUTER (FASS CASH1)",
+    "name": "FASS CASH1",
     "category": "Laptop Computer",
     "acquired_at": "2019-11-15",
     "remarks": "MITHI-2019 LAPTOP4 @FASS Section c/o Cashier",
@@ -424,7 +391,7 @@
   },
   {
     "old_code": "DOST9-EQ-045",
-    "name": "SERVER COMPUTER (PROXMOX)",
+    "name": "PROXMOX",
     "category": "Server Computer",
     "acquired_at": "2017-06-02",
     "remarks": "ASSEMBLED (MITHI-2016 TS-HDPC5) @Server Room c/o ICT",
@@ -442,7 +409,7 @@
   },
   {
     "old_code": "DOST9-EQ-046",
-    "name": "SERVER COMPUTER (EULIMS)",
+    "name": "EULIMS",
     "category": "Server Computer",
     "acquired_at": "2014-10-30",
     "remarks": "(OneLab) @Server Room c/o ICT",
@@ -458,7 +425,7 @@
   },
   {
     "old_code": "DOST9-EQ-047",
-    "name": "ALL-IN-ONE COMPUTER (TS SCHO1)",
+    "name": "TS SCHO1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC36) @Scholarship Section c/o Scholarship Manager",
@@ -476,7 +443,7 @@
   },
   {
     "old_code": "DOST9-EQ-048",
-    "name": "ALL-IN-ONE COMPUTER (FASS BUDG2)",
+    "name": "FASS BUDG2",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC33) @FASS Section c/o Budget Staff",
@@ -493,7 +460,7 @@
   },
   {
     "old_code": "DOST9-EQ-049",
-    "name": "LAPTOP COMPUTER (STSIMS1)",
+    "name": "STSIMS1",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(NON-MITHI, SCHOLARSHIP-STSIMS)) @Scholarship c/o Scholarship Staff",
@@ -509,7 +476,7 @@
   },
   {
     "old_code": "DOST9-EQ-050",
-    "name": "ALL-IN-ONE COMPUTER (CSF Kiosk)",
+    "name": "CSF Kiosk",
     "category": "All-in-One Computer",
     "acquired_at": "2018-08-10",
     "remarks": "(MITHI-2017 AIOPC13) CSF Kiosk",
@@ -525,7 +492,7 @@
   },
   {
     "old_code": "DOST9-EQ-051",
-    "name": "ALL-IN-ONE COMPUTER (TS SCHO4)",
+    "name": "TS SCHO4",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2022 AIOPC4) @TS Scholarship Section c/o Scholarship Staff",
@@ -542,7 +509,7 @@
   },
   {
     "old_code": "DOST9-EQ-052",
-    "name": "ALL-IN-ONE COMPUTER (ORD CSTC-ZCIC1)",
+    "name": "ORD CSTC-ZCIC1",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2022 AIOPC8) @ORD CSTC-ZCIC c/o ORD Personnel",
@@ -559,7 +526,7 @@
   },
   {
     "old_code": "DOST9-EQ-053",
-    "name": "COMPUTER (FILESERVER)",
+    "name": "FILESERVER",
     "category": "Server Computer",
     "acquired_at": "2017-06-19",
     "remarks": "(OneLab) @Server Room c/o ICT",
@@ -574,7 +541,7 @@
   },
   {
     "old_code": "DOST9-EQ-054",
-    "name": "ALL-IN-ONE COMPUTER (TS SCHO3)",
+    "name": "TS SCHO3",
     "category": "All-in-One Computer",
     "acquired_at": "2022-05-26",
     "remarks": "(MITHI-2021 AIOPC38) @TS-Scholarship Section c/o Scholarship Staff",
@@ -592,7 +559,7 @@
   },
   {
     "old_code": "DOST9-EQ-055",
-    "name": "ALL-IN-ONE COMPUTER (FASS PURC2)",
+    "name": "FASS PURC2",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2018 AIOPC8) @CSTC-ZCIC FASS c/o Purchasing Staff",
@@ -609,7 +576,7 @@
   },
   {
     "old_code": "DOST9-EQ-056",
-    "name": "ALL-IN-ONE COMPUTER (TS SCHO2)",
+    "name": "TS SCHO2",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC37) @TS Scholarship Section c/o Scholarship Staff",
@@ -626,7 +593,7 @@
   },
   {
     "old_code": "DOST9-EQ-057",
-    "name": "COMPUTER (HRMIS KIOSK)",
+    "name": "HRMIS KIOSK",
     "category": "Desktop Computer",
     "acquired_at": "2015-12-03",
     "remarks": "(MITHI-2015) @DOST-IX Office c/o ICT",
@@ -643,7 +610,7 @@
   },
   {
     "old_code": "DOST9-EQ-058",
-    "name": "COMPUTER (SCIMS KIOSK)",
+    "name": "SCIMS KIOSK",
     "category": "Desktop Computer",
     "acquired_at": "2015-12-03",
     "remarks": "(MITHI-2015) @SUPPLY Section c/o ICT",
@@ -660,7 +627,7 @@
   },
   {
     "old_code": "DOST9-EQ-059",
-    "name": "GENSET (CUMMINS)",
+    "name": "CUMMINS",
     "category": "Generator Set",
     "acquired_at": "2009-05-18",
     "remarks": "@DOST IX Compound",
@@ -671,7 +638,7 @@
   },
   {
     "old_code": "DOST9-EQ-060",
-    "name": "ALL-IN-ONE COMPUTER (TS AIOPC4)",
+    "name": "TS AIOPC4",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2022 AIOPC5) @TS ZCIEERD Section c/o ZCIEERD/RGET Staff",
@@ -689,7 +656,7 @@
   },
   {
     "old_code": "DOST9-EQ-061",
-    "name": "ALL-IN-ONE COMPUTER (FASS ACCT2)",
+    "name": "FASS ACCT2",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC28) @FASS Section c/o Accounting Staff",
@@ -707,7 +674,7 @@
   },
   {
     "old_code": "DOST9-EQ-062",
-    "name": "ALL-IN-ONE COMPUTER (TS SVNG1)",
+    "name": "TS SVNG1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2022 AIOPC2) @TS Supervising Section c/o Supervising SRS",
@@ -725,7 +692,7 @@
   },
   {
     "old_code": "DOST9-EQ-063",
-    "name": "LAPTOP COMPUTER (TS SVNG1)",
+    "name": "TS SVNG1",
     "category": "Laptop Computer",
     "acquired_at": "2020-12-15",
     "remarks": "MITHI-2020 2in1PC2@TS Section c/o TS SVNG",
@@ -738,7 +705,7 @@
   },
   {
     "old_code": "DOST9-EQ-064",
-    "name": "ALL-IN-ONE COMPUTER (TS DRRM1)",
+    "name": "TS DRRM1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2021 AIOPC2) @TS-DRRM c/o DRRM Staff",
@@ -756,7 +723,7 @@
   },
   {
     "old_code": "DOST9-EQ-065",
-    "name": "LAPTOP COMPUTER (TS RXBOX1)",
+    "name": "TS RXBOX1",
     "category": "Laptop Computer",
     "acquired_at": "2021-08-24",
     "remarks": "(NON-MITHI; RxBox Funds) @RxBox c/o RxBox Personnel",
@@ -774,7 +741,7 @@
   },
   {
     "old_code": "DOST9-EQ-066",
-    "name": "COMPUTER (INFOBOARD)",
+    "name": "INFOBOARD",
     "category": "Desktop Computer",
     "acquired_at": "2015-12-03",
     "remarks": "(MITHI-2015) @ORD-MIS c/o Server Room",
@@ -790,7 +757,7 @@
   },
   {
     "old_code": "DOST9-EQ-067",
-    "name": "SPLIT-TYPE AIR CONDITIONER (2.0 HP)",
+    "name": "2.0 HP",
     "category": "Air Conditioner",
     "acquired_at": "2009-12-01",
     "remarks": "@RSTL-Rubberlab/ Weighing c/o Rubberlab Personnel",
@@ -803,7 +770,7 @@
   },
   {
     "old_code": "DOST9-EQ-068",
-    "name": "SPLIT-TYPE AIR CONDITIONER (Ante Room Lab)",
+    "name": "Ante Room Lab",
     "category": "Air Conditioner",
     "acquired_at": "2009-12-01",
     "remarks": "@Ante Room Microlab c/o Microlab Personnel",
@@ -816,7 +783,7 @@
   },
   {
     "old_code": "DOST9-EQ-069",
-    "name": "LCD PROJECTOR (TS-SCHO)",
+    "name": "TS-SCHO",
     "category": "LCD Projector",
     "acquired_at": "2020-01-23",
     "remarks": "@TS-SCHO c/o JBN / Scholarship Staff",
@@ -832,7 +799,7 @@
   },
   {
     "old_code": "DOST9-EQ-070",
-    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 HP)",
+    "name": "3.0 HP",
     "category": "Air Conditioner",
     "acquired_at": "2011-07-20",
     "remarks": "@RSTL Microlab c/o Microlab Tech Manager",
@@ -845,7 +812,7 @@
   },
   {
     "old_code": "DOST9-EQ-071",
-    "name": "LAPTOP COMPUTER (RSTL CHEM1)",
+    "name": "RSTL CHEM1",
     "category": "Laptop Computer",
     "acquired_at": "2019-01-10",
     "remarks": "@RSTL Chemlab c/o Chemlab Tech Manager",
@@ -858,7 +825,7 @@
   },
   {
     "old_code": "DOST9-EQ-072",
-    "name": "LAPTOP COMPUTER (RSTL MICRO1)",
+    "name": "RSTL MICRO1",
     "category": "Laptop Computer",
     "acquired_at": "2019-01-10",
     "remarks": "@RSTL Chemlab c/o Microlab Tech Manager",
@@ -871,7 +838,7 @@
   },
   {
     "old_code": "DOST9-EQ-073",
-    "name": "LAPTOP COMPUTER (HR1)",
+    "name": "HR1",
     "category": "Laptop Computer",
     "acquired_at": "2019-09-05",
     "remarks": "(MITHI-2019 LAPTOP2) @TS-ICT c/o ICT Staff",
@@ -887,10 +854,10 @@
   },
   {
     "old_code": "DOST9-EQ-074",
-    "name": "ALL-IN-ONE COMPUTER (ORD RD2) 2nd PC unit at ZCIC",
+    "name": "ORD RD2",
     "category": "All-in-One Computer",
     "acquired_at": "2021-07-26",
-    "remarks": "(MITHI-2021 AIOPC1) @ORD c/o ORD / RD",
+    "remarks": "(MITHI-2021 AIOPC1) @ORD c/o ORD / RD 2nd PC unit at ZCIC",
     "brand": "Acer",
     "model": "C24-1651 AiO-PC",
     "price": 46299.0,
@@ -903,7 +870,7 @@
   },
   {
     "old_code": "DOST9-EQ-075",
-    "name": "LAPTOP COMPUTER (RSTL RUBBER1)",
+    "name": "RSTL RUBBER1",
     "category": "Laptop Computer",
     "acquired_at": "2019-10-01",
     "remarks": "MITHI-2019 LAPTOP5 @RSTL-Rubber Section c/o RSTL-Rubber Personnel",
@@ -916,7 +883,7 @@
   },
   {
     "old_code": "DOST9-EQ-076",
-    "name": "LAPTOP COMPUTER (FASS ACCT1)",
+    "name": "FASS ACCT1",
     "category": "Laptop Computer",
     "acquired_at": "2018-08-10",
     "remarks": "MITHI-2019 LAPTOP9 @FASS Section c/o Accountant",
@@ -929,7 +896,7 @@
   },
   {
     "old_code": "DOST9-EQ-077",
-    "name": "ALL-IN-ONE COMPUTER (HR1)",
+    "name": "HR1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2021 AIOPC39) @HR c/o HR Staff",
@@ -947,7 +914,7 @@
   },
   {
     "old_code": "DOST9-EQ-078",
-    "name": "COMPUTER (COA AUDITOR2)",
+    "name": "COA AUDITOR2",
     "category": "Desktop Computer",
     "acquired_at": "2018-02-09",
     "remarks": "(MITHI-2016 PC21) @COA Section c/o COA Personnel",
@@ -966,7 +933,7 @@
   },
   {
     "old_code": "DOST9-EQ-079",
-    "name": "COMPUTER (ONELAB PC1)",
+    "name": "ONELAB PC1",
     "category": "Desktop Computer",
     "acquired_at": "2017-07-10",
     "remarks": "(MITHI-2016 PC9) @RSTL-ONELAB c/o OneLab Staff",
@@ -984,7 +951,7 @@
   },
   {
     "old_code": "DOST9-EQ-080",
-    "name": "LAPTOP COMPUTER (FASS ACCT2)",
+    "name": "FASS ACCT2",
     "category": "Laptop Computer",
     "acquired_at": "2019-05-03",
     "remarks": "(MITHI-2017 LAPTOP2) @FASS Section c/o Accountant",
@@ -1002,7 +969,7 @@
   },
   {
     "old_code": "DOST9-EQ-081",
-    "name": "LCD PROJECTOR (RSTL)",
+    "name": "RSTL",
     "category": "LCD Projector",
     "acquired_at": "2012-10-19",
     "remarks": "@RSTL Office c/o RSTL",
@@ -1017,7 +984,7 @@
   },
   {
     "old_code": "DOST9-EQ-082",
-    "name": "LAPTOP COMPUTER (FASS PURC1)",
+    "name": "FASS PURC1",
     "category": "Laptop Computer",
     "acquired_at": "2019-04-29",
     "remarks": "(MITHI-2016 LAPTOP4) @FASS Section c/o Procurement Staff",
@@ -1034,7 +1001,7 @@
   },
   {
     "old_code": "DOST9-EQ-083",
-    "name": "LAPTOP COMPUTER (ORD RD1)",
+    "name": "ORD RD1",
     "category": "Laptop Computer",
     "acquired_at": "2020-12-15",
     "remarks": "MITHI-2020 2in1PC1@ORD Section c/o ORD/Secretariat",
@@ -1047,7 +1014,7 @@
   },
   {
     "old_code": "DOST9-EQ-084",
-    "name": "LAPTOP COMPUTER (TS ZCHRD1)",
+    "name": "TS ZCHRD1",
     "category": "Laptop Computer",
     "acquired_at": "2021-12-12",
     "remarks": "(NON-MITHI) @TS-ZCHRD Section c/o ZCHRD Staff",
@@ -1064,7 +1031,7 @@
   },
   {
     "old_code": "DOST9-EQ-085",
-    "name": "LAPTOP COMPUTER (TS ZCHRD2)",
+    "name": "TS ZCHRD2",
     "category": "Laptop Computer",
     "acquired_at": "2022-06-12",
     "remarks": "(NON-MITHI) @TS-ZCHRD Section c/o ZCHRD Staff",
@@ -1081,7 +1048,7 @@
   },
   {
     "old_code": "DOST9-EQ-086",
-    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 TONS) (Accounting)",
+    "name": "Accounting",
     "category": "Air Conditioner",
     "acquired_at": "2012-12-27",
     "remarks": "@FASS Section c/o FASS-Accounting Unit",
@@ -1089,12 +1056,13 @@
     "model": "KFM36E20",
     "price": 67000.0,
     "specification": [
+      "3.0 TONS",
       "S.N.: FE800278"
     ]
   },
   {
     "old_code": "DOST9-EQ-087",
-    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 TONS) (FOS)",
+    "name": "FOS",
     "category": "Air Conditioner",
     "acquired_at": "2012-12-27",
     "remarks": "@FOS Section c/o FOS Unit",
@@ -1102,12 +1070,13 @@
     "model": "KFM36E2",
     "price": 67000.0,
     "specification": [
+      "3.0 TONS",
       "S.N.: FE800428"
     ]
   },
   {
     "old_code": "DOST9-EQ-088",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC1)",
+    "name": "CSTC-ZCIC AIOPC1",
     "category": "All-in-One Computer",
     "acquired_at": "2023-10-02",
     "remarks": "(MITHI-2022 AIOPC12) @CSTC-ZCIC c/o CSTC Director",
@@ -1124,7 +1093,7 @@
   },
   {
     "old_code": "DOST9-EQ-089",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC6)",
+    "name": "CSTC-ZCIC AIOPC6",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2021 AIOPC3) @CSTC-ZCIC FOS c/o FOS Staff",
@@ -1142,7 +1111,7 @@
   },
   {
     "old_code": "DOST9-EQ-090",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC2)",
+    "name": "CSTC-ZCIC AIOPC2",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2021 AIOPC4) @CSTC-ZCIC c/o FOS Staff",
@@ -1158,7 +1127,7 @@
   },
   {
     "old_code": "DOST9-EQ-091",
-    "name": "LCD PROJECTOR (ORD GAD1)",
+    "name": "ORD GAD1",
     "category": "LCD Projector",
     "acquired_at": "2015-06-15",
     "remarks": "@ORD GAD Section c/o GAD Unit",
@@ -1169,7 +1138,7 @@
   },
   {
     "old_code": "DOST9-EQ-092",
-    "name": "ALL-IN-ONE COMPUTER (FASS ACCT3)",
+    "name": "FASS ACCT3",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2022 AIOPC1) @FASS Section c/o Accounting Staff",
@@ -1187,7 +1156,7 @@
   },
   {
     "old_code": "DOST9-EQ-093",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC8 RUBBER1)",
+    "name": "RSTL AIOPC8 RUBBER1",
     "category": "All-in-One Computer",
     "acquired_at": "2020-10-21",
     "remarks": "(MITHI-2020 AIOPC8) @RSTL-Rubber Section c/o RSTL Rubber",
@@ -1203,7 +1172,7 @@
   },
   {
     "old_code": "DOST9-EQ-094",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC7 CHEM3)",
+    "name": "RSTL AIOPC7 CHEM3",
     "category": "All-in-One Computer",
     "acquired_at": "2020-10-21",
     "remarks": "(MITHI-2020 AIOPC7) @RSTL-Chem Section c/o RSTL Chem",
@@ -1219,7 +1188,7 @@
   },
   {
     "old_code": "DOST9-EQ-095",
-    "name": "SPLIT-TYPE AIR CONDITIONER (STIC / Secretary)",
+    "name": "STIC / Secretary",
     "category": "Air Conditioner",
     "acquired_at": "2014-06-13",
     "remarks": "@Secretary c/o STIC transferred to Secretary as of June 15, 2023",
@@ -1232,7 +1201,7 @@
   },
   {
     "old_code": "DOST9-EQ-096",
-    "name": "SPLIT-TYPE AIR CONDITIONER (Receiving/Rubber Lab)",
+    "name": "Receiving/Rubber Lab",
     "category": "Air Conditioner",
     "acquired_at": "2014-06-13",
     "remarks": "@RSTL Office c/o Chemlab Tech Manager",
@@ -1245,7 +1214,7 @@
   },
   {
     "old_code": "DOST9-EQ-097",
-    "name": "ALL-IN-ONE COMPUTER (TS HALAL1)",
+    "name": "TS HALAL1",
     "category": "All-in-One Computer",
     "acquired_at": "2022-06-12",
     "remarks": "(MITHI-2018 AIOPC10) @TS Section c/o TS HALAL Staff",
@@ -1263,10 +1232,10 @@
   },
   {
     "old_code": "DOST9-EQ-098",
-    "name": "ALL-IN-ONE COMPUTER (ORD RD1) 1st PC at ZCIC",
+    "name": "ORD RD1",
     "category": "All-in-One Computer",
     "acquired_at": "2018-08-10",
-    "remarks": "(MITHI-2017 AIOPC1) RD's Office c/o Regional Director",
+    "remarks": "(MITHI-2017 AIOPC1) RD's Office c/o Regional Director 1st PC at ZCIC",
     "brand": "HP",
     "model": "Pavilion 24-B219D AiO PC (Touch)",
     "price": 45210.0,
@@ -1282,7 +1251,7 @@
   },
   {
     "old_code": "DOST9-EQ-099",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC1 CRO1)",
+    "name": "RSTL AIOPC1 CRO1",
     "category": "All-in-One Computer",
     "acquired_at": "2020-10-21",
     "remarks": "(MITHI-2020 AIOPC1) @RSTL Office c/o RSTL-CRO",
@@ -1300,7 +1269,7 @@
   },
   {
     "old_code": "DOST9-EQ-100",
-    "name": "SPLIT-TYPE AIR CONDITIONER (2.5 HP) (Server Room)",
+    "name": "Server Room",
     "category": "Air Conditioner",
     "acquired_at": "2020-09-21",
     "remarks": "@Server Room c/o ICT",
@@ -1308,12 +1277,13 @@
     "model": "KV24WM-ARF21C2",
     "price": 74992.5,
     "specification": [
+      "2.5 HP",
       "S.N.: LM584741"
     ]
   },
   {
     "old_code": "DOST9-EQ-101",
-    "name": "SPLIT-TYPE AIR CONDITIONER (2.0 HP) (Sample Prep/Rubber Lab)",
+    "name": "Sample Prep/Rubber Lab",
     "category": "Air Conditioner",
     "acquired_at": "2015-10-20",
     "remarks": "@RSTL RubberLab c/o Chemlab Tech Manager",
@@ -1321,12 +1291,13 @@
     "model": "KV18WM-ARF21B",
     "price": 39995.0,
     "specification": [
+      "2.0 HP",
       "S.N.: GH580888"
     ]
   },
   {
     "old_code": "DOST9-EQ-102",
-    "name": "ALL-IN-ONE COMPUTER (FASS SUPP1)",
+    "name": "FASS SUPP1",
     "category": "All-in-One Computer",
     "acquired_at": "2022-04-28",
     "remarks": "(MITHI-2021 AIOPC35) @FASS Section c/o Supply Staff",
@@ -1344,7 +1315,7 @@
   },
   {
     "old_code": "DOST9-EQ-103",
-    "name": "COMPUTER (FOS RPMO PC1)",
+    "name": "FOS RPMO PC1",
     "category": "Desktop Computer",
     "acquired_at": "2017-07-10",
     "remarks": "(MITHI-2016 PC20) @FOS c/o FOS Staff",
@@ -1361,7 +1332,7 @@
   },
   {
     "old_code": "DOST9-EQ-104",
-    "name": "SPLIT-TYPE AIR CONDITIONER (2.0 HP) (Wet Room/ Chem Lab)",
+    "name": "Wet Room/ Chem Lab",
     "category": "Air Conditioner",
     "acquired_at": "2016-03-17",
     "remarks": "@RSTL ChemLab c/o Chemlab Tech Manager",
@@ -1369,12 +1340,13 @@
     "model": "KV18WM-ARF21",
     "price": 42950.0,
     "specification": [
+      "2.0 HP",
       "S.N.: HG583161"
     ]
   },
   {
     "old_code": "DOST9-EQ-105",
-    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 HP) (Scholarship Section)",
+    "name": "Scholarship Section",
     "category": "Air Conditioner",
     "acquired_at": "2016-05-23",
     "remarks": "@TS Section c/o Scholarship Unit",
@@ -1382,12 +1354,13 @@
     "model": "KV36FU-ARF21",
     "price": 91920.0,
     "specification": [
+      "3.0 HP",
       "S.N.: MH581480"
     ]
   },
   {
     "old_code": "DOST9-EQ-106",
-    "name": "LAPTOP COMPUTER (ICT HLPC1)",
+    "name": "ICT HLPC1",
     "category": "Laptop Computer",
     "acquired_at": "2017-05-10",
     "remarks": "@FASS Section c/o Supply Officer",
@@ -1400,7 +1373,7 @@
   },
   {
     "old_code": "DOST9-EQ-107",
-    "name": "ALL-IN-ONE COMPUTER (ORD NSTEP1)",
+    "name": "ORD NSTEP1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2021 AIOPC7) @ORD-NSTEP Section c/o NSTEP Staff",
@@ -1418,7 +1391,7 @@
   },
   {
     "old_code": "DOST9-EQ-108",
-    "name": "ALL-IN-ONE COMPUTER (FASS CASH3)",
+    "name": "FASS CASH3",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2018 AIOPC5) @CSTC-ZCIC FASS c/o Cashier",
@@ -1435,7 +1408,7 @@
   },
   {
     "old_code": "DOST9-EQ-109",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC7)",
+    "name": "CSTC-ZCIC AIOPC7",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-06",
     "remarks": "(MITHI-2021 AIOPC26) @FOS Section c/o CSTC-ZCIC Staff",
@@ -1453,7 +1426,7 @@
   },
   {
     "old_code": "DOST9-EQ-110",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC3)",
+    "name": "CSTC-ZCIC AIOPC3",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2022 AIOPC10) @FOS Section c/o FOS ZC Staff",
@@ -1469,7 +1442,7 @@
   },
   {
     "old_code": "DOST9-EQ-111",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC4)",
+    "name": "CSTC-ZCIC AIOPC4",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2021 AIOPC5) @FOS c/o FOS Personnel",
@@ -1486,7 +1459,7 @@
   },
   {
     "old_code": "DOST9-EQ-112",
-    "name": "COMPUTER (FOS RPMO PC2)",
+    "name": "FOS RPMO PC2",
     "category": "Desktop Computer",
     "acquired_at": "2017-07-10",
     "remarks": "(MITHI-2016 PC42) @FOS-RPMO Section c/o FOS RPMO Staff",
@@ -1504,7 +1477,7 @@
   },
   {
     "old_code": "DOST9-EQ-113",
-    "name": "ALL-IN-ONE COMPUTER (FOS RPMO1)",
+    "name": "FOS RPMO1",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2022 AIOPC7) @FOS-RPMO Section c/o FOS RPMO Staff",
@@ -1522,7 +1495,7 @@
   },
   {
     "old_code": "DOST9-EQ-114",
-    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC5)",
+    "name": "CSTC-ZCIC AIOPC5",
     "category": "All-in-One Computer",
     "acquired_at": "2021-08-13",
     "remarks": "(MITHI-2022 AIOPC11) @FOS c/o FOS ZCIC Staff",
@@ -1540,7 +1513,7 @@
   },
   {
     "old_code": "DOST9-EQ-115",
-    "name": "ALL-IN-ONE COMPUTER (GAD HUBSTATION1)",
+    "name": "GAD HUBSTATION1",
     "category": "All-in-One Computer",
     "acquired_at": "2017-05-29",
     "remarks": "(MITHI-2017 AIOPC4) @GAD Hub Station c/o ICT / GAD",
@@ -1558,7 +1531,7 @@
   },
   {
     "old_code": "DOST9-EQ-116",
-    "name": "LAPTOP COMPUTER (ONELAB LP-4)",
+    "name": "ONELAB LP-4",
     "category": "Laptop Computer",
     "acquired_at": "2023-11-28",
     "remarks": "(ONELAB 2023 FUNDS) @ARD-FASTS c/o RSS",
@@ -1575,7 +1548,7 @@
   },
   {
     "old_code": "DOST9-EQ-117",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP6)",
+    "name": "ICT HTLAPTOP6",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(MITHI-2021 HITECHLAPTOP1) @ICT Section c/o ICT Staff",
@@ -1593,7 +1566,7 @@
   },
   {
     "old_code": "DOST9-EQ-118",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP7)",
+    "name": "ICT HTLAPTOP7",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(MITHI-2021 HITECHLAPTOP2) @ICT Section c/o ICT Staff",
@@ -1611,7 +1584,7 @@
   },
   {
     "old_code": "DOST9-EQ-119",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP8)",
+    "name": "ICT HTLAPTOP8",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(MITHI-2021 HITECHLAPTOP3) @MIS/Onelab c/o Onelab Staff",
@@ -1629,7 +1602,7 @@
   },
   {
     "old_code": "DOST9-EQ-120",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP9)",
+    "name": "ICT HTLAPTOP9",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(MITHI-2021 HITECHLAPTOP4) @Scholarship c/o Scholarship Staff",
@@ -1647,7 +1620,7 @@
   },
   {
     "old_code": "DOST9-EQ-121",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP10)",
+    "name": "ICT HTLAPTOP10",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(MITHI-2021 HITECHLAPTOP5) @ICT Section c/o ICT Staff",
@@ -1665,7 +1638,7 @@
   },
   {
     "old_code": "DOST9-EQ-122",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP11)",
+    "name": "ICT HTLAPTOP11",
     "category": "Laptop Computer",
     "acquired_at": "2021-11-10",
     "remarks": "(MITHI-2021 HITECHLAPTOP6) @ICT Section c/o ICT Staff",
@@ -1683,7 +1656,7 @@
   },
   {
     "old_code": "DOST9-EQ-123",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC4 CHEM4)",
+    "name": "RSTL AIOPC4 CHEM4",
     "category": "All-in-One Computer",
     "acquired_at": "2020-10-21",
     "remarks": "(MITHI-2020 AIOPC4) @RSTL Section c/o RSTL Unit",
@@ -1701,7 +1674,7 @@
   },
   {
     "old_code": "DOST9-EQ-124",
-    "name": "LAPTOP COMPUTER (ORD PLANNING)",
+    "name": "ORD PLANNING",
     "category": "Laptop Computer",
     "acquired_at": "2019-11-15",
     "remarks": "MITHI-2019 LAPTOP3 @TS Section c/o Supervising SRS",
@@ -1714,7 +1687,7 @@
   },
   {
     "old_code": "DOST9-EQ-125",
-    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC5 MICRO2)",
+    "name": "RSTL AIOPC5 MICRO2",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2018 AIOPC7) @RSTL c/o RSTL Micro",
@@ -1731,7 +1704,7 @@
   },
   {
     "old_code": "DOST9-EQ-126",
-    "name": "ALL-IN-ONE COMPUTER (ORD PLANNING)",
+    "name": "ORD PLANNING",
     "category": "All-in-One Computer",
     "acquired_at": "2020-10-21",
     "remarks": "(MITHI-2020 PC10) @ORD Section c/o Planning Staff",
@@ -1749,7 +1722,7 @@
   },
   {
     "old_code": "DOST9-EQ-127",
-    "name": "LAPTOP COMPUTER (RSTL METRO1)",
+    "name": "RSTL METRO1",
     "category": "Laptop Computer",
     "acquired_at": "2023-05-03",
     "remarks": "(NON-MITHI 2023 LAPTOP1) @RSTL Section c/o MetroLab Staff",
@@ -1767,7 +1740,7 @@
   },
   {
     "old_code": "DOST9-EQ-128",
-    "name": "LAPTOP COMPUTER (RSTL METRO2)",
+    "name": "RSTL METRO2",
     "category": "Laptop Computer",
     "acquired_at": "2023-05-03",
     "remarks": "(NON-MITHI 2023 LAPTOP2) @RSTL Section c/o MetroLab Staff",
@@ -1785,7 +1758,7 @@
   },
   {
     "old_code": "DOST9-EQ-129",
-    "name": "LAPTOP COMPUTER (RSTL METRO3)",
+    "name": "RSTL METRO3",
     "category": "Laptop Computer",
     "acquired_at": "2023-05-03",
     "remarks": "(NON-MITHI 2023 LAPTOP3) @RSTL Section c/o MetroLab Staff",
@@ -1803,7 +1776,7 @@
   },
   {
     "old_code": "DOST9-EQ-130",
-    "name": "LAPTOP COMPUTER (RSTL METRO4)",
+    "name": "RSTL METRO4",
     "category": "Laptop Computer",
     "acquired_at": "2023-05-03",
     "remarks": "(NON-MITHI 2023 LAPTOP4) @RSTL Section c/o MetroLab Staff",
@@ -1821,7 +1794,7 @@
   },
   {
     "old_code": "DOST9-EQ-131",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP2)",
+    "name": "ICT HTLAPTOP2",
     "category": "Laptop Computer",
     "acquired_at": "2019-04-11",
     "remarks": "(MITHI-2018 HITECHLAPTOP2) @ ICT Section c/o ICT Manager",
@@ -1838,7 +1811,7 @@
   },
   {
     "old_code": "DOST9-EQ-132",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP3)",
+    "name": "ICT HTLAPTOP3",
     "category": "Laptop Computer",
     "acquired_at": "2019-04-11",
     "remarks": "(MITHI-2018 HITECHLAPTOP3) @ ICT Section c/o ICT Staff",
@@ -1855,7 +1828,7 @@
   },
   {
     "old_code": "DOST9-EQ-133",
-    "name": "LAPTOP COMPUTER (ICT HTLAPTOP4)",
+    "name": "ICT HTLAPTOP4",
     "category": "Laptop Computer",
     "acquired_at": "2019-04-11",
     "remarks": "(MITHI-2018 HITECHLAPTOP4) @ ICT Section c/o ICT Staff",
@@ -1872,7 +1845,7 @@
   },
   {
     "old_code": "DOST9-EQ-134",
-    "name": "ALL-IN-ONE COMPUTER (RSTLONELAB AIO1)",
+    "name": "RSTLONELAB AIO1",
     "category": "All-in-One Computer",
     "acquired_at": "2023-12-01",
     "remarks": "(ONELAB 2023 FUNDS) @ RSTL Section c/o RSTL Chem",
@@ -1889,7 +1862,7 @@
   },
   {
     "old_code": "DOST9-EQ-135",
-    "name": "ALL-IN-ONE COMPUTER (RSTLONELAB AIO2)",
+    "name": "RSTLONELAB AIO2",
     "category": "All-in-One Computer",
     "acquired_at": "2023-12-01",
     "remarks": "(ONELAB 2023 FUNDS) @ RSTL Section c/o RSTL Micro",
@@ -1906,7 +1879,7 @@
   },
   {
     "old_code": "DOST9-EQ-136",
-    "name": "ALL-IN-ONE COMPUTER (RSTLONELAB AIO3)",
+    "name": "RSTLONELAB AIO3",
     "category": "All-in-One Computer",
     "acquired_at": "2023-12-01",
     "remarks": "(ONELAB 2023 FUNDS) @ RSTL Section c/o RSTL Metro",
@@ -1922,7 +1895,7 @@
   },
   {
     "old_code": "DOST9-EQ-137",
-    "name": "LAPTOP COMPUTER (TS STIC2)",
+    "name": "TS STIC2",
     "category": "Laptop Computer",
     "acquired_at": "2019-04-23",
     "remarks": "(MITHI-2017) @TS-STIC c/o RJA / STIC Staff",
@@ -1937,7 +1910,7 @@
   },
   {
     "old_code": "DOST9-EQ-138",
-    "name": "LAPTOP COMPUTER (RSTL CHEM3)",
+    "name": "RSTL CHEM3",
     "category": "Laptop Computer",
     "acquired_at": "2019-05-03",
     "remarks": "(MITHI-2017) @TS-STIC c/o JTO",
@@ -1952,7 +1925,7 @@
   },
   {
     "old_code": "DOST9-EQ-139",
-    "name": "ALL-IN-ONE COMPUTER (FASS BUDG3)",
+    "name": "FASS BUDG3",
     "category": "All-in-One Computer",
     "acquired_at": "2022-04-28",
     "remarks": "(MITHI-2021 AIOPC24) @FASS Section c/o Budgeting Staff",
@@ -1970,7 +1943,7 @@
   },
   {
     "old_code": "DOST9-EQ-140",
-    "name": "LAPTOP COMPUTER (CSTC-ZCIC LAPTOP1)",
+    "name": "CSTC-ZCIC LAPTOP1",
     "category": "Laptop Computer",
     "acquired_at": "2020-08-14",
     "remarks": "MITHI-2020 @CSTC-ZCIC FOS c/o FOS Staff",
@@ -1986,7 +1959,7 @@
   },
   {
     "old_code": "DOST9-EQ-141",
-    "name": "LAPTOP COMPUTER (RSTL LAPTOP MET1)",
+    "name": "RSTL LAPTOP MET1",
     "category": "Laptop Computer",
     "acquired_at": "2020-02-11",
     "remarks": "MITHI-2019 LAPTOP7 @RSTL-MET c/o RSTL-MET Unit",
@@ -1999,7 +1972,7 @@
   },
   {
     "old_code": "DOST9-EQ-142",
-    "name": "LCD PROJECTOR (FOS RPMO)",
+    "name": "FOS RPMO",
     "category": "LCD Projector",
     "acquired_at": "2023-09-12",
     "remarks": "@ FOS RPMO Section c/o RPMO Staff",
@@ -2013,7 +1986,7 @@
   },
   {
     "old_code": "DOST9-EQ-143",
-    "name": "LCD PROJECTOR (TS ZCHRD)",
+    "name": "TS ZCHRD",
     "category": "LCD Projector",
     "acquired_at": "2023-09-12",
     "remarks": "@ TS ZCHRD Section c/o ZCHRD Staff",
@@ -2027,7 +2000,7 @@
   },
   {
     "old_code": "DOST9-EQ-144",
-    "name": "SPLIT-TYPE AIR CONDITIONER (2.5 HP) (ORD)",
+    "name": "ORD",
     "category": "Air Conditioner",
     "acquired_at": "2020-09-11",
     "remarks": "@RD's Office c/o ORD/Secretariat",
@@ -2035,13 +2008,14 @@
     "model": "KV24WM-ARF21C2/",
     "price": 74992.5,
     "specification": [
+      "2.5 HP",
       "KV24OD-ARF21C2",
       "S.N.: GM585135/DM621743"
     ]
   },
   {
     "old_code": "DOST9-EQ-145",
-    "name": "ALL-IN-ONE COMPUTER (ONELAB AIOPC1)",
+    "name": "ONELAB AIOPC1",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2022 AIOPC9) @ONELAB c/o ONELAB Staff",
@@ -2057,7 +2031,7 @@
   },
   {
     "old_code": "DOST9-EQ-146",
-    "name": "SPLIT-TYPE AIR CONDITIONER (2.5 HP) (ORD SECRETARY)",
+    "name": "ORD SECRETARY",
     "category": "Air Conditioner",
     "acquired_at": "2015-10-20",
     "remarks": "@ORD-SEC Transferred to Rubber Lab as of 06-15-23",
@@ -2065,12 +2039,13 @@
     "model": "KV18WM-ARF21B",
     "price": 39995.0,
     "specification": [
+      "2.5 HP",
       "S.N.: GH580756"
     ]
   },
   {
     "old_code": "DOST9-EQ-147",
-    "name": "COMPUTER (CSTC-ZCIC FOS PC2)",
+    "name": "CSTC-ZCIC FOS PC2",
     "category": "Desktop Computer",
     "acquired_at": "2017-07-10",
     "remarks": "(MITHI-2016 PC39) @FOS c/o FOS Staff",
@@ -2088,7 +2063,7 @@
   },
   {
     "old_code": "DOST9-EQ-148",
-    "name": "LAPTOP COMPUTER (ONELAB LP-5)",
+    "name": "ONELAB LP-5",
     "category": "Laptop Computer",
     "acquired_at": "2023-11-29",
     "remarks": "(ONELAB 2023 FUNDS) @RSTL c/o Onelab Staff",
@@ -2104,7 +2079,7 @@
   },
   {
     "old_code": "DOST9-EQ-149",
-    "name": "LAPTOP COMPUTER (ONELAB LP-6)",
+    "name": "ONELAB LP-6",
     "category": "Laptop Computer",
     "acquired_at": "2023-11-29",
     "remarks": "(ONELAB 2023 FUNDS) @RSTL c/o Onelab Staff",
@@ -2120,7 +2095,7 @@
   },
   {
     "old_code": "DOST9-EQ-150",
-    "name": "COMPUTER (CSTC-ZCIC FOS PC3)",
+    "name": "CSTC-ZCIC FOS PC3",
     "category": "Desktop Computer",
     "acquired_at": "2017-07-10",
     "remarks": "(MITHI-2016 PC45) @CSTC-ZCIC FOS c/o FOS Staff",
@@ -2137,7 +2112,7 @@
   },
   {
     "old_code": "DOST9-EQ-151",
-    "name": "ALL-IN-ONE COMPUTER (FASS CASH2)",
+    "name": "FASS CASH2",
     "category": "All-in-One Computer",
     "acquired_at": "2022-09-11",
     "remarks": "(MITHI-2018 AIOPC5) @CSTC-ZCIC FASS c/o Cashier",
@@ -2154,7 +2129,7 @@
   },
   {
     "old_code": "DOST9-EQ-152",
-    "name": "LCD PROJECTOR (TS)",
+    "name": "TS",
     "category": "LCD Projector",
     "acquired_at": "2023-12-15",
     "remarks": "(MITHI-2022 Continuing) @MIS-MITHI c/o TS",
@@ -2170,7 +2145,7 @@
   },
   {
     "old_code": "DOST9-EQ-153",
-    "name": "LCD PROJECTOR (FASS)",
+    "name": "FASS",
     "category": "LCD Projector",
     "acquired_at": "2023-12-15",
     "remarks": "(MITHI-2022 Continuing) @MIS-MITHI c/o FASS",
@@ -2186,7 +2161,7 @@
   },
   {
     "old_code": "DOST9-EQ-154",
-    "name": "LCD PROJECTOR (ORD)",
+    "name": "ORD",
     "category": "LCD Projector",
     "acquired_at": "2023-12-15",
     "remarks": "(MITHI-2022 Continuing) @MIS-MITHI c/o ORD",
@@ -2202,7 +2177,7 @@
   },
   {
     "old_code": "DOST9-EQ-155",
-    "name": "COMPUTER (RSTL PC1 CHEM1)",
+    "name": "RSTL PC1 CHEM1",
     "category": "Desktop Computer",
     "acquired_at": "2017-06-02",
     "remarks": "(MITHI-2016 PC17) @RSTL Section c/o RSTL Personnel",
@@ -2220,7 +2195,7 @@
   },
   {
     "old_code": "DOST9-EQ-156",
-    "name": "COMPUTER (FASS PC5)",
+    "name": "FASS PC5",
     "category": "Desktop Computer",
     "acquired_at": "2017-07-10",
     "remarks": "(MITHI-2016 PC15) @CSTC-ZCIC FASS c/o FASS Staff",
@@ -2235,7 +2210,7 @@
   },
   {
     "old_code": "DOST9-EQ-157",
-    "name": "Air Conditioner (Metro Lab)",
+    "name": "Metro Lab",
     "category": "Air Conditioner",
     "acquired_at": "2024-07-24",
     "remarks": "ONELAB-2024 @RSTL",
@@ -2248,7 +2223,7 @@
   },
   {
     "old_code": "DOST9-EQ-158",
-    "name": "Split-Type Air Conditioner (Micro Lab)",
+    "name": "Micro Lab",
     "category": "Air Conditioner",
     "acquired_at": "2024-07-24",
     "remarks": "ONELAB-2024 @RSTL",
@@ -2261,7 +2236,7 @@
   },
   {
     "old_code": "DOST9-EQ-159",
-    "name": "Split-Type Air Conditioner (Rubber Lab)",
+    "name": "Rubber Lab",
     "category": "Air Conditioner",
     "acquired_at": "2024-07-24",
     "remarks": "ONELAB-2024 @RSTL",
@@ -2274,7 +2249,7 @@
   },
   {
     "old_code": "DOST9-EQ-160",
-    "name": "Split-Type Air Conditioner (Receiving/Rubber Lab)",
+    "name": "Receiving/Rubber Lab",
     "category": "Air Conditioner",
     "acquired_at": "2024-07-24",
     "remarks": "ONELAB-2024 @RSTL",
@@ -2287,7 +2262,7 @@
   },
   {
     "old_code": "DOST9-EQ-161",
-    "name": "Laptop Computer (ORD-DRRM2)",
+    "name": "ORD-DRRM2",
     "category": "Laptop Computer",
     "acquired_at": "2025-01-08",
     "remarks": "Local GIA @DRRM",
@@ -2305,7 +2280,7 @@
   },
   {
     "old_code": "DOST9-EQ-162",
-    "name": "Laptop Computer (TOS-RPMO1)",
+    "name": "TOS-RPMO1",
     "category": "Laptop Computer",
     "acquired_at": "2024-09-11",
     "remarks": "Local GIA @ RPMO",
@@ -2323,7 +2298,7 @@
   },
   {
     "old_code": "DOST9-EQ-163",
-    "name": "Laptop Computer (TOS-OneLab7)",
+    "name": "TOS-OneLab7",
     "category": "Laptop Computer",
     "acquired_at": "2024-11-22",
     "remarks": "ONELAB-2024 @RSTL",
@@ -2341,7 +2316,7 @@
   },
   {
     "old_code": "DOST9-EQ-164",
-    "name": "Laptop/Tablet Computer (TOS- HEIRIT RESEED)",
+    "name": "TOS- HEIRIT RESEED",
     "category": "Laptop Computer",
     "acquired_at": "2025-01-02",
     "remarks": "HEIRIT RESEED-2024 @ TOS",
@@ -2359,7 +2334,7 @@
   },
   {
     "old_code": "DOST9-EQ-165",
-    "name": "Mini Computer (ORD-Planning3)",
+    "name": "ORD-Planning3",
     "category": "Mini Computer",
     "acquired_at": "2024-08-28",
     "remarks": "MIS-2024 @ ORD",
@@ -2377,7 +2352,7 @@
   },
   {
     "old_code": "DOST9-EQ-166",
-    "name": "Mini Computer (TOS-ZCHRD1)",
+    "name": "TOS-ZCHRD1",
     "category": "Mini Computer",
     "acquired_at": "2024-08-28",
     "remarks": "MIS-2024 @ TOS",
@@ -2395,7 +2370,7 @@
   },
   {
     "old_code": "DOST9-EQ-167",
-    "name": "Laptop Computer (ORD-MIS)",
+    "name": "ORD-MIS",
     "category": "Laptop Computer",
     "acquired_at": "2024-08-28",
     "remarks": "MIS-2024 @ MIS",

@@ -16,7 +16,7 @@ class ViewClass
 
     public function lists($request){
         $data = DefaultResource::collection(
-            AssetEquipment::with('type','status','detail','currentAssignment.user.profile')
+            AssetEquipment::with('type','status','station','detail','currentAssignment.user.profile')
             ->when($request->keyword, function ($query,$keyword) {
                 $query->where('name', 'LIKE', "%{$keyword}%")
                     ->orWhere('code', 'LIKE', "%{$keyword}%")
@@ -24,6 +24,9 @@ class ViewClass
             })
             ->when($request->type, function ($query,$type) {
                 $query->where('type_id',$type);
+            })
+            ->when($request->station, function ($query,$station) {
+                $query->where('station_id',$station);
             })
             ->when($request->status, function ($query,$status) {
                 $query->where('status_id',$status);

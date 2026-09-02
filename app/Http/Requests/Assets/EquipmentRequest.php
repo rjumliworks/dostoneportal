@@ -25,6 +25,7 @@ class EquipmentRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'old_code' => ['nullable', 'string', 'max:30'],
             'type_id' => ['required', 'integer', 'exists:list_data,id'],
+            'station_id' => ['nullable', 'integer', 'exists:list_dropdowns,id'],
             'status_id' => ['required', 'integer', 'exists:list_statuses,id'],
             'maintenance_plan' => ['nullable', 'string', 'max:255'],
             'maintenance_due' => ['nullable', 'date'],
