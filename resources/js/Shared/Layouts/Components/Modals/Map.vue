@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <l-map ref="mymap" style="width: 100%; height: 200px; border-radius: 10px;" 
+    <div style="height: 100%;">
+        <l-map ref="mymap" :style="{ width: '100%', height: height, borderRadius: '10px' }"
             :zoom="zoom"
             :center="center"
             :options="mapOptions"
@@ -15,6 +15,12 @@ import { latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LTooltip, LIcon } from "@vue-leaflet/vue-leaflet";
 export default {
     components: { LMap, LTileLayer, LMarker, LIcon, LTooltip },
+    props: {
+        height: {
+            type: String,
+            default: '200px'
+        }
+    },
     data() {
         return {
             zoom: 8,

@@ -18,7 +18,7 @@
                                 <p class="text-muted text-truncate-two-lines fs-12">A comprehensive list of campuses from various schools, providing location and institutional details</p>
                             </div>
                             <div class="flex-shrink-0" style="width: 45%;">
-                               
+
                             </div>
                         </div>
                     </div>
@@ -27,9 +27,9 @@
                             <b-col lg>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                    <input type="text" v-model="filter.keyword" placeholder="Search Employee" class="form-control" style="width: 50%;">
-                                    <input type="text" v-model="filter.year" placeholder="Enter Year" class="form-control" style="width: 5%;">
-                                    <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                    <input type="text" v-model="filter.keyword" placeholder="Search Building" class="form-control" style="width: 50%;">
+                                    <Multiselect class="white" style="width: 17%;" :options="dropdowns.stations" v-model="filter.station" label="name" :searchable="true" placeholder="Select Station" />
+                                    <span @click="fetch()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                         <i class="bx bx-refresh search-icon"></i>
                                     </span>
                                     <b-button type="button" variant="primary" @click="openCreate">
@@ -39,39 +39,53 @@
                             </b-col>
                         </b-row>
                     </div>
-                    <div class="card bg-white border-bottom shadow-none" no-body>
-                        <div class="d-flex">
-                            <div class="flex-grow-1">
-                                <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
-                                    <li class="nav-item">
-                                        <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                        <i class="ri-apps-2-line me-1 align-bottom"></i> All Surveys
-                                        </BLink>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <div class="d-flex flex-wrap gap-2 mt-3">
-                                  
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-body bg-white rounded-bottom">
-                        <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 465px); overflow: auto;">
+                        <div class="table-responsive table-card" style="height: calc(100vh - 420px); overflow: auto;">
                             <table class="table align-middle table-centered mb-0">
                                 <thead class="table-light thead-fixed">
                                     <tr class="fs-11">
                                         <th style="width: 3%;"></th>
-                                        <th>Year</th>
-                                        <th style="width: 13%;" class="text-center">Count</th>
-                                        <th style="width: 15%;" class="text-center">Date Created</th>
-                                        <th style="width: 15%;" class="text-center">Date Finished</th>
-                                        <th style="width: 10%;" class="text-center">Status</th>
+                                        <th>Name</th>
+                                        <th style="width: 15%;" class="text-center">Station</th>
+                                        <th style="width: 12%;" class="text-center">Date Added</th>
                                         <th style="width: 6%;"></th>
                                     </tr>
                                 </thead>
-                               
+                                <tbody class="table-white fs-12">
+                                    <tr v-for="(list,index) in lists" v-bind:key="index" >
+                                        <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
+                                        <td>
+                                            <h5 class="fs-13 mb-0 fw-semibold text-primary">{{ list.name }}</h5>
+                                            <p class="fs-12 text-muted mb-0">{{ [list.address, list.barangay?.name, list.municipality?.name, list.province?.name].filter(Boolean).join(', ') }}</p>
+                                        </td>
+                                        <td class="text-center">{{ list.station?.name }}</td>
+                                        <td class="text-center">{{ list.created_at }}</td>
+                                        <td class="text-end">
+                                            <div class="d-flex gap-3 justify-content-center">
+                                                <div class="dropdown">
+                                                    <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }">
+                                                        <template #button-content>
+                                                            <i class="ri-more-fill"></i>
+                                                        </template>
+                                                        <li>
+                                                            <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-eye-fill me-2"></i> View
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a @click="openUpdate(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-edit-2-fill me-2"></i> Update
+                                                            </a>
+                                                        </li>
+                                                    </BDropdown>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="!lists.length">
+                                        <td colspan="5" class="text-center text-muted py-4">No buildings found</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -81,14 +95,19 @@
                 </div>
             </div>
         </BRow>
+        <Create :dropdowns="dropdowns" ref="create" @update="onCreated"/>
+        <View ref="view"/>
     </template>
     <script>
     import _ from 'lodash';
+    import Create from './Modals/Create.vue';
+    import View from './Modals/View.vue';
     import Multiselect from "@vueform/multiselect";
     import PageHeader from '@/Shared/Components/PageHeader.vue';
     import Pagination from "@/Shared/Components/Pagination.vue";
     export default {
-        components: { PageHeader, Pagination, Multiselect },
+        components: { PageHeader, Pagination, Multiselect, Create, View },
+        props: ['dropdowns'],
         data(){
             return {
                 currentUrl: window.location.origin,
@@ -96,12 +115,58 @@
                 meta: {},
                 links: {},
                 filter: {
-                    year: null,
-                    semester: null
+                    keyword: null,
+                    station: null
                 },
-                index: null,
-                units: []
+                index: null
             }
+        },
+        watch: {
+            "filter.station"(newVal){
+                this.fetch();
+            },
+            "filter.keyword"(newVal){
+                this.checkSearchStr(newVal);
+            }
+        },
+        created(){
+           this.fetch();
+        },
+        methods: {
+            openCreate(){
+                this.$refs.create.show();
+            },
+            openUpdate(list){
+                this.$refs.create.edit(list);
+            },
+            openView(list){
+                this.$refs.view.show(list);
+            },
+            onCreated(){
+                this.fetch();
+            },
+            checkSearchStr: _.debounce(function(string) {
+                this.fetch();
+            }, 300),
+            fetch(page_url){
+                page_url = page_url || '/buildings';
+                axios.get(page_url,{
+                    params : {
+                        keyword: this.filter.keyword,
+                        station: this.filter.station,
+                        count: 10,
+                        option: 'lists'
+                    }
+                })
+                .then(response => {
+                    if(response){
+                        this.lists = response.data.data;
+                        this.meta = response.data.meta;
+                        this.links = response.data.links;
+                    }
+                })
+                .catch(err => console.log(err));
+            },
         }
     }
     </script>
