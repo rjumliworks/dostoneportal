@@ -110,13 +110,14 @@ class DatabaseSeeder extends Seeder
         // $this->call(ShiftTimesTableSeeder::class);
         // $this->call(UserShiftsTableSeeder::class);
         // $this->call(ListEventsTableSeeder::class);
-        $this->call(EventCsfQuestionsTableSeeder::class);
-        $this->call(EventsTableSeeder::class);
-        $this->call(EventVenuesTableSeeder::class);
-        $this->call(EventDetailsTableSeeder::class);
-        $this->call(EventSessionsTableSeeder::class);
-        $this->call(EventSessionDetailsTableSeeder::class);
-        $this->call(EventSessionSchedulesTableSeeder::class);
-        $this->call(EventExhibitorsTableSeeder::class);
+        // $this->call(EventCsfQuestionsTableSeeder::class);
+        // $this->call(EventsTableSeeder::class);
+        // $this->call(EventVenuesTableSeeder::class);
+        // $this->call(EventDetailsTableSeeder::class);
+        // $this->call(EventSessionsTableSeeder::class);
+        // $this->call(EventSessionDetailsTableSeeder::class);
+        // $this->call(EventSessionSchedulesTableSeeder::class);
+        // $this->call(EventExhibitorsTableSeeder::class);
+        $this->call(AssetEquipmentMasterlistSeeder::class);
     }
 }

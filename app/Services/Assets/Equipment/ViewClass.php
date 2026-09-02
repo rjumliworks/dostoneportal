@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Services\Assets\Equipment;
+
+use App\Models\AssetEquipment;
+use App\Http\Resources\DefaultResource;
+
+class ViewClass
+{
+    public function counts($statuses){
+        foreach($statuses as $status){
+            $counts[] = AssetEquipment::where('status_id',$status['value'])->count();
+        }
+        return $counts;
+    }
+
+    public function lists($request){
+        $data = DefaultResource::collection(
+            AssetEquipment::with('type','status','detail','currentAssignment.user.profile')
+            ->when($request->keyword, function ($query,$keyword) {
+                $query->where('name', 'LIKE', "%{$keyword}%")
+                    ->orWhere('code', 'LIKE', "%{$keyword}%")
+                    ->orWhere('old_code', 'LIKE', "%{$keyword}%");
+            })
+            ->when($request->type, function ($query,$type) {
+                $query->where('type_id',$type);
+            })
+            ->when($request->status, function ($query,$status) {
+                $query->where('status_id',$status);
+            })
+            ->orderBy('created_at', 'DESC')
+            ->paginate($request->count)
+        );
+        return $data;
+    }
+}

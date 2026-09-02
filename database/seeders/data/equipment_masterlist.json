@@ -1,0 +1,2414 @@
+[
+  {
+    "old_code": "DOST9-EQ-001",
+    "name": "MOTOR VEHICLE (HILUX - MT)",
+    "category": "Motor Vehicle",
+    "acquired_at": "2018-12-29",
+    "remarks": "@DOST IX Compound",
+    "brand": "TOYOTA",
+    "model": "HILUX (G)",
+    "price": 1419769.0,
+    "specification": []
+  },
+  {
+    "old_code": "DOST9-EQ-002",
+    "name": "MOTOR VEHICLE (HILUX - AT)",
+    "category": "Motor Vehicle",
+    "acquired_at": "2021-08-26",
+    "remarks": "@DOST IX Compound",
+    "brand": "TOYOTA",
+    "model": "HILUX (G)",
+    "price": 1499500.0,
+    "specification": []
+  },
+  {
+    "old_code": "DOST9-EQ-003",
+    "name": "MOTOR VEHICLE (STRADA - GL)",
+    "category": "Motor Vehicle",
+    "acquired_at": "2008-04-08",
+    "remarks": "@DOST IX Compound",
+    "brand": "MITSUBISHI",
+    "model": "STRADA GL",
+    "price": 850000.0,
+    "specification": []
+  },
+  {
+    "old_code": "DOST9-EQ-006",
+    "name": "AIR CONDITIONER (Technical)",
+    "category": "Air Conditioner",
+    "acquired_at": "2010-05-25",
+    "remarks": "@RSTL-Wet Room – Chem Lab",
+    "brand": "PANASONIC",
+    "model": "CW XC 244 EPH",
+    "price": 27999.0,
+    "specification": [
+      "S.N.: 9D0702930"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-009",
+    "name": "AIR CONDITIONER (Supply Stock Room)",
+    "category": "Air Conditioner",
+    "acquired_at": "2023-11-16",
+    "remarks": "@Supply Stock Room",
+    "brand": "KOPPEL",
+    "model": "KWR-09R4A2",
+    "price": 19095.0,
+    "specification": [
+      "S.N.: 221003-01689"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-010",
+    "name": "SPLIT-TYPE AIR CONDITIONER (Metro Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2016-04-14",
+    "remarks": "@RSTL-Metrolab c/o MetroLab Tech Manager",
+    "brand": "KOPPEL",
+    "model": "KV18WM-ARF21B",
+    "price": 48295.0,
+    "specification": [
+      "S.N.: MH581865"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-011",
+    "name": "AIR CONDITIONER (COA Auditor)",
+    "category": "Air Conditioner",
+    "acquired_at": "2018-04-26",
+    "remarks": "@Auditor's Office c/o Auditor",
+    "brand": "PANASONIC",
+    "model": "CW- SC105 VPH",
+    "price": 18699.0,
+    "specification": [
+      "S.N.: 7N2222410"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-012",
+    "name": "AIR CONDITIONER (Chemical Stock Room)",
+    "category": "Air Conditioner",
+    "acquired_at": "2011-08-01",
+    "remarks": "@RSTL c/o Chemlab Tech Manager",
+    "brand": "PANASONIC",
+    "model": "CW-XC244EPH",
+    "price": 27999.0,
+    "specification": [
+      "S.N.: 120204691"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-014",
+    "name": "AIR CONDITIONER (RSTL Office)",
+    "category": "Air Conditioner",
+    "acquired_at": "2019-05-29",
+    "remarks": "@RSTL's Office c/o Chemlab Tech Manager",
+    "brand": "PANASONIC",
+    "model": "CW SC 245 EPH",
+    "price": 33350.0,
+    "specification": [
+      "S.N.: 931823148"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-015",
+    "name": "AIR CONDITIONER (Micro Lab1)",
+    "category": "Air Conditioner",
+    "acquired_at": "2016-10-05",
+    "remarks": "@Microlab c/o Microlab Tech Manager",
+    "brand": "PANASONIC",
+    "model": "CW-SC245EPH",
+    "price": 25399.0,
+    "specification": [
+      "S.N.: 690609971"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-016",
+    "name": "AIR CONDITIONER (Instrument Room Chem Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2016-03-30",
+    "remarks": "@Instrument Room-Chemlab c/o Chemlab Tech Manager",
+    "brand": "EVEREST",
+    "model": "ETM20WD-HF",
+    "price": 21695.0,
+    "specification": [
+      "S.N.: 92400575810250010130032"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-017",
+    "name": "AIR CONDITIONER (Wet Room Chem Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2023-09-26",
+    "remarks": "@Wet Room –Chemlab c/o Chemlab Tech Manager",
+    "brand": "KOLIN",
+    "model": "KAG-250WCINV",
+    "price": 43535.0,
+    "specification": [
+      "S.N.: 19142303-15770"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-018",
+    "name": "AIR CONDITIONER (Metro Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2018-12-19",
+    "remarks": "@Metrolab c/o Metrolab Tech Manager",
+    "brand": "PANASONIC",
+    "model": "CW-SC245EPH",
+    "price": 31799.0,
+    "specification": [
+      "S.N.: 8N1221545"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-020",
+    "name": "AIR CONDITIONER (Food Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2018-04-18",
+    "remarks": "@Food Lab c/o Microlab Tech Manager",
+    "brand": "PANASONIC",
+    "model": "CW- SC245 EPH",
+    "price": 30380.0,
+    "specification": [
+      "S.N.: 812517754"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-031",
+    "name": "ALL-IN-ONE COMPUTER (FASS BUDG1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC29) @FASS Section c/o Budget Officer",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 Pro 64-bit",
+      "SN: DQBFSSP00B150014193000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-032",
+    "name": "ALL-IN-ONE COMPUTER (FASS ACCT1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC32) @FASS Section c/o Accountant",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 Pro 64-bit",
+      "SN: DQBFSSP00B150013C73000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-033",
+    "name": "ALL-IN-ONE COMPUTER (FASS PURC1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC34) @FASS Section c/o Purchasing Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 Pro 64-bit",
+      "SN: DQBFSSP00B150014373000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-034",
+    "name": "ALL-IN-ONE COMPUTER (FASS CASH1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC30) @FASS Section c/o Cashier",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 Pro 64-bit",
+      "SN: DQBFSSP00B1500142C3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-035",
+    "name": "COMPUTER (COA AUDITOR1)",
+    "category": "Desktop Computer",
+    "acquired_at": "2018-03-15",
+    "remarks": "@Auditor's Office c/o Auditor",
+    "brand": "INTEL",
+    "model": "CORE i3-2120; 3.3 GHz",
+    "price": null,
+    "specification": [
+      "INTEL CORE i3-2120; 3.3 GHz",
+      "4GB DDR3 RAM",
+      "500 GB HDD",
+      "Windows 10 Home 64-bit",
+      "Philips 221EL LED Monitor",
+      "s/n: AU2A1108000177"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-036",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC3 METRO1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-09-21",
+    "remarks": "(MITHI-2020 AIOPC3) @RSTL-MET Section c/o RSTL-MET",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel i3-10110 @ 2.10GHz",
+      "4 GB RAM",
+      "238.47 GB SSD / 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBD6SP0030280023E3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-037",
+    "name": "ALL-IN-ONE COMPUTER (FASS ARD)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC25) @FASS Section c/o ARD-FASS",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Pro 64-bit",
+      "SN: DQBFSSP00512701F063000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-038",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC2 MICRO1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-09-21",
+    "remarks": "(MITHI-2020 AIOPC2) @RSTL Section c/o RSTL Unit",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel i3-10110 @ 2.10GHz",
+      "4 GB RAM",
+      "238.47 GB SSD / 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBD6SP003028002463000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-039",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC5 CHEM1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-09-21",
+    "remarks": "(MITHI-2020 AIOPC5) @RSTL Section c/o RSTL Unit",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel i3-10110 @ 2.10GHz",
+      "4 GB RAM",
+      "238.47 GB SSD / 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBD6SP0030280024D3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-040",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC6 CHEM2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-09-21",
+    "remarks": "(MITHI-2020 AIOPC6) @RSTL Section c/o RSTL Unit",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel i3-10110 @ 2.10GHz",
+      "4 GB RAM",
+      "238.47 GB SSD / 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBD6SP003028002653000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-041",
+    "name": "SERVER COMPUTER (HANDA)",
+    "category": "Server Computer",
+    "acquired_at": "2017-06-02",
+    "remarks": "ASSEMBLED (MITHI-2016 TS-HDPC3) @Server Room c/o ICT",
+    "brand": "Intel",
+    "model": "Core i7-7700 3.60GHz",
+    "price": 46330.0,
+    "specification": [
+      "Intel Core i7-7700 3.60GHz",
+      "16 GB DDR4 RAM",
+      "2 TB HDD",
+      "NVidia GeForce GT720 2GB GFX",
+      "Windows 10 Pro 64-bit",
+      "AOC E2280SW 22in. LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-042",
+    "name": "SERVER COMPUTER (ENGAS)",
+    "category": "Server Computer",
+    "acquired_at": "2017-06-02",
+    "remarks": "ASSEMBLED (MITHI-2016 TS-HDPC4) @Server Room c/o ICT",
+    "brand": "Intel",
+    "model": "Core i7-7700 3.60GHz",
+    "price": 46330.0,
+    "specification": [
+      "Intel Core i7-7700 3.60GHz",
+      "16 GB DDR4 RAM",
+      "2 TB HDD",
+      "NVidia GeForce GT720 2GB GFX",
+      "Windows 10 Pro 64-bit",
+      "AOC E2280SW 22in. LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-043",
+    "name": "LAPTOP COMPUTER (FASS ARD)",
+    "category": "Laptop Computer",
+    "acquired_at": "2020-12-18",
+    "remarks": "(MITHI-2020 2in1PC2) @FASS Section c/o ARD-FASS",
+    "brand": "DELL",
+    "model": "LATITUDE 7210 2-IN-1",
+    "price": 45110.0,
+    "specification": [
+      "DELL LATITUDE 7210 2-IN-1",
+      "Intel i5-102100 @ 1.60 GHz",
+      "8 GB RAM",
+      "500GB HDD",
+      "Windows 10 Pro",
+      "S/N: 5X1Y473"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-044",
+    "name": "LAPTOP COMPUTER (FASS CASH1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-11-15",
+    "remarks": "MITHI-2019 LAPTOP4 @FASS Section c/o Cashier",
+    "brand": "HP",
+    "model": "HP EliteBook x360 1030 G2",
+    "price": null,
+    "specification": [
+      "S.N.: 5CG849068S"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-045",
+    "name": "SERVER COMPUTER (PROXMOX)",
+    "category": "Server Computer",
+    "acquired_at": "2017-06-02",
+    "remarks": "ASSEMBLED (MITHI-2016 TS-HDPC5) @Server Room c/o ICT",
+    "brand": "Intel",
+    "model": "Core i7-7700 3.60GHz",
+    "price": 46330.0,
+    "specification": [
+      "Intel Core i7-7700 3.60GHz",
+      "16 GB DDR4 RAM",
+      "2 TB HDD",
+      "NVidia GeForce GT720 2GB GFX",
+      "Debian GNU/Linux",
+      "AOC E2280SW 22in. LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-046",
+    "name": "SERVER COMPUTER (EULIMS)",
+    "category": "Server Computer",
+    "acquired_at": "2014-10-30",
+    "remarks": "(OneLab) @Server Room c/o ICT",
+    "brand": "DELL",
+    "model": "PowerEdge T320",
+    "price": 147400.0,
+    "specification": [
+      "DELL PowerEdge T320",
+      "Intel Xeon E5-2403 1.8GHz 4 Cores",
+      "32 GB DDR3 RAM",
+      "2 TB HDD / Ubuntu OS"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-047",
+    "name": "ALL-IN-ONE COMPUTER (TS SCHO1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC36) @Scholarship Section c/o Scholarship Manager",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 Pro 64-bit",
+      "SN: DQBFSSP00B150014BE3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-048",
+    "name": "ALL-IN-ONE COMPUTER (FASS BUDG2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC33) @FASS Section c/o Budget Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB RAM; 238.47 SSD + 1TB HDD",
+      "Windows 11 Pro 64-bit",
+      "SN: DQBFSSP00B1500146F3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-049",
+    "name": "LAPTOP COMPUTER (STSIMS1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(NON-MITHI, SCHOLARSHIP-STSIMS)) @Scholarship c/o Scholarship Staff",
+    "brand": "ACER",
+    "model": "PREDATOR HELIOS 300 (PH315-54)",
+    "price": 105000.0,
+    "specification": [
+      "ACER PREDATOR HELIOS 300 (PH315-54)",
+      "11th Gen Intel i7-11800H @ 2.30GHz",
+      "16 GB RAM; 512 GB NVMe SSD; GeForce RTX 3060 6GB VRAM; Windows 10 Pro",
+      "S/N: NHQC2CN0031251AAF13400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-050",
+    "name": "ALL-IN-ONE COMPUTER (CSF Kiosk)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2018-08-10",
+    "remarks": "(MITHI-2017 AIOPC13) CSF Kiosk",
+    "brand": "HP",
+    "model": "Pavilion 24-B219D AiO PC (Touch)",
+    "price": 45210.0,
+    "specification": [
+      "HP Pavilion 24-B219D AiO PC (Touch)",
+      "Intel Corei3-7100T @ 3.4GHz",
+      "4GB DRAM; 1TB 7200 HDD",
+      "Windows 10; SN: 8CC7410K3L"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-051",
+    "name": "ALL-IN-ONE COMPUTER (TS SCHO4)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2022 AIOPC4) @TS Scholarship Section c/o Scholarship Staff",
+    "brand": "ACER",
+    "model": "C24-1750 All-in-One PC",
+    "price": 49995.0,
+    "specification": [
+      "ACER C24-1750 All-in-One PC",
+      "12th-Gen Intel i5-1240G4 @ 3.0GHz",
+      "8 GB RAM; 238.47 SSD + 1TB HDD",
+      "Windows 10 Pro 64-bit",
+      "SN: DQBJ3SP001237027543000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-052",
+    "name": "ALL-IN-ONE COMPUTER (ORD CSTC-ZCIC1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2022 AIOPC8) @ORD CSTC-ZCIC c/o ORD Personnel",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB; 238.47 GB SSD + 1TB HDD",
+      "Windows 11 Home SL",
+      "S/N: DQBJ3SP001237027943000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-053",
+    "name": "COMPUTER (FILESERVER)",
+    "category": "Server Computer",
+    "acquired_at": "2017-06-19",
+    "remarks": "(OneLab) @Server Room c/o ICT",
+    "brand": "DELL",
+    "model": "PowerEdge T430",
+    "price": 146778.0,
+    "specification": [
+      "DELL PowerEdge T430",
+      "Intel Xeon E5-2620 2.10GHz 16 Cores; 8 GB DDR4 RAM; 6 TB HDD",
+      "Ubuntu Linux Operating System"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-054",
+    "name": "ALL-IN-ONE COMPUTER (TS SCHO3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-05-26",
+    "remarks": "(MITHI-2021 AIOPC38) @TS-Scholarship Section c/o Scholarship Staff",
+    "brand": "Acer",
+    "model": "C24-1650 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1650 AiO-PC",
+      "11th-G Intel i5-1135G7 @ 2.40GHz",
+      "8 GB RAM",
+      "238.47 GB SSD + 1TB WDC HDD",
+      "Windows 11 Home SL",
+      "S/N: DQBFSSP00B150014293000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-055",
+    "name": "ALL-IN-ONE COMPUTER (FASS PURC2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2018 AIOPC8) @CSTC-ZCIC FASS c/o Purchasing Staff",
+    "brand": "HP",
+    "model": "ALL-IN-ONE PC 24-f0033d",
+    "price": 46299.0,
+    "specification": [
+      "HP ALL-IN-ONE PC 24-f0033d;",
+      "Intel i3-8130 @ 2.20GHz",
+      "4 GB; 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: 8CC83507Z2"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-056",
+    "name": "ALL-IN-ONE COMPUTER (TS SCHO2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC37) @TS Scholarship Section c/o Scholarship Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB RAM; 238.47 SSD + 1TB HDD",
+      "Windows 10 SL 64-bit",
+      "SN: DQBFSSP00B150014303000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-057",
+    "name": "COMPUTER (HRMIS KIOSK)",
+    "category": "Desktop Computer",
+    "acquired_at": "2015-12-03",
+    "remarks": "(MITHI-2015) @DOST-IX Office c/o ICT",
+    "brand": "LENOVO",
+    "model": "S500",
+    "price": 17236.12,
+    "specification": [
+      "LENOVO S500",
+      "INTEL G1840; 2.8 GHz",
+      "4 GB RAM; 500 GB HDD",
+      "SN: PC07YXCL",
+      "Lenovo 15.5\" LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-058",
+    "name": "COMPUTER (SCIMS KIOSK)",
+    "category": "Desktop Computer",
+    "acquired_at": "2015-12-03",
+    "remarks": "(MITHI-2015) @SUPPLY Section c/o ICT",
+    "brand": "LENOVO",
+    "model": "S500",
+    "price": 17236.12,
+    "specification": [
+      "LENOVO S500",
+      "INTEL G1840; 2.8 GHz",
+      "4 GB RAM; 500 GB HDD",
+      "SN: PC07XXYP",
+      "Lenovo 15.5 LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-059",
+    "name": "GENSET (CUMMINS)",
+    "category": "Generator Set",
+    "acquired_at": "2009-05-18",
+    "remarks": "@DOST IX Compound",
+    "brand": "CUMMINS",
+    "model": "4BT3.9G2",
+    "price": 588000.0,
+    "specification": []
+  },
+  {
+    "old_code": "DOST9-EQ-060",
+    "name": "ALL-IN-ONE COMPUTER (TS AIOPC4)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2022 AIOPC5) @TS ZCIEERD Section c/o ZCIEERD/RGET Staff",
+    "brand": "ACER",
+    "model": "C24-1750 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1750 All-in-One PC",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 HOME SL 64-bit",
+      "SN: DQBJ3SP001237027513000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-061",
+    "name": "ALL-IN-ONE COMPUTER (FASS ACCT2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC28) @FASS Section c/o Accounting Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 SL 64-bit",
+      "SN: DQBFSSP00B150014A73000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-062",
+    "name": "ALL-IN-ONE COMPUTER (TS SVNG1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2022 AIOPC2) @TS Supervising Section c/o Supervising SRS",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC (MITHI 2022)",
+    "price": 49995.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC (MITHI 2022)",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 SL 64-bit",
+      "SN: DQBJ3SP0012370274C3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-063",
+    "name": "LAPTOP COMPUTER (TS SVNG1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2020-12-15",
+    "remarks": "MITHI-2020 2in1PC2@TS Section c/o TS SVNG",
+    "brand": "DELL",
+    "model": "DELL LATITUDE 7210 2-IN-1",
+    "price": 57000.0,
+    "specification": [
+      "S.N.: 2FFY473"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-064",
+    "name": "ALL-IN-ONE COMPUTER (TS DRRM1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2021 AIOPC2) @TS-DRRM c/o DRRM Staff",
+    "brand": "Acer",
+    "model": "C24-1651 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1651 AiO-PC",
+      "11th-Gen Intel i3-1115G4 @3.00GHz",
+      "4 GB RAM;",
+      "238.47 GB SSD + 1TB WDC HDD;",
+      "Windows 10 Home SL",
+      "S/N: DQBG0SP001111018A83000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-065",
+    "name": "LAPTOP COMPUTER (TS RXBOX1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-08-24",
+    "remarks": "(NON-MITHI; RxBox Funds) @RxBox c/o RxBox Personnel",
+    "brand": "Acer",
+    "model": "Swift SF314-510G",
+    "price": 59999.0,
+    "specification": [
+      "Acer Swift SF314-510G",
+      "11th-G Intel i7-1165G7 @ 2.80 GHz",
+      "16GB RAM;",
+      "1TB NVMe WDC SSD",
+      "Windows 10 Home SL",
+      "SN: NXA0YSP0030500AE432N00"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-066",
+    "name": "COMPUTER (INFOBOARD)",
+    "category": "Desktop Computer",
+    "acquired_at": "2015-12-03",
+    "remarks": "(MITHI-2015) @ORD-MIS c/o Server Room",
+    "brand": "LENOVO",
+    "model": "S500",
+    "price": 17236.12,
+    "specification": [
+      "LENOVO S500",
+      "INTEL G1840; 2.8 GHz",
+      "4 GB RAM; 500 GB HDD",
+      "SN: PC07XX1P"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-067",
+    "name": "SPLIT-TYPE AIR CONDITIONER (2.0 HP)",
+    "category": "Air Conditioner",
+    "acquired_at": "2009-12-01",
+    "remarks": "@RSTL-Rubberlab/ Weighing c/o Rubberlab Personnel",
+    "brand": "KOLIN",
+    "model": "KSG-20B1",
+    "price": 46300.0,
+    "specification": [
+      "S.N.: 10140907-172 17"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-068",
+    "name": "SPLIT-TYPE AIR CONDITIONER (Ante Room Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2009-12-01",
+    "remarks": "@Ante Room Microlab c/o Microlab Personnel",
+    "brand": "KOLIN",
+    "model": "KSM-150 B1E",
+    "price": 36580.0,
+    "specification": [
+      "S.N.: 10570906-10019"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-069",
+    "name": "LCD PROJECTOR (TS-SCHO)",
+    "category": "LCD Projector",
+    "acquired_at": "2020-01-23",
+    "remarks": "@TS-SCHO c/o JBN / Scholarship Staff",
+    "brand": "EPSON",
+    "model": "EB-1781W H794C",
+    "price": 93020.0,
+    "specification": [
+      "EPSON EB-1781W H794C",
+      "RGB liquid crystal shutter",
+      "White Light Output (Normal): 3,200lm ;",
+      "S/N: X3SP9600024"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-070",
+    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 HP)",
+    "category": "Air Conditioner",
+    "acquired_at": "2011-07-20",
+    "remarks": "@RSTL Microlab c/o Microlab Tech Manager",
+    "brand": "KOLIN",
+    "model": "KSG-30B1M",
+    "price": 61900.0,
+    "specification": [
+      "S.N.: 10071008-14695"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-071",
+    "name": "LAPTOP COMPUTER (RSTL CHEM1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-01-10",
+    "remarks": "@RSTL Chemlab c/o Chemlab Tech Manager",
+    "brand": "HP",
+    "model": "Pavilion x360 14-cd0105TU",
+    "price": 30500.0,
+    "specification": [
+      "S.N.: 8CG83311ZN"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-072",
+    "name": "LAPTOP COMPUTER (RSTL MICRO1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-01-10",
+    "remarks": "@RSTL Chemlab c/o Microlab Tech Manager",
+    "brand": "HP",
+    "model": "Pavilion x360 14-cd0105TU",
+    "price": 30500.0,
+    "specification": [
+      "S.N.: 8CG83311YT"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-073",
+    "name": "LAPTOP COMPUTER (HR1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-09-05",
+    "remarks": "(MITHI-2019 LAPTOP2) @TS-ICT c/o ICT Staff",
+    "brand": "HP",
+    "model": "EliteBook x360 1030 G2",
+    "price": 35916.4,
+    "specification": [
+      "HP EliteBook x360 1030 G2",
+      "Intel i5-7200 @ 2.50GHz; 8 GB RAM",
+      "238.47 GB SSD; Windows 10",
+      "S/N: 5CG849281Z"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-074",
+    "name": "ALL-IN-ONE COMPUTER (ORD RD2) 2nd PC unit at ZCIC",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-07-26",
+    "remarks": "(MITHI-2021 AIOPC1) @ORD c/o ORD / RD",
+    "brand": "Acer",
+    "model": "C24-1651 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1651 AiO-PC",
+      "11th-Gen Intel i3-1115G4 @ 3.00GHz; 4 GB RAM",
+      "238.47 GB SSD + 1TB HDD; Windows 10 Home SL",
+      "S/N: DQBG0SP001111018C63000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-075",
+    "name": "LAPTOP COMPUTER (RSTL RUBBER1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-10-01",
+    "remarks": "MITHI-2019 LAPTOP5 @RSTL-Rubber Section c/o RSTL-Rubber Personnel",
+    "brand": "HP",
+    "model": "HP EliteBook x360 1030 G2",
+    "price": null,
+    "specification": [
+      "S.N.: 5CG84904VZ"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-076",
+    "name": "LAPTOP COMPUTER (FASS ACCT1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2018-08-10",
+    "remarks": "MITHI-2019 LAPTOP9 @FASS Section c/o Accountant",
+    "brand": "HP",
+    "model": "HP EliteBook x360 1030 G2",
+    "price": 30500.0,
+    "specification": [
+      "S.N.: 5CG849063C"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-077",
+    "name": "ALL-IN-ONE COMPUTER (HR1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2021 AIOPC39) @HR c/o HR Staff",
+    "brand": "Acer",
+    "model": "C24-1650 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1650 AiO-PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB RAM",
+      "238.47 GB SSD + 1TB WDC HDD",
+      "Windows 11 Home SL",
+      "S/N: DQBFSSP00B150014313000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-078",
+    "name": "COMPUTER (COA AUDITOR2)",
+    "category": "Desktop Computer",
+    "acquired_at": "2018-02-09",
+    "remarks": "(MITHI-2016 PC21) @COA Section c/o COA Personnel",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT (SN: 6CR7181M7N)",
+      "Intel Core i7-6700 3.4 GHz",
+      "8 GB RAM;",
+      "1 TB 7200 RPM HDD",
+      "NVidia GeForce GT720 2GB GFX",
+      "Windows 10 Pro 64-bit",
+      "HP V223 21.5in. LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-079",
+    "name": "COMPUTER (ONELAB PC1)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-07-10",
+    "remarks": "(MITHI-2016 PC9) @RSTL-ONELAB c/o OneLab Staff",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT",
+      "Intel i7-6700 @ 3.40GHz",
+      "8 GB RAM; 1 TB WDC HDD",
+      "Windows 10 Pro",
+      "S/N: 6CR7181M9X",
+      "HP V223 21.5in. LED Monitor"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-080",
+    "name": "LAPTOP COMPUTER (FASS ACCT2)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-05-03",
+    "remarks": "(MITHI-2017 LAPTOP2) @FASS Section c/o Accountant",
+    "brand": "HP",
+    "model": "Pavilion x360 Convertible 14-ba076TU",
+    "price": 41500.0,
+    "specification": [
+      "HP Pavilion x360 Convertible 14-ba076TU",
+      "Intel i3-7130 @ 2.70GHz",
+      "4 GB DDR4-2133 RAM",
+      "1 TB HGST SATA HDD",
+      "Windows 10 Pro 64-bit",
+      "S/N: 8CG8084ZPB"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-081",
+    "name": "LCD PROJECTOR (RSTL)",
+    "category": "LCD Projector",
+    "acquired_at": "2012-10-19",
+    "remarks": "@RSTL Office c/o RSTL",
+    "brand": "EPSON",
+    "model": "Brand EPSON",
+    "price": 36500.0,
+    "specification": [
+      "Brand EPSON",
+      "Model: EB-W12",
+      "S.N.: PS4F180063L"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-082",
+    "name": "LAPTOP COMPUTER (FASS PURC1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-04-29",
+    "remarks": "(MITHI-2016 LAPTOP4) @FASS Section c/o Procurement Staff",
+    "brand": "Acer",
+    "model": "TravelMate P259-MG",
+    "price": 35916.4,
+    "specification": [
+      "Acer TravelMate P259-MG",
+      "Intel i7-7500 @ 2.90GHz",
+      "8 GB DDR4-2133 RAM",
+      "1 TB HDD; Windows 10 Pro 64-bit",
+      "S/N: NXVEVSP014728088707600"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-083",
+    "name": "LAPTOP COMPUTER (ORD RD1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2020-12-15",
+    "remarks": "MITHI-2020 2in1PC1@ORD Section c/o ORD/Secretariat",
+    "brand": "DELL",
+    "model": "DELL LATITUDE 7210 2-IN-1",
+    "price": 57000.0,
+    "specification": [
+      "S.N.: 14WZ473"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-084",
+    "name": "LAPTOP COMPUTER (TS ZCHRD1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-12-12",
+    "remarks": "(NON-MITHI) @TS-ZCHRD Section c/o ZCHRD Staff",
+    "brand": "ACER",
+    "model": "PREDATOR HELIOS 300 (PH315-54)",
+    "price": 95925.0,
+    "specification": [
+      "ACER PREDATOR HELIOS 300 (PH315-54)",
+      "11th Gen Intel i7-11800H @ 2.30GHz",
+      "16 GB RAM; 1 TB NVMe SSD",
+      "Windows 10 Home SL",
+      "S/N: NHQC2SP00313416A9D3409"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-085",
+    "name": "LAPTOP COMPUTER (TS ZCHRD2)",
+    "category": "Laptop Computer",
+    "acquired_at": "2022-06-12",
+    "remarks": "(NON-MITHI) @TS-ZCHRD Section c/o ZCHRD Staff",
+    "brand": "HP",
+    "model": "ENVY x360 Convertible 13-ay1001AU",
+    "price": 91190.0,
+    "specification": [
+      "HP ENVY x360 Convertible 13-ay1001AU",
+      "AMD Ryzen 7 5800U with 8GB",
+      "16 GB RAM; 1 TB NVMe SSD",
+      "Windows 10 Pro",
+      "S/N: CND1465KTZ"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-086",
+    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 TONS) (Accounting)",
+    "category": "Air Conditioner",
+    "acquired_at": "2012-12-27",
+    "remarks": "@FASS Section c/o FASS-Accounting Unit",
+    "brand": "KOPPEL",
+    "model": "KFM36E20",
+    "price": 67000.0,
+    "specification": [
+      "S.N.: FE800278"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-087",
+    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 TONS) (FOS)",
+    "category": "Air Conditioner",
+    "acquired_at": "2012-12-27",
+    "remarks": "@FOS Section c/o FOS Unit",
+    "brand": "KOPPEL",
+    "model": "KFM36E2",
+    "price": 67000.0,
+    "specification": [
+      "S.N.: FE800428"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-088",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2023-10-02",
+    "remarks": "(MITHI-2022 AIOPC12) @CSTC-ZCIC c/o CSTC Director",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB; 238.47 GB SSD + 1TB WDC",
+      "Windows 11 Home SL",
+      "S/N: DQBJ3SP001237027753000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-089",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC6)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2021 AIOPC3) @CSTC-ZCIC FOS c/o FOS Staff",
+    "brand": "Acer",
+    "model": "C24-1651 AiO-PC (MITHI 2021)",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1651 AiO-PC (MITHI 2021)",
+      "11th-G Intel i3-1115G4 @ 3.00GHz",
+      "4 GB RAM",
+      "238.47 GB SSD + 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBG0SP001111018AE3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-090",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2021 AIOPC4) @CSTC-ZCIC c/o FOS Staff",
+    "brand": "Acer",
+    "model": "C24-1651 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1651 AiO-PC",
+      "11th-Gen Intel i3-1115G4 @3.00GHz",
+      "4 GB; 238.47 GB SSD + 1TB WDC HDD; Windows 10 Home SL",
+      "S/N: DQBG0SP0011110189F3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-091",
+    "name": "LCD PROJECTOR (ORD GAD1)",
+    "category": "LCD Projector",
+    "acquired_at": "2015-06-15",
+    "remarks": "@ORD GAD Section c/o GAD Unit",
+    "brand": "EPSON",
+    "model": "EB-S18",
+    "price": 22580.0,
+    "specification": []
+  },
+  {
+    "old_code": "DOST9-EQ-092",
+    "name": "ALL-IN-ONE COMPUTER (FASS ACCT3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2022 AIOPC1) @FASS Section c/o Accounting Staff",
+    "brand": "ACER",
+    "model": "C24-1750 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1750 All-in-One PC",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 11 HOME SL 64-bit",
+      "SN: DQBJ3SP0012370279C3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-093",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC8 RUBBER1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2020-10-21",
+    "remarks": "(MITHI-2020 AIOPC8) @RSTL-Rubber Section c/o RSTL Rubber",
+    "brand": "Acer",
+    "model": "C24-960 AiO-PC",
+    "price": 45000.0,
+    "specification": [
+      "Acer C24-960 AiO-PC",
+      "Intel i3-10110 @ 2.10GHz",
+      "4 GB; 238.47 GB SSD + 1TB WDC HDD; Windows 10 Home SL",
+      "S/N: DQBD6SP0030280024C3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-094",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC7 CHEM3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2020-10-21",
+    "remarks": "(MITHI-2020 AIOPC7) @RSTL-Chem Section c/o RSTL Chem",
+    "brand": "Acer",
+    "model": "C24-960 AiO-PC",
+    "price": 45000.0,
+    "specification": [
+      "Acer C24-960 AiO-PC",
+      "Intel i3-10110 @ 2.10GHz",
+      "4 GB; 238.47 GB SSD + 1TB WDC HDD; Windows 10 Home SL",
+      "S/N: DQBD6SP003028002423000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-095",
+    "name": "SPLIT-TYPE AIR CONDITIONER (STIC / Secretary)",
+    "category": "Air Conditioner",
+    "acquired_at": "2014-06-13",
+    "remarks": "@Secretary c/o STIC transferred to Secretary as of June 15, 2023",
+    "brand": "CONCEPCION - CARRIER",
+    "model": "42CSH012308",
+    "price": 29890.0,
+    "specification": [
+      "S.N.: 0209042720213916170040"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-096",
+    "name": "SPLIT-TYPE AIR CONDITIONER (Receiving/Rubber Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2014-06-13",
+    "remarks": "@RSTL Office c/o Chemlab Tech Manager",
+    "brand": "KOPPEL",
+    "model": "KFM36E0A",
+    "price": 70000.0,
+    "specification": [
+      "S.N.: DG248089"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-097",
+    "name": "ALL-IN-ONE COMPUTER (TS HALAL1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-06-12",
+    "remarks": "(MITHI-2018 AIOPC10) @TS Section c/o TS HALAL Staff",
+    "brand": "HP",
+    "model": "ALL-IN-ONE PC 24-f0033d",
+    "price": 41190.0,
+    "specification": [
+      "HP ALL-IN-ONE PC 24-f0033d",
+      "Intel i3-8130 @ 2.20GHz",
+      "4 GB RAM",
+      "512 SSD in Caddy + 1 TB HDD",
+      "Windows 11 Home SL",
+      "S/N: 8CC83507YD"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-098",
+    "name": "ALL-IN-ONE COMPUTER (ORD RD1) 1st PC at ZCIC",
+    "category": "All-in-One Computer",
+    "acquired_at": "2018-08-10",
+    "remarks": "(MITHI-2017 AIOPC1) RD's Office c/o Regional Director",
+    "brand": "HP",
+    "model": "Pavilion 24-B219D AiO PC (Touch)",
+    "price": 45210.0,
+    "specification": [
+      "HP Pavilion 24-B219D AiO PC (Touch)",
+      "Intel Corei3-7100T @ 3.4GHz",
+      "4GB DDR4-2133 SDRAM",
+      "1TB 7200 RPM SATA Hard Drive",
+      "NVidia GeForce 930MX 4GB GDDR5",
+      "Windows 10 64-bit",
+      "23.8\" diagonal FHD IPS anti-glare WLED-backlit (1920 x 1080)"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-099",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC1 CRO1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2020-10-21",
+    "remarks": "(MITHI-2020 AIOPC1) @RSTL Office c/o RSTL-CRO",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel Core i3-10110 2.20 GHz",
+      "4 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Pro 64-bit",
+      "SN: DQBD6SP003028002333000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-100",
+    "name": "SPLIT-TYPE AIR CONDITIONER (2.5 HP) (Server Room)",
+    "category": "Air Conditioner",
+    "acquired_at": "2020-09-21",
+    "remarks": "@Server Room c/o ICT",
+    "brand": "KOPPEL",
+    "model": "KV24WM-ARF21C2",
+    "price": 74992.5,
+    "specification": [
+      "S.N.: LM584741"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-101",
+    "name": "SPLIT-TYPE AIR CONDITIONER (2.0 HP) (Sample Prep/Rubber Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2015-10-20",
+    "remarks": "@RSTL RubberLab c/o Chemlab Tech Manager",
+    "brand": "KOPPEL",
+    "model": "KV18WM-ARF21B",
+    "price": 39995.0,
+    "specification": [
+      "S.N.: GH580888"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-102",
+    "name": "ALL-IN-ONE COMPUTER (FASS SUPP1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-04-28",
+    "remarks": "(MITHI-2021 AIOPC35) @FASS Section c/o Supply Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-G Intel i5-1135G7 @ 2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Home SL",
+      "SN: DQBFSSP00B150014333000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-103",
+    "name": "COMPUTER (FOS RPMO PC1)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-07-10",
+    "remarks": "(MITHI-2016 PC20) @FOS c/o FOS Staff",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT",
+      "Intel i7-6700 @ 3.40GHz",
+      "8 GB RAM; 1 TB WDC HDD;",
+      "Windows 10 Pro",
+      "S/N: 6CR7181M8T"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-104",
+    "name": "SPLIT-TYPE AIR CONDITIONER (2.0 HP) (Wet Room/ Chem Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2016-03-17",
+    "remarks": "@RSTL ChemLab c/o Chemlab Tech Manager",
+    "brand": "KOPPEL",
+    "model": "KV18WM-ARF21",
+    "price": 42950.0,
+    "specification": [
+      "S.N.: HG583161"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-105",
+    "name": "SPLIT-TYPE AIR CONDITIONER (3.0 HP) (Scholarship Section)",
+    "category": "Air Conditioner",
+    "acquired_at": "2016-05-23",
+    "remarks": "@TS Section c/o Scholarship Unit",
+    "brand": "KOPPEL",
+    "model": "KV36FU-ARF21",
+    "price": 91920.0,
+    "specification": [
+      "S.N.: MH581480"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-106",
+    "name": "LAPTOP COMPUTER (ICT HLPC1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2017-05-10",
+    "remarks": "@FASS Section c/o Supply Officer",
+    "brand": "ACER Aspire VX",
+    "model": "VX5-591G-70ME",
+    "price": 62250.0,
+    "specification": [
+      "S.N.: NHGM4SP002710066C93400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-107",
+    "name": "ALL-IN-ONE COMPUTER (ORD NSTEP1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2021 AIOPC7) @ORD-NSTEP Section c/o NSTEP Staff",
+    "brand": "Acer",
+    "model": "C24-1651 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1651 AiO-PC",
+      "11th-Gen Intel i3-1115G4P @ 3GHz",
+      "4 GB RAM",
+      "238.47 GB SSD + 1TB WDC HDD",
+      "Windows 11 Home SL",
+      "S/N: DQBG0SP001111021893000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-108",
+    "name": "ALL-IN-ONE COMPUTER (FASS CASH3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2018 AIOPC5) @CSTC-ZCIC FASS c/o Cashier",
+    "brand": "HP",
+    "model": "ALL-IN-ONE PC 24-f0033d",
+    "price": 46299.0,
+    "specification": [
+      "HP ALL-IN-ONE PC 24-f0033d;",
+      "Intel i3-8130 @ 2.20GHz",
+      "4 GB; 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: 8CC83507ZF"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-109",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC7)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-06",
+    "remarks": "(MITHI-2021 AIOPC26) @FOS Section c/o CSTC-ZCIC Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-Gen Intel i5-1135G7 @2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Pro 64-bit",
+      "SN: DQBFSSP00512701F043000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-110",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2022 AIOPC10) @FOS Section c/o FOS ZC Staff",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB RAM; 238.47 GB SSD + 1TB WDC HDD; Windows 10 Home SL",
+      "S/N: DQBG0SP0011110218C3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-111",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC4)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2021 AIOPC5) @FOS c/o FOS Personnel",
+    "brand": "Acer",
+    "model": "C24-1651 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1651 AiO-PC",
+      "11th-Gen Intel i3-1115G4 @3.00GHz",
+      "4 GB; 238.47 GB SAMSUNG SSD + 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBG0SP0011110218C3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-112",
+    "name": "COMPUTER (FOS RPMO PC2)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-07-10",
+    "remarks": "(MITHI-2016 PC42) @FOS-RPMO Section c/o FOS RPMO Staff",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT",
+      "Intel i7-6700 @ 3.40GHz",
+      "8 GB RAM;",
+      "1 TB WDC HDD",
+      "Windows 10 Pro",
+      "S/N: 6CR7213CZ2"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-113",
+    "name": "ALL-IN-ONE COMPUTER (FOS RPMO1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2022 AIOPC7) @FOS-RPMO Section c/o FOS RPMO Staff",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB RAM",
+      "238.47 GB SSD + 1TB WDC HDD",
+      "Windows 11 Home SL",
+      "S/N: DQBJ3SP001237027833000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-114",
+    "name": "ALL-IN-ONE COMPUTER (CSTC-ZCIC AIOPC5)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2021-08-13",
+    "remarks": "(MITHI-2022 AIOPC11) @FOS c/o FOS ZCIC Staff",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC",
+      "11th-Gen Intel i3-1115G4 @3.00GHz",
+      "4 GB",
+      "238.47 GB SAMSUNG SSD + 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: DQBJ3SP001237027563000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-115",
+    "name": "ALL-IN-ONE COMPUTER (GAD HUBSTATION1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2017-05-29",
+    "remarks": "(MITHI-2017 AIOPC4) @GAD Hub Station c/o ICT / GAD",
+    "brand": "HP",
+    "model": "Pavilion 24 (All-in-one PC)",
+    "price": 41000.0,
+    "specification": [
+      "HP Pavilion 24 (All-in-one PC)",
+      "Intel Core i3-4150T 3.0 GHz",
+      "4 GB DDR3L RAM;n1 TB SATA HDD",
+      "Windows 10 Pro 64-bit",
+      "21.5in. Touch Screen (Multi-touch)",
+      "SN: 8CC8100YJY"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-116",
+    "name": "LAPTOP COMPUTER (ONELAB LP-4)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-11-28",
+    "remarks": "(ONELAB 2023 FUNDS) @ARD-FASTS c/o RSS",
+    "brand": "APPLE",
+    "model": "MacBook Air (M1, 2020)",
+    "price": 62200.0,
+    "specification": [
+      "APPLE MacBook Air (M1, 2020)",
+      "Apple M1",
+      "MacOS Ventura 13.5",
+      "8 GB RAM; 256GB SSD",
+      "S/N: HXJLD2B11WFV"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-117",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP6)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(MITHI-2021 HITECHLAPTOP1) @ICT Section c/o ICT Staff",
+    "brand": "MSI",
+    "model": "GF65 Thin 10UE",
+    "price": 65299.0,
+    "specification": [
+      "MSI GF65 Thin 10UE",
+      "Intel i7-10750 @ 2.60 GHz",
+      "16 GB",
+      "512 GB SSD Micron_2210 SSD",
+      "Windows 10 Home SL",
+      "S/N: K2107N0134502"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-118",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP7)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(MITHI-2021 HITECHLAPTOP2) @ICT Section c/o ICT Staff",
+    "brand": "MSI",
+    "model": "GF65 Thin 10UE",
+    "price": 65299.0,
+    "specification": [
+      "MSI GF65 Thin 10UE",
+      "Intel i7-10750 @ 2.60 GHz",
+      "16 GB",
+      "512 GB SSD Micron_2210 SSD",
+      "Windows 10 Home SL",
+      "S/N: K2107N0134351"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-119",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP8)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(MITHI-2021 HITECHLAPTOP3) @MIS/Onelab c/o Onelab Staff",
+    "brand": "MSI",
+    "model": "GF65 Thin 10UE",
+    "price": 65299.0,
+    "specification": [
+      "MSI GF65 Thin 10UE",
+      "Intel i7-10750 @ 2.60 GHz",
+      "16 GB",
+      "512 GB SSD Micron_2210 SSD",
+      "Windows 10 Home SL",
+      "S/N: K2107N0134423"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-120",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP9)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(MITHI-2021 HITECHLAPTOP4) @Scholarship c/o Scholarship Staff",
+    "brand": "MSI",
+    "model": "GF65 Thin 10UE",
+    "price": 65299.0,
+    "specification": [
+      "MSI GF65 Thin 10UE",
+      "Intel i7-10750 @ 2.60 GHz",
+      "16 GB",
+      "512 GB SSD Micron_2210 SSD",
+      "Windows 10 Home SL",
+      "S/N: K2107N0134359"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-121",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP10)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(MITHI-2021 HITECHLAPTOP5) @ICT Section c/o ICT Staff",
+    "brand": "MSI",
+    "model": "GF65 Thin 10UE",
+    "price": 65299.0,
+    "specification": [
+      "MSI GF65 Thin 10UE",
+      "Intel i7-10750 @ 2.60 GHz",
+      "16 GB",
+      "512 GB SSD Micron_2210 SSD",
+      "Windows 10 Home SL",
+      "S/N: K2107N0134328"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-122",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP11)",
+    "category": "Laptop Computer",
+    "acquired_at": "2021-11-10",
+    "remarks": "(MITHI-2021 HITECHLAPTOP6) @ICT Section c/o ICT Staff",
+    "brand": "MSI",
+    "model": "GF65 Thin 10UE",
+    "price": 65299.0,
+    "specification": [
+      "MSI GF65 Thin 10UE",
+      "Intel i7-10750 @ 2.60 GHz",
+      "16 GB",
+      "512 GB SSD Micron_2210 SSD",
+      "Windows 10 Home SL",
+      "S/N: K2107N0134458"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-123",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC4 CHEM4)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2020-10-21",
+    "remarks": "(MITHI-2020 AIOPC4) @RSTL Section c/o RSTL Unit",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel Core i3-10110 2.20 GHz",
+      "4 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Home SL",
+      "SN: DQBD6SP0030280025D3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-124",
+    "name": "LAPTOP COMPUTER (ORD PLANNING)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-11-15",
+    "remarks": "MITHI-2019 LAPTOP3 @TS Section c/o Supervising SRS",
+    "brand": "HP",
+    "model": "HP EliteBook x360 1030 G2",
+    "price": 45000.0,
+    "specification": [
+      "S.N.: 5CG84902V8"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-125",
+    "name": "ALL-IN-ONE COMPUTER (RSTL AIOPC5 MICRO2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2018 AIOPC7) @RSTL c/o RSTL Micro",
+    "brand": "HP",
+    "model": "ALL-IN-ONE PC 24-f0033d",
+    "price": 35916.4,
+    "specification": [
+      "HP ALL-IN-ONE PC 24-f0033d;",
+      "Intel i3-8130 @ 2.20GHz",
+      "4 GB; 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: 8CC83507YN"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-126",
+    "name": "ALL-IN-ONE COMPUTER (ORD PLANNING)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2020-10-21",
+    "remarks": "(MITHI-2020 PC10) @ORD Section c/o Planning Staff",
+    "brand": "ACER",
+    "model": "C24-960 All-in-One PC",
+    "price": 45000.0,
+    "specification": [
+      "ACER C24-960 All-in-One PC",
+      "Intel Core i3-10110 2.20 GHz",
+      "4 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Pro 64-bit",
+      "SN: DQBD6SP0030280024A3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-127",
+    "name": "LAPTOP COMPUTER (RSTL METRO1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-05-03",
+    "remarks": "(NON-MITHI 2023 LAPTOP1) @RSTL Section c/o MetroLab Staff",
+    "brand": "ACER",
+    "model": "Aspire 5 A514-55-330C",
+    "price": 36999.0,
+    "specification": [
+      "ACER Aspire 5 A514-55-330C",
+      "Intel Core i3-1215U",
+      "8 GB RAM",
+      "512GB NVMe SSD",
+      "Windows 11 Home SL 64-bit",
+      "SN: NXK5BSP0022350DC4D3400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-128",
+    "name": "LAPTOP COMPUTER (RSTL METRO2)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-05-03",
+    "remarks": "(NON-MITHI 2023 LAPTOP2) @RSTL Section c/o MetroLab Staff",
+    "brand": "ACER",
+    "model": "Aspire 5 A514-55-330C",
+    "price": 36999.0,
+    "specification": [
+      "ACER Aspire 5 A514-55-330C",
+      "Intel Core i3-1215U",
+      "8 GB RAM",
+      "512GB NVMe SSD",
+      "Windows 11 Home SL 64-bit",
+      "SN: NXK5BSP0022350DD773400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-129",
+    "name": "LAPTOP COMPUTER (RSTL METRO3)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-05-03",
+    "remarks": "(NON-MITHI 2023 LAPTOP3) @RSTL Section c/o MetroLab Staff",
+    "brand": "ACER",
+    "model": "Aspire 5 A514-55-330C",
+    "price": 36999.0,
+    "specification": [
+      "ACER Aspire 5 A514-55-330C",
+      "Intel Core i3-1215U",
+      "8 GB RAM",
+      "512GB NVMe SSD",
+      "Windows 11 Home SL 64-bit",
+      "SN: NXK5BSP0022350DDE03400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-130",
+    "name": "LAPTOP COMPUTER (RSTL METRO4)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-05-03",
+    "remarks": "(NON-MITHI 2023 LAPTOP4) @RSTL Section c/o MetroLab Staff",
+    "brand": "ACER",
+    "model": "Aspire 5 A514-55-330C",
+    "price": 36999.0,
+    "specification": [
+      "ACER Aspire 5 A514-55-330C",
+      "Intel Core i3-1215U",
+      "8 GB RAM",
+      "512GB NVMe SSD",
+      "Windows 11 Home SL 64-bit",
+      "SN: NXK5BSP0022350DE0A3400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-131",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP2)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-04-11",
+    "remarks": "(MITHI-2018 HITECHLAPTOP2) @ ICT Section c/o ICT Manager",
+    "brand": "DELL",
+    "model": "XPS 15 9570",
+    "price": 134900.0,
+    "specification": [
+      "DELL XPS 15 9570",
+      "Intel i7-8750 @ 2.90GHz",
+      "16 GB RAM; 512 GB NVMe SSD",
+      "Windows 10 Pro 64-bit",
+      "S/N: 74ZG6S2"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-132",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP3)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-04-11",
+    "remarks": "(MITHI-2018 HITECHLAPTOP3) @ ICT Section c/o ICT Staff",
+    "brand": "DELL",
+    "model": "XPS 15 9570",
+    "price": 134900.0,
+    "specification": [
+      "DELL XPS 15 9570",
+      "Intel i7-8750 @ 2.90GHz",
+      "16 GB RAM; 512 GB NVMe SSD",
+      "Windows 10 Pro 64-bit",
+      "S/N: 8QWHVT2"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-133",
+    "name": "LAPTOP COMPUTER (ICT HTLAPTOP4)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-04-11",
+    "remarks": "(MITHI-2018 HITECHLAPTOP4) @ ICT Section c/o ICT Staff",
+    "brand": "DELL",
+    "model": "XPS 15 9570",
+    "price": 134900.0,
+    "specification": [
+      "DELL XPS 15 9570",
+      "Intel i7-8750 @ 2.90GHz",
+      "16 GB RAM; 512 GB NVMe SSD",
+      "Windows 10 Pro 64-bit",
+      "S/N: G9SG6S2"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-134",
+    "name": "ALL-IN-ONE COMPUTER (RSTLONELAB AIO1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2023-12-01",
+    "remarks": "(ONELAB 2023 FUNDS) @ RSTL Section c/o RSTL Chem",
+    "brand": "HP",
+    "model": "All-in-One 24 - cr0035d",
+    "price": 46853.0,
+    "specification": [
+      "HP All-in-One 24 - cr0035d",
+      "Intel Core i3-1315U @ 1.2 GHz",
+      "8 GB RAM; 512 GB NVMe SSD",
+      "Windows 11",
+      "S/N: 8CC3360HXW"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-135",
+    "name": "ALL-IN-ONE COMPUTER (RSTLONELAB AIO2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2023-12-01",
+    "remarks": "(ONELAB 2023 FUNDS) @ RSTL Section c/o RSTL Micro",
+    "brand": "HP",
+    "model": "All-in-One 24 - cr0035d",
+    "price": 46853.0,
+    "specification": [
+      "HP All-in-One 24 - cr0035d",
+      "Intel Core i3-1315U @ 1.2 GHz",
+      "8 GB RAM; 512 GB NVMe SSD",
+      "Windows 11",
+      "S/N: 8CC3360HY8"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-136",
+    "name": "ALL-IN-ONE COMPUTER (RSTLONELAB AIO3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2023-12-01",
+    "remarks": "(ONELAB 2023 FUNDS) @ RSTL Section c/o RSTL Metro",
+    "brand": "HP",
+    "model": "All-in-One 24 - cr0035d",
+    "price": 46853.0,
+    "specification": [
+      "HP All-in-One 24 - cr0035d",
+      "Intel Core i3-1315U @ 1.2 GHz",
+      "8 GB RAM; 512 GB NVMe SSD",
+      "Windows 11; S/N: 8CC3360HY1"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-137",
+    "name": "LAPTOP COMPUTER (TS STIC2)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-04-23",
+    "remarks": "(MITHI-2017) @TS-STIC c/o RJA / STIC Staff",
+    "brand": "HP",
+    "model": "Pavilion x360 Convertible 14-ba0xx",
+    "price": 41500.0,
+    "specification": [
+      "HP Pavilion x360 Convertible 14-ba0xx",
+      "Intel i3-7130 @ 2.70GHz",
+      "4 GB RAM; 1 TB HGST HDD; Windows 10 Pro; S/N: 8CG8327LYD"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-138",
+    "name": "LAPTOP COMPUTER (RSTL CHEM3)",
+    "category": "Laptop Computer",
+    "acquired_at": "2019-05-03",
+    "remarks": "(MITHI-2017) @TS-STIC c/o JTO",
+    "brand": "HP",
+    "model": "Pavilion x360 Convertible 14-ba076TU",
+    "price": 41500.0,
+    "specification": [
+      "HP Pavilion x360 Convertible 14-ba076TU",
+      "Intel i3-7130 @ 2.70GHz",
+      "4 GB RAM; 1 TB HGST; Windows 10 Pro 64-bit; S/N: 8CG8084ZPB"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-139",
+    "name": "ALL-IN-ONE COMPUTER (FASS BUDG3)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-04-28",
+    "remarks": "(MITHI-2021 AIOPC24) @FASS Section c/o Budgeting Staff",
+    "brand": "ACER",
+    "model": "C24-1650 All-in-One PC",
+    "price": 46299.0,
+    "specification": [
+      "ACER C24-1650 All-in-One PC",
+      "11th-G Intel i5-1135G7 @ 2.40GHz",
+      "8 GB DDR4-2133 RAM",
+      "238.47 SSD + 1TB HDD",
+      "Windows 10 Home SL",
+      "SN: DQBFSSP00512701EFA3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-140",
+    "name": "LAPTOP COMPUTER (CSTC-ZCIC LAPTOP1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2020-08-14",
+    "remarks": "MITHI-2020 @CSTC-ZCIC FOS c/o FOS Staff",
+    "brand": "ACER",
+    "model": "Aspire A514-52G",
+    "price": 47995.0,
+    "specification": [
+      "ACER Aspire A514-52G",
+      "Intel Core i7-10510U @ 1.80GHz",
+      "4GB RAM; 238.47 GB SSD / 1TB HDD; NVIDIA GeForce MX350 4GB; Windows 10 Home SL",
+      "S/N: NXHT2SP00102109E2A2N00"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-141",
+    "name": "LAPTOP COMPUTER (RSTL LAPTOP MET1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2020-02-11",
+    "remarks": "MITHI-2019 LAPTOP7 @RSTL-MET c/o RSTL-MET Unit",
+    "brand": "HP",
+    "model": "HP EliteBook x360 1030 G2",
+    "price": 41500.0,
+    "specification": [
+      "S.N.: 5CG8490D6H"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-142",
+    "name": "LCD PROJECTOR (FOS RPMO)",
+    "category": "LCD Projector",
+    "acquired_at": "2023-09-12",
+    "remarks": "@ FOS RPMO Section c/o RPMO Staff",
+    "brand": "EPSON",
+    "model": "EB-E10 XGA",
+    "price": 45000.0,
+    "specification": [
+      "EPSON EB-E10 XGA",
+      "S/N: X89V1Z01177"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-143",
+    "name": "LCD PROJECTOR (TS ZCHRD)",
+    "category": "LCD Projector",
+    "acquired_at": "2023-09-12",
+    "remarks": "@ TS ZCHRD Section c/o ZCHRD Staff",
+    "brand": "EPSON",
+    "model": "EB-W51",
+    "price": 42900.0,
+    "specification": [
+      "EPSON EB-W51",
+      "S/N: X8A93500558"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-144",
+    "name": "SPLIT-TYPE AIR CONDITIONER (2.5 HP) (ORD)",
+    "category": "Air Conditioner",
+    "acquired_at": "2020-09-11",
+    "remarks": "@RD's Office c/o ORD/Secretariat",
+    "brand": "KOPPEL",
+    "model": "KV24WM-ARF21C2/",
+    "price": 74992.5,
+    "specification": [
+      "KV24OD-ARF21C2",
+      "S.N.: GM585135/DM621743"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-145",
+    "name": "ALL-IN-ONE COMPUTER (ONELAB AIOPC1)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2022 AIOPC9) @ONELAB c/o ONELAB Staff",
+    "brand": "Acer",
+    "model": "C24-1750 AiO-PC (MITHI 2022)",
+    "price": 46299.0,
+    "specification": [
+      "Acer C24-1750 AiO-PC (MITHI 2022)",
+      "12th-Gen Intel i5-1240P @ 3.00GHz",
+      "8 GB RAM; 238.47 GB SSD + 1TB WDC HDD; Windows 11 Home SL",
+      "S/N: DQBJ3SP0012370275E3000"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-146",
+    "name": "SPLIT-TYPE AIR CONDITIONER (2.5 HP) (ORD SECRETARY)",
+    "category": "Air Conditioner",
+    "acquired_at": "2015-10-20",
+    "remarks": "@ORD-SEC Transferred to Rubber Lab as of 06-15-23",
+    "brand": "KOPPEL",
+    "model": "KV18WM-ARF21B",
+    "price": 39995.0,
+    "specification": [
+      "S.N.: GH580756"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-147",
+    "name": "COMPUTER (CSTC-ZCIC FOS PC2)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-07-10",
+    "remarks": "(MITHI-2016 PC39) @FOS c/o FOS Staff",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT",
+      "Intel i7-6700 @ 3.40GHz;",
+      "8 GB RAM",
+      "1 TB WDC SATA HDD;",
+      "Windows 10",
+      "S/N: 6CR7213CMY"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-148",
+    "name": "LAPTOP COMPUTER (ONELAB LP-5)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-11-29",
+    "remarks": "(ONELAB 2023 FUNDS) @RSTL c/o Onelab Staff",
+    "brand": "GIGABYTE",
+    "model": "Notebook RC55",
+    "price": 80517.0,
+    "specification": [
+      "GIGABYTE Notebook RC55",
+      "Intel Core i5-12500H @ 2.5 GHz",
+      "16 GB RAM; 1 TB SDD; Windows 11",
+      "S/N: SN23161J003023"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-149",
+    "name": "LAPTOP COMPUTER (ONELAB LP-6)",
+    "category": "Laptop Computer",
+    "acquired_at": "2023-11-29",
+    "remarks": "(ONELAB 2023 FUNDS) @RSTL c/o Onelab Staff",
+    "brand": "GIGABYTE",
+    "model": "Notebook RC55",
+    "price": 80517.0,
+    "specification": [
+      "GIGABYTE Notebook RC55",
+      "Intel Core i5-12500H @ 2.5 GHz",
+      "16 GB RAM; 1 TB SDD; Windows 11",
+      "S/N: SN23161J003015"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-150",
+    "name": "COMPUTER (CSTC-ZCIC FOS PC3)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-07-10",
+    "remarks": "(MITHI-2016 PC45) @CSTC-ZCIC FOS c/o FOS Staff",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT",
+      "Intel i7-6700 @ 3.40GHz",
+      "8 GB RAM; 1 TB WDC HDD",
+      "Windows 10 Pro",
+      "S/N: 6CR7213CXQ"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-151",
+    "name": "ALL-IN-ONE COMPUTER (FASS CASH2)",
+    "category": "All-in-One Computer",
+    "acquired_at": "2022-09-11",
+    "remarks": "(MITHI-2018 AIOPC5) @CSTC-ZCIC FASS c/o Cashier",
+    "brand": "HP",
+    "model": "ALL-IN-ONE PC 24-f0033d",
+    "price": 46299.0,
+    "specification": [
+      "HP ALL-IN-ONE PC 24-f0033d;",
+      "Intel i3-8130 @ 2.20GHz",
+      "4 GB; 1TB WDC HDD",
+      "Windows 10 Home SL",
+      "S/N: 8CC83507Z0"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-152",
+    "name": "LCD PROJECTOR (TS)",
+    "category": "LCD Projector",
+    "acquired_at": "2023-12-15",
+    "remarks": "(MITHI-2022 Continuing) @MIS-MITHI c/o TS",
+    "brand": "EPSON",
+    "model": "EB-X51",
+    "price": 27990.0,
+    "specification": [
+      "EPSON EB-X51;",
+      "Model: H976C",
+      "3,800 Lumens; XGA Resolution",
+      "S/N: X8A43800753"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-153",
+    "name": "LCD PROJECTOR (FASS)",
+    "category": "LCD Projector",
+    "acquired_at": "2023-12-15",
+    "remarks": "(MITHI-2022 Continuing) @MIS-MITHI c/o FASS",
+    "brand": "EPSON",
+    "model": "EB-X51",
+    "price": 27990.0,
+    "specification": [
+      "EPSON EB-X51;",
+      "Model: H976C",
+      "3,800 Lumens; XGA Resolution",
+      "S/N: X8A43801011"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-154",
+    "name": "LCD PROJECTOR (ORD)",
+    "category": "LCD Projector",
+    "acquired_at": "2023-12-15",
+    "remarks": "(MITHI-2022 Continuing) @MIS-MITHI c/o ORD",
+    "brand": "EPSON",
+    "model": "EB-X51",
+    "price": 27990.0,
+    "specification": [
+      "EPSON EB-X51;",
+      "Model: H976C",
+      "3,800 Lumens; XGA Resolution",
+      "S/N: X8A43800919"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-155",
+    "name": "COMPUTER (RSTL PC1 CHEM1)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-06-02",
+    "remarks": "(MITHI-2016 PC17) @RSTL Section c/o RSTL Personnel",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT (SN: 6CR7181M27)",
+      "Intel Core i7-6700 3.4 GHz",
+      "8 GB RAM; 1 TB 7200 RPM HDD",
+      "NVidia GeForce GT720 2GB GFX",
+      "Windows 10 Pro 64-bit",
+      "HP Monitor (SN: 3CQ715071G)"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-156",
+    "name": "COMPUTER (FASS PC5)",
+    "category": "Desktop Computer",
+    "acquired_at": "2017-07-10",
+    "remarks": "(MITHI-2016 PC15) @CSTC-ZCIC FASS c/o FASS Staff",
+    "brand": "HP",
+    "model": "280 G2 MT",
+    "price": 34507.2,
+    "specification": [
+      "HP 280 G2 MT",
+      "Intel i7-6700 @ 3.40GHz; 8 GB RAM; 1 TB WDC HDD; Windows 10 Pro",
+      "S/N: 6CR7181M01"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-157",
+    "name": "Air Conditioner (Metro Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2024-07-24",
+    "remarks": "ONELAB-2024 @RSTL",
+    "brand": "SAMSUNG",
+    "model": "AR13BYHAMWKN",
+    "price": 32250.0,
+    "specification": [
+      "S.N.: 0JQAPDBX401295"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-158",
+    "name": "Split-Type Air Conditioner (Micro Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2024-07-24",
+    "remarks": "ONELAB-2024 @RSTL",
+    "brand": "MIDEA",
+    "model": "FP-53AST015KEIV-F4",
+    "price": 32250.0,
+    "specification": [
+      "S.N.: 2000E4F44120820130"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-159",
+    "name": "Split-Type Air Conditioner (Rubber Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2024-07-24",
+    "remarks": "ONELAB-2024 @RSTL",
+    "brand": "SAMSUNG",
+    "model": "AR13BYHAMWKN",
+    "price": 32250.0,
+    "specification": [
+      "S.N.: 0JQAPDBX401295"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-160",
+    "name": "Split-Type Air Conditioner (Receiving/Rubber Lab)",
+    "category": "Air Conditioner",
+    "acquired_at": "2024-07-24",
+    "remarks": "ONELAB-2024 @RSTL",
+    "brand": "MIDEA",
+    "model": "FP-53AST015KEIV-F4",
+    "price": 32250.0,
+    "specification": [
+      "S.N.: 2000E4F44120820130"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-161",
+    "name": "Laptop Computer (ORD-DRRM2)",
+    "category": "Laptop Computer",
+    "acquired_at": "2025-01-08",
+    "remarks": "Local GIA @DRRM",
+    "brand": "Acer",
+    "model": "Aspire A315-44P",
+    "price": 39100.0,
+    "specification": [
+      "Acer Aspire A315-44P",
+      "AMD Ryzen 7 5700U @ 1.8GHz",
+      "16GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: NXKSJSP001347037763400"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-162",
+    "name": "Laptop Computer (TOS-RPMO1)",
+    "category": "Laptop Computer",
+    "acquired_at": "2024-09-11",
+    "remarks": "Local GIA @ RPMO",
+    "brand": "T-BOOKS",
+    "model": "15D",
+    "price": 43940.0,
+    "specification": [
+      "T-BOOKS 15D",
+      "Intel Core i5 12450H @ 2.5GHz",
+      "16GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: JT009K00G00UKQ5AJJY2"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-163",
+    "name": "Laptop Computer (TOS-OneLab7)",
+    "category": "Laptop Computer",
+    "acquired_at": "2024-11-22",
+    "remarks": "ONELAB-2024 @RSTL",
+    "brand": "ASUS",
+    "model": "TUF Gaming A16",
+    "price": 77800.0,
+    "specification": [
+      "ASUS TUF Gaming A16",
+      "AMD Ryzen 7 7435HS",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: S7NRKD002545309"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-164",
+    "name": "Laptop/Tablet Computer (TOS- HEIRIT RESEED)",
+    "category": "Laptop Computer",
+    "acquired_at": "2025-01-02",
+    "remarks": "HEIRIT RESEED-2024 @ TOS",
+    "brand": "Microsoft",
+    "model": "Surface Pro 11th Edition",
+    "price": 85000.0,
+    "specification": [
+      "Microsoft Surface Pro 11th Edition",
+      "Snapdragon X 10-core X1P64100 @3.40 GHz",
+      "16GB RAM",
+      "256 SSD",
+      "Windows 11",
+      "SN: 0F33RY324213KV"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-165",
+    "name": "Mini Computer (ORD-Planning3)",
+    "category": "Mini Computer",
+    "acquired_at": "2024-08-28",
+    "remarks": "MIS-2024 @ ORD",
+    "brand": "Intel",
+    "model": "NUC 12 Pro Kit NUC12WSHi5",
+    "price": 41900.0,
+    "specification": [
+      "Intel NUC 12 Pro Kit NUC12WSHi5",
+      "Intel Core i5-1240P @ 1.70GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: BTWS34100681"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-166",
+    "name": "Mini Computer (TOS-ZCHRD1)",
+    "category": "Mini Computer",
+    "acquired_at": "2024-08-28",
+    "remarks": "MIS-2024 @ TOS",
+    "brand": "Intel",
+    "model": "NUC 12 Pro Kit NUC12WSHi5",
+    "price": 41900.0,
+    "specification": [
+      "Intel NUC 12 Pro Kit NUC12WSHi5",
+      "Intel Core i5-1240P @ 1.70GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: BTWS341006VX"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-167",
+    "name": "Laptop Computer (ORD-MIS)",
+    "category": "Laptop Computer",
+    "acquired_at": "2024-08-28",
+    "remarks": "MIS-2024 @ MIS",
+    "brand": "TravelMate",
+    "model": "P2 16",
+    "price": 40000.0,
+    "specification": [
+      "TravelMate P2 16",
+      "Intel Core i5-1335U @ 1.30 GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: NXB13SP015350118547600"
+    ]
+  }
+]
