@@ -9,19 +9,39 @@ use App\Services\DropdownClass;
 use App\Models\AssetEquipment;
 use App\Http\Requests\Assets\EquipmentRequest;
 use App\Http\Requests\Assets\AssignEquipmentUserRequest;
+use App\Http\Requests\Assets\EquipmentScheduleRequest;
 use App\Services\Assets\Equipment\SaveClass;
 use App\Services\Assets\Equipment\ViewClass;
+use App\Services\Assets\Equipment\PrintClass;
 
 class EquipmentController extends Controller
 {
     use HandlesTransaction;
 
-    protected $save, $view, $dropdown;
+    protected $save, $view, $dropdown, $print;
 
-    public function __construct(SaveClass $save, ViewClass $view, DropdownClass $dropdown){
+    public function __construct(SaveClass $save, ViewClass $view, DropdownClass $dropdown, PrintClass $print){
         $this->save = $save;
         $this->view = $view;
         $this->dropdown = $dropdown;
+        $this->print = $print;
+    }
+
+    public function printSchedule(Request $request){
+        return $this->print->schedule($request->year);
+    }
+
+    public function bulkSchedule(EquipmentScheduleRequest $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            return $this->save->bulkSchedule($request);
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
     }
 
     public function index(Request $request){

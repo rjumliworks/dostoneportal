@@ -63,16 +63,33 @@ class ViewClass
     }
 
     public function equipmentSchedule(){
+        $year = now()->year;
+
+        $completedByEquipment = AssetMaintenanceRecord::where('maintainable_type','equipment')
+            ->whereYear('date',$year)
+            ->whereHas('status', function ($q) {
+                $q->where('classification','Maintenance Record')->where('name','Completed');
+            })
+            ->get(['maintainable_id','date'])
+            ->groupBy('maintainable_id');
+
         return AssetEquipment::with('type')
             ->orderBy('code','ASC')
             ->get(['id','code','name','type_id','maintenance_schedule'])
-            ->map(function ($equipment) {
+            ->map(function ($equipment) use ($completedByEquipment) {
+                $completed = ($completedByEquipment->get($equipment->id) ?? collect())
+                    ->map(fn ($record) => (int) date('n', strtotime($record->date)))
+                    ->unique()
+                    ->values()
+                    ->all();
+
                 return [
                     'id' => $equipment->id,
                     'code' => $equipment->code,
                     'name' => $equipment->name,
                     'type' => $equipment->type?->name,
                     'maintenance_schedule' => $equipment->maintenance_schedule ?: [],
+                    'completed' => $completed,
                 ];
             });
     }

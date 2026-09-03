@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-light-subtle shadow-none border">
+    <div class="card bg-light-subtle shadow-none border mt-n3">
         <div class="card-header bg-light-subtle">
             <div class="d-flex mb-n3">
                 <div class="flex-shrink-0 me-3">
@@ -15,33 +15,37 @@
                 </div>
             </div>
         </div>
-        <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 594px); overflow: auto;">
-            <ul class="list-group list-group-flush border-dashed mb-n2 mt-n2" v-if="lists.length">
-                <li class="list-group-item px-0" v-for="(list,index) in lists" v-bind:key="index">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0 avatar-xs">
-                            <span class="avatar-title bg-light p-1 rounded-circle">
-                                <i :class="typeIcon(list.maintainable_type)" class="text-primary"></i>
-                            </span>
+        <div class="card-body bg-white rounded-bottom">
+            <simplebar data-simplebar style="height: 240px;">
+                <ul class="list-group list-group-flush border-dashed mb-n2 mt-n2" v-if="lists.length">
+                    <li class="list-group-item px-0" v-for="(list,index) in lists" v-bind:key="index">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 avatar-xs">
+                                <span class="avatar-title bg-light p-1 rounded-circle">
+                                    <i :class="typeIcon(list.maintainable_type)" class="text-primary"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-2">
+                                <Link :href="viewLink(list)" class="fw-semibold fs-13 text-primary">{{ list.maintainable_name || '-' }}</Link>
+                                <span class="fs-11 text-muted ms-1">{{ list.code }}</span>
+                                <p class="fs-12 mb-0">{{ list.work_requested }}</p>
+                                <p class="fs-11 text-muted mb-0">{{ list.requested_at }} &middot; {{ list.requester || '-' }}</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span v-if="list.priority" class="badge bg-secondary-subtle text-secondary">{{ list.priority.name }}</span>
+                            </div>
                         </div>
-                        <div class="flex-grow-1 ms-2">
-                            <Link :href="viewLink(list)" class="fw-semibold fs-13 text-primary">{{ list.maintainable_name || '-' }}</Link>
-                            <span class="fs-11 text-muted ms-1">{{ list.code }}</span>
-                            <p class="fs-12 mb-0">{{ list.work_requested }}</p>
-                            <p class="fs-11 text-muted mb-0">{{ list.requested_at }} &middot; {{ list.requester || '-' }}</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <span v-if="list.priority" class="badge bg-secondary-subtle text-secondary">{{ list.priority.name }}</span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <p v-else class="text-muted text-center mb-0">No pending requests.</p>
+                    </li>
+                </ul>
+                <p v-else class="text-muted text-center mb-0">No pending requests.</p>
+            </simplebar>
         </div>
     </div>
 </template>
 <script>
+import simplebar from "simplebar-vue";
 export default {
+    components: { simplebar },
     props: ['lists'],
     methods: {
         typeIcon(type){

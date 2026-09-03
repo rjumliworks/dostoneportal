@@ -86,6 +86,19 @@ class SaveClass
         ];
     }
 
+    public function bulkSchedule($request){
+        $months = collect($request->months)->filter()->values();
+
+        $equipment = AssetEquipment::whereIn('id', $request->equipment_ids)->get();
+        $equipment->each(fn ($item) => $item->update(['maintenance_schedule' => $months]));
+
+        return [
+            'data' => $equipment->fresh()->map(fn ($item) => ['id' => $item->id, 'maintenance_schedule' => $item->maintenance_schedule]),
+            'message' => 'Maintenance schedule updated successfully',
+            'info' => $equipment->count() . ' equipment updated',
+        ];
+    }
+
     protected function nextCode(){
         $last = AssetEquipment::where('code', 'LIKE', 'DOSTIX-EQ-%')
             ->orderByRaw('CAST(SUBSTRING(code, 11) AS UNSIGNED) DESC')

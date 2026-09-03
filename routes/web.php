@@ -105,6 +105,8 @@ Route::middleware(['role:Asset Management Officer'])->group(function () {
     Route::resource('/buildings', App\Http\Controllers\Assets\BuildingController::class);
     Route::resource('/equipments', App\Http\Controllers\Assets\EquipmentController::class);
     Route::post('/equipments/{equipment}/assign', [App\Http\Controllers\Assets\EquipmentController::class, 'assign']);
+    Route::put('/equipments-schedule/bulk', [App\Http\Controllers\Assets\EquipmentController::class, 'bulkSchedule']);
+    Route::get('/equipments-schedule/print', [App\Http\Controllers\Assets\EquipmentController::class, 'printSchedule']);
     Route::resource('/vehicles', App\Http\Controllers\Assets\VehicleController::class);
     Route::post('/maintenance/records', [App\Http\Controllers\Assets\MaintenanceController::class, 'storeRecord']);
     Route::put('/maintenance/records/{record}', [App\Http\Controllers\Assets\MaintenanceController::class, 'updateRecord']);
