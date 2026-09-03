@@ -98,7 +98,7 @@
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary text-uppercase">{{list.name}}</h5>
                                         <p class="fs-12 text-muted mb-0">
-                                            <span class="badge bg-primary-subtle text-info me-1" v-for="role in list.roles" v-bind:key="role.id">{{ role.name }}</span>
+                                            <span class="badge bg-primary-subtle text-info me-1" v-for="role in list.roles.filter(r => r.is_active)" v-bind:key="role.id">{{ role.name }}</span>
                                         </p>
                                     </td>
                                     <td class="text-center">{{ list.username }}</td>

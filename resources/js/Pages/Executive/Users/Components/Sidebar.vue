@@ -20,9 +20,9 @@
         </div>
         <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 398px); overflow: auto;">
             <ul class="mt-3 mb-1">
-                <li class="" v-for="(list,index) in user.roles" v-bind:key="index">
+                <li class="" v-for="(list,index) in activeRoles" v-bind:key="index">
                    <span class="badge bg-success">{{list.name}}</span>
-                </li> 
+                </li>
             </ul>
             <hr class="text-muted"/>
                 <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">Account Security Settings</p>
@@ -88,6 +88,12 @@ export default {
     data(){
         return {
             now: dayjs()
+        }
+    },
+    computed: {
+        activeRoles(){
+            if(!this.user?.roles) return [];
+            return this.user.roles.filter(list => list.is_active === 1);
         }
     },
     mounted() {

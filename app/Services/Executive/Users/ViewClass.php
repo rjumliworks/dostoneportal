@@ -154,10 +154,15 @@ class ViewClass
             $data->save();
             $id = $request->id;
         }else{
-            $data = new UserRole;
-            $data->role_id = $request->role_id;
-            $data->user_id = $request->id;
+            $data = UserRole::where('user_id', $request->id)->where('role_id', $request->role_id)->first();
+            if(!$data){
+                $data = new UserRole;
+                $data->role_id = $request->role_id;
+                $data->user_id = $request->id;
+            }
             $data->added_by = \Auth::user()->id;
+            $data->removed_by = null;
+            $data->removed_at = null;
             $data->is_active = 1;
             $data->save();
             $id = $data->id;
