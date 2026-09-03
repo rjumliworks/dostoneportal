@@ -14,6 +14,20 @@ class ViewClass
         return $counts;
     }
 
+    public function view($code){
+        $data = new DefaultResource(
+            AssetEquipment::with('type','station','status','detail','currentAssignment.user.profile')
+            ->with(['records' => function ($q) {
+                $q->orderBy('date','DESC');
+            }, 'records.type', 'records.status', 'records.performer.profile', 'records.request.requester.profile'])
+            ->with(['maintenanceRequests' => function ($q) {
+                $q->orderBy('requested_at','DESC');
+            }, 'maintenanceRequests.requester.profile', 'maintenanceRequests.priority', 'maintenanceRequests.status', 'maintenanceRequests.record'])
+            ->where('code',$code)->firstOrFail()
+        );
+        return $data;
+    }
+
     public function lists($request){
         $data = DefaultResource::collection(
             AssetEquipment::with('type','status','station','detail','currentAssignment.user.profile')
@@ -31,7 +45,7 @@ class ViewClass
             ->when($request->status, function ($query,$status) {
                 $query->where('status_id',$status);
             })
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('code', 'ASC')
             ->paginate($request->count)
         );
         return $data;

@@ -45,6 +45,7 @@
                                 <thead class="table-light thead-fixed">
                                     <tr class="fs-11">
                                         <th style="width: 3%;"></th>
+                                        <th style="width: 12%;">Code</th>
                                         <th>Name</th>
                                         <th style="width: 15%;" class="text-center">Station</th>
                                         <th style="width: 12%;" class="text-center">Date Added</th>
@@ -54,6 +55,7 @@
                                 <tbody class="table-white fs-12">
                                     <tr v-for="(list,index) in lists" v-bind:key="index" >
                                         <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
+                                        <td class="fs-13 fw-semibold text-primary">{{ list.code }}</td>
                                         <td>
                                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{ list.name }}</h5>
                                             <p class="fs-12 text-muted mb-0">{{ [list.address, list.barangay?.name, list.municipality?.name, list.province?.name].filter(Boolean).join(', ') }}</p>
@@ -68,9 +70,9 @@
                                                             <i class="ri-more-fill"></i>
                                                         </template>
                                                         <li>
-                                                            <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <Link :href="`/buildings/${list.id}`" class="dropdown-item d-flex align-items-center" role="button">
                                                                 <i class="ri-eye-fill me-2"></i> View
-                                                            </a>
+                                                            </Link>
                                                         </li>
                                                         <li>
                                                             <a @click="openUpdate(list)" class="dropdown-item d-flex align-items-center" role="button">
@@ -96,17 +98,15 @@
             </div>
         </BRow>
         <Create :dropdowns="dropdowns" ref="create" @update="onCreated"/>
-        <View ref="view"/>
     </template>
     <script>
     import _ from 'lodash';
     import Create from './Modals/Create.vue';
-    import View from './Modals/View.vue';
     import Multiselect from "@vueform/multiselect";
     import PageHeader from '@/Shared/Components/PageHeader.vue';
     import Pagination from "@/Shared/Components/Pagination.vue";
     export default {
-        components: { PageHeader, Pagination, Multiselect, Create, View },
+        components: { PageHeader, Pagination, Multiselect, Create },
         props: ['dropdowns'],
         data(){
             return {
@@ -138,9 +138,6 @@
             },
             openUpdate(list){
                 this.$refs.create.edit(list);
-            },
-            openView(list){
-                this.$refs.view.show(list);
             },
             onCreated(){
                 this.fetch();

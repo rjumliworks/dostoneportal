@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\HasMaintenance;
 
 class AssetVehicle extends Model
 {
-    protected $fillable = ['name','plate','type_id','status_id','station_id','driver_id','is_available','acquired_at'];
+    use HasMaintenance;
+
+    protected $fillable = ['code','name','plate','type_id','status_id','station_id','driver_id','is_available','acquired_at'];
 
     public function reservations()
     {

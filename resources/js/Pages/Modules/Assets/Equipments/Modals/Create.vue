@@ -48,6 +48,10 @@
                     <TextInput id="maintenance_due" v-model="form.maintenance_due" type="date" class="form-control" @input="handleInput('maintenance_due')" :light="true"/>
                 </BCol>
                 <BCol lg="12" class="mt-0">
+                    <InputLabel for="maintenance_schedule" value="Scheduled Maintenance Months" :message="form.errors.maintenance_schedule"/>
+                    <Multiselect mode="tags" :options="months" :searchable="false" :close-on-select="false" label="name" v-model="form.maintenance_schedule" placeholder="Select months"/>
+                </BCol>
+                <BCol lg="12" class="mt-0">
                     <InputLabel for="specification" value="Specification / Description"/>
                     <div v-for="(spec,index) in form.specification" v-bind:key="index" class="d-flex align-items-center gap-2 mb-2">
                         <TextInput v-model="form.specification[index]" type="text" class="form-control" placeholder="e.g. Intel Core i5-1240P @ 1.70GHz" :light="true"/>
@@ -92,6 +96,7 @@ export default {
                 station_id: null,
                 maintenance_plan: null,
                 maintenance_due: null,
+                maintenance_schedule: [],
                 remarks: null,
                 acquired_at: null,
                 brand: null,
@@ -99,6 +104,12 @@ export default {
                 price: null,
                 specification: [],
             }),
+            months: [
+                { value: 1, name: 'January' }, { value: 2, name: 'February' }, { value: 3, name: 'March' },
+                { value: 4, name: 'April' }, { value: 5, name: 'May' }, { value: 6, name: 'June' },
+                { value: 7, name: 'July' }, { value: 8, name: 'August' }, { value: 9, name: 'September' },
+                { value: 10, name: 'October' }, { value: 11, name: 'November' }, { value: 12, name: 'December' },
+            ],
             showModal: false
         }
     },
@@ -119,6 +130,7 @@ export default {
             this.form.station_id = data.station_id;
             this.form.maintenance_plan = data.maintenance_plan;
             this.form.maintenance_due = data.maintenance_due;
+            this.form.maintenance_schedule = data.maintenance_schedule ? [...data.maintenance_schedule] : [];
             this.form.remarks = data.remarks;
             this.form.acquired_at = data.acquired_at;
             this.form.brand = data.detail?.brand ?? null;
@@ -160,6 +172,7 @@ export default {
             this.form.clearErrors();
             this.form.reset();
             this.form.specification = [];
+            this.form.maintenance_schedule = [];
             this.editable = false;
             this.id = null;
             this.showModal = false;

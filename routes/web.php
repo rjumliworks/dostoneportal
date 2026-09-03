@@ -101,10 +101,18 @@ Route::middleware(['auth','verified'])->group(function () {
 });
 
 Route::middleware(['role:Asset Management Officer'])->group(function () {
+    Route::get('/assets', [App\Http\Controllers\Assets\DashboardController::class, 'index']);
     Route::resource('/buildings', App\Http\Controllers\Assets\BuildingController::class);
     Route::resource('/equipments', App\Http\Controllers\Assets\EquipmentController::class);
     Route::post('/equipments/{equipment}/assign', [App\Http\Controllers\Assets\EquipmentController::class, 'assign']);
     Route::resource('/vehicles', App\Http\Controllers\Assets\VehicleController::class);
+    Route::post('/maintenance/records', [App\Http\Controllers\Assets\MaintenanceController::class, 'storeRecord']);
+    Route::put('/maintenance/records/{record}', [App\Http\Controllers\Assets\MaintenanceController::class, 'updateRecord']);
+    Route::delete('/maintenance/records/{record}', [App\Http\Controllers\Assets\MaintenanceController::class, 'destroyRecord']);
+    Route::post('/maintenance/requests', [App\Http\Controllers\Assets\MaintenanceController::class, 'storeMaintenanceRequest']);
+    Route::put('/maintenance/requests/{maintenanceRequest}', [App\Http\Controllers\Assets\MaintenanceController::class, 'updateMaintenanceRequest']);
+    Route::delete('/maintenance/requests/{maintenanceRequest}', [App\Http\Controllers\Assets\MaintenanceController::class, 'destroyMaintenanceRequest']);
+    Route::get('/maintenance/{type}/{id}/print', [App\Http\Controllers\Assets\MaintenanceController::class, 'printRecords']);
 });
 
 Route::middleware(['role:Document Management Officer'])->group(function () {

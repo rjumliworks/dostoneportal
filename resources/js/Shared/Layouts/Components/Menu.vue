@@ -209,6 +209,13 @@
                     <span data-key="t-menu">Assets Management</span>
                 </li>
                 <li class="nav-item">
+                    <Link href="/assets" class="nav-link menu-link"
+                    :class="{'active': $page.component === 'Modules/Assets/Dashboard/Index' }">
+                    <i class="ri-dashboard-2-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <Link href="/vehicles" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Assets/Vehicles') }">
                     <i class="ri-car-fill"></i>

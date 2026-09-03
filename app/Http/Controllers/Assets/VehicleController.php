@@ -39,6 +39,21 @@ class VehicleController extends Controller
         }   
     }
 
+    public function show($vehicle){
+        return inertia('Modules/Assets/Vehicles/View',[
+            'vehicle_data' => $this->view->view($vehicle),
+            'dropdowns' => [
+                'types' => $this->dropdown->datas('Vehicle'),
+                'stations' => $this->dropdown->stations(),
+                'statuses' => $this->dropdown->statuses('Vehicle'),
+                'maintenance_types' => $this->dropdown->datas('Maintenance Type'),
+                'priorities' => $this->dropdown->datas('Priority'),
+                'record_statuses' => $this->dropdown->statuses('Maintenance Record'),
+                'request_statuses' => $this->dropdown->statuses('Maintenance Request'),
+            ],
+        ]);
+    }
+
     public function store(VehicleRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){

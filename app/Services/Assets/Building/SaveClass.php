@@ -7,7 +7,9 @@ use App\Models\AssetBuilding;
 class SaveClass
 {
    public function store($request){
-        $data = AssetBuilding::create($request->all());
+        $data = AssetBuilding::create(array_merge($request->all(), [
+            'code' => $this->nextCode(),
+        ]));
         return [
             'data' => $data,
             'message' => 'Building created successfully',
@@ -22,5 +24,15 @@ class SaveClass
             'message' => 'Building updated successfully',
             'info' => 'Changes to this building have been saved',
         ];
+    }
+
+    protected function nextCode(){
+        $last = AssetBuilding::where('code', 'LIKE', 'DOSTIX-BLDG-%')
+            ->orderByRaw('CAST(SUBSTRING(code, 13) AS UNSIGNED) DESC')
+            ->value('code');
+
+        $next = $last ? ((int) substr($last, 12)) + 1 : 1;
+
+        return 'DOSTIX-BLDG-' . str_pad($next, 4, '0', STR_PAD_LEFT);
     }
 }

@@ -9,6 +9,10 @@ use App\Listeners\LoginFailed;
 use App\Listeners\LoginSuccessful;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Models\AssetEquipment;
+use App\Models\AssetVehicle;
+use App\Models\AssetBuilding;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +30,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        Relation::enforceMorphMap([
+            'equipment' => AssetEquipment::class,
+            'vehicle' => AssetVehicle::class,
+            'building' => AssetBuilding::class,
+        ]);
+
         Event::listen(
             LoginSuccessful::class,
             LoginFailed::class

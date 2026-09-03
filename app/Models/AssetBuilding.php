@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\HasMaintenance;
 
 class AssetBuilding extends Model
 {
+    use HasMaintenance;
+
     protected $fillable = [
+        'code',
         'name',
         'address',
         'longitude',

@@ -38,6 +38,20 @@ class BuildingController extends Controller
         }
     }
 
+    public function show(AssetBuilding $building){
+        return inertia('Modules/Assets/Buildings/View',[
+            'building_data' => $this->view->view($building->id),
+            'dropdowns' => [
+                'stations' => $this->dropdown->stations(),
+                'regions' => $this->dropdown->regions(),
+                'maintenance_types' => $this->dropdown->datas('Maintenance Type'),
+                'priorities' => $this->dropdown->datas('Priority'),
+                'record_statuses' => $this->dropdown->statuses('Maintenance Record'),
+                'request_statuses' => $this->dropdown->statuses('Maintenance Request'),
+            ],
+        ]);
+    }
+
     public function store(BuildingRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             return $this->save->store($request);

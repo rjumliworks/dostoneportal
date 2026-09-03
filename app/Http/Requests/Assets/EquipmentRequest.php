@@ -29,6 +29,8 @@ class EquipmentRequest extends FormRequest
             'status_id' => ['required', 'integer', 'exists:list_statuses,id'],
             'maintenance_plan' => ['nullable', 'string', 'max:255'],
             'maintenance_due' => ['nullable', 'date'],
+            'maintenance_schedule' => ['nullable', 'array'],
+            'maintenance_schedule.*' => ['integer', 'between:1,12'],
             'remarks' => ['nullable', 'string'],
             'acquired_at' => ['nullable', 'date'],
             'brand' => ['nullable', 'string', 'max:255'],

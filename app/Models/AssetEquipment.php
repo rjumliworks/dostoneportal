@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\HasMaintenance;
 
 class AssetEquipment extends Model
 {
+    use HasMaintenance;
+
     protected $table = 'asset_equipments';
 
     protected $fillable = [
@@ -16,10 +19,15 @@ class AssetEquipment extends Model
         'station_id',
         'maintenance_plan',
         'maintenance_due',
+        'maintenance_schedule',
         'remarks',
         'status_id',
         'user_id',
         'acquired_at',
+    ];
+
+    protected $casts = [
+        'maintenance_schedule' => 'array',
     ];
 
     public function type()

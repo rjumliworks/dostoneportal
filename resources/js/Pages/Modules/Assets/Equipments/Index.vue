@@ -103,9 +103,9 @@
                                                             <i class="ri-more-fill"></i>
                                                         </template>
                                                         <li>
-                                                            <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <Link :href="`/equipments/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
                                                                 <i class="ri-eye-fill me-2"></i> View
-                                                            </a>
+                                                            </Link>
                                                         </li>
                                                         <li>
                                                             <a @click="openUpdate(list)" class="dropdown-item d-flex align-items-center" role="button">
@@ -137,19 +137,17 @@
             </div>
         </BRow>
         <Create :dropdowns="dropdowns" ref="create" @update="onCreated"/>
-        <View ref="view"/>
         <Assign ref="assign" @update="onCreated"/>
     </template>
     <script>
     import _ from 'lodash';
     import Create from './Modals/Create.vue';
-    import View from './Modals/View.vue';
     import Assign from './Modals/Assign.vue';
     import Multiselect from "@vueform/multiselect";
     import PageHeader from '@/Shared/Components/PageHeader.vue';
     import Pagination from "@/Shared/Components/Pagination.vue";
     export default {
-        components: { PageHeader, Pagination, Multiselect, Create, View, Assign },
+        components: { PageHeader, Pagination, Multiselect, Create, Assign },
         props: ['dropdowns','counts'],
         data(){
             return {
@@ -183,9 +181,6 @@
         methods: {
             openCreate(){
                 this.$refs.create.show();
-            },
-            openView(list){
-                this.$refs.view.show(list);
             },
             openUpdate(list){
                 this.$refs.create.edit(list);

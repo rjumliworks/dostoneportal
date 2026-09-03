@@ -2374,8 +2374,8 @@
     "category": "Laptop Computer",
     "acquired_at": "2024-08-28",
     "remarks": "MIS-2024 @ MIS",
-    "brand": "TravelMate",
-    "model": "P2 16",
+    "brand": "Acer",
+    "model": "TravelMate P2 16",
     "price": 40000.0,
     "specification": [
       "TravelMate P2 16",
@@ -2384,6 +2384,293 @@
       "512 SSD",
       "Windows 11",
       "SN: NXB13SP015350118547600"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-168",
+    "name": "ORD-MIS",
+    "category": "Laptop Computer",
+    "acquired_at": "2024-08-28",
+    "remarks": "MIS-2024 @ MIS",
+    "brand": "Acer",
+    "model": "TravelMate P2 16",
+    "price": 40000.0,
+    "specification": [
+      "TravelMate P2 16",
+      "Intel Core i5-1335U @ 1.30 GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: NXB13SP015350118547600"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-169",
+    "name": "ORD-PLNNG1",
+    "category": "Laptop Computer",
+    "acquired_at": "2024-08-28",
+    "remarks": "ORD-PLANNING1",
+    "brand": "Acer",
+    "model": "TravelMate P2 16",
+    "price": 40000.0,
+    "specification": [
+      "TravelMate P2 16",
+      "Intel Core i5-1335U @ 1.30 GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: NXB13SP015350118547600"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-170",
+    "name": "TOS-ZCHRD1",
+    "category": "Laptop Computer",
+    "acquired_at": "2025-09-18",
+    "remarks": "TOS-ZCHRD",
+    "brand": "MSI",
+    "model": "Thin A15 B7UCX",
+    "price": 47000.0,
+    "specification": [
+      "MSI Thin A15 B7UCX",
+      "AMD Ryzen 5 753HS with RG 3.3Ghz",
+      "16GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: 9S716RK11084ZRC001148"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-171",
+    "name": "ORD-DRRM3",
+    "category": "Laptop Computer",
+    "acquired_at": "2025-11-20",
+    "remarks": "ORD-DRRM",
+    "brand": "Acer",
+    "model": "Aspire Lite AL15-41P-R51N",
+    "price": 47000.0,
+    "specification": [
+      "Acer Aspire Lite AL15-41P-R51N",
+      "AMD Ryzen 7 5700U",
+      "16GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: NXJ53SP001520013679D00"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-172",
+    "name": "ORD-DRRM4",
+    "category": "Laptop Computer",
+    "acquired_at": "2025-11-20",
+    "remarks": "ORD-DRRM",
+    "brand": "Acer",
+    "model": "Aspire Lite AL15-41P-R51N",
+    "price": 47000.0,
+    "specification": [
+      "Acer Aspire Lite AL15-41P-R51N",
+      "AMD Ryzen 7 5700U",
+      "16GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: NXJ53SP001520013379D00"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-173",
+    "name": "TOS-ZCIC",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-01-29",
+    "remarks": "TOS-ZCIC",
+    "brand": "MSI",
+    "model": "Cyborg 15 A12U",
+    "price": 46500.0,
+    "specification": [
+      "MSI Cyborg 15 A12U",
+      "Intel Core i512450H @ 2.00 GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: 9S715K1111298ZS4000327"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-174",
+    "name": "TOS-ONELAB",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-03-31",
+    "remarks": "TOS-OneLab",
+    "brand": "ASUS",
+    "model": "Vivobook 14 X1404V",
+    "price": 48600.0,
+    "specification": [
+      "ASUS Vivobook 14 X1404V",
+      "Intel Core i5-1334U @ 1.30 GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: T4N0CX00R09614F"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-175",
+    "name": "TOS-ONELAB",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-03-31",
+    "remarks": "TOS-OneLab",
+    "brand": "ASUS",
+    "model": "Vivobook 14 X1404V",
+    "price": 48600.0,
+    "specification": [
+      "ASUS Vivobook 14 X1404V",
+      "Intel Core i5-1334U @ 1.30 GHz",
+      "8GB RAM",
+      "512 SSD",
+      "Windows 11",
+      "SN: T4N0CX00R09614F"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-176",
+    "name": "TOS-SARAI1",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-05-21",
+    "remarks": "TOS-SARAI1",
+    "brand": "Dell",
+    "model": "Alienware 16 Aurora AC16250",
+    "price": 100000.0,
+    "specification": [
+      "Alienware 16 Aurora AC16250",
+      "Intel Core i7 240H @2.45 GHz",
+      "16GB RAM",
+      "1TB SSD",
+      "Windows 11",
+      "SN: 6BQ49D4"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-177",
+    "name": "TOS-SARAI2",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-05-21",
+    "remarks": "TOS-SARAI2",
+    "brand": "Dell",
+    "model": "Alienware 16 Aurora AC16250",
+    "price": 100000.0,
+    "specification": [
+      "Alienware 16 Aurora AC16250",
+      "Intel Core i7 240H @2.45 GHz",
+      "16GB RAM",
+      "1TB SSD",
+      "Windows 11",
+      "SN: 8DQ49D4"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-178",
+    "name": "TOS-SARAI3",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-05-26",
+    "remarks": "TOS-SARAI3",
+    "brand": "Apple",
+    "model": "MacBook Air(M4)",
+    "price": 95000.0,
+    "specification": [
+      "MacBook Air(M4)",
+      "M4 Chip",
+      "16GB RAM",
+      "512GB SSD",
+      "SN: CK73CJ74VK"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-179",
+    "name": "TOS-SARAI4",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-06-09",
+    "remarks": "TOS-SARAI4",
+    "brand": "MSI",
+    "model": "Thin 15 B12UC",
+    "price": 48500.0,
+    "specification": [
+      "MSI Thin 15 B12UC",
+      "Intel Core i5-12450H",
+      "16GB RAM",
+      "512GB SSD",
+      "Windows 11",
+      "SN: K2501N0022821"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-180",
+    "name": "TOS-SARAI5",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-06-09",
+    "remarks": "TOS-SARAI5",
+    "brand": "MSI",
+    "model": "Thin 15 B12UC",
+    "price": 48500.0,
+    "specification": [
+      "MSI Thin 15 B12UC",
+      "Intel Core i5-12450H",
+      "16GB RAM",
+      "512GB SSD",
+      "Windows 11",
+      "SN: K2512N0039903"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-181",
+    "name": "RSTL-METRO6",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-07-29",
+    "remarks": "RSTL-METRO6",
+    "brand": "Asus",
+    "model": "Expertbook P1503CVA",
+    "price": 48500.0,
+    "specification": [
+      "Asus Expertbook P1503CVA",
+      "Intel Core i5-210H",
+      "16GB RAM",
+      "512GB SSD",
+      "Windows 11",
+      "SN: W5NXCV03111119A"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-182",
+    "name": "TOS-SCHO1",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-08-04",
+    "remarks": "TOS-SCHOLARSHIP1",
+    "brand": "Acer",
+    "model": "Nitro V 15",
+    "price": 80000.0,
+    "specification": [
+      "Acer Nitro V 15",
+      "AMD Ryzen 5 6600H",
+      "16GB RAM",
+      "512GB SSD",
+      "Windows 11",
+      "SN: NHQPESP00355138C3C7600"
+    ]
+  },
+  {
+    "old_code": "DOST9-EQ-183",
+    "name": "TOS-SCHO2",
+    "category": "Laptop Computer",
+    "acquired_at": "2026-08-04",
+    "remarks": "TOS-SCHOLARSHIP2",
+    "brand": "Acer",
+    "model": "Nitro V 15",
+    "price": 80000.0,
+    "specification": [
+      "Acer Nitro V 15",
+      "AMD Ryzen 5 6600H",
+      "16GB RAM",
+      "512GB SSD",
+      "Windows 11",
+      "SN: NHQPESP00355138C077600"
     ]
   }
 ]

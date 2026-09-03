@@ -69,6 +69,7 @@
                                 <thead class="table-light thead-fixed">
                                     <tr class="fs-11">
                                         <th style="width: 3%;"></th>
+                                        <th style="width: 12%;">Code</th>
                                         <th>Name</th>
                                         <th style="width: 15%;" class="text-center">Driver</th>
                                         <th style="width: 8%;" class="text-center">Plate</th>
@@ -81,6 +82,7 @@
                                 <tbody class="table-white fs-12">
                                     <tr v-for="(list,index) in lists" v-bind:key="index" >
                                         <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
+                                        <td class="fs-13 fw-semibold text-primary">{{ list.code }}</td>
                                         <td>
                                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{list.name }}</h5>
                                             <p class="fs-12 text-muted mb-0">{{list.station.name}}</p>
@@ -100,7 +102,7 @@
                                                         <i class="ri-more-fill"></i>
                                                     </template>
                                                     <li>
-                                                        <Link :href="`/users/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <Link :href="`/vehicles/${list.id}`" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-eye-fill me-2"></i> View
                                                         </Link>
                                                     </li>
