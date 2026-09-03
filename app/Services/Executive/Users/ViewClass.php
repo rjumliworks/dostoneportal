@@ -64,7 +64,9 @@ class ViewClass
         $data = new ViewResource(
             User::query()
             ->with('profile:user_id,firstname,middlename,lastname,suffix_id,avatar,mobile','profile.suffix')
-            ->with('myroles:role_id,id,user_id,created_at,is_active','myroles.role:id,name')
+            ->with('myroles:role_id,id,user_id,added_by,removed_by,removed_at,created_at,is_active',
+                   'myroles.role:id,name','myroles.added:id','myroles.added.profile:user_id,firstname,middlename,lastname,suffix_id',
+                   'myroles.removed:id','myroles.removed.profile:user_id,firstname,middlename,lastname,suffix_id')
             ->where('id',$id)->first()
         );
         return $data;

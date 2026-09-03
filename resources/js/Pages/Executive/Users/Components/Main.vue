@@ -20,10 +20,10 @@
             <div class="step-arrow-nav mt-0">
                 <ul class="nav nav-pills nav-justified custom-nav" role="tablist">
                     <li class="nav-item" role="presentation" v-for="(menu, index) in menus" v-bind:key="index">
-                        <button class="nav-link fs-12 p-3" :class="(index == 0) ? 'active' : ''" 
-                            :id="menu+'-tab'" data-bs-toggle="pill" :data-bs-target="'#'+menu" 
+                        <button class="nav-link fs-12 p-3" :class="(index == 0) ? 'active' : ''"
+                            :id="menu+'-tab'" data-bs-toggle="pill" :data-bs-target="'#'+menu"
                             type="button" role="tab" :aria-controls="menu" aria-selected="true">
-                            {{menu}}
+                            {{ menu.replace('-',' ') }}
                         </button>
                     </li>
                 </ul>
@@ -40,6 +40,7 @@
                                    <Authentication :code="user.code" v-if="menu == 'Authentication'" />
                                    <Activity :code="user.code" v-if="menu == 'Activities'" />
                                    <Reference :code="user.code" v-if="menu == 'References'"/>
+                                   <RolesHistory :roles="user.roles" v-if="menu == 'Roles-History'"/>
                                 </div>
                             </transition>
                         </div>
@@ -55,13 +56,14 @@ import simplebar from "simplebar-vue";
 import Activity from  './Pages/Activity.vue';
 import Authentication from './Pages/Authentication.vue';
 import Reference from './Pages/Reference.vue';
+import RolesHistory from './Pages/RolesHistory.vue';
 export default {
-    components: { simplebar, Activity, Authentication, Reference },
+    components: { simplebar, Activity, Authentication, Reference, RolesHistory },
     props: ['user','dropdowns'],
     data(){
         return {
             menus: [
-                'Overview','Authentication','Activities','References'
+                'Overview','Authentication','Activities','References','Roles-History'
             ],
             index: null,
         }
