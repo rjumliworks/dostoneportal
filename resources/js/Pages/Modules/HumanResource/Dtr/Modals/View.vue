@@ -72,7 +72,7 @@
                                             <td class="text-center">{{ (selected.am_in_at) ? selected.am_in_at.ip : '-' }}</td>
                                             <td class="text-center">{{ (selected.am_in_at) ? selected.am_in_at.pcname : '-' }}</td>
                                             <td class="text-center">
-                                                <b-button v-if="selected.am_in_at" @click="openEdit(selected.id,selected.am_in_at,'Time In (am)')" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
+                                                <b-button v-if="selected.am_in_at" @click="openEdit(selected.id,selected.am_in_at,'Time In (am)',selected)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </b-button>
                                                 <b-button v-else @click="openTime(selected.id,'Time In (am)')" variant="soft-info" v-b-tooltip.hover title="Set" size="sm">
@@ -92,7 +92,7 @@
                                             <td class="text-center">{{ (selected.am_out_at) ? selected.am_out_at.ip : '-' }}</td>
                                             <td class="text-center">{{ (selected.am_out_at) ? selected.am_out_at.pcname : '-' }}</td>
                                             <td class="text-center">
-                                                <b-button v-if="selected.am_out_at" @click="openEdit(selected.id,selected.am_out_at,'Time Out (am)')" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
+                                                <b-button v-if="selected.am_out_at" @click="openEdit(selected.id,selected.am_out_at,'Time Out (am)',selected)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </b-button>
                                                 <b-button v-else @click="openTime(selected.id,'Time Out (am)')" variant="soft-info" v-b-tooltip.hover title="Set" size="sm">
@@ -112,7 +112,7 @@
                                             <td class="text-center">{{ (selected.pm_in_at) ? selected.pm_in_at.ip : '-' }}</td>
                                             <td class="text-center">{{ (selected.pm_in_at) ? selected.pm_in_at.pcname : '-' }}</td>
                                             <td class="text-center">
-                                                <b-button v-if="selected.pm_in_at" @click="openEdit(selected.id,selected.pm_in_at,'Time In (pm)')" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
+                                                <b-button v-if="selected.pm_in_at" @click="openEdit(selected.id,selected.pm_in_at,'Time In (pm)',selected)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </b-button>
                                                 <b-button v-else @click="openTime(selected.id,'Time In (pm)')" variant="soft-info" v-b-tooltip.hover title="Set" size="sm">
@@ -132,7 +132,7 @@
                                             <td class="text-center">{{ (selected.pm_out_at) ? selected.pm_out_at.ip : '-' }}</td>
                                             <td class="text-center">{{ (selected.pm_out_at) ? selected.pm_out_at.pcname : '-' }}</td>
                                             <td class="text-center">
-                                                <b-button v-if="selected.pm_out_at" @click="openEdit(selected.id,selected.pm_out_at,'Time Out (pm)')" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
+                                                <b-button v-if="selected.pm_out_at" @click="openEdit(selected.id,selected.pm_out_at,'Time Out (pm)',selected)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                                                     <i class="ri-pencil-fill align-bottom"></i>
                                                 </b-button>
                                                 <b-button v-else @click="openTime(selected.id,'Time Out (pm)')" variant="soft-info" v-b-tooltip.hover title="Set" size="sm">
@@ -205,9 +205,9 @@ export default {
             });
             this.showModal = true;
         },
-        openEdit(id,data,type){
+        openEdit(id,data,type,record){
             this.type = type;
-            this.$refs.edit.show(id,data,type);
+            this.$refs.edit.show(id,data,type,record);
         },
         openTime(id,type){
             this.type = type;

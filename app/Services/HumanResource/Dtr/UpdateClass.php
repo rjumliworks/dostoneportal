@@ -83,6 +83,96 @@ class UpdateClass
         ];
     }
 
+    public function swapType($request){
+        $dtr = Dtr::where('id',$request->id)->first();
+
+        if(!$dtr){
+            return [
+                'data' => null,
+                'message' => 'DTR not found.',
+                'info' => 'DTR not found.',
+                'status' => false,
+            ];
+        }
+
+        $fromColumn = $this->columnForType($request->from_type);
+        $toColumn = $this->columnForType($request->to_type);
+
+        if(!$fromColumn || !$toColumn){
+            return [
+                'data' => null,
+                'message' => 'Invalid time slot.',
+                'info' => 'Please select a valid time slot.',
+                'status' => false,
+            ];
+        }
+
+        if($fromColumn === $toColumn){
+            return [
+                'data' => null,
+                'message' => 'Nothing to move.',
+                'info' => 'Please select a different time slot to move this record to.',
+                'status' => false,
+            ];
+        }
+
+        $movingRaw = $dtr->$fromColumn;
+        if(!$movingRaw){
+            return [
+                'data' => null,
+                'message' => 'Nothing to move.',
+                'info' => 'This time slot is empty.',
+                'status' => false,
+            ];
+        }
+
+        $causer = \Auth::user()->profile->firstname.' '.\Auth::user()->profile->lastname;
+
+        $moving = json_decode($movingRaw, true);
+        if($request->filled('to_time')){
+            $moving['time'] = Carbon::parse($request->to_time)->format('H:i:s');
+        }
+        $moving['is_updated'] = true;
+        $moving['changes'][] = $causer." moved this record (".Carbon::parse($moving['time'])->format('h:i A').") from {$request->from_type} to {$request->to_type}".($request->remarks ? ", with note: {$request->remarks}." : ".");
+
+        $existingInTarget = $dtr->$toColumn ? json_decode($dtr->$toColumn, true) : null;
+
+        $dtr->$toColumn = json_encode($moving);
+
+        if($existingInTarget){
+            $existingInTarget['is_updated'] = true;
+            $existingInTarget['changes'][] = $causer." swapped this record into {$request->from_type} to make room for the {$request->to_type} record moved in.";
+            $dtr->$fromColumn = json_encode($existingInTarget);
+        }else{
+            $dtr->$fromColumn = null;
+        }
+
+        $dtr->save();
+
+        // let the canonical shift-aware recompute (grace periods, flex schedule, holidays, etc.)
+        // figure out tardiness/undertime/is_completed for the moved (and possibly swapped) slots
+        Artisan::call('dtr', ['id' => $dtr->id]);
+
+        $data = new IndexResource(Dtr::with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname','station')->where('id',$request->id)->first());
+
+        return [
+            'data' => $data,
+            'message' => $existingInTarget ? 'DTR records swapped successfully.' : 'DTR record moved successfully.',
+            'info' => 'The time record has been transferred to the new slot.',
+        ];
+    }
+
+    private function columnForType($type)
+    {
+        return match($type){
+            'Time In (am)' => 'am_in_at',
+            'Time Out (am)' => 'am_out_at',
+            'Time In (pm)' => 'pm_in_at',
+            'Time Out (pm)' => 'pm_out_at',
+            default => null,
+        };
+    }
+
     public function save($request){
         $new_tardiness = 0;
         $new_undertime = 0;
@@ -90,22 +180,9 @@ class UpdateClass
         $tardiness = 0;
 
         $data = Dtr::where('id',$request->id)->first();
-        $old_tardiness = $data->tardiness; 
-        $old_undertime = $data->undertime; 
-        switch($request->type){
-            case 'Time In (am)':
-                $column = 'am_in_at';
-            break;
-            case 'Time Out (am)':
-                $column = 'am_out_at';
-            break;
-            case 'Time In (pm)':
-                $column = 'pm_in_at';
-            break;
-            case 'Time Out (pm)':
-                $column = 'pm_out_at';
-            break;
-        }
+        $old_tardiness = $data->tardiness;
+        $old_undertime = $data->undertime;
+        $column = $this->columnForType($request->type);
         $timeData = json_decode($data->$column, true);
         $toTime = Carbon::parse($request->to_time)->format('H:i:s');
         $timeData['time'] = $toTime;
