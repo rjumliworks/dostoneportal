@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        Relation::enforceMorphMap([
+        Relation::morphMap([
             'equipment' => AssetEquipment::class,
             'vehicle' => AssetVehicle::class,
             'building' => AssetBuilding::class,
