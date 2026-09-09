@@ -15,33 +15,35 @@ class OfficialResource extends JsonResource
 
         $start = $date->start;
         $end = $date->end;
+        $isAllDay = $date->time_of_day === 'Whole Day';
 
         $startDay = date("M d, Y", strtotime($start));
         $endDay = date("M d, Y", strtotime($end));
-        $startTime = date("g:i a", strtotime($start));
-        $endTime = date("g:i a", strtotime($end));
+        $time = $date->time;
 
-        if ($date->is_allday) {
+        if ($isAllDay) {
             $displayDate = $startDay == $endDay
                 ? $startDay
                 : "$startDay to $endDay";
         } else {
             $displayDate = $startDay == $endDay
-                ? "$startDay ($startTime - $endTime)"
-                : "$startDay $startTime - $endDay $endTime";
+                ? "$startDay ($time)"
+                : "$startDay to $endDay ($time)";
         }
+
+        $firstType = $official->types->first();
 
         return [
             'id' => $date->id, // unique event id
             'title' => $official->title,
             'start' => Carbon::parse($date->start)->format('Y-m-d'),
             'end' => Carbon::parse($date->end)->format('Y-m-d'),
-            'allDay' => $date->is_allday,
+            'allDay' => $isAllDay,
 
-            'type' => $official->type->name,
-            'className' => 'bg-primary text-white',
+            'type' => $official->types->pluck('name')->implode(', '),
+            'className' => $firstType ? trim($firstType->bg.' '.$firstType->color) : 'bg-primary text-white',
 
-            'full_title' => $official->request->title,
+            'full_title' => $official->title,
             'datee' => $displayDate,
 
            'start' => Carbon::parse($date->start)->format('Y-m-d'),
@@ -61,7 +63,7 @@ class OfficialResource extends JsonResource
     'day_name' => date("D", strtotime($start)),
 
             'mode' => $official->mode,
-            'type_info' => $official->type,
+            'type_info' => $official->types,
             'audience' => $official->audience,
             'request' => $official->request,
         ];

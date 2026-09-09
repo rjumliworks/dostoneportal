@@ -66,7 +66,8 @@ class PayrollController extends Controller
                 return inertia('Modules/HumanResource/Payroll/Contractual/Index',[
                     'dropdowns' => [
                         'payrolls' => $this->dropdown->dropdowns('Payroll','Regular')
-                    ]
+                    ],
+                    'is_local' => app()->isLocal()
                 ]);
             break;
         }
@@ -94,6 +95,10 @@ class PayrollController extends Controller
     }
 
     public function store(PayrollRequest $request){
+        if($request->option === 'empty-payroll' && !app()->isLocal()){
+            abort(403, 'This action is only available in the local environment.');
+        }
+
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'regular':
@@ -114,6 +119,9 @@ class PayrollController extends Controller
                 break;
                 case 'deduction':
                     return $this->save->deduction($request);
+                break;
+                case 'empty-payroll':
+                    return $this->save->emptyPayroll();
                 break;
             }
         });

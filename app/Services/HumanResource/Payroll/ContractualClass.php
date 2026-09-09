@@ -111,7 +111,7 @@ class ContractualClass
         $is_regular = $request->is_regular;
         $start = \Carbon\Carbon::parse($request->start)->startOfDay();
         $end = \Carbon\Carbon::parse($request->end)->endOfDay();
-        
+
         $data =  User::with([
             'profile',
             'profile.suffix',
@@ -132,195 +132,21 @@ class ContractualClass
                 $query->where('type_id', 15);
             });
         })
+        ->when(is_null($is_regular) || $is_regular == 0, function ($query) {
+            $query->whereHas('organization', function ($query) {
+                $query->where('type_id', '!=', 15);
+            });
+        })
         ->when($keyword, function ($query) use ($keyword){
             $query->whereHas('profile', function ($q) use ($keyword) {
                 $q->where('lastname', 'like', '%' . $keyword . '%');
             });
         })
-        ->limit(5)->get()->map(function ($item) use ($start, $end){
+        ->limit(300)->get()->map(function ($item) use ($start, $end){
             $alreadyInPayroll = $item->payrolls->isNotEmpty();
-            $user_id = $item->id;
-            $station_id = $item->organization->station_id;
-            $dates = [];
-            $period = \Carbon\CarbonPeriod::create($start, $end);
+            $summary = $this->buildDtrSummary($item, $start, $end);
 
-            /**
-             * =========================
-             *  HOLIDAYS
-             * =========================
-             */
-            $holidays = Schedule::where(function ($q) use ($start, $end) {
-                $q->whereBetween('start', [$start, $end])
-                    ->orWhereBetween('end', [$start, $end])
-                    ->orWhere(function ($q2) use ($start, $end) {
-                        $q2->where('start', '<', $start)
-                            ->where('end', '>', $end);
-                    });
-            })
-            ->whereHas('stations', function ($q) use ($station_id) {
-                $q->where('station_id', $station_id);
-            })
-            ->get(['start', 'end', 'title'])
-            ->flatMap(function ($holiday) {
-                $list = [];
-                $startDate = \Carbon\Carbon::parse($holiday->start);
-                $endDate = \Carbon\Carbon::parse($holiday->end ?? $holiday->start);
-
-                foreach (\Carbon\CarbonPeriod::create($startDate, $endDate) as $day) {
-                    $list[$day->format('Y-m-d')] = $holiday->title;
-                }
-
-                return $list;
-            });
-            $ignoreDates = array_keys($holidays->toArray());
-
-            /**
-             * =========================
-             *  OFFICIAL TRAVEL
-             * =========================
-             */
-            $officialTravel = [];
-            $travels = Request::where('type_id', 156)
-                ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-                ->whereHas('dates', function ($q) use ($start, $end) {
-                    $q->whereBetween('start', [$start, $end])
-                        ->orWhereBetween('end', [$start, $end])
-                        ->orWhere(function ($q2) use ($start, $end) {
-                            $q2->where('start', '<', $start)
-                                ->where('end', '>', $end);
-                        });
-                })
-                ->with('dates', 'detail', 'location', 'location.municipality')
-                ->get();
-
-            foreach ($travels as $travel) {
-                foreach ($travel->dates as $travelDate) {
-                    $period2 = \Carbon\CarbonPeriod::create($travelDate->start, $travelDate->end ?? $travelDate->start);
-                    foreach ($period2 as $day) {
-                        $officialTravel[$day->format('Y-m-d')] =
-                            ($travel->location->address . ', ' . $travel->location->municipality->name)
-                            ?? 'Official Travel';
-                    }
-                }
-            }
-            /**
-             * =========================
-             *  OFFICIAL BUSINESS
-             * =========================
-             */
-            $officialBusiness = [];
-            $obs = Request::where('type_id', 192)
-                ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-                ->withWhereHas('dates', function ($q) use ($start, $end) {
-                    $q->whereBetween('start', [$start, $end])
-                        ->orWhereBetween('end', [$start, $end])
-                        ->orWhere(function ($q2) use ($start, $end) {
-                            $q2->where('start', '<', $start)
-                                ->where('end', '>', $end);
-                        });
-                })
-                ->with('event')
-                ->get();
-
-            foreach ($obs as $ob) {
-                foreach ($ob->dates as $obDate) {
-                    $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
-                    foreach ($period3 as $day) {
-                        $officialBusiness[$day->format('Y-m-d')] = $ob->event->title ?? 'Official Business';
-                    }
-                }
-            }
-
-            /**
-             * =========================
-             *  OFFICIAL LEAVE
-             * =========================
-             */
-            $officialLeave = [];
-            $leaves = Request::where('type_id', 158)
-                ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
-                ->withWhereHas('dates', function ($q) use ($start, $end) {
-                    $q->whereBetween('start', [$start, $end])
-                        ->orWhereBetween('end', [$start, $end])
-                        ->orWhere(function ($q2) use ($start, $end) {
-                            $q2->where('start', '<', $start)
-                                ->where('end', '>', $end);
-                        });
-                })
-                ->with('leave.type')
-                ->get();
-
-            foreach ($leaves as $ob) {
-                foreach ($ob->dates as $obDate) {
-                    $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
-                    foreach ($period3 as $day) {
-                        $officialLeave[$day->format('Y-m-d')] = $ob->leave->type->name ?? 'Leave';
-                    }
-                }
-            }
-
-
-            $uniqueDays = $item->organization->shift->times->pluck('days') 
-            ->flatMap(function ($days) {        
-                return explode(',', $days);
-            })->unique()->values();
-
-            // Generate daily data
-            $dates = [];
-            foreach ($period as $date) {
-                $dateStr = $date->toDateString();
-
-                $status = null;
-                $title = null;
-
-                $dayNumber = (int) $date->format('N');
-                if (isset($holidays[$dateStr])) {
-                    $status = 'Holiday';
-                    $title = $holidays[$dateStr];
-                } 
-                elseif (!$uniqueDays->contains($dayNumber)) {
-                    $status = 'Non-working Day';
-                    $title = 'Non-working Day';
-                } 
-                elseif (isset($officialTravel[$dateStr])) {
-                    $status = 'Official Travel';
-                    $title = $officialTravel[$dateStr];
-                }elseif (isset($officialLeave[$dateStr])) {
-                    $status = 'Official Leave';
-                    $title = $officialLeave[$dateStr];
-                } elseif (isset($officialBusiness[$dateStr])) {
-                    $status = 'Official Business';
-                    $title = $officialBusiness[$dateStr];
-                }
-                
-                $day = Carbon::parse($dateStr)->dayOfWeekIso; // 1-7
-
-                if (! $uniqueDays->contains($day)) {
-                    continue;
-                }
-
-                $isAttendanceRequired = !in_array($status, [
-                    'Holiday',
-                    'Official Travel',
-                    'Official Business',
-                ]);
-
-                $dtr = $item->dtrs->firstWhere('date', $dateStr);
-
-                $dates[] = [
-                    'date' => Carbon::parse($dateStr)->format('F d, Y'),
-                    'date_day' => Carbon::parse($dateStr)->format('l'),
-                    'am_in' => ($dtr && $dtr->am_in_at) ? new TimeResource(json_decode($dtr->am_in_at)) : null,
-                    'am_out' => ($dtr && $dtr->am_out_at) ? new TimeResource(json_decode($dtr->am_out_at)) : null,
-                    'pm_in'  => ($dtr && $dtr->pm_in_at)  ? new TimeResource(json_decode($dtr->pm_in_at))  : null,
-                    'pm_out' => ($dtr && $dtr->pm_out_at) ? new TimeResource(json_decode($dtr->pm_out_at)) : null,
-                    'is_completed' => $isAttendanceRequired ? ($dtr?->is_completed) : null,
-                    'status' => $status ?? ($dtr ? 'Present' : 'Absent'),
-                    'title' => $title
-                ];
-            }
-
-            return [
+            return array_merge([
                 'value' => $item->id,
                 'name' => $item->profile->name,
                 'fullname' => $item->profile->fullname,
@@ -328,29 +154,284 @@ class ContractualClass
                 'position' => optional($item->organization->position)->name,
                 'division' => optional($item->organization->division)->name,
                 'division_id' => optional($item->organization->division)->id,
-                'type' => $item->organization->type->name,
-                'avatar' => $item->profile->avatar,
+                'type' => optional($item->organization->type)->name,
+                'avatar' => $this->avatarUrl($item->profile),
                 'already_in_payroll' => $alreadyInPayroll,
-                'dtrs' => $alreadyInPayroll ? [] : $dates
-            ];
-        });
+                'dtrs' => $alreadyInPayroll ? [] : $summary['dtrs']
+            ], [
+                'completed_count' => $summary['completed_count'],
+                'total_work_days' => $summary['total_work_days'],
+                'holiday_count' => $summary['holiday_count'],
+                'leave_count' => $summary['leave_count'],
+                'travel_count' => $summary['travel_count'],
+                'business_count' => $summary['business_count'],
+                'absent_count' => $summary['absent_count'],
+                'is_complete' => $summary['is_complete']
+            ]);
+        })->sortBy('name')->values();
         return $data;
     }
 
+    private function avatarUrl($profile){
+        $avatar = optional($profile)->avatar;
+        if (!$avatar || $avatar === 'noavatar.jpg') {
+            return asset('images/avatars/avatar.jpg');
+        }
+        return (str_starts_with($avatar, 'http://') || str_starts_with($avatar, 'https://'))
+            ? $avatar
+            : asset('storage/' . $avatar);
+    }
+
+    /**
+     * Computes the daily DTR breakdown and completion counts for a single
+     * employee within a date range, treating holidays/travel/business/leave
+     * days as excluded from the required-attendance total.
+     */
+    private function buildDtrSummary($item, $start, $end){
+        $user_id = $item->id;
+        $station_id = optional($item->organization)->station_id;
+        $period = \Carbon\CarbonPeriod::create($start, $end);
+
+        /**
+         * =========================
+         *  HOLIDAYS
+         * =========================
+         */
+        $holidays = Schedule::where(function ($q) use ($start, $end) {
+            $q->whereBetween('start', [$start, $end])
+                ->orWhereBetween('end', [$start, $end])
+                ->orWhere(function ($q2) use ($start, $end) {
+                    $q2->where('start', '<', $start)
+                        ->where('end', '>', $end);
+                });
+        })
+        ->whereHas('stations', function ($q) use ($station_id) {
+            $q->where('station_id', $station_id);
+        })
+        ->get(['start', 'end', 'title'])
+        ->flatMap(function ($holiday) {
+            $list = [];
+            $startDate = \Carbon\Carbon::parse($holiday->start);
+            $endDate = \Carbon\Carbon::parse($holiday->end ?? $holiday->start);
+
+            foreach (\Carbon\CarbonPeriod::create($startDate, $endDate) as $day) {
+                $list[$day->format('Y-m-d')] = $holiday->title;
+            }
+
+            return $list;
+        });
+
+        /**
+         * =========================
+         *  OFFICIAL TRAVEL
+         * =========================
+         */
+        $officialTravel = [];
+        $travels = Request::where('type_id', 156)
+            ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
+            ->whereHas('dates', function ($q) use ($start, $end) {
+                $q->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function ($q2) use ($start, $end) {
+                        $q2->where('start', '<', $start)
+                            ->where('end', '>', $end);
+                    });
+            })
+            ->with('dates', 'detail', 'location', 'location.municipality')
+            ->get();
+
+        foreach ($travels as $travel) {
+            foreach ($travel->dates as $travelDate) {
+                $period2 = \Carbon\CarbonPeriod::create($travelDate->start, $travelDate->end ?? $travelDate->start);
+                foreach ($period2 as $day) {
+                    $address = optional($travel->location)->address;
+                    $municipality = optional(optional($travel->location)->municipality)->name;
+                    $officialTravel[$day->format('Y-m-d')] = ($address || $municipality)
+                        ? trim(implode(', ', array_filter([$address, $municipality])))
+                        : 'Official Travel';
+                }
+            }
+        }
+        /**
+         * =========================
+         *  OFFICIAL BUSINESS
+         * =========================
+         */
+        $officialBusiness = [];
+        $obs = Request::where('type_id', 192)
+            ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
+            ->withWhereHas('dates', function ($q) use ($start, $end) {
+                $q->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function ($q2) use ($start, $end) {
+                        $q2->where('start', '<', $start)
+                            ->where('end', '>', $end);
+                    });
+            })
+            ->with('event')
+            ->get();
+
+        foreach ($obs as $ob) {
+            foreach ($ob->dates as $obDate) {
+                $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
+                foreach ($period3 as $day) {
+                    $officialBusiness[$day->format('Y-m-d')] = optional($ob->event)->title ?? 'Official Business';
+                }
+            }
+        }
+
+        /**
+         * =========================
+         *  OFFICIAL LEAVE
+         * =========================
+         */
+        $officialLeave = [];
+        $leaves = Request::where('type_id', 158)
+            ->whereHas('tags', fn($q) => $q->where('user_id', $user_id))
+            ->withWhereHas('dates', function ($q) use ($start, $end) {
+                $q->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function ($q2) use ($start, $end) {
+                        $q2->where('start', '<', $start)
+                            ->where('end', '>', $end);
+                    });
+            })
+            ->with('leave.type')
+            ->get();
+
+        foreach ($leaves as $ob) {
+            foreach ($ob->dates as $obDate) {
+                $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
+                foreach ($period3 as $day) {
+                    $officialLeave[$day->format('Y-m-d')] = optional(optional($ob->leave)->type)->name ?? 'Leave';
+                }
+            }
+        }
+
+        $uniqueDays = optional(optional($item->organization)->shift)->times
+            ? $item->organization->shift->times->pluck('days')
+                ->flatMap(function ($days) {
+                    return explode(',', $days);
+                })->unique()->values()
+            : collect();
+
+        // Generate daily data
+        $dates = [];
+        foreach ($period as $date) {
+            $dateStr = $date->toDateString();
+
+            $status = null;
+            $title = null;
+
+            $dayNumber = (int) $date->format('N');
+            if (isset($holidays[$dateStr])) {
+                $status = 'Holiday';
+                $title = $holidays[$dateStr];
+            }
+            elseif (!$uniqueDays->contains($dayNumber)) {
+                $status = 'Non-working Day';
+                $title = 'Non-working Day';
+            }
+            elseif (isset($officialTravel[$dateStr])) {
+                $status = 'Official Travel';
+                $title = $officialTravel[$dateStr];
+            }elseif (isset($officialLeave[$dateStr])) {
+                $status = 'Official Leave';
+                $title = $officialLeave[$dateStr];
+            } elseif (isset($officialBusiness[$dateStr])) {
+                $status = 'Official Business';
+                $title = $officialBusiness[$dateStr];
+            }
+
+            $day = Carbon::parse($dateStr)->dayOfWeekIso; // 1-7
+
+            if (! $uniqueDays->contains($day)) {
+                continue;
+            }
+
+            $isAttendanceRequired = !in_array($status, [
+                'Holiday',
+                'Official Travel',
+                'Official Business',
+            ]);
+
+            $dtr = $item->dtrs->firstWhere('date', $dateStr);
+
+            $dates[] = [
+                'date' => Carbon::parse($dateStr)->format('F d, Y'),
+                'date_day' => Carbon::parse($dateStr)->format('l'),
+                'am_in' => ($dtr && $dtr->am_in_at) ? new TimeResource(json_decode($dtr->am_in_at)) : null,
+                'am_out' => ($dtr && $dtr->am_out_at) ? new TimeResource(json_decode($dtr->am_out_at)) : null,
+                'pm_in'  => ($dtr && $dtr->pm_in_at)  ? new TimeResource(json_decode($dtr->pm_in_at))  : null,
+                'pm_out' => ($dtr && $dtr->pm_out_at) ? new TimeResource(json_decode($dtr->pm_out_at)) : null,
+                'is_completed' => $isAttendanceRequired ? ($dtr?->is_completed) : null,
+                'status' => $status ?? ($dtr ? 'Present' : 'Absent'),
+                'title' => $title
+            ];
+        }
+
+        $holidayCount = collect($dates)->where('status', 'Holiday')->count();
+        $leaveCount = collect($dates)->where('status', 'Official Leave')->count();
+        $travelCount = collect($dates)->where('status', 'Official Travel')->count();
+        $businessCount = collect($dates)->where('status', 'Official Business')->count();
+        $absentCount = collect($dates)->where('status', 'Absent')->count();
+        $completedCount = collect($dates)->where('is_completed', 1)->count();
+        $totalWorkDays = count($dates) - ($holidayCount + $travelCount + $absentCount + $businessCount + $leaveCount);
+
+        return [
+            'dtrs' => $dates,
+            'holiday_count' => $holidayCount,
+            'leave_count' => $leaveCount,
+            'travel_count' => $travelCount,
+            'business_count' => $businessCount,
+            'absent_count' => $absentCount,
+            'completed_count' => $completedCount,
+            'total_work_days' => $totalWorkDays,
+            'is_complete' => $totalWorkDays > 0 && $completedCount == $totalWorkDays
+        ];
+    }
+
     public function payroll($request){
-      
+
         $data = PayrollCutoff::with('cycle')->where('id', $request->id)->first();
+        $start = Carbon::parse($data->start)->startOfDay();
+        $end = Carbon::parse($data->end)->endOfDay();
 
-        $user = $request->user_id;
-        $exist = Payroll::where('user_id', $user)->where('cutoff_id', $request->id)->first();
+        $userIds = $request->filled('user_ids') ? (array) $request->user_ids : array_filter([$request->user_id]);
+        $userIds = array_values(array_unique($userIds));
 
-        if(!$exist){
+        $added = [];
+        $skipped = [];
+
+        foreach ($userIds as $user) {
+            $exist = Payroll::where('user_id', $user)->where('cutoff_id', $request->id)->first();
+            if ($exist) {
+                $skipped[] = $user;
+                continue;
+            }
+
+            $employee = User::with(['organization.shift.times', 'dtrs' => function ($q) use ($start, $end) {
+                $q->whereBetween('date', [$start, $end]);
+            }])->find($user);
+
+            if (!$employee) {
+                $skipped[] = $user;
+                continue;
+            }
+
+            $summary = $this->buildDtrSummary($employee, $start, $end);
+            if (!$summary['is_complete']) {
+                $skipped[] = $user;
+                continue;
+            }
+
             $payroll = $data->payrolls()->create([
                 'user_id' => $user,
                 'cutoff_id' => $request->id
             ]);
-            
+
             if ($payroll) {
+                $added[] = $user;
                 $salary = floatval(str_replace(['₱', ','], '', optional(UserOrganization::with('salary')->where('user_id', $user)->first())->salary?->amount));
                 if($data->type == '1st') {
            
@@ -413,9 +494,11 @@ class ContractualClass
         }
 
         return [
-            'data' =>[],
-            'message' => 'Employees added successfully!',
-            'info' => "You've successfully created a new cycle."
+            'data' => ['added' => $added, 'skipped' => $skipped],
+            'message' => count($added) > 0 ? 'Employees added successfully!' : 'No employees were added.',
+            'info' => count($skipped) > 0
+                ? count($added) . ' added, ' . count($skipped) . ' skipped (already in payroll or incomplete DTR).'
+                : count($added) . ' employee(s) added to the payroll.'
         ];
     }
 
@@ -451,7 +534,7 @@ class ContractualClass
         })->toArray();
        
 
-        $leaves = Request::where('type_id', 158)
+        $excusedDates = Request::whereIn('type_id', [158, 156, 192])
         ->whereHas('tags', fn($q) => $q->where('user_id', $user))
         ->whereHas('dates', function ($q) use ($start, $end) {
             $q->whereBetween('start', [$start, $end])
@@ -461,9 +544,10 @@ class ContractualClass
                         ->where('end', '>', $end);
                 });
         })
+        ->with('dates')
         ->get();
 
-        foreach ($leaves as $ob) {
+        foreach ($excusedDates as $ob) {
             foreach ($ob->dates as $obDate) {
                 $period3 = \Carbon\CarbonPeriod::create($obDate->start, $obDate->end ?? $obDate->start);
                 foreach ($period3 as $day) {

@@ -17,8 +17,10 @@
                         <h5 class="mb-0 fs-14"><span class="text-body">Contractual Employees Payroll</span></h5>
                         <p class="text-muted text-truncate-two-lines fs-12">Manage and review payroll records for contractual employees, including salary details, deductions, and pay summaries.</p>
                     </div>
-                    <div class="flex-shrink-0" style="width: 45%;">
-                        
+                    <div class="flex-shrink-0 d-flex justify-content-end" style="width: 45%;" v-if="is_local">
+                        <b-button variant="soft-danger" size="sm" @click="emptyPayroll()" v-b-tooltip.hover title="Local only: wipes payroll_cycles, payroll_cutoffs, payrolls and payroll_deductions">
+                            <i class="ri-delete-bin-2-fill align-bottom"></i> Empty Payroll
+                        </b-button>
                     </div>
                 </div>
             </div>
@@ -113,12 +115,13 @@
 </template>
 <script>
 import _ from 'lodash';
+import { useForm } from '@inertiajs/vue3';
 import Create from './Modals/Create.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Create },
-    props: ['dropdowns'],
+    props: ['dropdowns','is_local'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -129,7 +132,10 @@ export default {
                 keyword: null,
                 date: null
             },
-            index: null
+            index: null,
+            emptyForm: useForm({
+                option: 'empty-payroll'
+            })
         }
     },
     watch: {
@@ -171,6 +177,15 @@ export default {
         },
         openCreate(){
             this.$refs.create.show();
+        },
+        emptyPayroll(){
+            if(!confirm('This will permanently delete ALL payroll cycles, cutoffs, payrolls, and deductions - regular and contractual alike (local testing only). Continue?')) return;
+            this.emptyForm.post('/payroll', {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.fetch();
+                },
+            });
         },
         formatMoney(value) {
             let val = (value/1).toFixed(2).replace(',', '.')

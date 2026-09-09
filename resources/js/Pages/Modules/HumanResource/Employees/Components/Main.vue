@@ -69,7 +69,8 @@ export default {
     data(){
         return {
             menus: [
-                'Informations','Address','Credits','Deductions','Contracts','Academics','Credentials'
+                'Informations','Credits','Deductions','Contracts'
+                // 'Address','Academics','Credentials'
             ],
             index: null,
         }

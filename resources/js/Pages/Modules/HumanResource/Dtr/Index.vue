@@ -31,9 +31,6 @@
                             <input type="date" style="width: 15%;" v-model="filter.date" class="form-control">
                             <Multiselect class="white" style="width: 15%;" :options="months" v-model="filter.month" label="name" :searchable="true" placeholder="Select Month" />
                             <Multiselect class="white" style="width: 15%;" :options="stations" v-model="filter.station" label="others" :searchable="true" placeholder="Select Stations" />
-                            <span @click="openPrint()" class="input-group-text" v-b-tooltip.hover title="Print" style="cursor: pointer;">
-                                <i class="ri ri-printer-fill search-icon"></i>
-                            </span>
                             <span @click="openFix()" class="input-group-text" v-b-tooltip.hover title="Fix / Recheck Records" style="cursor: pointer;">
                                 <i class="bx bx-wrench search-icon"></i>
                             </span>
@@ -120,21 +117,19 @@
     </div>
     <View @update="updateList" ref="view"/>
     <Generate ref="generate"/>
-    <Print :stations="stations" ref="print"/>
     <Fix :stations="stations" @update="fetch" ref="fix"/>
 </BRow>
 </template>
 <script>
 import _ from 'lodash';
 import View from './Modals/View.vue';
-import Print from './Modals/Print.vue';
 import Fix from './Modals/Fix.vue';
 import Generate from './Modals/Generate.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, View, Generate, Print, Fix, Multiselect },
+    components: { PageHeader, Pagination, View, Generate, Fix, Multiselect },
     props: ['counts','stations'],
     data(){
         return {
@@ -246,9 +241,6 @@ export default {
         },
         openGenerate(){
             this.$refs.generate.show();
-        },
-        openPrint(){
-            this.$refs.print.show();
         },
         openFix(){
             this.$refs.fix.show();

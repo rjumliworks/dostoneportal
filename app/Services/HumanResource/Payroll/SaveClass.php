@@ -3,10 +3,28 @@
 namespace App\Services\HumanResource\Payroll;
 
 use App\Models\Payroll;
+use App\Models\PayrollCycle;
 use App\Http\Resources\HumanResource\Payroll\Regular\PayrollResource;
 
 class SaveClass
 {
+    /**
+     * Dev-only helper: wipes every payroll table (payroll_cycles,
+     * payroll_cutoffs, payrolls, payroll_deductions) back to empty. Deleting
+     * the cycles is enough on its own - cutoffs/payrolls/deductions all
+     * cascade-delete via their foreign keys.
+     */
+    public function emptyPayroll(){
+        $count = PayrollCycle::count();
+        PayrollCycle::query()->delete();
+
+        return [
+            'data' => [],
+            'message' => 'Payroll tables emptied!',
+            'info' => $count . ' payroll cycle(s) removed, along with their cutoffs, payrolls, and deductions.'
+        ];
+    }
+
     public function remove($request){
         $payroll = Payroll::findOrFail($request->id);
         $payroll->delete();

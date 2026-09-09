@@ -67,8 +67,7 @@
                                 <tr class="fs-11">
                                     <th style="width: 3%;" class="text-center">#</th>
                                     <th>Code</th>
-                                    <th v-if="!filter.type" style="width: 14%;" class="text-center">Type</th>
-                                    <th v-else style="width: 14%;" class="text-center">{{ filter.type == 156 ? 'Mode' : (filter.type == 157 ? 'Vehicle' : 'Type') }}</th>
+                                    <th style="width: 15%;" class="text-center">Personnel</th>
                                     <th style="width: 15%;" class="text-center">Requested By</th>
                                     <th style="width: 12%;" class="text-center">Dates</th>
                                     <th style="width: 12%;" class="text-center">Date Filed</th>
@@ -94,22 +93,22 @@
                                     <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary">{{list.code }}</h5>
-                                    </td>
-                                    <td class="text-center" v-if="!filter.type">
-                                        <span v-if="list.type == 'Vehicle Reservation'" class="badge bg-secondary-subtle text-secondary">{{list.type}}</span>
-                                        <span v-else-if="list.type == 'Travel Order'" class="badge bg-success-subtle text-success">{{list.type}}</span>
-                                        <span v-else-if="list.type == 'Leave Form'" class="badge bg-danger-subtle text-danger">{{list.type}}</span>
-                                        <span v-else-if="list.type == 'Render Overtime Service'" class="badge bg-info-subtle text-info">{{list.type}}</span>
-                                        <span v-else-if="list.type == 'Training'" class="badge bg-primary-subtle text-dark">{{list.type}}</span>
-                                    </td>
-                                    <td class="text-center" v-else>
-                                        <span :class="'badge bg-primary'">{{list.subtype}}</span>
+                                        <p v-if="list.event_title" class="fs-12 text-muted mb-0">{{list.event_title}}</p>
                                     </td>
                                     <td class="text-center align-middle">
-                                        <div class="d-flex align-items-center justify-content-center gap-2">
-                                            <img :src="list.requested_by_avatar" alt="" class="rounded-circle avatar-xxs">
-                                            <span>{{ list.requested_by }}</span>
+                                        <div class="avatar-group d-inline-flex justify-content-center">
+                                            <div class="avatar-group-item material-shadow" v-for="(tag, tagIndex) of list.tags.slice(0, 5)" :key="tagIndex">
+                                                <img :src="tag.avatar" alt="" class="rounded-circle avatar-xxs">
+                                            </div>
+                                            <div class="avatar-group-item material-shadow" v-if="list.tags.length > 5">
+                                                <div class="avatar-xxs">
+                                                    <span class="avatar-title rounded-circle bg-primary text-white fs-11">+{{ list.tags.length - 5 }}</span>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        {{ list.requested_by }}
                                     </td>
                                     <td class="text-center">{{formatDateRange(list.start, list.end)}}</td>
                                     <td class="text-center">{{ list.created_at }}</td>

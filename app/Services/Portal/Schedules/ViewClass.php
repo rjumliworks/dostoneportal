@@ -27,7 +27,7 @@ class ViewClass
     {
         $events = RequestEvent::with([
             'request.dates',
-            'type',
+            'types',
             'mode',
             'audience'
         ])

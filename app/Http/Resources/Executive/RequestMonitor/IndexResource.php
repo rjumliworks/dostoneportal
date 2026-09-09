@@ -43,6 +43,7 @@ class IndexResource extends JsonResource
             'subtype' => $subtype,
             'is_completed' => $this->is_completed,
             'link' => Crypt::encryptString($link),
+            'event_title' => optional($this->travel?->events->first())->title,
             'purpose' => optional($this->detail)->purpose,
             'remarks' => optional($this->detail)->remarks,
             'start' => optional($this->dates->first())->start ?? '-',

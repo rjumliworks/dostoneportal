@@ -31,6 +31,7 @@ class ViewClass
             'tags.user:id',
             'tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'travel.mode',
+            'travel.events',
             'leave.type',
             'reservation.vehicle',
         ])
