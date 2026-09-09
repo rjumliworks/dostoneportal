@@ -44,6 +44,11 @@ class RequestEvent extends Model
         return $this->belongsTo('App\Models\Request', 'request_id', 'id');
     }
 
+    public function travels()
+    {
+        return $this->belongsToMany('App\Models\RequestTravel', 'request_travel_events', 'event_id', 'request_travel_id');
+    }
+
     public function getCreatedAgoAttribute()
     {
         return \Carbon\Carbon::parse($this->attributes['created_at'])->diffForHumans();

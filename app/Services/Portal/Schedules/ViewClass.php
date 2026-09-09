@@ -27,6 +27,14 @@ class ViewClass
     {
         $events = RequestEvent::with([
             'request.dates',
+            'request.user:id',
+            'request.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'request.tags.user:id',
+            'request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'travels.request.user:id',
+            'travels.request.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
+            'travels.request.tags.user:id',
+            'travels.request.tags.user.profile:user_id,firstname,middlename,lastname,avatar,suffix_id',
             'types',
             'mode',
             'audience'

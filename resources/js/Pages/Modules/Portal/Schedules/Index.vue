@@ -25,6 +25,7 @@
             </div>
         </div>
     </b-row>
+    <View ref="view"/>
 </template>
 
 <script>
@@ -38,11 +39,13 @@ import bootstrapPlugin from "@fullcalendar/bootstrap";
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import Multiselect from "@vueform/multiselect";
 import PageHeader from "@/Shared/Components/PageHeader.vue";
+import View from "./Modals/View.vue";
 export default {
     components: {
         PageHeader,
         Multiselect,
         FullCalendar,
+        View,
     },
     data() {
         return {
@@ -125,6 +128,12 @@ export default {
                 return "dayGridMonth";
             }
         },
+        editEvent(info){
+            this.$refs.view.show({
+                title: info.event.title,
+                ...info.event.extendedProps
+            });
+        },
     }
 };
 </script>
@@ -141,6 +150,7 @@ export default {
     display: flex;
     align-items: center;     /* vertical center */
     justify-content: center; /* horizontal center */
+    cursor: pointer;
 }
 
 /* Remove default padding that offsets centering */
