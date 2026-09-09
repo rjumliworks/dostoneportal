@@ -67,9 +67,13 @@ class OfficialResource extends JsonResource
     }
 
     /**
-     * Gathers everyone tied to this event: the person who originally
-     * tagged/registered it, its companions (if any), and everyone from
-     * every Travel Order that separately referenced this same event.
+     * Gathers everyone actually attending this event: the tags on the
+     * request that registered it (if any) plus everyone tagged on every
+     * Travel Order that separately references this same event. The
+     * requester/filer is deliberately excluded on its own - filing or
+     * registering an event doesn't mean you're attending it, and anyone
+     * who is attending is already represented via a tag (a travel filer
+     * tags themselves too when they're also traveling).
      */
     private function participants($official): array
     {
@@ -78,9 +82,6 @@ class OfficialResource extends JsonResource
         $collect = function ($req) use (&$users) {
             if (!$req) {
                 return;
-            }
-            if ($req->user) {
-                $users->push($req->user);
             }
             foreach ($req->tags as $tag) {
                 if ($tag->user) {
