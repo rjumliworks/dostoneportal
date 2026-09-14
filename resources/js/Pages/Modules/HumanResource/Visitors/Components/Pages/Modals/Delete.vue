@@ -85,7 +85,7 @@ export default {
             this.showModal = true;
         },
         submit(){
-            this.form.post('/users',{
+            this.form.post('/visitors',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('message',true);

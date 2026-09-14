@@ -73,6 +73,9 @@ class UserController extends Controller
                 case 'delete':
                     return $this->rekognition->delete($request);
                 break;
+                case 'delete-all':
+                    return $this->rekognition->deleteAll($request);
+                break;
             }
         });
 

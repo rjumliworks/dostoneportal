@@ -18,6 +18,10 @@
                     <button type="button" id="list-view-button" class="btn btn-soft-info nav-link btn-icon fs-14 filter-button material-shadow-none"><i class="ri-list-unordered"></i></button>
                     
                     <button
+                        v-if="lists.length"
+                        @click="openDeleteAll"
+                        class="btn btn-soft-danger"><i class="ri-delete-bin-6-line me-1 align-bottom"></i>Delete All</button>
+                    <button
                         @click="triggerFileInput"
                         class="btn btn-primary"><i class="ri-add-fill me-1 align-bottom"></i>Upload</button>
                     <input
@@ -84,17 +88,19 @@
     </div>
     <Rename ref="rename"/>
     <Delete @message="fetch()" ref="delete"/>
+    <DeleteAll @message="fetch()" ref="deleteAll"/>
     <Detail ref="detail"/>
 </template>
 <script>
 import Detail from './Modals/Detail.vue';
 import Rename from './Modals/Rename.vue';
 import Delete from './Modals/Delete.vue';
+import DeleteAll from './Modals/DeleteAll.vue';
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
 export default {
     props: ['code'],
-    components: { Detail, Rename, Delete },
+    components: { Detail, Rename, Delete, DeleteAll },
     data(){
         return {
             lists: [],
@@ -141,6 +147,9 @@ export default {
         openDelete(list,index){
             this.$refs.delete.show(list,this.code);
             this.index = index;
+        },
+        openDeleteAll(){
+            this.$refs.deleteAll.show(this.code);
         },
         openDetail(list,index){
             this.$refs.detail.show(list);

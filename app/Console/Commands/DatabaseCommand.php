@@ -18,40 +18,48 @@ class DatabaseCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Create a compressed mysqldump backup of the application database';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $filename = 'db-' . now()->format('Y-m-d_H-i-s') . '.sql.gz';
-        $path = storage_path('app/backups/' . $filename);
+        $connection = config('database.default');
+        $config = config("database.connections.{$connection}");
 
-        if (!file_exists(dirname($path))) {
-            mkdir(dirname($path), 0755, true);
+        $filename = 'db-' . now()->format('Y-m-d_H-i-s') . '.sql.gz';
+        $directory = storage_path('app/backups');
+        $path = $directory . DIRECTORY_SEPARATOR . $filename;
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
         }
 
         $command = sprintf(
-            'mysqldump -h%s -u%s -p%s %s | gzip > %s',
-            env('DB_HOST'),
-            env('DB_USERNAME'),
-            env('DB_PASSWORD'),
-            env('DB_DATABASE'),
-            $path
+            'mysqldump -h%s -P%s -u%s -p%s %s | gzip > %s',
+            escapeshellarg($config['host']),
+            escapeshellarg($config['port']),
+            escapeshellarg($config['username']),
+            escapeshellarg($config['password']),
+            escapeshellarg($config['database']),
+            escapeshellarg($path)
         );
 
-        exec($command);
+        exec($command . ' 2>&1', $output, $exitCode);
 
-        // Upload to Google Drive
-        Storage::disk('google')->put(
-            $filename,
-            fopen($path, 'r')
-        );
+        if ($exitCode !== 0 || !file_exists($path) || filesize($path) === 0) {
+            if (file_exists($path)) {
+                unlink($path);
+            }
 
-        // Delete local copy
-        unlink($path);
+            $this->error('Database backup failed: ' . implode("\n", $output));
 
-        $this->info('Database backup uploaded successfully.');
+            return self::FAILURE;
+        }
+
+        $this->info("Database backup created: {$filename}");
+
+        return self::SUCCESS;
     }
 }

@@ -261,15 +261,16 @@ class SaveClass
             $middleInitial = $profile->middlename ? strtoupper(substr($profile->middlename, 0, 1)) . '.' : '';
             $fullName = "{$profile->firstname} {$middleInitial} {$profile->lastname}";
 
-            $division = $user->organization->division->name ?? 'n/a';
-            $division_id = $user->organization->division->id ?? null;
+            $organization = $user->organization;
+            $division = optional(optional($organization)->division)->name ?? 'n/a';
+            $division_id = optional(optional($organization)->division)->id ?? null;
 
             $employees[] = [
                 'name' => $fullName,
-                'position' => $user->organization->position->name ?? 'n/a',
-                'position_short' => $user->organization->position->short ?? 'n/a',
-                'unit' => $user->organization->unit->name ?? 'n/a',
-                'unit_short' => $user->organization->unit->short ?? 'n/a',
+                'position' => optional(optional($organization)->position)->name ?? 'n/a',
+                'position_short' => optional(optional($organization)->position)->short ?? 'n/a',
+                'unit' => optional(optional($organization)->unit)->name ?? 'n/a',
+                'unit_short' => optional(optional($organization)->unit)->short ?? 'n/a',
                 'division' => $division,
                 'division_id' => $division_id,
                 'is_driver' => $tag->is_driver
@@ -291,11 +292,11 @@ class SaveClass
             'remarks' => $data->detail->remarks,
             'title' => $data->event->title, 
             'type' => $data->event->types->pluck('name')->implode(', '),
-            'mode' => $data->event->mode->name, 
-            'audience' => $data->event->audience->name, 
+            'mode' => optional($data->event->mode)->name,
+            'audience' => optional($data->event->audience)->name,
             'time' => $data->dates[0]->time,
             'date' => $formattedDateRange,
-            'destination' => $data->location->barangay->name.', '.$data->location->municipality->name,
+            'destination' => trim(optional($data->location->barangay)->name.', '.optional($data->location->municipality)->name, ', '),
             'venue' => $data->location->address,
             'employees' => $employees,
             'created_at' => $data->created_at

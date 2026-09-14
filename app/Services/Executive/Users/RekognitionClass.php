@@ -135,4 +135,44 @@ class RekognitionClass
         ];
     }
 
+    public function deleteAll($request){
+        $hashids = new Hashids('krad', 10);
+        $id = $hashids->decode($request->code)[0];
+
+        $rekognition = new RekognitionClient([
+            'version' => 'latest',
+            'region'      => config('services.rekognition.region'),
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        $files = UserFolderFile::whereHas('folder', function ($query) use ($id) {
+            $query->where('name', 'Reference')
+                ->where('user_id', $id);
+        })->get();
+
+        foreach ($files as $file) {
+            if (Storage::disk('s3')->exists($file->path)) {
+                Storage::disk('s3')->delete($file->path);
+            }
+            $faces = UserFace::where('file_id', $file->id)->get();
+            foreach ($faces as $face) {
+                $rekognition->deleteFaces([
+                    'CollectionId' => config('services.rekognition.collection_id'),
+                    'FaceIds' => [$face->face_id],
+                ]);
+                $face->delete();
+            }
+            $file->forceDelete();
+        }
+
+        return [
+            'data' => [],
+            'message' => 'All files deleted successfully!',
+            'info' => "All uploaded reference images have been deleted."
+        ];
+    }
+
 }

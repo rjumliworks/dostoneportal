@@ -13,13 +13,9 @@ class RekognitionClass
 {
     public function fetch($request)
     {
-        $hashids = new Hashids('krad', 10);
-        $id = $hashids->decode($request->code)[0];
+        $id = Visitor::where('username', $request->code)->value('id');
 
-        $data = UserFolderFile::whereHas('folder', function ($query) use ($id) {
-            $query->where('name', 'Reference')
-                ->where('user_id', $id);
-        })->get();
+        $data = VisitorFace::where('visitor_id', $id)->get();
 
         // Add signed URL to each file
         $data->transform(function ($file) {
@@ -39,7 +35,7 @@ class RekognitionClass
         $s3Path = $file->storeAs('oneportal/visitors', $filename, 's3');
 
         $id = Visitor::where('username',$request->code)->value('id');
-    
+
         try {
             $rekognition = new RekognitionClient([
                 'version' => 'latest',
@@ -58,7 +54,7 @@ class RekognitionClass
                         'Name' => $s3Path,
                     ],
                 ],
-                'ExternalImageId' => (string) $request->code, 
+                'ExternalImageId' => (string) $request->code,
                 'DetectionAttributes' => ['DEFAULT'],
             ]);
             foreach ($result['FaceRecords'] as $record) {
@@ -67,7 +63,9 @@ class RekognitionClass
                     'face_id' => $record['Face']['FaceId'],
                     'image_id' => $record['Face']['ImageId'],
                     'path' => $s3Path,
-                    'mime_type' => $file->getMimeType()
+                    'name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
                 ]);
             }
         } catch (\Exception $e) {
@@ -90,27 +88,52 @@ class RekognitionClass
                 'secret' => config('services.rekognition.secret'),
             ],
         ]);
-        $file = UserFolderFile::where('id',$request->file_id)->first();
+        $face = VisitorFace::where('id', $request->file_id)->first();
 
-      
-        if (Storage::disk('s3')->exists($file->path)) {
-            Storage::disk('s3')->delete($file->path);
-            $faces = UserFace::where('file_id', $request->file_id)->get();
-            foreach ($faces as $face) {
-                $rekognition->deleteFaces([
-                    'CollectionId' => config('services.rekognition.collection_id'),
-                    'FaceIds' => [$face->face_id],
-                ]);
-            }
-            $file->forceDelete();
-        } else {
-            dd('File not found in S3', $file->path);
+        if ($face && Storage::disk('s3')->exists($face->path)) {
+            Storage::disk('s3')->delete($face->path);
+            $rekognition->deleteFaces([
+                'CollectionId' => config('services.rekognition.collection_id'),
+                'FaceIds' => [$face->face_id],
+            ]);
+            $face->delete();
         }
 
         return [
             'data' => [],
             'message' => 'File deleted successfully!',
             'info' => "Your file has been deleted and is now available."
+        ];
+    }
+
+    public function deleteAll($request){
+        $rekognition = new RekognitionClient([
+            'version' => 'latest',
+            'region'      => config('services.rekognition.region'),
+            'credentials' => [
+                'key'    => config('services.rekognition.key'),
+                'secret' => config('services.rekognition.secret'),
+            ],
+        ]);
+
+        $id = Visitor::where('username', $request->code)->value('id');
+        $faces = VisitorFace::where('visitor_id', $id)->get();
+
+        foreach ($faces as $face) {
+            if (Storage::disk('s3')->exists($face->path)) {
+                Storage::disk('s3')->delete($face->path);
+            }
+            $rekognition->deleteFaces([
+                'CollectionId' => config('services.rekognition.collection_id'),
+                'FaceIds' => [$face->face_id],
+            ]);
+            $face->delete();
+        }
+
+        return [
+            'data' => [],
+            'message' => 'All files deleted successfully!',
+            'info' => "All uploaded reference images have been deleted."
         ];
     }
 }

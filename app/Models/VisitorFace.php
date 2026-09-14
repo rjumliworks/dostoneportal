@@ -9,7 +9,9 @@ class VisitorFace extends Model
     protected $fillable = [
         'visitor_id',
         'path',
+        'name',
         'mime_type',
+        'size',
         'face_id',
         'image_id'
     ];

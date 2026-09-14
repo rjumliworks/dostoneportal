@@ -171,6 +171,12 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::get('/rekognition/collection/{id}/face/{faceId}/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteFace']);
     Route::get('/rekognition/avatars/orphaned', [App\Http\Controllers\Executive\RekognitionController::class, 'orphanAvatars']);
     Route::get('/rekognition/avatars/orphaned/delete', [App\Http\Controllers\Executive\RekognitionController::class, 'deleteOrphanAvatars']);
+    Route::get('/system-maintenance', [App\Http\Controllers\Executive\MaintenanceController::class, 'index']);
+    Route::post('/system-maintenance/backups', [App\Http\Controllers\Executive\MaintenanceController::class, 'runBackup']);
+    Route::delete('/system-maintenance/backups', [App\Http\Controllers\Executive\MaintenanceController::class, 'deleteBackup']);
+    Route::get('/system-maintenance/backups/{filename}/download', [App\Http\Controllers\Executive\MaintenanceController::class, 'downloadBackup']);
+    Route::post('/system-maintenance/cache-clear', [App\Http\Controllers\Executive\MaintenanceController::class, 'clearCache']);
+    Route::post('/system-maintenance/mode', [App\Http\Controllers\Executive\MaintenanceController::class, 'toggleMode']);
 });
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);

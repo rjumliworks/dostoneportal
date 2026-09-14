@@ -59,6 +59,28 @@ class VisitorController extends Controller
             case 'file':
                 return $this->rekognition->store($request);
             break;
+            case 'delete':
+                $result = $this->handleTransaction(function () use ($request) {
+                    return $this->rekognition->delete($request);
+                });
+                return back()->with([
+                    'data' => $result['data'],
+                    'message' => $result['message'],
+                    'info' => $result['info'],
+                    'status' => $result['status'],
+                ]);
+            break;
+            case 'delete-all':
+                $result = $this->handleTransaction(function () use ($request) {
+                    return $this->rekognition->deleteAll($request);
+                });
+                return back()->with([
+                    'data' => $result['data'],
+                    'message' => $result['message'],
+                    'info' => $result['info'],
+                    'status' => $result['status'],
+                ]);
+            break;
             case 'visitor':
                 $result = $this->handleTransaction(function () use ($request) {
                     return $this->save->store($request);

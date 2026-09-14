@@ -110,13 +110,13 @@
                                                                 <i class="ri-edit-2-fill me-2"></i> Print
                                                             </a>
                                                         </li>
-                                                        <!-- <li><hr class="dropdown-divider"></li>
+                                                        <li><hr class="dropdown-divider"></li>
                                                         <li>
                                                             <a @click="openActivation(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                                 <span v-if="list.status.name == 'Active'" class="text-danger"><i class="ri-lock-2-fill me-2"></i> Deactivate User</span>
                                                                 <span v-else class="text-success"><i class="ri-lock-unlock-line me-2"></i> Activate User</span>
                                                             </a>
-                                                        </li> -->
+                                                        </li>
                                                     </BDropdown>
                                                 </div>
                                             </div>

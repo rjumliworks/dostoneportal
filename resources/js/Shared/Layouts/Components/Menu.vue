@@ -271,6 +271,13 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/system-maintenance" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/Maintenance') }">
+                    <i class="ri-settings-4-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Maintenance</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <BLink class="nav-link menu-link" href="#sidebarDashboards"
                     :class="{'active': $page.url.startsWith('Modules/System/References') }"
                     data-bs-toggle="collapse" role="button" :aria-expanded="$page.url.startsWith('/references')" aria-controls="sidebarDashboards">
