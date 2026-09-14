@@ -4,9 +4,63 @@ namespace App\Services\HumanResource\Credit;
 
 use App\Models\User;
 use App\Models\ListLeave;
+use App\Models\UserCredit;
 
 class SaveClass
 {
+    /**
+     * Manually grant leave credits to a single employee (HR-initiated, not
+     * the automated yearly accrual). Adds to whatever balance already
+     * exists for that employee/leave/year, creating the row if needed, and
+     * logs the addition for audit purposes.
+     */
+    public function addCredit($request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'leave_id' => 'required|exists:list_leaves,id',
+            'amount' => 'required|numeric|min:0.01',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        $year = date('Y');
+
+        $credit = UserCredit::firstOrNew([
+            'user_id' => $request->user_id,
+            'leave_id' => $request->leave_id,
+            'year' => $year,
+        ]);
+
+        $oldBalance = $credit->exists ? $credit->balance : 0;
+
+        if (!$credit->exists) {
+            $credit->balance = 0;
+            $credit->earned = 0;
+            $credit->used = 0;
+            $credit->is_active = 1;
+        }
+
+        $credit->balance += $request->amount;
+        $credit->earned += $request->amount;
+        $credit->save();
+
+        $credit->logs()->create([
+            'amount' => $request->amount,
+            'old_balance' => $oldBalance,
+            'new_balance' => $credit->balance,
+            'remarks' => $request->remarks ?: 'Manually added by HR',
+            'is_automated' => 0,
+            'user_id' => auth()->id(),
+            'type_id' => 162,
+        ]);
+
+        return [
+            'data' => $credit,
+            'message' => 'Leave credits added successfully',
+            'info' => 'The employee\'s leave balance has been updated.',
+        ];
+    }
+
     /**
      * Generate initial leave credit balances (and logs).
      *

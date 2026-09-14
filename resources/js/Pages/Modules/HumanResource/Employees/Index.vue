@@ -50,14 +50,14 @@
                         <div class="flex-grow-1">
                             <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                                 <li class="nav-item">
-                                    <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+                                    <BLink @click="viewStatus(null,null)" class="nav-link py-3" :class="this.index === null ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" :aria-selected="this.index === null">
                                     <i class="ri-apps-2-line me-1 align-bottom"></i> All Employees
                                     </BLink>
                                 </li>
                                 <li class="nav-item" v-for="(list,index) in counts" v-bind:key="index">
-                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" :aria-selected="this.index == index">
                                         <i :class="list.icon" class="me-1 align-bottom"></i>
-                                        {{ list.name }} 
+                                        {{ list.name }}
                                         <BBadge v-if="list.count > 0" :class="(this.index == index) ? 'bg-primary text-white' : 'text-dark bg-primary-subtle'" class="align-middle ms-1">{{list.count}}</BBadge>
                                     </BLink>
                                 </li>

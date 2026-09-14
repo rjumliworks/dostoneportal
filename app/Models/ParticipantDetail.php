@@ -23,8 +23,8 @@ class ParticipantDetail extends Model
 
     public function getAvatarAttribute($value)
     {
-        if ($value === 'noavatar.jpg') {
-            return asset('images/avatars/' . $value);
+        if (empty($value) || $value === 'noavatar.jpg') {
+            return asset('images/avatars/noavatar.jpg');
         }
 
         return Storage::disk('s3')->url($value) . '?v=' . ($this->updated_at?->timestamp ?? time());

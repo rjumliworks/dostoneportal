@@ -15,9 +15,7 @@ class ViewResource extends JsonResource
             'organization' => $this->organization,
             'created_at' => $this->created_at,
             'credits' => $this->credits,
-            'avatar' => ($this->profile && $this->profile->avatar && $this->profile->avatar !== 'noavatar.jpg')
-            ? asset('storage/' . $this->profile->avatar) 
-            : asset('images/avatars/avatar.jpg'), 
+            'avatar' => $this->profile?->avatar ?? asset('images/avatars/noavatar.jpg'),
         ];
     }
 }

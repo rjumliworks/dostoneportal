@@ -46,6 +46,11 @@
                                 <i class="ri-tools-fill me-1 align-bottom"></i> System Tools
                             </BLink>
                         </li>
+                        <li class="nav-item">
+                            <BLink @click="tab = 'cloud'" class="nav-link py-3" :class="{ 'active': tab === 'cloud' }" data-bs-toggle="tab" role="tab">
+                                <i class="ri-cloud-line me-1 align-bottom"></i> Cloud Storage
+                            </BLink>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body bg-white rounded-bottom">
@@ -53,6 +58,7 @@
                     <Storage v-if="tab === 'storage'" :info="storage" @refresh="fetchStorage()" />
                     <Backups v-if="tab === 'backups'" :lists="backupsList" @refresh="fetchBackups()" @message="showAlert" />
                     <Tools v-if="tab === 'tools'" :info="info" @message="showAlert" />
+                    <CloudStorage v-if="tab === 'cloud'" @message="showAlert" />
                 </div>
             </div>
         </div>
@@ -64,9 +70,10 @@ import SystemInfo from './Components/SystemInfo.vue';
 import Storage from './Components/Storage.vue';
 import Backups from './Components/Backups.vue';
 import Tools from './Components/Tools.vue';
+import CloudStorage from './Components/CloudStorage.vue';
 
 export default {
-    components: { PageHeader, SystemInfo, Storage, Backups, Tools },
+    components: { PageHeader, SystemInfo, Storage, Backups, Tools, CloudStorage },
     props: ['systemInfo', 'storageInfo', 'backups', 'scheduledTasks'],
     data() {
         return {

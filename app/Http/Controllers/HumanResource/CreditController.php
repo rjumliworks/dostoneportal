@@ -33,17 +33,21 @@ class CreditController extends Controller
                 return inertia('Modules/HumanResource/Credits/Index',[
                     'dropdowns' => [
                         'leaves' => $this->dropdown->leaves(),
-                        'details' => $this->dropdown->dropdowns('Leave Details')
-                    ]
-                ]); 
+                        'details' => $this->dropdown->dropdowns('Leave Details'),
+                        'leave_types' => $this->dropdown->leaveTypes(),
+                        'divisions' => $this->dropdown->dropdowns('Division'),
+                        'stations' => $this->dropdown->stations(),
+                    ],
+                    'counts' => $this->view->counts(),
+                ]);
         }   
     }
 
     public function store(Request $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
-                case 'credit':
-                    return $this->save->store();
+                case 'add-credit':
+                    return $this->save->addCredit($request);
                 break;
             }
         });

@@ -181,6 +181,16 @@ class DropdownClass
         return $grouped;
     }
 
+    public function leaveTypes(){
+        return ListLeave::where('is_active', 1)->orderBy('name')->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'max_days' => $item->max_days,
+            ];
+        });
+    }
+
     public function dropdowns($class,$type = null){
         $data = ListDropdown::where('classification',$class)
         ->when($type, function ($query) use ($type){

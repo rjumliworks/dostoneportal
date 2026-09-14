@@ -177,6 +177,9 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::get('/system-maintenance/backups/{filename}/download', [App\Http\Controllers\Executive\MaintenanceController::class, 'downloadBackup']);
     Route::post('/system-maintenance/cache-clear', [App\Http\Controllers\Executive\MaintenanceController::class, 'clearCache']);
     Route::post('/system-maintenance/mode', [App\Http\Controllers\Executive\MaintenanceController::class, 'toggleMode']);
+    Route::get('/system-maintenance/s3', [App\Http\Controllers\Executive\MaintenanceController::class, 's3Browse']);
+    Route::get('/system-maintenance/s3/download', [App\Http\Controllers\Executive\MaintenanceController::class, 's3DownloadFile']);
+    Route::get('/system-maintenance/s3/download-folder', [App\Http\Controllers\Executive\MaintenanceController::class, 's3DownloadFolder']);
 });
 
 Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);

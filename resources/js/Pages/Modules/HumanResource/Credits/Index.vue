@@ -31,12 +31,11 @@
                                 <Multiselect v-if="filter.division" class="white" style="width: 11%;" :options="units" v-model="filter.unit" label="short" :searchable="true" placeholder="Select Unit" />
                                 <Multiselect class="white" style="width: 13%;" :options="dropdowns.divisions" v-model="filter.division" label="others" :searchable="true" placeholder="Select Division" />
                                 <Multiselect class="white" style="width: 13%;" :options="dropdowns.stations" v-model="filter.station" label="others" :searchable="true" placeholder="Select Stations" />
-                                <Multiselect class="white" style="width: 13%;" :options="dropdowns.statuses" v-model="filter.status" label="name" :searchable="true" placeholder="Select Status" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
-                                <b-button type="button" variant="primary" @click="openCreate">
-                                    <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                                <b-button type="button" variant="primary" @click="openAdd">
+                                    <i class="ri-add-circle-fill align-bottom me-1"></i> Add Credits
                                 </b-button>
                             </div>
                         </b-col>
@@ -47,14 +46,14 @@
                         <div class="flex-grow-1">
                             <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                                 <li class="nav-item">
-                                    <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+                                    <BLink @click="viewStatus(null,null)" class="nav-link py-3" :class="this.index === null ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" :aria-selected="this.index === null">
                                     <i class="ri-apps-2-line me-1 align-bottom"></i> All Employees
                                     </BLink>
                                 </li>
                                 <li class="nav-item" v-for="(list,index) in counts" v-bind:key="index">
-                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? 'text-primary active' : ''" data-bs-toggle="tab" role="tab" :aria-selected="this.index == index">
                                         <i :class="list.icon" class="me-1 align-bottom"></i>
-                                        {{ list.name }} 
+                                        {{ list.name }}
                                         <BBadge v-if="list.count > 0" :class="(this.index == index) ? 'bg-primary text-white' : 'text-dark bg-primary-subtle'" class="align-middle ms-1">{{list.count}}</BBadge>
                                     </BLink>
                                 </li>
@@ -74,17 +73,22 @@
                                 <tr class="fs-11">
                                     <th style="width: 3%;"></th>
                                     <th>Name</th>
-                                    
-                                    <th style="width: 10%;" class="text-center">Status</th>
-                                    <th style="width: 6%;"></th>
+                                    <th style="width: 7%;" class="text-center">CTO</th>
+                                    <th style="width: 7%;" class="text-center">VL</th>
+                                    <th style="width: 7%;" class="text-center">SL</th>
+                                    <th style="width: 7%;" class="text-center">FL</th>
+                                    <th style="width: 7%;" class="text-center">SPL</th>
+                                    <th style="width: 7%;" class="text-center">Maternity</th>
+                                    <th style="width: 7%;" class="text-center">Paternity</th>
+                                    <th style="width: 7%;" class="text-center">Study</th>
+                                    <th style="width: 7%;" class="text-center">Wellness</th>
+                                    <th style="width: 7%;" class="text-center">Status</th>
+                                    <th style="width: 3%;"></th>
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
                                 <tr v-for="(list,index) in lists" v-bind:key="index" @click="selectRow(index)"
-                                 :class="filter.status === null ? {
-                                    'bg-info-subtle': selectedRow === index,
-                                    'bg-danger-subtle': list.organization.status.name === 'Retired',
-                                } : ''">
+                                 :class="{ 'bg-info-subtle': selectedRow === index }">
                                     <td class="text-center"> 
                                         <div class="avatar-xs chat-user-img online">
                                             <img :src="list.avatar" alt="" class="avatar-xs rounded-circle">
@@ -95,7 +99,36 @@
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary text-uppercase">{{list.profile.name}}</h5>
                                         <p class="fs-12 text-muted mb-0">{{list.organization.position.name}}</p>
                                     </td>
-                      
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.cto)">{{ list.leave_credits.cto }}</div>
+                                        <div v-if="list.leave_credits.cto_hours" class="text-muted fs-11">{{ list.leave_credits.cto_hours }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.vacation)">{{ list.leave_credits.vacation }}</div>
+                                        <div v-if="list.leave_credits.vacation_hours" class="text-muted fs-11">{{ list.leave_credits.vacation_hours }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.sick)">{{ list.leave_credits.sick }}</div>
+                                        <div v-if="list.leave_credits.sick_hours" class="text-muted fs-11">{{ list.leave_credits.sick_hours }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.force)">{{ list.leave_credits.force }}</div>
+                                        <div v-if="list.leave_credits.force_hours" class="text-muted fs-11">{{ list.leave_credits.force_hours }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.special_privilege)">{{ list.leave_credits.special_privilege }}</div>
+                                        <div v-if="list.leave_credits.special_privilege_hours" class="text-muted fs-11">{{ list.leave_credits.special_privilege_hours }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.maternity)">{{ list.leave_credits.maternity }}</div>
+                                        <div v-if="list.leave_credits.maternity_hours" class="text-muted fs-11">{{ list.leave_credits.maternity_hours }}</div>
+                                    </td>
+                                    <td class="text-center"><span :class="naClass(list.leave_credits.paternity)">{{ list.leave_credits.paternity }}</span></td>
+                                    <td class="text-center"><span :class="naClass(list.leave_credits.study)">{{ list.leave_credits.study }}</span></td>
+                                    <td class="text-center">
+                                        <div :class="naClass(list.leave_credits.wellness)">{{ list.leave_credits.wellness }}</div>
+                                        <div v-if="list.leave_credits.wellness_hours" class="text-muted fs-11">{{ list.leave_credits.wellness_hours }}</div>
+                                    </td>
                                     <td class="text-center">
                                         <span :class="'badge '+list.organization.status.color+' '+list.organization.status.bg">{{list.organization.status.name}}</span>
                                     </td>
@@ -120,18 +153,18 @@
             </div>
         </div>
     </BRow>
-    <Create ref="create"/>
+    <Add :leave-types="dropdowns.leave_types" @added="fetch()" ref="add"/>
     <View ref="view"/>
 </template>
 <script>
 import _ from 'lodash';
 import View from './Modals/View.vue';
-import Create from './Modals/Create.vue';
+import Add from './Modals/Add.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, View },
+    components: { PageHeader, Pagination, Multiselect, Add, View },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -141,7 +174,10 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                status: null
+                type: null,
+                division: null,
+                station: null,
+                unit: null
             },
             index: null,
             selectedRow: null,
@@ -152,7 +188,20 @@ export default {
         "filter.keyword"(newVal){
             this.checkSearchStr(newVal);
         },
-        "filter.status"(newVal){
+        "filter.division"(newVal){
+            if(!newVal){
+                this.units = [];
+                this.filter.unit = null;
+                this.fetch();
+            }else{
+                this.fetchUnits(newVal);
+                this.fetch();
+            }
+        },
+        "filter.station"(newVal){
+            this.fetch();
+        },
+        "filter.unit"(newVal){
             this.fetch();
         }
     },
@@ -168,7 +217,10 @@ export default {
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
-                    status: this.filter.status,
+                    type: this.filter.type,
+                    division: this.filter.division,
+                    unit: this.filter.unit,
+                    station: this.filter.station,
                     count: 10, //Math.floor((window.innerHeight-350)/59)
                     option: 'lists'
                 }
@@ -177,18 +229,33 @@ export default {
                 if(response){
                     this.lists = response.data.data;
                     this.meta = response.data.meta;
-                    this.links = response.data.links;          
+                    this.links = response.data.links;
                 }
             })
             .catch(err => console.log(err));
+        },
+        fetchUnits(code){
+            axios.get('/search',{
+                params: {
+                    option: 'units',
+                    code: code
+                }
+            })
+            .then(response => {
+                this.units = response.data;
+            })
+            .catch(err => console.log(err));
+        },
+        naClass(value){
+            return value === 'N/A' ? 'text-muted fs-11' : '';
         },
         viewStatus(index,type){
             this.index = index;
             this.filter.type = type;
             this.fetch();
         },
-        openCreate(){
-            this.$refs.create.show();
+        openAdd(){
+            this.$refs.add.show();
         },
         openView(data,index){
             this.index = index;

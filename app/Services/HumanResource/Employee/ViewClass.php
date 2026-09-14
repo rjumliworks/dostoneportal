@@ -13,11 +13,19 @@ use App\Http\Resources\HumanResource\Employee\IndexResource;
 
 class ViewClass
 {
+    protected const EMPLOYMENT_TYPE_ICONS = [
+        'Plantilla' => 'ri-user-star-fill',
+        'Contract of Service' => 'ri-file-user-fill',
+        'Job Order' => 'ri-briefcase-fill',
+        'Agency' => 'ri-building-fill',
+    ];
+
     public function counts(){
         $statuses = ListData::where('is_active',1)->where('type','Employment Status')->get()->map(function ($item) {
             return [
                 'value' => $item->id,
                 'name' => $item->name,
+                'icon' => self::EMPLOYMENT_TYPE_ICONS[$item->name] ?? 'ri-user-fill',
                 'count' => UserOrganization::where('type_id',$item->id)->count()
             ];
         });
