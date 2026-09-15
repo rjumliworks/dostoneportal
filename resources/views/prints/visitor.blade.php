@@ -186,9 +186,9 @@
                 @php
                     // Manually insert Official Business (OJT) days - training with no time punches
                     $officialBusinessDates = [
-                        '2026-08-03' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
-                        '2026-08-04' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
-                        '2026-08-05' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
+                        //'2026-08-03' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
+                        //'2026-08-04' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
+                       // '2026-08-05' => 'Workshop on measurement uncertainty and method verification in microbiological testing',
                     ];
 
                     $lists = collect($lists)->keyBy('date');
