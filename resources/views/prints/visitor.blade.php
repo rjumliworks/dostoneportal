@@ -389,10 +389,10 @@
                             ____________________________
                         </div>
                         <div style="font-weight:bold; font-size:10px;">
-                            Ricardo J. Apolinario III
+                            RICARDO J. APOLINARIIO III
                         </div>
                         <div style="font-size:10px;">
-                            Assistant Regional Director for Technical Operations Services
+                            Assistant Regional Director - Technical Operations Services
                         </div>
                     </td>
                 </tr>
