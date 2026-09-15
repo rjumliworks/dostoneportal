@@ -389,10 +389,10 @@
                             ____________________________
                         </div>
                         <div style="font-weight:bold; font-size:10px;">
-                            Julius T. Fojas
+                            Ricardo J. Apolinario III
                         </div>
                         <div style="font-size:10px;">
-                            Laboratory Head
+                            Assistant Regional Director for Technical Operations Services
                         </div>
                     </td>
                 </tr>
