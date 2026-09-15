@@ -386,7 +386,7 @@
                     <td style="border:none; width:60%;"></td>
                     <td style="border:none; width:40%; text-align:center;">
                         <div style="margin-bottom:5px;">
-                            ____________________________
+                            ___________________________________________________________
                         </div>
                         <div style="font-weight:bold; font-size:10px;">
                             RICARDO J. APOLINARIIO III
