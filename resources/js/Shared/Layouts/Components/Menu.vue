@@ -46,6 +46,312 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
                 </Link>
             </li>
+            <template v-if="['Procurement Staff','Procurement Officer','Budget Officer'].some(role => $page.props.roles.includes(role))">
+            <li class="menu-title">
+                <i class="ri-more-fill" aria-expanded="false"></i>
+                <span data-key="t-menu">Procurement</span>
+            </li>
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Budget Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/procurement-dashboard"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/Dashboard'),
+                }"
+                >
+                <i class="ri-apps-fill"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
+                </Link>
+            </li>
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Budget Officer') ||
+                $page.props.roles.includes('Administrator') ||
+                $page.props.roles.includes('Employee')
+                "
+            >
+                <Link
+                href="/procurement-ppmp"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/PPMP'),
+                }"
+                >
+                <i class="ri-file-list-2-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">PPMP</span>
+                </Link>
+            </li>
+            <li class="nav-item">
+                <Link
+                href="/procurements"
+                class="nav-link menu-link"
+                :class="{
+                    active:
+                    $page.component.startsWith('Modules/Procurement/Index') ||
+                    ($page.component.startsWith('Modules/Procurement/View') &&
+                        !isProcurementProcessActive),
+                }"
+                >
+                <i class="ri-file-list-3-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Request</span>
+                </Link>
+            </li>
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/procurement-assignments"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/Assignments'),
+                }"
+                >
+                <i class="ri-route-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Assignment</span>
+                </Link>
+            </li>
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Budget Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                v-if="
+                    $page.props.roles.includes('Budget Officer') ||
+                    $page.props.roles.includes('Procurement Officer') ||
+                    $page.props.roles.includes('Administrator')
+                "
+                href="/procurement-codes"
+                class="nav-link menu-link"
+                :class="{
+                    active:
+                    $page.component.startsWith('Modules/Procurement/Code') &&
+                    !$page.component.startsWith(
+                        'Modules/Procurement/Code/BudgetRequests'
+                    ),
+                }"
+                >
+                <i class="ri-code-box-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">PAP Codes</span>
+                </Link>
+
+                <Link
+                v-if="
+                    $page.props.roles.includes('Budget Officer') ||
+                    $page.props.roles.includes('Administrator')
+                "
+                href="/procurement-codes?option=budget_requests"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith(
+                    'Modules/Procurement/Code/BudgetRequests'
+                    ),
+                }"
+                >
+                <i class="ri-funds-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Budget Request</span>
+                </Link>
+
+                <Link
+                v-if="
+                    $page.props.roles.includes('Procurement Officer') ||
+                    $page.props.roles.includes('Administrator')
+                "
+                href="/responsibility-centers"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith(
+                    'Modules/Procurement/ResponsibilityCenters'
+                    ),
+                }"
+                >
+                <i class="ri-code-box-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards"
+                    >Responsibility Centers</span
+                >
+                </Link>
+
+                <Link
+                v-if="
+                    $page.props.roles.includes('Procurement Staff') ||
+                    $page.props.roles.includes('Procurement Officer') ||
+                    $page.props.roles.includes('Administrator')
+                "
+                href="/modes-of-procurement"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith(
+                    'Modules/Procurement/ModesOfProcurement'
+                    ),
+                }"
+                >
+                <i class="ri-code-box-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards"
+                    >Modes of Procurement</span
+                >
+                </Link>
+            </li>
+
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/suppliers"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/Suppliers'),
+                }"
+                >
+                <i class="ri-truck-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Suppliers</span>
+                </Link>
+            </li>
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/bac-resolutions"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/BACResolution'),
+                }"
+                >
+                <i class="ri-government-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">BAC Resolutions</span>
+                </Link>
+            </li>
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/notice-of-awards"
+                class="nav-link menu-link"
+                :class="{ active: $page.component.startsWith('Modules/Procurement/NOA') }"
+                >
+                <i class="ri-file-text-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Notice of Awards</span>
+                </Link>
+            </li>
+
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Supply Staff') ||
+                $page.props.roles.includes('Supply Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/receiving-deliveries"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.url.startsWith('/receiving-deliveries'),
+                }"
+                >
+                <i class="ri-inbox-archive-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards"
+                    >Receiving Deliveries
+                </span>
+                </Link>
+            </li>
+
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/ia-reports"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/IAReport'),
+                }"
+                >
+                <i class="ri-file-search-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards"
+                    >Inspection and Acceptance Reports
+                </span>
+                </Link>
+            </li>
+
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/purchase-orders"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/PurchaseOrder'),
+                }"
+                >
+                <i class="ri-shopping-bag-3-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Purchase Orders</span>
+                </Link>
+            </li>
+
+            <li
+                class="nav-item"
+                v-if="
+                $page.props.roles.includes('Procurement Staff') ||
+                $page.props.roles.includes('Procurement Officer') ||
+                $page.props.roles.includes('Administrator')
+                "
+            >
+                <Link
+                href="/procurement-reports"
+                class="nav-link menu-link"
+                :class="{
+                    active: $page.component.startsWith('Modules/Procurement/Reports'),
+                }"
+                >
+                <i class="ri-pie-chart-2-line"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards"
+                    >Procurement Reports</span
+                >
+                </Link>
+            </li>
+            </template>
             <template v-if="['Event Manager', 'Session Manager'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

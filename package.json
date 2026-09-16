@@ -75,6 +75,7 @@
         "vue3-echarts": "^1.1.0",
         "vue3-google-map": "^0.21.1",
         "vue3-signature-pad": "^1.0.7",
+        "vuedraggable": "^2.24.3",
         "vuex": "^4.1.0"
     }
 }

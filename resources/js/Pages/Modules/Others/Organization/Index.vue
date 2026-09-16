@@ -27,7 +27,77 @@
 
 
                 <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 295px); overflow: auto;">
-                    <div class="container text-center">
+                    <div class="container text-center" v-if="group !== 'top-management'">
+                        <h5 class="fw-semibold fs-15 mb-4">{{ committee.label }}</h5>
+
+                        <!-- Chairperson -->
+                        <div v-if="committee.chairperson" class="row justify-content-center mb-4">
+                            <div class="col-md-3" style="cursor: pointer;" @click="openView(committee.chairperson)">
+                                <div class="card-body border rounded-4 text-center">
+                                   
+                                    <div class="mb-2 mx-auto">
+                                        <img :src="committee.chairperson.avatar" alt="" class="img-thumbnail avatar-sm rounded-circle shadow-none">
+                                    </div>
+                                    <h5 v-if="committee.chairperson.oic" class="fs-12 mb-0 text-warning fw-semibold">{{ committee.chairperson.oic.name }}</h5>
+                                    <h5 v-else-if="committee.chairperson.user" class="fs-12 mb-0 text-primary fw-semibold">{{ committee.chairperson.user.name }}</h5>
+                                    <h5 v-else class="fs-12 text-warning mb-0">Not Assigned</h5>
+                                    <p class="fs-12 text-muted mb-0"><span v-if="committee.chairperson.is_oic">OIC - </span>{{ committee.chairperson.designation }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vice Chairperson -->
+                        <div v-if="committee.vice_chairperson" class="row justify-content-center mb-4">
+                            <div class="col-md-3" style="cursor: pointer;" @click="openView(committee.vice_chairperson)">
+                                <div class="card-body border rounded-4 text-center">
+                                    
+                                    <div class="mb-2 mx-auto">
+                                        <img :src="committee.vice_chairperson.avatar" alt="" class="img-thumbnail avatar-sm rounded-circle shadow-none">
+                                    </div>
+                                    <h5 v-if="committee.vice_chairperson.oic" class="fs-12 mb-0 text-warning fw-semibold">{{ committee.vice_chairperson.oic.name }}</h5>
+                                    <h5 v-else-if="committee.vice_chairperson.user" class="fs-12 mb-0 text-primary fw-semibold">{{ committee.vice_chairperson.user.name }}</h5>
+                                    <h5 v-else class="fs-12 text-warning mb-0">Not Assigned</h5>
+                                    <p class="fs-12 text-muted mb-0"><span v-if="committee.vice_chairperson.is_oic">OIC - </span>{{ committee.vice_chairperson.designation }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flat member list (BAC, TWG) -->
+                        <div v-if="committee.members" class="row justify-content-center">
+                            <div class="col-md-3 mb-3" v-for="member in committee.members" :key="member.id" style="cursor: pointer;" @click="openView(member)">
+                                <div class="card-body border rounded-4 text-center">
+                                    <div class="mb-2 mx-auto">
+                                        <img :src="member.avatar" alt="" class="avatar-sm img-thumbnail rounded-circle shadow-none">
+                                    </div>
+                                    <h5 v-if="member.oic" class="fs-12 mb-0 text-warning fw-semibold">{{ member.oic.name }}</h5>
+                                    <h5 v-else-if="member.user" class="fs-12 mb-0 text-primary fw-semibold">{{ member.user.name }}</h5>
+                                    <h5 v-else class="fs-12 text-warning mb-0">Not Assigned</h5>
+                                    <p class="fs-12 text-muted mb-0"><span v-if="member.is_oic">OIC - </span>{{ member.designation }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Members grouped per station (IAR) -->
+                        <div v-if="committee.stations">
+                            <div v-for="station in committee.stations" :key="station.station" class="mb-4">
+                                <h6 class="text-muted fs-13 text-uppercase mb-3">{{ station.station }}</h6>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-3 mb-3" v-for="member in station.members" :key="member.id" style="cursor: pointer;" @click="openView(member)">
+                                        <div class="card-body border rounded-4 text-center">
+                                            <div class="mb-2 mx-auto">
+                                                <img :src="member.avatar" alt="" class="avatar-sm img-thumbnail rounded-circle shadow-none">
+                                            </div>
+                                            <h5 v-if="member.oic" class="fs-12 mb-0 text-warning fw-semibold">{{ member.oic.name }}</h5>
+                                            <h5 v-else-if="member.user" class="fs-12 mb-0 text-primary fw-semibold">{{ member.user.name }}</h5>
+                                            <h5 v-else class="fs-12 text-warning mb-0">Not Assigned</h5>
+                                            <p class="fs-12 text-muted mb-0"><span v-if="member.is_oic">OIC - </span>{{ member.designation }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container text-center" v-else>
                         <!-- Level 1 -->
                         <div class="row justify-content-center mb-4">
                             <div class="col-md-3" style="cursor: pointer;" @click="openView(designations.data[0])">
@@ -146,7 +216,7 @@
 import View from './Modals/View.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    props: ['designations'],
+    props: ['designations', 'committee', 'group'],
     components: { PageHeader, View },
     data() {
         return {

@@ -1,0 +1,1064 @@
+<template>
+  <div class="card-body ppmp-view-body">
+    <div class="plan-detail-banner mb-3 plan-detail-banner--ppmp">
+      <div>
+        <div class="plan-detail-banner__eyebrow">End-user unit plan</div>
+        <div class="plan-detail-banner__title">Project Procurement Management Plan</div>
+        <div class="plan-detail-banner__copy">{{ planDescription }}</div>
+        <div v-if="ppmp.can_submit_final" class="plan-detail-banner__hint">
+          {{ actionHint }}
+        </div>
+
+      </div>
+      <div class="plan-detail-banner__meta">
+        <div>
+          <span>{{ formatCurrency(ppmp.estimated_budget) }}</span>
+          <small>Total Budget</small>
+        </div>
+        <div>
+          <span>{{ ppmp.items_count || 0 }}</span>
+          <small>Items</small>
+        </div>
+        <div>
+          <span>{{ ppmp.source_of_funds || ppmp.fund_cluster?.name || "-" }}</span>
+          <small>Fund Source</small>
+        </div>
+      </div>
+      <div v-if="hasQuarterlyData" class="plan-detail-banner__quarterly mt-2">
+        <div class="quarterly-label">Quarterly Indicative Budget</div>
+        <div class="quarterly-chips">
+          <span class="quarterly-chip">
+            <em>Q1</em> {{ formatCurrency(quarterlyTotals.q1) }}
+          </span>
+          <span class="quarterly-chip">
+            <em>Q2</em> {{ formatCurrency(quarterlyTotals.q2) }}
+          </span>
+          <span class="quarterly-chip">
+            <em>Q3</em> {{ formatCurrency(quarterlyTotals.q3) }}
+          </span>
+          <span class="quarterly-chip">
+            <em>Q4</em> {{ formatCurrency(quarterlyTotals.q4) }}
+          </span>
+        </div>
+        <div v-if="hasProjectRowsOnly" class="quarterly-note">
+          Line-item quarterly figures only — project-based budget not broken down by quarter.
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12">
+        <div class="section-panel">
+          <div class="section-heading compact">
+            <h6 class="mb-0 fs-14">Plan Information</h6>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="info-row">
+                <span>Unit</span>
+                <strong>{{ ppmp.unit?.name || "-" }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-row">
+                <span>Division</span>
+                <strong>{{ ppmp.division?.name || "-" }}</strong>
+              </div>
+            </div>
+            <div v-if="ppmp.attachment_url" class="col-12">
+              <div class="info-row">
+                <span>Line-Item Budget</span>
+                <a
+                  :href="ppmp.attachment_url"
+                  target="_blank"
+                  rel="noopener"
+                  class="detail-attachment"
+                >
+                  <i class="ri-attachment-2 align-bottom me-1"></i>
+                  {{ ppmp.attachment_original_name || "View attachment" }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <b-modal
+      v-model="showTimelineModal"
+      size="xl"
+      centered
+      hide-footer
+      header-class="border-bottom pb-2"
+    >
+      <template #header>
+        <div class="d-flex align-items-center gap-2 w-100">
+          <span class="avatar-title bg-primary-subtle rounded p-2" style="width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="ri-git-branch-line text-primary"></i>
+          </span>
+          <div class="flex-grow-1">
+            <div class="fw-bold fs-14">PPMP Status Timeline</div>
+            <div class="text-muted fs-12">
+              {{ ppmp.code || ppmp.ppmp_no || 'Procurement Plan' }}
+              &nbsp;·&nbsp;
+              {{ ppmp.ppmp_status || ppmp.approval_status || 'Pending' }}
+            </div>
+          </div>
+          <button type="button" class="btn-close" @click="showTimelineModal = false"></button>
+        </div>
+      </template>
+      <PlanStatusTimeline :plan="ppmp" plan-type="PPMP" />
+    </b-modal>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3 mb-3">
+      <div class="ppmp-view-tabs">
+        <button
+          type="button"
+          class="ppmp-view-tab"
+          :class="{ active: activeTab === 'document' }"
+          @click="activeTab = 'document'"
+        >
+          PPMP Format
+        </button>
+        <button
+          type="button"
+          class="ppmp-view-tab"
+          :class="{ active: activeTab === 'prs' }"
+          @click="activeTab = 'prs'"
+        >
+          Purchase Requests
+        </button>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <b-button
+          variant="soft-secondary"
+          size="sm"
+          @click="showTimelineModal = true"
+        >
+          <i class="ri-git-branch-line align-bottom me-1"></i>
+          Status Timeline
+          <b-badge :variant="planStatusVariant" class="ms-1">
+            {{ ppmp.ppmp_status || "Pending" }}
+          </b-badge>
+        </b-button>
+        <b-button
+          v-if="canAddDraftItem"
+          variant="success"
+          size="sm"
+          @click="$emit('add-item')"
+        >
+          <i class="ri-add-line align-bottom me-1"></i>
+          Add Procurement Project
+        </b-button>
+      </div>
+    </div>
+
+    <div v-if="activeTab === 'document'" class="section-panel mt-3">
+      <div class="section-heading">
+        <h6 class="mb-0 fs-14"></h6>
+        <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+          <span class="text-muted fs-12">
+            {{ ppmp.items_count || 0 }} item{{ (ppmp.items_count || 0) === 1 ? "" : "s" }}
+          </span>
+        </div>
+      </div>
+      <div class="table-responsive ppmp-table-wrap">
+        <table class="table table-bordered align-middle mb-0 ppmp-items-table ppmp-document-items-table">
+          <colgroup>
+            <col class="ppmp-col-description" />
+            <col class="ppmp-col-type" />
+            <col class="ppmp-col-quantity" />
+            <col class="ppmp-col-mode" />
+            <col class="ppmp-col-conference" />
+            <col class="ppmp-col-date" />
+            <col class="ppmp-col-date" />
+            <col class="ppmp-col-date" />
+            <col class="ppmp-col-funds" />
+            <col class="ppmp-col-budget" />
+            <col class="ppmp-col-docs" />
+            <col class="ppmp-col-remarks" />
+            <col class="ppmp-col-status" />
+            <col v-if="canEditIndicativeItems" class="ppmp-col-actions" />
+          </colgroup>
+          <thead class="table-light">
+            <tr class="fs-12 text-center ppmp-document-group-header">
+              <th colspan="5">PROCUREMENT PROJECT DETAILS</th>
+              <th colspan="3">PROJECTED TIMELINE (MM/YYYY)</th>
+              <th colspan="2">FUNDING DETAILS</th>
+              <th rowspan="2">ATTACHED SUPPORTING DOCUMENTS</th>
+              <th rowspan="2">REMARKS</th>
+              <th rowspan="2">ITEM STATUS</th>
+              <th v-if="canEditIndicativeItems" rowspan="3" style="width: 70px"></th>
+            </tr>
+            <tr class="fs-12 text-center">
+              <th>General Description and Objective of the Project to be Procured</th>
+              <th>Type of the Project to be Procured</th>
+              <th>Quantity and Size of the Project to be Procured</th>
+              <th>Recommended Mode of Procurement</th>
+              <th>Pre-Procurement Conference, if applicable</th>
+              <th>Start of Procurement Activity</th>
+              <th>End of Procurement Activity</th>
+              <th>Expected Delivery/Implementation Period</th>
+              <th>Source of Funds</th>
+              <th>Estimated Budget / ABC (PHP)</th>
+            </tr>
+            <tr class="fs-12 text-center ppmp-column-number-row">
+              <th>Column 1</th>
+              <th>Column 2</th>
+              <th>Column 3</th>
+              <th>Column 4</th>
+              <th>Column 5</th>
+              <th>Column 6</th>
+              <th>Column 7</th>
+              <th>Column 8</th>
+              <th>Column 9</th>
+              <th>Column 10</th>
+              <th>Column 11</th>
+              <th>Column 12</th>
+              <th>Column 13</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in groupedItemRows" :key="item.id || index">
+              <td v-if="item.entryRowspan" :rowspan="item.entryRowspan" class="ppmp-entry-cell">
+                {{ ppmp.general_description_objective || ppmp.title || ppmp.purpose || "-" }}
+              </td>
+
+              <td v-if="item.entryRowspan" :rowspan="item.entryRowspan" class="text-center ppmp-entry-cell">
+                {{ item.project_type || ppmp.type_of_project || "-" }}
+              </td>
+
+              <td>
+                <div>
+                  &bull; {{ formatQuantity(item.quantity) }} {{ item.unit || "" }}
+                  <span class="fw-semibold">{{ item.name || "-" }}</span>
+                </div>
+                <div v-if="item.description" class="text-muted small mt-1 item-description">{{ plainText(item.description) }}</div>
+                <small v-if="item.pr_no" class="text-muted d-block mt-1">
+                  {{ item.pr_no }}
+                </small>
+              </td>
+
+              <td>
+                {{ item.recommended_mode_of_procurement || ppmp.recommended_mode_of_procurement || "-" }}
+              </td>
+
+              <td class="text-center">
+                {{ item.pre_procurement_conference || "No" }}
+              </td>
+
+              <td class="text-center">
+                {{ formatMonthYear(item.start_of_procurement_activity || ppmp.start_of_procurement_activity || ppmp.date) }}
+              </td>
+
+              <td class="text-center">
+                {{ formatMonthYear(item.end_of_procurement_activity) }}
+              </td>
+
+              <td class="text-center">
+                {{ formatMonthYear(item.expected_delivery_date) }}
+              </td>
+
+              <td class="text-center">
+                {{ ppmp.source_of_funds || ppmp.fund_cluster?.name || "-" }}
+              </td>
+
+              <td v-if="item.entryRowspan" :rowspan="item.entryRowspan" class="text-end fw-semibold">
+                {{ formatCurrency(item.entryTotalAbc) }}
+              </td>
+
+              <td v-if="item.supportRowspan" :rowspan="item.supportRowspan" class="text-center ppmp-entry-cell">
+                <div>{{ item.attached_supporting_documents || "-" }}</div>
+                <a
+                  v-if="item.supporting_document_url"
+                  :href="item.supporting_document_url"
+                  target="_blank"
+                  rel="noopener"
+                  class="detail-attachment"
+                >
+                  <i class="ri-attachment-2 align-bottom me-1"></i>
+                  {{ item.supporting_document_original_name || "View attachment" }}
+                </a>
+              </td>
+
+              <td v-if="item.supportRowspan" :rowspan="item.supportRowspan" class="text-center ppmp-entry-cell">
+                {{ item.remarks || "-" }}
+              </td>
+
+              <td class="text-center">
+                <b-badge :variant="itemStatusVariant(item)">
+                  {{ itemStatus(item) }}
+                </b-badge>
+              </td>
+
+              <td v-if="canEditIndicativeItems" class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                  <b-button
+                    type="button"
+                    variant="success"
+                    size="sm"
+                    class="btn-icon"
+                    style="border-radius: 8px;"
+                    @click="$emit('edit-item', editEntryPayload(item))"
+                  >
+                    <i class="ri-edit-2-line"></i>
+                  </b-button>
+                  <b-button
+                    type="button"
+                    variant="danger"
+                    size="sm"
+                    class="btn-icon"
+                    style="border-radius: 8px;"
+                    @click="$emit('delete-item', item)"
+                  >
+                    <i class="ri-delete-bin-line"></i>
+                  </b-button>
+                </div>
+              </td>
+            </tr>
+            <tr v-for="(projectRow, idx) in (ppmp.project_rows || [])" :key="'proj-' + idx">
+              <td class="ppmp-entry-cell">
+                {{ projectRow.general_description_objective || "-" }}
+              </td>
+              <td class="text-center ppmp-entry-cell">
+                {{ projectRow.project_type || "-" }}
+              </td>
+              <td>—</td>
+              <td>
+                {{ projectRow.recommended_mode_of_procurement || "-" }}
+              </td>
+              <td class="text-center">
+                {{ projectRow.pre_procurement_conference || "No" }}
+              </td>
+              <td class="text-center">
+                {{ formatMonthYear(projectRow.start_of_procurement_activity) }}
+              </td>
+              <td class="text-center">
+                {{ formatMonthYear(projectRow.end_of_procurement_activity) }}
+              </td>
+              <td class="text-center">
+                {{ formatMonthYear(projectRow.expected_delivery_date) }}
+              </td>
+              <td class="text-center">{{ projectRow.source_of_funds || "-" }}</td>
+              <td class="text-end fw-semibold">
+                {{ projectRow.project_total_budget ? formatCurrency(projectRow.project_total_budget) : "—" }}
+              </td>
+              <td class="text-center ppmp-entry-cell">
+                <div>{{ projectRow.attached_supporting_documents || "-" }}</div>
+              </td>
+              <td class="text-center ppmp-entry-cell">
+                {{ projectRow.remarks || "-" }}
+              </td>
+              <td class="text-center">
+                <b-badge :variant="itemStatusVariant(ppmp)">
+                  {{ itemStatus(ppmp) }}
+                </b-badge>
+              </td>
+              <td v-if="canEditIndicativeItems" class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                  <b-button
+                    type="button"
+                    variant="success"
+                    size="sm"
+                    class="btn-icon"
+                    style="border-radius: 8px;"
+                    @click="$emit('edit-item', { _isPpmpProject: true, project_id: projectRow.project_id, ...projectRow })"
+                  >
+                    <i class="ri-edit-2-line"></i>
+                  </b-button>
+                  <b-button
+                    type="button"
+                    variant="danger"
+                    size="sm"
+                    class="btn-icon"
+                    style="border-radius: 8px;"
+                    @click="$emit('delete-item', { _isPpmpProject: true, project_id: projectRow.project_id, name: projectRow.general_description_objective })"
+                  >
+                    <i class="ri-delete-bin-line"></i>
+                  </b-button>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="!ppmp.item_details?.length && !(ppmp.project_rows?.length)">
+              <td :colspan="canEditIndicativeItems ? 14 : 13" class="text-center text-muted py-4">No items found.</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="9" class="text-end">Total Budget</th>
+              <th class="text-end">{{ formatCurrency(ppmp.estimated_budget) }}</th>
+              <th colspan="3"></th>
+              <th v-if="canEditIndicativeItems"></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div v-else class="section-panel mt-3">
+      <div class="section-heading">
+        <h6 class="mb-0 fs-14">Created Purchase Requests</h6>
+        <span class="text-muted fs-12">
+          {{ purchaseRequests.length }} PR{{ purchaseRequests.length === 1 ? "" : "s" }}
+        </span>
+      </div>
+
+      <div class="table-responsive ppmp-table-wrap">
+        <table class="table align-middle table-hover mb-0">
+          <thead class="table-light">
+            <tr class="fs-12">
+              <th style="width: 4%" class="text-center">#</th>
+              <th style="width: 18%">PR No.</th>
+              <th>Items</th>
+              <th style="width: 16%" class="text-end">ABC</th>
+              <th style="width: 90px" class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(request, index) in purchaseRequests" :key="request.pr_no || index">
+              <td class="text-center fw-semibold">{{ index + 1 }}</td>
+              <td class="fw-semibold text-primary">{{ request.pr_no || "-" }}</td>
+              <td>
+                <div class="fw-medium">
+                  {{ request.items_count }} item{{ request.items_count === 1 ? "" : "s" }}
+                </div>
+                <small class="text-muted">{{ request.item_names || "-" }}</small>
+              </td>
+              <td class="text-end fw-semibold">{{ formatCurrency(request.total_amount) }}</td>
+              <td class="text-center">
+                <b-button variant="soft-primary" size="sm" @click="openPrItems(request)">
+                  <i class="ri-eye-line align-bottom me-1"></i>
+                  View
+                </b-button>
+              </td>
+            </tr>
+            <tr v-if="!purchaseRequests.length">
+              <td colspan="5" class="text-center text-muted py-4">
+                No created purchase requests found for this PPMP.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <b-modal
+      v-model="showPrItemsModal"
+      size="xl"
+      centered
+      hide-footer
+      :title="`PR Items - ${selectedRequest?.pr_no || ''}`"
+    >
+      <div v-if="selectedRequest">
+        <div class="row g-2 mb-3">
+          <div class="col-md-6">
+            <div class="border rounded p-2 h-100">
+              <small class="text-muted d-block">PR No.</small>
+              <span class="fw-semibold">{{ selectedRequest.pr_no || "-" }}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="border rounded p-2 h-100">
+              <small class="text-muted d-block">Total ABC</small>
+              <span class="fw-semibold">{{ formatCurrency(selectedRequest.total_amount) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+              <tr class="fs-12 text-center">
+                <th style="width: 4%">#</th>
+                <th style="width: 18%">Item</th>
+                <th>Description</th>
+                <th style="width: 10%">Qty</th>
+                <th style="width: 10%">Unit</th>
+                <th style="width: 14%">Unit Price</th>
+                <th style="width: 14%">ABC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in selectedRequest.items" :key="item.id || index">
+                <td class="text-center">{{ index + 1 }}</td>
+                <td class="fw-semibold">{{ item.name || "-" }}</td>
+                <td>{{ plainText(item.description) }}</td>
+                <td class="text-end">{{ formatQuantity(item.quantity) }}</td>
+                <td>{{ item.unit || "-" }}</td>
+                <td class="text-end">{{ formatCurrency(item.unit_price) }}</td>
+                <td class="text-end fw-semibold">{{ formatCurrency(item.abc) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="6" class="text-end">Total ABC</th>
+                <th class="text-end">{{ formatCurrency(selectedRequest.total_amount) }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </b-modal>
+
+  </div>
+</template>
+
+<script>
+import PlanStatusTimeline from "./PlanStatusTimeline.vue";
+
+export default {
+  components: {
+    PlanStatusTimeline,
+  },
+  props: {
+    ppmp: { type: Object, required: true },
+    canAddDraftItem: { type: Boolean, default: false },
+    canEditIndicativeItems: { type: Boolean, default: false },
+  },
+  emits: ["add-item", "edit-item", "delete-item", "advance-status"],
+  data() {
+    return {
+      activeTab: "document",
+      selectedRequest: null,
+      showPrItemsModal: false,
+      showTimelineModal: false,
+    };
+  },
+  computed: {
+    planDescription() {
+      return `Project procurement management plan for ${this.ppmp.unit?.name || "unit"}`;
+    },
+    
+    prNumbers() {
+      return String(this.ppmp.pr_no || this.ppmp.code || "")
+        .split(",")
+        .map((prNo) => prNo.trim())
+        .filter(Boolean);
+    },
+    purchaseRequests() {
+      const requests = new Map();
+
+      (this.ppmp.raw_item_details || this.ppmp.item_details || []).forEach((item) => {
+        const prNumbers = this.itemPrNumbers(item);
+
+        if (!prNumbers.length) {
+          return;
+        }
+
+        prNumbers.forEach((prNo) => {
+        const request = requests.get(prNo) || {
+          pr_id: this.itemPurchaseRequestId(item, prNo),
+          pr_no: prNo,
+          item_names: [],
+          items: [],
+          items_count: 0,
+          total_amount: 0,
+        };
+
+        if (item.name) {
+          request.item_names.push(item.name);
+        }
+
+        request.items.push(item);
+        request.pr_id = request.pr_id || this.itemPurchaseRequestId(item, prNo);
+        request.items_count += 1;
+        request.total_amount += Number(item.abc || 0);
+        requests.set(prNo, request);
+        });
+      });
+
+      return Array.from(requests.values()).map((request) => ({
+        ...request,
+        item_names: request.item_names.slice(0, 3).join(", ") + (request.item_names.length > 3 ? "..." : ""),
+      })).sort((first, second) => String(first.pr_no).localeCompare(String(second.pr_no)));
+    },
+    currentRoles() {
+      return Array.isArray(this.$page?.props?.roles) ? this.$page.props.roles : [];
+    },
+    currentRoleNames() {
+      return this.currentRoles
+        .map((role) => typeof role === "string" ? role : role?.name)
+        .filter(Boolean);
+    },
+    isBudgetOfficer() {
+      return this.currentRoleNames.includes("Budget Officer") || this.isAdministrator;
+    },
+    isAdministrator() {
+      return this.currentRoleNames.includes("Administrator");
+    },
+    isProcurementOfficer() {
+      return this.currentRoleNames.includes("Procurement Officer") || this.isAdministrator;
+    },
+    isProcurementUser() {
+      return this.currentRoleNames.some((role) => ["Procurement Officer", "Procurement Staff"].includes(role)) || this.isAdministrator;
+    },
+    isPendingPpmp() {
+      return this.ppmp.ppmp_status === "Pending";
+    },
+    isForReview() {
+      return this.ppmp.ppmp_status === "For Review";
+    },
+    isReviewedForSubmission() {
+      return this.ppmp.ppmp_status === "Reviewed/For Submission";
+    },
+    hasPpmpItems() {
+      return Number(this.ppmp?.items_count || 0) > 0
+        || (this.ppmp?.project_rows?.length || 0) > 0;
+    },
+    canShowAdvanceAction() {
+      if (!this.ppmp.can_submit_final) {
+        return false;
+      }
+
+      if (this.ppmp.is_superseded_by_final) {
+        return false;
+      }
+
+      if (this.isAdministrator) {
+        return true;
+      }
+
+      if (this.isReviewedForSubmission) {
+        return this.isProcurementOfficer;
+      }
+
+      if (this.isForReview) {
+        return this.isBudgetOfficer;
+      }
+
+      if (this.isPendingPpmp) {
+        return this.isProcurementUser || this.ppmp.created_by_id === this.$page?.props?.user?.data?.id;
+      }
+
+      return false;
+    },
+    actionHint() {
+      if (this.isReviewedForSubmission) {
+        return "Submit this reviewed PPMP for BAC consolidation when the unit plan is ready.";
+      }
+
+      if (this.isForReview) {
+        return "Review this PPMP to move it to Reviewed/For Submission.";
+      }
+
+      return "Submit this pending PPMP to move it to For Review.";
+    },
+    advanceActionLabel() {
+      if (this.isReviewedForSubmission) {
+        return "Submit for Consolidation";
+      }
+
+      if (this.isForReview) {
+        return "Mark Reviewed";
+      }
+
+      return "Submit for Review";
+    },
+
+    finalActionLabel() {
+      if (this.isConsolidated) {
+        return "Consolidated By";
+      }
+
+      return "Submitted By";
+    },
+
+    finalActionUser() {
+      if (this.isConsolidated) {
+        return this.ppmp.consolidated_by || this.ppmp.approved_by || "-";
+      }
+
+      return this.ppmp.submitted_by || this.ppmp.approved_by || "-";
+    },
+    finalActionDate() {
+      if (this.isConsolidated) {
+        return this.ppmp.consolidated_at || this.ppmp.approved_at;
+      }
+
+      return this.ppmp.submitted_at || this.ppmp.approved_at;
+    },
+    isConsolidated() {
+      return ["Consolidated/Added to APP", "Consolidated/Added to SPP", "Consolidated/Added to PPMP"].includes(this.ppmp.ppmp_status);
+    },
+    showReviewAction() {
+      return ["For Review", "Reviewed/For Submission", "Submitted/For Consolidation", "Submitted/For Implementation", "Consolidated/Added to APP", "Consolidated/Added to SPP", "Consolidated/Added to PPMP"].includes(this.ppmp.ppmp_status);
+    },
+    reviewActionLabel() {
+      if (this.isForReview) {
+        return "Submitted For Review By";
+      }
+
+      return this.ppmp.ppmp_status === "Reviewed/For Submission" ? "Reviewed By" : "Latest Action By";
+    },
+    reviewActionUser() {
+      if (this.isForReview) {
+        return this.ppmp.submitted_for_review_by || "-";
+      }
+
+      return this.ppmp.reviewed_by || "-";
+    },
+    reviewActionDate() {
+      if (this.isForReview) {
+        return this.ppmp.submitted_for_review_at;
+      }
+
+      return this.ppmp.reviewed_at;
+    },
+    showFinalAction() {
+      return ["Submitted/For Consolidation", "Submitted/For Implementation", "Consolidated/Added to APP", "Consolidated/Added to SPP", "Consolidated/Added to PPMP"].includes(this.ppmp.ppmp_status);
+    },
+    planStatusVariant() {
+      const status = String(this.ppmp.ppmp_status || "").toLowerCase();
+
+      if (status.includes("consolidated") || status.includes("approved")) {
+        return "success";
+      }
+
+      if (status.includes("submitted") || status.includes("reviewed") || status.includes("for")) {
+        return "warning";
+      }
+
+      return "secondary";
+    },
+    quarterlyTotals() {
+      const items = this.ppmp.item_details || [];
+      return {
+        q1: items.reduce((s, i) => s + (Number(i.q1_indicative_amount) || 0), 0),
+        q2: items.reduce((s, i) => s + (Number(i.q2_indicative_amount) || 0), 0),
+        q3: items.reduce((s, i) => s + (Number(i.q3_indicative_amount) || 0), 0),
+        q4: items.reduce((s, i) => s + (Number(i.q4_indicative_amount) || 0), 0),
+      };
+    },
+    hasQuarterlyData() {
+      const t = this.quarterlyTotals;
+      return t.q1 > 0 || t.q2 > 0 || t.q3 > 0 || t.q4 > 0;
+    },
+    hasProjectRowsOnly() {
+      const hasItems = (this.ppmp.item_details || []).length > 0;
+      const hasProjectRows = (this.ppmp.project_rows || []).length > 0;
+      return !hasItems && hasProjectRows;
+    },
+    groupedItemRows() {
+      const rows = this.ppmp.item_details || [];
+      const entryGroups = new Map();
+
+      rows.forEach((item) => {
+        const itemStartDate = item.start_of_procurement_activity || this.ppmp.start_of_procurement_activity || this.ppmp.date;
+        const entryScopeKey = [
+          this.cleanValue(item.ppmp_no || (Array.isArray(item.source_ppmp_nos) ? item.source_ppmp_nos.join(",") : "")),
+          this.cleanValue(item.recommended_mode_of_procurement || this.ppmp.recommended_mode_of_procurement),
+          this.cleanValue(item.pre_procurement_conference || "No"),
+          this.cleanValue(itemStartDate),
+          this.cleanValue(item.end_of_procurement_activity),
+          this.cleanValue(item.expected_delivery_date),
+          this.cleanValue(item.attached_supporting_documents),
+          this.cleanValue(item.remarks),
+        ].join("|");
+        const entryKey = [
+          entryScopeKey,
+          this.cleanValue(this.ppmp.general_description_objective || this.ppmp.title || this.ppmp.purpose),
+          this.cleanValue(item.project_type || this.ppmp.type_of_project),
+        ].join("|");
+        const supportKey = [
+          entryScopeKey,
+          this.cleanValue(item.attached_supporting_documents),
+          this.cleanValue(item.remarks),
+        ].join("|");
+
+        if (!entryGroups.has(entryKey)) {
+          entryGroups.set(entryKey, new Map());
+        }
+
+        const supportGroups = entryGroups.get(entryKey);
+
+        if (!supportGroups.has(supportKey)) {
+          supportGroups.set(supportKey, []);
+        }
+
+        supportGroups.get(supportKey).push(item);
+      });
+
+      return Array.from(entryGroups.values()).flatMap((supportGroups) => {
+        const entryItems = Array.from(supportGroups.values()).flat();
+        const entryTotalAbc = entryItems.reduce((sum, i) => sum + Number(i.abc || 0), 0);
+        let isFirstEntryRow = true;
+
+        return Array.from(supportGroups.values()).flatMap((supportItems) => supportItems.map((item, index) => {
+          const row = {
+            ...item,
+            entryRowspan: isFirstEntryRow ? entryItems.length : 0,
+            entryTotalAbc: isFirstEntryRow ? entryTotalAbc : 0,
+            supportRowspan: index === 0 ? supportItems.length : 0,
+            __entry_items: entryItems,
+          };
+
+          isFirstEntryRow = false;
+
+          return row;
+        }));
+      });
+    },
+  },
+  methods: {
+    editEntryPayload(item) {
+      return {
+        ...item,
+        __entry_items: item.__entry_items || [item],
+      };
+    },
+    openPrItems(request) {
+      this.selectedRequest = request;
+      this.showPrItemsModal = true;
+    },
+    formatCurrency(value) {
+      return new Intl.NumberFormat("en-PH", {
+        style: "currency",
+        currency: "PHP",
+      }).format(Number(value || 0));
+    },
+    formatQuantity(value) {
+      const amount = Number(value || 0);
+      return Number.isInteger(amount) ? amount.toString() : amount.toFixed(2);
+    },
+    formatDate(value) {
+      if (!value) {
+        return "-";
+      }
+
+      return new Date(value).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    },
+    formatPrintDate(value) {
+      if (!value) {
+        return "-";
+      }
+
+      return new Date(value).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+      });
+    },
+    formatMonthYear(value) {
+      if (!value) return "-";
+      const match = String(value).match(/^(\d{4})-(\d{2})/);
+      if (!match) return "-";
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      return `${months[parseInt(match[2], 10) - 1] ?? match[2]} ${match[1]}`;
+    },
+    cleanValue(value) {
+      return this.plainText(value).replace(/\s+/g, " ").trim();
+    },
+    optionText(value) {
+      if (!value) {
+        return "";
+      }
+
+      if (typeof value === "object") {
+        return String(value.name ?? value.label ?? value.short ?? value.value ?? "");
+      }
+
+      return String(value);
+    },
+    itemStatus(item) {
+      return this.optionText(item.status?.name ?? item.status ?? item.approval_status) || "Pending";
+    },
+    itemPrNumbers(item) {
+      return [
+        String(item.pr_no || ""),
+        ...(Array.isArray(item.purchase_requests)
+          ? item.purchase_requests.map((request) => request.code)
+          : []),
+      ]
+        .join(",")
+        .split(",")
+        .map((prNo) => prNo.trim())
+        .filter(Boolean)
+        .filter((prNo, index, values) => values.indexOf(prNo) === index);
+    },
+    itemPurchaseRequestId(item, prNo) {
+      if (Array.isArray(item.purchase_requests)) {
+        const request = item.purchase_requests.find((purchaseRequest) =>
+          String(purchaseRequest.code || "").trim() === String(prNo || "").trim()
+        );
+
+        if (request?.id) {
+          return request.id;
+        }
+      }
+
+      return item.pr_id || null;
+    },
+    itemStatusVariant(item) {
+      const status = this.itemStatus(item).toLowerCase();
+
+      if (status.includes("approved") || status.includes("consolidated")) {
+        return "success";
+      }
+
+      if (status.includes("reviewed") || status.includes("submitted") || status.includes("for")) {
+        return "warning";
+      }
+
+      if (status.includes("cancel") || status.includes("reject") || status.includes("delete")) {
+        return "danger";
+      }
+
+      return "secondary";
+    },
+    plainText(value) {
+      if (!value) {
+        return "-";
+      }
+
+      const element = document.createElement("div");
+      element.innerHTML = String(value);
+
+      return element.textContent?.trim() || "-";
+    },
+  },
+};
+</script>
+
+<style scoped>
+.ppmp-view-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--ppmp-border, #e9ebec);
+  border-radius: 8px;
+  background: var(--ppmp-surface-soft, #f8fafc);
+}
+
+.ppmp-view-tab {
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ppmp-muted, #6c757d);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ppmp-view-tab.active {
+  background: var(--ppmp-surface, #ffffff);
+  color: var(--ppmp-text, #212529);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .08);
+}
+
+.ppmp-document-items-table {
+  min-width: 2760px;
+  table-layout: fixed;
+  border: 1.8px solid #000;
+  border-collapse: collapse;
+}
+
+.ppmp-col-description { width: 340px; }
+.ppmp-col-type { width: 220px; }
+.ppmp-col-quantity { width: 520px; }
+.ppmp-col-mode { width: 250px; }
+.ppmp-col-conference { width: 190px; }
+.ppmp-col-date { width: 165px; }
+.ppmp-col-funds { width: 180px; }
+.ppmp-col-quarter { width: 130px; }
+.ppmp-col-budget { width: 200px; }
+.quarter-cell { font-size: 12px; }
+.ppmp-col-docs { width: 260px; }
+.ppmp-col-remarks { width: 240px; }
+.ppmp-col-status { width: 150px; }
+.ppmp-col-actions { width: 100px; }
+
+.ppmp-document-items-table th,
+.ppmp-document-items-table td {
+  border: 1px solid #000;
+  padding: 3px 4px;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.ppmp-document-items-table th {
+  color: #000;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.ppmp-document-items-table td {
+  color: #000;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.ppmp-document-group-header th {
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.ppmp-column-number-row th {
+  padding: 2px 4px 1px;
+  font-size: 9.5px;
+}
+
+.ppmp-entry-cell {
+  background: var(--ppmp-surface-soft, var(--bs-tertiary-bg, #f8fafc));
+  color: var(--ppmp-text, var(--bs-body-color, #212529));
+}
+
+[data-bs-theme="dark"] .ppmp-document-items-table th,
+[data-bs-theme="dark"] .ppmp-document-items-table td {
+  color: #f4f7ff;
+}
+
+.plan-detail-banner__quarterly {
+  width: 100%;
+}
+.quarterly-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ppmp-muted, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.quarterly-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.quarterly-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--bs-primary-bg-subtle, #cfe2ff);
+  border: 1px solid var(--bs-primary-border-subtle, #9ec5fe);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bs-primary-text-emphasis, #084298);
+}
+.quarterly-chip em {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bs-primary, #405189);
+  opacity: .75;
+}
+.quarterly-note {
+  font-size: 11px;
+  color: var(--ppmp-muted, #6c757d);
+  margin-top: 6px;
+  font-style: italic;
+}
+</style>

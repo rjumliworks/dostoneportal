@@ -11,8 +11,22 @@ use App\Http\Resources\Trace\Signatory\DesignationResource;
 
 class InfoController extends Controller
 {
-    public function keyofficials(){
+    private const COMMITTEE_TYPES = [
+        'bac' => ['type' => 'BAC', 'label' => 'Bids and Awards Committee', 'per_station' => false],
+        'twg' => ['type' => 'TWG', 'label' => 'Technical Working Group', 'per_station' => false],
+        'iar' => ['type' => 'IAR', 'label' => 'Inspection and Acceptance Committee', 'per_station' => true],
+    ];
+
+    public function keyofficials($group = null){
+        if ($group && isset(self::COMMITTEE_TYPES[$group])) {
+            return inertia('Modules/Others/Organization/Index',[
+                'group' => $group,
+                'committee' => $this->committee($group),
+            ]);
+        }
+
         return inertia('Modules/Others/Organization/Index',[
+            'group' => 'top-management',
             'designations' => $this->designations()
         ]);
     }
@@ -52,10 +66,18 @@ class InfoController extends Controller
     }
 
     private function designations(){
-        $data = OrgChart::with('designation','assigned')
+        $committeeTypes = array_column(self::COMMITTEE_TYPES, 'type');
+
+        $data = $this->baseDesignationQuery()
+        ->whereHas('designation', fn ($q) => $q->whereNotIn('type', $committeeTypes))
+        ->orderBy('order','ASC')
+        ->get();
+        return DesignationResource::collection($data);
+    }
+
+    private function baseDesignationQuery(){
+        return OrgChart::with('designation','assigned')
         ->with([
-            // 'designationable.schedules.user:id,email,username',
-            // 'designationable.schedules.user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar',
             'designationable.schedules' => function ($q) {
                 $q->where('is_completed', 0)
                   ->whereIn('is_ongoing', [0, 1])
@@ -71,9 +93,46 @@ class InfoController extends Controller
             'designationable.oic:id,email,username',
             'designationable.oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar'
         ])
-        ->with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar','oic:id,email,username','oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar')
-        ->orderBy('order','ASC')
-        ->get();
-        return DesignationResource::collection($data);
+        ->with('user:id,email,username','user.profile:user_id,firstname,middlename,lastname,suffix_id,avatar','oic:id,email,username','oic.profile:user_id,firstname,middlename,lastname,suffix_id,avatar');
+    }
+
+    /**
+     * Groups a committee's OrgChart slots by role (Chairperson / Vice Chairperson / Members),
+     * further splitting Members by assigned station for committees like IAR that seat
+     * members per region/province instead of as one agency-wide pool.
+     */
+    private function committee(string $group): array
+    {
+        $config = self::COMMITTEE_TYPES[$group];
+
+        $rows = $this->baseDesignationQuery()
+            ->whereHas('designation', fn ($q) => $q->where('type', $config['type']))
+            ->orderBy('order', 'ASC')
+            ->orderBy('assigned_id', 'ASC')
+            ->get();
+
+        $chairperson = $rows->first(fn ($row) => $row->designation->name === 'Chairperson');
+        $viceChairperson = $rows->first(fn ($row) => $row->designation->name === 'Vice Chairperson');
+        $members = $rows->filter(fn ($row) => $row->designation->name === 'Member')->values();
+
+        $result = [
+            'label' => $config['label'],
+            'chairperson' => $chairperson ? (new DesignationResource($chairperson))->resolve() : null,
+            'vice_chairperson' => $viceChairperson ? (new DesignationResource($viceChairperson))->resolve() : null,
+        ];
+
+        if ($config['per_station']) {
+            $result['stations'] = $members
+                ->groupBy(fn ($row) => $row->assigned->name)
+                ->map(fn ($stationMembers, $station) => [
+                    'station' => $station,
+                    'members' => DesignationResource::collection($stationMembers->values())->resolve(),
+                ])
+                ->values();
+        } else {
+            $result['members'] = DesignationResource::collection($members)->resolve();
+        }
+
+        return $result;
     }
 }

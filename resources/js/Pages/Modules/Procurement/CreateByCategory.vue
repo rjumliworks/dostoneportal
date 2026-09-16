@@ -1,0 +1,1403 @@
+<template>
+  <div class="procurement-category-create procurement-create-container">
+    <Head :title="pageTitle" />
+
+    <div class="hero-header mb-3">
+      <div class="hero-gradient">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-lg-8">
+              <div class="d-flex align-items-center">
+                <div class="hero-icon-wrapper me-3">
+                  <i class="ri-shopping-bag-3-line hero-icon"></i>
+                </div>
+                <div>
+                  <h1 class="hero-title mb-1">{{ pageTitle }}</h1>
+                  <p class="hero-subtitle mb-0">
+                    Create one purchase request from approved PPMP items across units
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 text-end mt-3 mt-lg-0">
+              <b-button
+                type="button"
+                variant="light"
+                class="hero-back-btn"
+                @click="goBack"
+              >
+                <i class="ri-arrow-left-line align-bottom me-1"></i>
+                Back
+              </b-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form @submit.prevent="submit">
+      <div class="content-card request-details-card mb-3">
+        <div class="card-body-custom request-details-body">
+          <div class="row g-3">
+            <div class="col-lg-3">
+              <div class="form-group compact-form-group">
+                <InputLabel value="PR Date" />
+                <TextInput
+                  v-model="form.date"
+                  type="date"
+                  class="form-control modern-input"
+                  readonly
+                />
+                <div v-if="form.errors.date" class="invalid-feedback d-block">
+                  {{ form.errors.date }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3">
+              <div class="form-group compact-form-group">
+                <InputLabel value="Fund Cluster" />
+                <Multiselect
+                  v-model="form.fund_cluster_id"
+                  :options="fundClusterOptions"
+                  :searchable="true"
+                  label="name"
+                  valueProp="value"
+                  placeholder="Select fund cluster"
+                  :class="['modern-select', multiselectInvalidClass('fund_cluster_id')]"
+                  :append-to-body="true"
+                />
+                <div v-if="form.errors.fund_cluster_id" class="invalid-feedback d-block">
+                  {{ form.errors.fund_cluster_id }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="form-group compact-form-group">
+                <InputLabel value="Item Category" />
+                <Multiselect
+                  v-model="form.item_category_id"
+                  :options="categoryOptions"
+                  :searchable="true"
+                  label="name"
+                  valueProp="value"
+                  placeholder="Select Item Category"
+                  :class="['modern-select', multiselectInvalidClass('item_category_id')]"
+                  :append-to-body="true"
+                />
+                <div v-if="form.errors.item_category_id" class="invalid-feedback d-block">
+                  {{ form.errors.item_category_id }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6" v-if="form.fund_cluster_id && form.item_category_id">
+              <div class="form-group compact-form-group">
+                <InputLabel value="Procurement Codes" />
+                <Multiselect
+                  v-model="form.procurement_code_ids"
+                  :options="procurementCodeOptions"
+                  :searchable="true"
+                  mode="tags"
+                  label="label"
+                  valueProp="value"
+                  trackBy="label"
+                  placeholder="Select Procurement code/s"
+                  :class="[
+                    'modern-select',
+                    multiselectInvalidClass('procurement_code_ids'),
+                  ]"
+                  :append-to-body="true"
+                />
+                <div
+                  v-if="form.errors.procurement_code_ids"
+                  class="invalid-feedback d-block"
+                >
+                  {{ form.errors.procurement_code_ids }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6" v-if="form.fund_cluster_id && form.item_category_id">
+              <div class="form-group compact-form-group">
+                <InputLabel value="Title" />
+                <TextInput
+                  v-model="form.title"
+                  type="text"
+                  :class="['form-control modern-input', inputInvalidClass('title')]"
+                  placeholder="PR title"
+                />
+                <div v-if="form.errors.title" class="invalid-feedback d-block">
+                  {{ form.errors.title }}
+                </div>
+              </div>
+            </div>
+
+            <div v-if="isLockedMode" class="col-lg-6">
+              <div class="form-group compact-form-group">
+                <InputLabel value="Current APP" />
+                <Multiselect
+                  v-model="form.procurement_app_id"
+                  :options="currentAppOptions"
+                  :searchable="true"
+                  label="name"
+                  valueProp="value"
+                  placeholder="Select current APP"
+                  :class="[
+                    'modern-select',
+                    multiselectInvalidClass('procurement_app_id'),
+                  ]"
+                  :append-to-body="true"
+                />
+                <div
+                  v-if="form.errors.procurement_app_id"
+                  class="invalid-feedback d-block"
+                >
+                  {{ form.errors.procurement_app_id }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12" v-if="form.fund_cluster_id && form.item_category_id">
+              <div class="form-group compact-form-group">
+                <InputLabel value="Purpose" />
+                <textarea
+                  v-model="form.purpose"
+                  :class="['form-control modern-input', inputInvalidClass('purpose')]"
+                  rows="2"
+                  placeholder="Purpose of this purchase request"
+                ></textarea>
+                <div v-if="form.errors.purpose" class="invalid-feedback d-block">
+                  {{ form.errors.purpose }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="card-header-custom">
+          <i class="ri-shopping-bag-line card-header-icon"></i>
+          <h5 class="card-header-title">Items</h5>
+          <div v-if="!isLockedMode" class="ms-auto d-flex gap-2">
+            <b-button
+              @click="openManualItem()"
+              variant="outline-primary"
+              size="sm"
+              class="add-item-btn"
+            >
+              <i class="ri-pencil-line me-1"></i>Add Manually
+            </b-button>
+            <b-button
+              :disabled="!canLoadItems || loadingItems"
+              @click="fetchItems"
+              variant="success"
+              size="sm"
+              class="add-item-btn"
+            >
+              <span v-if="loadingItems" class="spinner-border spinner-border-sm me-1"></span>
+              <i v-else class="ri-add-line me-1"></i>
+              Select Items
+            </b-button>
+          </div>
+        </div>
+        <div class="card-body-custom">
+          <div v-if="form.items && form.items.length > 0" class="items-table-container">
+            <div class="table-responsive">
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>Unit</th>
+                    <th>Name/Description</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-end">Unit Cost</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-center"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in form.items" :key="index" class="item-row">
+                    <td class="text-center item-number">{{ index + 1 }}</td>
+                    <td class="item-unit">
+                      <span class="unit-badge">
+                        {{
+                          item.item_quantity > 1
+                            ? item.item_unit_type?.[0]?.name_long || item.item_unit_type?.name_long || ""
+                            : item.item_unit_type?.[0]?.name_short || item.item_unit_type?.name_short || ""
+                        }}
+                      </span>
+                    </td>
+                    <td class="item-description">
+                      <span>{{ item.item_name || "-" }}</span>
+                      <b-badge
+                        v-if="!item.ppmp_item_id"
+                        variant="secondary"
+                        class="ms-1"
+                        style="font-size: 9px; vertical-align: middle"
+                      >Manual</b-badge>
+                      <div v-html="item.item_description"></div>
+                    </td>
+                    <td class="text-center item-quantity">{{ item.item_quantity }}</td>
+                    <td class="text-end item-cost">{{ formatCurrency(item.item_unit_cost) }}</td>
+                    <td class="text-end item-total">{{ formatCurrency(item.total_cost) }}</td>
+                    <td class="text-center">
+                      <div v-if="!isLockedMode" class="d-flex justify-content-center gap-1">
+                        <b-button
+                          @click="editItem(index)"
+                          variant="success"
+                          size="sm"
+                          class="btn-icon"
+                          v-b-tooltip.hover
+                          title="Edit Item"
+                          style="border-radius: 8px"
+                        >
+                          <i class="ri-edit-2-line"></i>
+                        </b-button>
+                        <b-button
+                          @click="removeItem(index)"
+                          variant="danger"
+                          size="sm"
+                          class="btn-icon"
+                          v-b-tooltip.hover
+                          title="Remove Item"
+                          style="border-radius: 8px"
+                        >
+                          <i class="ri-delete-bin-line"></i>
+                        </b-button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="grand-total-row">
+                    <td colspan="6" class="text-end grand-total-label">Grand Total:</td>
+                    <td class="text-end grand-total-amount">{{ formatCurrency(totalCostSum) }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          <div v-else class="empty-state">
+            <div class="empty-state-icon"><i class="ri-shopping-bag-line"></i></div>
+            <h6 class="empty-state-title">No Items Added</h6>
+            <p class="empty-state-text">Select from approved PPMP items or add items manually.</p>
+          </div>
+          <div v-if="form.errors.items" class="text-danger small fw-semibold mt-2">
+            {{ form.errors.items }}
+          </div>
+
+          <div class="action-footer">
+            <div class="signatory-fields">
+              <div class="row g-3">
+                <div class="col-lg-6">
+                  <div class="form-group compact-form-group">
+                    <InputLabel value="Requested By" />
+                    <Multiselect
+                      v-model="form.requested_by_id"
+                      :options="requesterOptions"
+                      :searchable="true"
+                      label="name"
+                      valueProp="value"
+                      placeholder="Select requester"
+                      :class="[
+                        'modern-select',
+                        multiselectInvalidClass('requested_by_id'),
+                      ]"
+                      :append-to-body="true"
+                    />
+                    <div
+                      v-if="form.errors.requested_by_id"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.requested_by_id }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="form-group compact-form-group">
+                    <InputLabel value="Approved By" />
+                    <Multiselect
+                      v-model="form.approved_by_id"
+                      :options="approverOptions"
+                      :searchable="true"
+                      label="name"
+                      valueProp="value"
+                      placeholder="Select approver"
+                      :class="[
+                        'modern-select',
+                        multiselectInvalidClass('approved_by_id'),
+                      ]"
+                      :append-to-body="true"
+                    />
+                    <div
+                      v-if="form.errors.approved_by_id"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.approved_by_id }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="footer-buttons">
+              <b-button type="submit" variant="success" :disabled="form.processing" class="action-btn success-btn">
+                <span v-if="form.processing" class="spinner-border spinner-border-sm me-1"></span>
+                <i v-else class="ri-check-line me-2"></i>
+                {{ submitLabel }}
+              </b-button>
+              <b-button type="button" variant="outline-secondary" class="action-btn back-btn" @click="goBack">
+                <i class="ri-arrow-left-line me-2"></i>
+                Back to List
+              </b-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <CategoryItemSelectionModal
+      v-model="itemSelectionModal.show"
+      :items="availableItems"
+      :selected-ids="selectedIds"
+      @load="loadSelectedItems"
+    />
+
+    <AddItemTableModal
+      ref="manualItemModal"
+      :unit-type-options="unitTypeOptions"
+      :item-category-options="itemCategoryOptions"
+      :project-options="[]"
+      :show-project-select="false"
+      :existing-form-items="form.items || []"
+      @save="saveManualItem"
+      @category-added="onManualCategoryAdded"
+    />
+  </div>
+</template>
+
+<script>
+import { Head, router, useForm } from "@inertiajs/vue3";
+import axios from "axios";
+import Multiselect from "@vueform/multiselect";
+import InputLabel from "@/Shared/Components/Forms/InputLabel.vue";
+import TextInput from "@/Shared/Components/Forms/TextInput.vue";
+import CategoryItemSelectionModal from "./Modals/CategoryItemSelection.vue";
+import AddItemTableModal from "./PPMP/Modals/AddItemTableModal.vue";
+
+export default {
+  components: { Head, InputLabel, TextInput, Multiselect, CategoryItemSelectionModal, AddItemTableModal },
+  props: ["dropdowns", "option", "procurement"],
+  data() {
+    return {
+      loadingItems: false,
+      hydratingProcurement: false,
+      restoringDraft: false,
+      draftStorageKey: "procurementRequestByCategoryDraft",
+      items: [],
+      selectedIds: [],
+      availableItems: [],
+      itemSelectionModal: { show: false },
+      localItemCategories: [],
+      form: useForm({
+        id: null,
+        option: "create_by_category",
+        date: this.getCurrentDate(),
+        purpose: null,
+        title: null,
+        division_id: null,
+        unit_id: null,
+        fund_cluster_id: null,
+        classification_id: null,
+        reference_app_id: null,
+        procurement_app_id: null,
+        requested_by_id: null,
+        approved_by_id: null,
+        procurement_code_ids: [],
+        item_category_id: null,
+        items: [],
+      }),
+    };
+  },
+  computed: {
+    isApproveMode() {
+      return this.option === "approve";
+    },
+    isReviewMode() {
+      return this.option === "review";
+    },
+    isLockedMode() {
+      return this.isReviewMode || this.isApproveMode;
+    },
+    pageTitle() {
+      if (this.isApproveMode) {
+        return "Approve Purchase Request by Category";
+      }
+
+      if (this.isReviewMode) {
+        return "Review Purchase Request by Category";
+      }
+
+      return "Create Purchase Request";
+    },
+    submitLabel() {
+      if (this.isApproveMode) {
+        return "Approve";
+      }
+
+      if (this.isReviewMode) {
+        return "Confirm";
+      }
+
+      return "Save";
+    },
+    canLoadItems() {
+      return Boolean(this.form.item_category_id && this.form.fund_cluster_id);
+    },
+    fundClusterOptions() {
+      return this.normalizeDropdownOptions(this.dropdowns?.fund_clusters);
+    },
+    procurementCodeOptions() {
+      return this.normalizeDropdownOptions(this.dropdowns?.procurement_codes, "label");
+    },
+    requesterOptions() {
+      return this.normalizeDropdownOptions(this.dropdowns?.requesters);
+    },
+    approverOptions() {
+      return this.normalizeDropdownOptions(this.dropdowns?.approvers);
+    },
+    categoryOptions() {
+      const ppmpCategories = this.dropdowns.ppmp_item_categories || [];
+      const options =
+        ppmpCategories.length > 0 ? ppmpCategories : this.dropdowns.item_categories || [];
+      return this.normalizeDropdownOptions(options);
+    },
+    unitTypeOptions() {
+      const options = this.dropdowns?.unit_types ?? [];
+      return Array.isArray(options) ? options : Object.values(options);
+    },
+    itemCategoryOptions() {
+      const base = this.dropdowns?.item_categories ?? [];
+      const baseArr = Array.isArray(base) ? base : Object.values(base);
+      const existingIds = new Set(baseArr.map((o) => Number(o.value ?? o.id)));
+      return [
+        ...baseArr,
+        ...this.localItemCategories.filter((o) => !existingIds.has(Number(o.value ?? o.id))),
+      ];
+    },
+    totalCostSum() {
+      if (!Array.isArray(this.form.items)) return 0;
+      return this.form.items.reduce((sum, item) => sum + (parseFloat(item.total_cost) || 0), 0);
+    },
+    referenceAppOptions() {
+      const options = this.normalizeList(this.dropdowns?.reference_apps);
+      const fallbackOptions = this.normalizeList(this.dropdowns?.app_types);
+      const source = options.length ? options : fallbackOptions;
+
+      return this.normalizeDropdownOptions(source);
+    },
+    currentAppOptions() {
+      return this.normalizeDropdownOptions(this.dropdowns?.current_apps);
+    },
+    currentAppYear() {
+      return new Date().getFullYear();
+    },
+    selectedItems() {
+      return this.items.filter((item) => this.selectedIds.includes(item.value));
+    },
+    canSubmit() {
+      if (this.isReviewMode && !this.form.procurement_app_id) {
+        return false;
+      }
+
+      return Boolean(
+        this.form.date &&
+          this.form.fund_cluster_id &&
+          this.form.purpose &&
+          this.form.procurement_code_ids.length > 0 &&
+          this.form.items.length > 0
+      );
+    },
+  },
+  watch: {
+    "form.item_category_id"() {
+      this.clearErrorWhenFilled("item_category_id", this.form.item_category_id);
+      this.clearItems();
+      this.saveDraft();
+    },
+    "form.fund_cluster_id"() {
+      this.clearErrorWhenFilled("fund_cluster_id", this.form.fund_cluster_id);
+      this.clearItems();
+      this.saveDraft();
+    },
+    "form.procurement_code_ids"() {
+      this.clearErrorWhenFilled("procurement_code_ids", this.form.procurement_code_ids);
+      this.refreshTitleFromCodes();
+      this.saveDraft();
+    },
+    "form.date"() {
+      this.applyAutomaticCurrentApp(true);
+      this.saveDraft();
+    },
+    "form.title"() {
+      this.clearErrorWhenFilled("title", this.form.title);
+      this.saveDraft();
+    },
+    "form.purpose"() {
+      this.clearErrorWhenFilled("purpose", this.form.purpose);
+      this.saveDraft();
+    },
+    "form.procurement_app_id"() {
+      this.clearErrorWhenFilled("procurement_app_id", this.form.procurement_app_id);
+      this.saveDraft();
+    },
+    "form.requested_by_id"() {
+      this.clearErrorWhenFilled("requested_by_id", this.form.requested_by_id);
+      this.saveDraft();
+    },
+    "form.approved_by_id"() {
+      this.clearErrorWhenFilled("approved_by_id", this.form.approved_by_id);
+      this.saveDraft();
+    },
+  },
+  mounted() {
+    if (this.procurement?.id) {
+      this.hydrateProcurement();
+      return;
+    }
+
+    if (this.dropdowns?.regional_director?.value) {
+      this.form.approved_by_id = this.dropdowns.regional_director.value;
+    }
+    this.prefillUserDivisionAndUnit();
+    this.restoreDraft();
+  },
+  methods: {
+    getCurrentDate() {
+      return new Date().toISOString().split("T")[0];
+    },
+    hydrateProcurement() {
+      this.hydratingProcurement = true;
+      this.form.id = this.procurement.id;
+      this.form.option = this.option || "create_by_category";
+      this.form.date = this.normalizeDate(this.procurement.date);
+      this.form.purpose = this.procurement.purpose;
+      this.form.title =
+        this.procurement.title || this.requestTitleFromCodes(this.procurement.codes);
+      this.form.division_id = this.procurement.division_id;
+      this.form.unit_id = this.procurement.unit_id;
+      this.form.fund_cluster_id = this.procurement.fund_cluster_id;
+      this.form.classification_id = this.procurement.classification_id;
+      this.form.reference_app_id = this.procurement.reference_app_id;
+      this.form.procurement_app_id = this.procurement.procurement_app_id;
+      this.applyAutomaticCurrentApp(this.isReviewMode);
+      this.form.requested_by_id = this.procurement.requested_by_id;
+      this.form.approved_by_id = this.procurement.approved_by_id;
+      const codes = this.normalizeList(this.procurement.codes);
+      const items = this.normalizeList(this.procurement.items);
+
+      this.form.procurement_code_ids = codes
+        .map((code) => code.procurement_code_id)
+        .filter(Boolean);
+
+      this.items = items.map((item) => this.normalizeProcurementItem(item));
+      this.selectedIds = this.items.map((item) => item.value);
+      this.form.item_category_id = this.items[0]?.item_category_id || null;
+      this.syncFormItems();
+      this.$nextTick(() => {
+        this.hydratingProcurement = false;
+      });
+    },
+    normalizeList(value) {
+      if (Array.isArray(value)) {
+        return value;
+      }
+
+      if (value && typeof value === "object") {
+        return Object.values(value);
+      }
+
+      return [];
+    },
+    normalizeDropdownOptions(value, labelKey = "name") {
+      return this.normalizeList(value).map((option) => {
+        const normalizedValue = option.value ?? option.id;
+        const normalizedLabel =
+          option[labelKey] ?? option.name ?? option.label ?? option.code ?? option.title;
+
+        return {
+          ...option,
+          value: normalizedValue,
+          [labelKey]: normalizedLabel,
+          name: option.name ?? normalizedLabel,
+          label: option.label ?? normalizedLabel,
+        };
+      });
+    },
+    applyAutomaticCurrentApp(force = false) {
+      if (
+        !this.isReviewMode ||
+        (this.form.procurement_app_id && !force) ||
+        !this.currentAppOptions.length
+      ) {
+        return;
+      }
+
+      const matchingApp = this.currentAppOptions
+        .filter((app) => Number(app.year) === this.currentAppYear)
+        .sort(
+          (left, right) =>
+            Number(right.version || 1) - Number(left.version || 1) ||
+            Number(right.value || 0) - Number(left.value || 0)
+        )[0];
+
+      this.form.procurement_app_id = matchingApp ? Number(matchingApp.value) : null;
+    },
+    isApprovedApp(app) {
+      return (
+        String(app?.status || "")
+          .trim()
+          .toLowerCase() === "approved"
+      );
+    },
+    normalizeDate(value) {
+      if (!value) return this.getCurrentDate();
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+
+      return date.toISOString().split("T")[0];
+    },
+    normalizeProcurementItem(item) {
+      const ppmpItem = item.ppmp_item || {};
+      const ppmp = ppmpItem.ppmp || {};
+      const value = item.ppmp_item_id || item.id;
+      const requestingUnitName =
+        item.requesting_unit_name ||
+        item.requesting_unit?.name ||
+        item.requesting_unit ||
+        item.unit_name_requesting ||
+        null;
+
+      return {
+        value,
+        ppmp_item_id: item.ppmp_item_id,
+        ppmp_no: ppmp.code,
+        requesting_unit_name: requestingUnitName,
+        unit_name: ppmp.unit?.name || ppmp.unit_name,
+        item_category_id: ppmpItem.item_category_id,
+        item_category: ppmpItem.item_category?.name,
+        item_unit_type_id: item.item_unit_type_id,
+        item_name: item.item_name,
+        item_unit_cost: item.item_unit_cost,
+        item_quantity: item.item_quantity,
+        item_description: item.item_description,
+        total_cost: item.total_cost,
+        quantity_label: item.item_quantity,
+      };
+    },
+    clearItems() {
+      if (this.hydratingProcurement || this.restoringDraft) {
+        return;
+      }
+
+      this.items = [];
+      this.selectedIds = [];
+      this.availableItems = [];
+      this.form.items = [];
+      this.saveDraft();
+    },
+    refreshTitleFromCodes() {
+      if (this.restoringDraft) {
+        return;
+      }
+
+      const selectedCodes = this.dropdowns.procurement_codes.filter((code) =>
+        this.form.procurement_code_ids.includes(code.value)
+      );
+      this.form.title = selectedCodes
+        .map((code) => code.title || code.code || code.name)
+        .filter(Boolean)
+        .join(", ");
+    },
+    prefillUserDivisionAndUnit() {
+      const organization = this.$page.props.user?.data?.organization || {};
+
+      if (organization.division_id) {
+        this.form.division_id = Number(organization.division_id);
+      }
+
+      if (organization.unit_id) {
+        this.form.unit_id = Number(organization.unit_id);
+      }
+    },
+    async fetchItems() {
+      if (!this.canLoadItems) return;
+
+      this.loadingItems = true;
+      this.clearItems();
+
+      try {
+        const { data } = await axios.get("/procurements/create-by-category", {
+          params: {
+            option: "ppmp_category_items",
+            item_category_id: this.form.item_category_id,
+            fund_cluster_id: this.form.fund_cluster_id,
+          },
+        });
+
+        this.availableItems = Array.isArray(data) ? data : [];
+        this.saveDraft();
+        this.itemSelectionModal.show = true;
+      } finally {
+        this.loadingItems = false;
+      }
+    },
+    loadSelectedItems(items) {
+      this.items = items;
+      this.selectedIds = items.map((item) => item.value);
+      const manualItems = Array.isArray(this.form.items)
+        ? this.form.items.filter((i) => !i.ppmp_item_id)
+        : [];
+      const ppmpItems = items.map((item) => ({
+        ppmp_item_id: item.value,
+        item_unit_type_id: item.item_unit_type_id,
+        item_name: item.item_name,
+        item_unit_cost: item.item_unit_cost,
+        item_quantity: item.item_quantity,
+        item_description: item.item_description,
+        total_cost: item.total_cost,
+        requesting_unit_name: item.requesting_unit_name || null,
+        item_unit_type: null,
+      }));
+      this.form.items = [...ppmpItems, ...manualItems];
+      this.form.clearErrors("items");
+      this.itemSelectionModal.show = false;
+      this.saveDraft();
+    },
+    syncFormItems() {
+      const manualItems = Array.isArray(this.form.items)
+        ? this.form.items.filter((i) => !i.ppmp_item_id)
+        : [];
+      const ppmpItems = this.selectedItems.map((item) => ({
+        ppmp_item_id: item.value,
+        item_unit_type_id: item.item_unit_type_id,
+        item_name: item.item_name,
+        item_unit_cost: item.item_unit_cost,
+        item_quantity: item.item_quantity,
+        item_description: item.item_description,
+        total_cost: item.total_cost,
+        requesting_unit_name: item.requesting_unit_name || null,
+        item_unit_type: null,
+      }));
+      this.form.items = [...ppmpItems, ...manualItems];
+      this.saveDraft();
+    },
+    draftPayload() {
+      return {
+        form: {
+          date: this.form.date,
+          purpose: this.form.purpose,
+          title: this.form.title,
+          division_id: this.form.division_id,
+          unit_id: this.form.unit_id,
+          fund_cluster_id: this.form.fund_cluster_id,
+          classification_id: this.form.classification_id,
+          reference_app_id: this.form.reference_app_id,
+          procurement_app_id: this.form.procurement_app_id,
+          requested_by_id: this.form.requested_by_id,
+          approved_by_id: this.form.approved_by_id,
+          procurement_code_ids: Array.isArray(this.form.procurement_code_ids)
+            ? this.form.procurement_code_ids
+            : [],
+          item_category_id: this.form.item_category_id,
+          items: Array.isArray(this.form.items) ? this.form.items : [],
+        },
+        items: this.items,
+        selectedIds: this.selectedIds,
+        availableItems: this.availableItems,
+        saved_at: new Date().toISOString(),
+      };
+    },
+    saveDraft() {
+      if (this.isLockedMode || this.hydratingProcurement || this.restoringDraft) {
+        return;
+      }
+
+      try {
+        localStorage.setItem(this.draftStorageKey, JSON.stringify(this.draftPayload()));
+      } catch (error) {
+        console.error("Unable to save category PR draft:", error);
+      }
+    },
+    restoreDraft() {
+      let draft = null;
+
+      try {
+        draft = JSON.parse(localStorage.getItem(this.draftStorageKey));
+      } catch (error) {
+        localStorage.removeItem(this.draftStorageKey);
+        return;
+      }
+
+      if (!draft || typeof draft !== "object") {
+        return;
+      }
+
+      this.restoringDraft = true;
+
+      const draftForm = draft.form || {};
+
+      [
+        "date",
+        "purpose",
+        "title",
+        "division_id",
+        "unit_id",
+        "fund_cluster_id",
+        "classification_id",
+        "reference_app_id",
+        "procurement_app_id",
+        "requested_by_id",
+        "approved_by_id",
+        "item_category_id",
+      ].forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(draftForm, key)) {
+          this.form[key] = draftForm[key];
+        }
+      });
+
+      this.form.procurement_code_ids = Array.isArray(draftForm.procurement_code_ids)
+        ? draftForm.procurement_code_ids
+        : [];
+      this.items = Array.isArray(draft.items) ? draft.items : [];
+      this.selectedIds = Array.isArray(draft.selectedIds) ? draft.selectedIds : [];
+      this.availableItems = Array.isArray(draft.availableItems)
+        ? draft.availableItems
+        : [];
+      this.form.items = Array.isArray(draftForm.items) ? draftForm.items : [];
+
+      this.$nextTick(() => {
+        this.restoringDraft = false;
+        this.syncFormItems();
+        this.saveDraft();
+      });
+    },
+    clearDraft() {
+      localStorage.removeItem(this.draftStorageKey);
+    },
+    submit() {
+      this.applyAutomaticCurrentApp();
+      this.syncFormItems();
+
+      if (!this.validateSubmit()) {
+        return;
+      }
+
+      this.form.option = this.isApproveMode
+        ? "approve"
+        : this.isReviewMode
+        ? "review"
+        : "create_by_category";
+
+      if (this.isLockedMode && this.form.id) {
+        this.form.put(`/procurements/${this.form.id}`, {
+          preserveScroll: true,
+        });
+        return;
+      }
+
+      this.form.post("/procurements", {
+        preserveScroll: true,
+        onSuccess: () => {
+          this.clearDraft();
+        },
+      });
+    },
+    validateSubmit() {
+      const errors = {};
+
+      if (!this.hasValue(this.form.date)) {
+        errors.date = "PR date is required.";
+      }
+
+      if (!this.hasValue(this.form.fund_cluster_id)) {
+        errors.fund_cluster_id = "Fund cluster is required.";
+      }
+
+      if (!this.hasValue(this.form.item_category_id)) {
+        errors.item_category_id = "Item category is required.";
+      }
+
+      if (!this.hasValue(this.form.procurement_code_ids)) {
+        errors.procurement_code_ids = "Procurement code is required.";
+      }
+
+      if (!this.hasValue(this.form.title)) {
+        errors.title = "Title is required.";
+      }
+
+      if (!this.hasValue(this.form.purpose)) {
+        errors.purpose = "Purpose is required.";
+      }
+
+      if (this.isReviewMode && !this.hasValue(this.form.procurement_app_id)) {
+        errors.procurement_app_id = "Current APP is required.";
+      }
+
+      if (!this.form.items.length) {
+        errors.items = "Please add at least one item.";
+      }
+
+      if (Object.keys(errors).length) {
+        this.form.setError(errors);
+        return false;
+      }
+
+      return true;
+    },
+    hasValue(value) {
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+
+      if (value && typeof value === "object") {
+        return true;
+      }
+
+      return String(value ?? "").trim() !== "";
+    },
+    clearErrorWhenFilled(field, value) {
+      if (this.hasValue(value)) {
+        this.form.clearErrors(field);
+      }
+    },
+    inputInvalidClass(field) {
+      return { "is-invalid": Boolean(this.form.errors[field]) };
+    },
+    multiselectInvalidClass(field) {
+      return { "is-invalid": Boolean(this.form.errors[field]) };
+    },
+    openManualItem() {
+      this.$refs.manualItemModal?.show();
+    },
+    saveManualItem({ row, editIndex }) {
+      const unitType = this.unitTypeOptions.find(
+        (u) => Number(u.value) === Number(row.item_unit_type_id)
+      ) || null;
+      const item = { ...row, ppmp_item_id: null, item_unit_type: unitType };
+      const items = Array.isArray(this.form.items) ? [...this.form.items] : [];
+      if (editIndex !== null && editIndex !== undefined && editIndex >= 0 && editIndex < items.length) {
+        items[editIndex] = item;
+      } else {
+        items.push(item);
+      }
+      this.form.items = items;
+      this.saveDraft();
+    },
+    editItem(index) {
+      this.$refs.manualItemModal?.show(this.form.items[index], index);
+    },
+    removeItem(index) {
+      const items = [...this.form.items];
+      items.splice(index, 1);
+      this.form.items = items;
+      this.items = items.filter((i) => i.ppmp_item_id).map((i) => ({
+        ...i,
+        value: i.ppmp_item_id,
+      }));
+      this.selectedIds = this.items.map((i) => i.value);
+      this.saveDraft();
+    },
+    onManualCategoryAdded(category) {
+      this.localItemCategories.push(category);
+    },
+    goBack() {
+      router.get("/procurements");
+    },
+    formatCurrency(value) {
+      return new Intl.NumberFormat("en-PH", {
+        style: "currency",
+        currency: "PHP",
+      }).format(Number(value || 0));
+    },
+    requestTitleFromCodes(codes = []) {
+      const codeIds = (Array.isArray(codes) ? codes : [])
+        .map((code) => Number(code.procurement_code_id ?? code.value ?? code.id))
+        .filter(Boolean);
+
+      if (!codeIds.length) {
+        return "";
+      }
+
+      const dropdownCodes = Array.isArray(this.dropdowns?.procurement_codes)
+        ? this.dropdowns.procurement_codes
+        : [];
+
+      return codeIds
+        .map((id) => {
+          const code = dropdownCodes.find(
+            (option) => Number(option.value ?? option.id) === Number(id)
+          );
+
+          if (!code) {
+            return "";
+          }
+
+          return code.title || String(code.label || "").replace(/^[^-]+-\s*/, "");
+        })
+        .filter(Boolean)
+        .join(", ");
+    },
+  },
+};
+</script>
+
+<style scoped>
+.procurement-create-container {
+  --procurement-create-page-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  --procurement-create-card-bg: #ffffff;
+  --procurement-create-card-border: rgba(255, 255, 255, 0.8);
+  --procurement-create-card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  --procurement-create-card-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  --procurement-create-text: #2c3e50;
+  --procurement-create-muted: #64748b;
+  --procurement-create-input-bg: #ffffff;
+  --procurement-create-input-border: #ced4da;
+  --procurement-create-table-row-alt: #f8fafc;
+  --procurement-create-table-row-hover: #eef2ff;
+  --procurement-create-table-border: rgba(0, 0, 0, 0.05);
+  background: var(--procurement-create-page-bg);
+  min-height: 100vh;
+  padding: 0 0 1rem 0;
+}
+
+.hero-header {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.09);
+}
+
+.hero-gradient {
+  background: #4c5f98;
+  padding: 0.45rem 0;
+  position: relative;
+}
+
+.hero-icon-wrapper {
+  width: 58px;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-icon {
+  font-size: 1.9rem;
+  color: white;
+}
+
+.hero-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: white;
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-back-btn {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.content-card {
+  background: var(--procurement-create-card-bg);
+  border-radius: 12px;
+  box-shadow: var(--procurement-create-card-shadow);
+  border: 1px solid var(--procurement-create-card-border);
+  overflow: visible;
+  transition: all 0.3s ease;
+  color: var(--procurement-create-text);
+}
+
+.content-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--procurement-create-card-hover-shadow);
+}
+
+.request-details-body,
+.card-body-custom {
+  padding: 1.25rem;
+}
+
+.compact-form-group {
+  margin-bottom: 0;
+}
+
+.modern-input {
+  border-radius: 10px;
+  border: 2px solid var(--procurement-create-input-border);
+  background: var(--procurement-create-input-bg);
+  color: var(--procurement-create-text);
+  transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.modern-select {
+  border-radius: 10px;
+}
+
+:deep(.multiselect.is-invalid),
+:deep(.multiselect.is-invalid .multiselect-wrapper) {
+  border-color: #f06548 !important;
+}
+
+:deep(.multiselect.is-invalid),
+.modern-input.is-invalid {
+  box-shadow: 0 0 0 0.125rem rgba(240, 101, 72, 0.12);
+}
+
+.category-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selection-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--procurement-create-muted);
+}
+
+.selection-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4c5f98;
+  font-weight: 700;
+}
+
+.divider-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #94a3b8;
+}
+
+.card-header-custom {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-header-icon {
+  color: #4c5f98;
+  font-size: 1.25rem;
+}
+
+.card-header-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--procurement-create-text);
+}
+
+.card-header-custom {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-header-icon {
+  font-size: 1.2rem;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 0.45rem;
+  border-radius: 10px;
+}
+
+.card-header-title {
+  font-size: 1.05rem;
+  color: var(--procurement-create-text);
+  margin: 0;
+}
+
+.add-item-btn {
+  border-radius: 25px;
+  padding: 0.4rem 1.15rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.add-item-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.items-table-container {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--procurement-create-table-border);
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.items-table thead {
+  background: #4c5f98;
+  color: white;
+}
+
+.items-table th {
+  padding: 0.75rem 0.85rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.items-table td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--procurement-create-table-border);
+  vertical-align: top;
+  background: white;
+}
+
+.items-table tbody tr:nth-child(even) td {
+  background: var(--procurement-create-table-row-alt);
+}
+
+.items-table tbody tr:hover td {
+  background: var(--procurement-create-table-row-hover);
+}
+
+.item-number { font-weight: 600; color: #667eea; }
+.item-description { font-weight: 500; max-width: 300px; }
+.item-quantity, .item-unit { font-weight: 600; }
+.item-cost, .item-total { font-weight: 700; color: #28a745; font-family: "Courier New", monospace; }
+
+.unit-badge {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  color: #495057;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.grand-total-row { background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-top: 2px solid #667eea; }
+.grand-total-label { font-weight: 700; font-size: 0.9rem; }
+.grand-total-amount { font-weight: 700; color: #28a745; font-size: 1rem; font-family: "Courier New", monospace; }
+
+.empty-state { text-align: center; padding: 2rem 1rem; }
+.empty-state-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: #6c757d; margin: 0 auto 1rem;
+}
+.empty-state-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+.empty-state-text { color: #64748b; font-size: 0.9rem; }
+
+.action-btn {
+  border-radius: 25px;
+  padding: 0.55rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  min-width: 145px;
+}
+
+.success-btn {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border: none;
+  color: white;
+}
+
+.success-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.back-btn {
+  border: 2px solid #6c757d;
+  color: #6c757d;
+  background: transparent;
+}
+
+.back-btn:hover {
+  background: #6c757d;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+}
+
+.action-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+.signatory-fields {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.footer-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .hero-gradient {
+    padding: 0.75rem 0;
+  }
+
+  .hero-title {
+    font-size: 1.1rem;
+  }
+
+  .hero-icon-wrapper {
+    width: 48px;
+    height: 48px;
+  }
+}
+</style>

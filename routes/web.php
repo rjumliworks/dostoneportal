@@ -182,7 +182,47 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::get('/system-maintenance/s3/download-folder', [App\Http\Controllers\Executive\MaintenanceController::class, 's3DownloadFolder']);
 });
 
-Route::get('/key-officials', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
+
+// Procurement
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/procurement-mention-notifications', [App\Http\Controllers\Procurement\ProcurementNotificationController::class, 'index']);
+    Route::patch('/procurement-mention-notifications/{notification}/read', [App\Http\Controllers\Procurement\ProcurementNotificationController::class, 'update']);
+    Route::get('/procurements/create-by-category', [App\Http\Controllers\Procurement\ProcurementController::class, 'createByCategory']);
+    Route::resource('/procurements', App\Http\Controllers\Procurement\ProcurementController::class)->names([
+        'index' => 'procurement.index',
+    ]);
+    Route::get('/procurement-reports', [App\Http\Controllers\Procurement\ProcurementReportController::class, 'index'])
+        ->name('procurement.reports');
+    Route::resource('/procurement-assignments', App\Http\Controllers\Procurement\ProcurementAssignmentController::class);
+    Route::post('/procurement-ppmp/item-categories', [App\Http\Controllers\Procurement\ProcurementPPMPController::class, 'storeItemCategory']);
+    Route::get('/procurement-ppmp/items/{item}/supporting-document', [App\Http\Controllers\Procurement\ProcurementPPMPController::class, 'supportingDocument'])
+        ->name('procurement-ppmp.items.supporting-document');
+    Route::resource('/procurement-ppmp', App\Http\Controllers\Procurement\ProcurementPPMPController::class)
+        ->only(['index', 'store', 'show', 'update']);
+    Route::post('/procurement-ppmp/{id}/comments', [App\Http\Controllers\Procurement\ProcurementPPMPController::class, 'storeComment']);
+    Route::resource('/procurement-codes', App\Http\Controllers\Procurement\ProcurementCodeController::class);
+    Route::get('/procurement-dashboard', [App\Http\Controllers\Procurement\ProcurementDashboardController::class, 'index'])->name('procurement.dashboard');
+
+    Route::get('/procurements/create', [App\Http\Controllers\Procurement\ProcurementController::class, 'create']);
+    Route::post('/procurements/{id}/comments', [App\Http\Controllers\Procurement\ProcurementCommentController::class, 'store']);
+    Route::resource('/quotations', App\Http\Controllers\Procurement\QuotationController::class);
+    Route::resource('/offers', App\Http\Controllers\Procurement\OfferController::class);
+    Route::resource('/bac-resolutions', App\Http\Controllers\Procurement\BACResolutionController::class);
+    Route::resource('/notice-of-awards', App\Http\Controllers\Procurement\NOAController::class);
+    Route::resource('/purchase-orders', App\Http\Controllers\Procurement\POController::class);
+    Route::resource('/suppliers', App\Http\Controllers\Procurement\SupplierController::class);
+    Route::patch('/suppliers/{supplier}/approve', [App\Http\Controllers\Procurement\SupplierController::class, 'approve']);
+    Route::resource('/responsibility-centers', App\Http\Controllers\Procurement\ResponsibilityCenterController::class);
+    Route::resource('/modes-of-procurement', App\Http\Controllers\Procurement\ModeOfProcurementController::class);
+    Route::get('/receiving-list', [App\Http\Controllers\Procurement\ReceivingDeliveryController::class, 'receivingList']);
+    Route::get('/receiving-deliveries', [App\Http\Controllers\Procurement\ReceivingDeliveryController::class, 'index']);
+    Route::put('/receiving-deliveries/{id}', [App\Http\Controllers\Procurement\ReceivingDeliveryController::class, 'update']);
+    Route::resource('/ia-reports', App\Http\Controllers\Procurement\IAReportController::class);
+    Route::patch('/suppliers/{supplier}/status', [App\Http\Controllers\Procurement\SupplierController::class, 'status']);
+});
+
+
+Route::get('/key-officials/{group?}', [App\Http\Controllers\Public\InfoController::class, 'keyofficials']);
 Route::get('/mailing', [App\Http\Controllers\Public\InfoController::class, 'mailing']);
 Route::get('/mailing/test', [App\Http\Controllers\Public\InfoController::class, 'mailingTest']);
 require __DIR__.'/auth.php';

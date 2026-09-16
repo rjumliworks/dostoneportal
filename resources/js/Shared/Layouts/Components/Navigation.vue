@@ -34,6 +34,55 @@
                 <div class="d-flex align-items-center">
                     <BDropdown class="dropdown" variant="ghost-secondary" dropstart :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }" toggle-class="btn-icon btn-topbar rounded-circle mode-layout ms-1 material-shadow-none" no-caret menu-class="p-0 dropdown-menu-end">
                         <template #button-content>
+                            <i class="ri-government-line fs-22"></i>
+                        </template>
+                        <div
+                            class="p-3 border-top-0 dropdown-head border-start-0 border-end-0 border-dashed border dropdown-menu-lg">
+                            <BRow class="align-items-center">
+                                <BCol>
+                                    <h6 class="m-0 fw-semibold fs-15">Committee</h6>
+                                </BCol>
+                                <!-- <BCol cols="auto">
+                                    <BLink href="#!" class="btn btn-sm btn-soft-info">
+                                        View All Apps
+                                        <i class="ri-arrow-right-s-line align-middle"></i>
+                                    </BLink>
+                                </BCol> -->
+                            </BRow>
+                        </div>
+
+                        <div class="p-2">
+                            <BRow class="g-0">
+                                <BCol cols="12">
+                                    <BLink class="dropdown-icon-item d-flex align-items-center text-start" style="padding: 6px 8px; line-height: 1.4;" @click="openInNewTab('/key-officials/top-management')">
+                                        <i class="ri-vip-crown-2-line fs-18 text-muted me-2 flex-shrink-0"></i>
+                                        <span>Top Management</span>
+                                    </BLink>
+                                </BCol>
+                                <BCol cols="12">
+                                    <BLink class="dropdown-icon-item d-flex align-items-center text-start" style="padding: 6px 8px; line-height: 1.4;" @click="openInNewTab('/key-officials/bac')">
+                                        <i class="ri-government-line fs-18 text-muted me-2 flex-shrink-0"></i>
+                                        <span>Bids and Awards</span>
+                                    </BLink>
+                                </BCol>
+                                <BCol cols="12">
+                                    <BLink class="dropdown-icon-item d-flex align-items-center text-start" style="padding: 6px 8px; line-height: 1.4;" @click="openInNewTab('/key-officials/iar')">
+                                        <i class="ri-file-search-line fs-18 text-muted me-2 flex-shrink-0"></i>
+                                        <span>Inspection and Acceptance</span>
+                                    </BLink>
+                                </BCol>
+                                <BCol cols="12">
+                                    <BLink class="dropdown-icon-item d-flex align-items-center text-start" style="padding: 6px 8px; line-height: 1.4;" @click="openInNewTab('/key-officials/twg')">
+                                        <i class="ri-team-line fs-18 text-muted me-2 flex-shrink-0"></i>
+                                        <span>Technical Working Group</span>
+                                    </BLink>
+                                </BCol>
+                            </BRow>
+                        </div>
+                    </BDropdown>
+
+                    <BDropdown class="dropdown" variant="ghost-secondary" dropstart :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }" toggle-class="btn-icon btn-topbar rounded-circle mode-layout ms-1 material-shadow-none" no-caret menu-class="p-0 dropdown-menu-end">
+                        <template #button-content>
                             <i class="bx bx-category-alt fs-22"></i>
                         </template>
                         <div

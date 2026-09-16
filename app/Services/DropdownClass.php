@@ -25,6 +25,9 @@ use App\Models\Schedule;
 use App\Models\ListEvent;
 use App\Models\RequestEvent;
 use App\Models\RequestTag;
+use App\Models\ProcurementCode;
+use App\Models\UnitType;
+use App\Models\Supplier;
 
 class DropdownClass
 {  
@@ -561,6 +564,146 @@ class DropdownClass
                 'division_id' => optional($item->organization->division)->id,
                 'type' => $item->organization->type->name,
                  'avatar' => $item->profile?->avatar ?? asset('images/avatars/avatar.jpg'),
+            ];
+        });
+        return $data;
+    }
+
+    //procurement
+
+    public function list_units()
+    {
+        $data = ListUnit::where('is_active', 1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+                'short' => $item->short
+            ];
+        });
+        return $data;
+    }
+
+    public function procurement_codes()
+    {
+        $data = ProcurementCode::with('end_users')->get()->map(function ($item) {
+            $label = $item->code;
+            $remainingBudget = (float) ($item->remaining_budget ?? $item->allocated_budget ?? 0);
+
+            if (!empty($item->title)) {
+                $label .= ' - ' . $item->title;
+            }
+
+            return [
+                'value' => $item->id,
+                'name' => $label,
+                'code' => $item->code,
+                'title' => $item->title,
+                'allocated_budget' => (float) $item->allocated_budget,
+                'remaining_budget' => $remainingBudget,
+                'app_type_id' => $item->app_type_id,
+                'end_user_ids' => $item->end_users->pluck('end_user_id')->map(fn ($id) => (int) $id)->values(),
+                'label' => $label,
+            ];
+        });
+        return $data;
+    }
+
+    public function unit_types()
+    {
+        $data = UnitType::get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name_short' => $item->name_short,
+                'name_long' => $item->name_long
+            ];
+        });
+        return $data;
+    }
+
+    public function unit_type($code)
+    {
+        $data = UnitType::where('id', $code)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name_short' => $item->name_short,
+                'name_long' => $item->name_long
+            ];
+        });
+        return $data;
+    }
+
+    public function requesters()
+    {
+        $data = User::with(['roles', 'profile.suffix'])
+            ->get()
+            ->map(function ($item) {
+                $profile = $item->profile;
+                $firstname = $profile->firstname ?? '';
+                $middlename = $profile->middlename ? strtoupper(substr($profile->middlename, 0, 1)) . '.' : '';
+                $lastname = $profile->lastname ?? '';
+                $suffix = $profile->suffix?->name ? ' ' . $profile->suffix->name : '';
+
+                return [
+                    'value' => $item->id,
+                    'name' => trim("{$firstname} {$middlename} {$lastname}{$suffix}"),
+                ];
+            });
+
+        return $data;
+    }
+
+    public function approvers()
+    {
+        $data = User::with(['roles', 'profile.suffix'])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'value' => $user->id,
+                    'name' => $user->profile->full_name,
+                ];
+            });
+
+        return $data;
+    }
+
+    public function supply_officers()
+    {
+        return User::with('roles', 'profile')
+            ->whereHas('roles', function ($query) {
+                $query->where('list_roles.name', 'Supply Officer')
+                    ->where('user_roles.is_active', 1);
+            })
+            ->orderBy('id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'name' => $item->profile?->full_name ?? ('User #' . $item->id),
+                ];
+            });
+    }
+
+    public function suppliers()
+    {
+        $data = Supplier::with('conformes')
+            ->where('is_active', 1)
+            ->where('approval_status', 'Approved')
+            ->get()
+            ->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name,
+            ];
+        });
+        return $data;
+    }
+
+    public function attachment_types()
+    {
+        $data = ListData::where('type', 'Attachment')->where('is_active', 1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
             ];
         });
         return $data;

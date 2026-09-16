@@ -18,12 +18,12 @@ class DesignationResource extends JsonResource
             'avatar' => $this->is_oic
                 ? ($this->oic?->profile?->avatar ?? asset('images/avatars/avatar.jpg'))
                 : ($this->user?->profile?->avatar ?? asset('images/avatars/avatar.jpg')),
-            'user' => $this->user ? new ProfileResource($this->user) : null,
-            'oic' => $this->oic ? new ProfileResource($this->oic) : null,
+            'user' => $this->user ? (new ProfileResource($this->user))->resolve() : null,
+            'oic' => $this->oic ? (new ProfileResource($this->oic))->resolve() : null,
             'is_oic' => $this->is_oic,
             'is_active' => $this->is_active,
             'signatory_id' => $this->designationable?->id,
-            'schedules' => ScheduleResource::collection($this->designationable->schedules),
+            'signatory' => (new SignatoryResource($this->designationable))->resolve(),
             'updated_at' => $this->updated_at
         ];
     }

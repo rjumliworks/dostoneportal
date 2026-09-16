@@ -10,7 +10,7 @@ class ScheduleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => $this->user ? new ProfileResource($this->user) : null,
+            'user' => $this->user ? (new ProfileResource($this->user))->resolve() : null,
             'start_at' => $this->start_at,
             'end_at' => $this->end_at,
             'is_designated' => $this->is_designated,

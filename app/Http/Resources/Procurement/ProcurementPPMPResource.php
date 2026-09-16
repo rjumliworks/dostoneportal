@@ -1,0 +1,889 @@
+<?php
+
+namespace App\Http\Resources\Procurement;
+
+use App\Models\ListStatus;
+use App\Models\ProcurementPpmp;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
+
+class ProcurementPPMPResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        $items = $this->items();
+        $total_amount = $this->total_amount($items);
+        $plan_name = $this->plan_name_override ?: $this->reference_app?->name;
+        $plan_name = $plan_name === 'PPMP' ? null : $plan_name;
+        $plan_type = $this->plan_type($plan_name);
+        $ppmp_status = $this->ppmp_status($plan_name);
+        $is_final = $this->is_final_ppmp($plan_name);
+        $is_reviewed = in_array($this->status?->name, ['Reviewed', 'Approved'], true);
+        $is_for_review = $this->status?->name === 'For Review';
+        $reviewed_by = $is_reviewed ? ($this->reviewed_by?->profile?->full_name ?? $this->approved_by?->profile?->full_name) : null;
+        $submitted_for_review_by = $is_for_review ? ($this->submitted_by?->profile?->full_name ?? $this->requested_by?->profile?->full_name) : null;
+        $submitted_for_review_at = $is_for_review ? ($this->submitted_at ?? $this->updated_at) : null;
+        $submitted_by = $is_final
+            ? ($this->approved_by?->profile?->full_name ?? $this->requested_by?->profile?->full_name)
+            : $this->requested_by?->profile?->full_name;
+        $prepared_by_designation = $this->created_by?->org_chart?->designation?->name
+            ?? $this->created_by?->organization?->position?->name
+            ?? $this->created_by?->designation;
+        $approval_status = $this->approval_status($plan_name);
+        $is_consolidated = str_starts_with($approval_status, 'Consolidated/Added to');
+        $consolidated_by = $is_consolidated ? ($this->consolidated_by?->profile?->full_name ?? $this->approved_by?->profile?->full_name) : null;
+        $consolidated_at = $is_consolidated
+            ? ($this->consolidated_at ?? ($this->approved_by_id ? $this->updated_at : null))
+            : null;
+        $can_add_items = ! $plan_name && ! $this->has_completed_status();
+        $year = $this->date ? date('Y', strtotime($this->date)) : date('Y', strtotime((string) $this->created_at));
+        $ppmp_no = $this->ppmp_no_override ?: match ($plan_type) {
+            'supplemental' => $this->code ?: 'SPP-'.$year.'-'.str_pad((string) $this->id, 4, '0', STR_PAD_LEFT),
+            default => $this->code ?: 'PPMP-'.$year.'-'.str_pad((string) $this->id, 4, '0', STR_PAD_LEFT),
+        };
+        $ppmp_no = $this->display_plan_number($ppmp_no);
+        $start_date = $this->start_date_override ?: $this->date;
+        $item_details = $this->item_details($items);
+        $price_variance_groups = $this->consolidation_price_variance_groups($item_details, $approval_status);
+        $consolidated_item_details = $plan_type === 'ppmp'
+            ? $item_details
+            : $this->consolidated_item_details($item_details, $this->procurement_app?->pricing_overrides ?? []);
+        $no_item_budget = collect($this->projects ?? [])->sum(fn ($p) => (float) ($p->project_total_budget ?? 0));
+        $display_total_amount = ($plan_type === 'ppmp'
+            ? $total_amount
+            : (float) $consolidated_item_details->sum('abc')) + $no_item_budget;
+
+        return [
+            'id' => $this->id,
+            'code' => $this->code,
+            'pr_no' => $this->pr_no_override ?: $this->code,
+            'ppmp_no' => $ppmp_no,
+            'ppmp_status' => $ppmp_status,
+            'approval_status' => $approval_status,
+            'is_final' => $is_final,
+            'is_superseded_by_final' => (bool) ($this->is_superseded_by_final_override ?? false),
+            'is_pending_app_approval' => $approval_status === 'Submitted/For Consolidation',
+            'can_submit_final' => $this->can_mark_final_ppmp($plan_name, $plan_type),
+            'can_mark_as_final' => $this->can_mark_as_final($plan_name, $plan_type, $items),
+            'can_create_revision' => $this->can_create_revision($plan_name, $plan_type),
+            'can_edit_ppmp' => $this->can_edit_ppmp($plan_type),
+            'can_add_items' => $can_add_items,
+            'can_approve_to_app' => $this->can_approve_to_app($approval_status),
+            'can_revert_status' => $this->can_revert_status($is_consolidated),
+            'plan_name' => $plan_name ?: 'PPMP',
+            'plan_type' => $plan_type,
+            'ppmp_type' => $this->ppmp_type ?? 'indicative',
+            'ppmp_type_version' => (int) ($this->ppmp_type_version ?? 1),
+            'ppmp_type_label' => $this->ppmpTypeLabel($plan_type),
+            'source_ppmp_id' => $this->source_ppmp_id,
+            'quarter' => $this->quarter ? (int) $this->quarter : null,
+            'is_current' => $this->ppmp_type === 'final' ? (bool) ($this->is_current ?? false) : null,
+            'date' => $this->date,
+            'formatted_date' => $this->date ? date('F j, Y', strtotime($this->date)) : null,
+            'general_description_objective' => $this->title ?: $this->purpose,
+            'type_of_project' => $this->classification_override ?: $this->classification?->name,
+            'project_type' => $this->project_type,
+            'quantity_and_size' => $this->quantity_and_size($items),
+            'recommended_mode_of_procurement' => $this->recommended_mode_of_procurement ?: $this->mode_of_procurement(),
+            'pre_procurement_conference' => $this->pre_procurement_conference,
+            'start_of_procurement_activity' => $this->start_of_procurement_activity ?: $start_date,
+            'end_of_procurement_activity' => $this->end_of_procurement_activity,
+            'expected_delivery_implementation_period' => $this->expected_delivery_date,
+            'expected_delivery_date' => $this->expected_delivery_date,
+            'source_of_funds' => $this->source_of_funds_override ?: $this->fund_cluster?->name,
+            'estimated_budget' => round($display_total_amount, 2),
+            'attached_supporting_documents' => $this->attached_supporting_documents,
+            'remarks' => $this->remarks,
+            'purpose' => $this->purpose,
+            'title' => $this->title,
+            'division' => $this->division,
+            'unit_id' => $this->unit_id,
+            'unit' => $this->unit_override ?: $this->unit,
+            'fund_cluster' => $this->fund_cluster,
+            'classification' => $this->classification,
+            'reference_app' => $this->reference_app,
+            'created_by' => $this->created_by?->profile?->full_name,
+            'created_by_id' => $this->created_by_id,
+            'requested_by' => $this->requested_by?->profile?->full_name,
+            'requested_by_id' => $this->requested_by_id,
+            'approved_by' => $this->approved_by?->profile?->full_name,
+            'approved_by_id' => $this->approved_by_id,
+            'approved_at' => $this->approved_by_id ? ($this->approved_at ?? $this->updated_at) : null,
+            'formatted_approved_at' => $this->approved_by_id && ($this->approved_at ?? $this->updated_at)
+                ? date('F j, Y', strtotime((string) ($this->approved_at ?? $this->updated_at)))
+                : null,
+            'consolidated_by' => $consolidated_by,
+            'consolidated_at' => $consolidated_at,
+            'formatted_consolidated_at' => $consolidated_at
+                ? date('F j, Y', strtotime((string) $consolidated_at))
+                : null,
+            'comments_count' => $this->comments_count ?? 0,
+            'reviewed_by' => $reviewed_by,
+            'reviewed_at' => $reviewed_by ? ($this->reviewed_at ?? $this->updated_at) : null,
+            'formatted_reviewed_at' => $reviewed_by && ($this->reviewed_at ?? $this->updated_at)
+                ? date('F j, Y', strtotime((string) ($this->reviewed_at ?? $this->updated_at)))
+                : null,
+            'submitted_for_review_by' => $submitted_for_review_by,
+            'submitted_for_review_at' => $submitted_for_review_at,
+            'formatted_submitted_for_review_at' => $submitted_for_review_at
+                ? date('F j, Y', strtotime((string) $submitted_for_review_at))
+                : null,
+            'prepared_by' => $this->created_by?->profile?->full_name,
+            'prepared_by_designation' => $prepared_by_designation,
+            'submitted_by' => $submitted_by,
+            'codes' => $this->codes,
+            'source_ppmps' => $this->source_ppmps(),
+            'item_details' => $consolidated_item_details,
+            'raw_item_details' => $item_details,
+            'consolidation_match_groups' => $this->consolidation_match_groups($item_details, $approval_status),
+            'consolidation_price_variance_groups' => $price_variance_groups,
+            'consolidation_average_groups' => $price_variance_groups,
+            'items_count' => $items->count(),
+            'consolidated_items_count' => $consolidated_item_details->count(),
+            'ppmp_count' => $this->aggregated_ppmp_count ?: 1,
+            'total_amount' => round($display_total_amount, 2),
+            'attachment_path' => $this->attachment_path,
+            'attachment_original_name' => $this->attachment_original_name,
+            'attachment_url' => $this->attachment_path ? asset('storage/'.ltrim($this->attachment_path, '/')) : null,
+            'project_rows' => collect($this->projects ?? [])->map(fn ($p) => [
+                'project_id' => $p->id,
+                'general_description_objective' => $p->title ?: $this->purpose,
+                'project_type' => $p->project_type,
+                'recommended_mode_of_procurement' => $p->recommended_mode_of_procurement,
+                'pre_procurement_conference' => $p->pre_procurement_conference,
+                'start_of_procurement_activity' => $p->start_of_procurement_activity,
+                'end_of_procurement_activity' => $p->end_of_procurement_activity,
+                'expected_delivery_date' => $p->expected_delivery_date,
+                'source_of_funds' => $this->fund_cluster?->name,
+                'project_total_budget' => (float) ($p->project_total_budget ?? 0),
+                'attached_supporting_documents' => $p->attached_supporting_documents,
+                'remarks' => $p->remarks,
+            ])->values()->all(),
+            'status' => $this->status,
+            'sub_status' => $this->sub_status,
+            'created_at' => $this->created_at,
+        ];
+    }
+
+    protected function items(): Collection
+    {
+        return $this->whenLoaded('items', fn () => $this->items, collect());
+    }
+
+    protected function total_amount(Collection $items): float
+    {
+        return (float) $items->sum(function ($item) {
+            $stored = (float) ($item->total_cost ?? 0);
+            return $stored ?: ((float) ($item->item_quantity ?? 0) * (float) ($item->item_unit_cost ?? 0));
+        });
+    }
+
+    protected function mode_of_procurement(): ?string
+    {
+        return $this->codes
+            ?->pluck('procurement_code.mode_of_procurement.name')
+            ->filter()
+            ->unique()
+            ->implode(', ');
+    }
+
+    protected function quantity_and_size(Collection $items): string
+    {
+        return $items
+            ->map(function ($item) {
+                $quantity = trim((string) ($item->item_quantity ?? ''));
+                $unit = trim((string) $this->item_unit_label($item));
+                $name = trim((string) ($item->item_name ?? $item->item_description ?? ''));
+
+                return trim($quantity.' '.$unit.($name ? ' - '.$name : ''));
+            })
+            ->filter()
+            ->values()
+            ->implode('; ');
+    }
+
+    protected function item_details(Collection $items): Collection
+    {
+        return $items
+            ->map(function ($item) {
+                $quantity = (float) ($item->item_quantity ?? 0);
+                $requested_quantity = (float) ($item->requested_quantity ?? $quantity);
+                $funded_quantity = (float) ($item->funded_quantity ?? $quantity);
+                $unit_cost = (float) ($item->item_unit_cost ?? 0);
+                $price_basis_amount = $item->price_basis_amount !== null
+                    ? (float) $item->price_basis_amount
+                    : null;
+                $price_variance_rate = $price_basis_amount && $price_basis_amount > 0
+                    ? (($unit_cost - $price_basis_amount) / $price_basis_amount) * 100
+                    : null;
+                $pr_no = $item->pr_items
+                    ?->pluck('procurement.code')
+                    ->filter()
+                    ->unique()
+                    ->implode(', ');
+                $purchase_requests = $item->pr_items
+                    ?->map(fn ($pr_item) => $pr_item->procurement)
+                    ->filter()
+                    ->unique('id')
+                    ->map(fn ($procurement) => [
+                        'id' => $procurement->id,
+                        'code' => $procurement->code,
+                    ])
+                    ->values();
+
+                return [
+                    'id' => $item->id,
+                    'pr_id' => $item->pr_items?->pluck('procurement.id')->filter()->first(),
+                    'pr_no' => $pr_no ?: null,
+                    'purchase_requests' => $purchase_requests ?? collect(),
+                    'ppmp_no' => $this->item_ppmp_no($item),
+                    'item_no' => $item->item_no,
+                    'name' => $item->item_name,
+                    'description' => $item->item_description,
+                    'item_unit_type_id' => $item->item_unit_type_id,
+                    'project_type' => $item->project_type,
+                    'item_category_id' => $item->item_category_id,
+                    'item_category' => $item->item_category?->name,
+                    'recommended_mode_of_procurement' => $item->recommended_mode_of_procurement,
+                    'pre_procurement_conference' => $item->pre_procurement_conference,
+                    'quantity' => $quantity,
+                    'requested_quantity' => round($requested_quantity, 2),
+                    'funded_quantity' => round($funded_quantity, 2),
+                    'unfunded_quantity' => round(max(0, $requested_quantity - $funded_quantity), 2),
+                    'is_partial_funding' => $requested_quantity > $funded_quantity,
+                    'unit' => $this->item_unit_label($item),
+                    'unit_price' => round($unit_cost, 2),
+                    'price_basis' => $item->price_basis,
+                    'price_basis_amount' => $price_basis_amount !== null ? round($price_basis_amount, 2) : null,
+                    'price_variance_rate' => $price_variance_rate !== null ? round($price_variance_rate, 2) : null,
+                    'quantity_adjustment_reason' => $item->quantity_adjustment_reason,
+                    'price_variance_reason' => $item->price_variance_reason,
+                    'abc' => round((float) ($item->total_cost ?? ($quantity * $unit_cost)), 2),
+                    'q1_indicative_amount' => $item->q1_indicative_amount !== null ? round((float) $item->q1_indicative_amount, 2) : null,
+                    'q2_indicative_amount' => $item->q2_indicative_amount !== null ? round((float) $item->q2_indicative_amount, 2) : null,
+                    'q3_indicative_amount' => $item->q3_indicative_amount !== null ? round((float) $item->q3_indicative_amount, 2) : null,
+                    'q4_indicative_amount' => $item->q4_indicative_amount !== null ? round((float) $item->q4_indicative_amount, 2) : null,
+                    'start_of_procurement_activity' => $item->start_of_procurement_activity,
+                    'end_of_procurement_activity' => $item->end_of_procurement_activity,
+                    'expected_delivery_date' => $item->expected_delivery_date,
+                    'attached_supporting_documents' => $item->attached_supporting_documents,
+                    'supporting_document_path' => $item->supporting_document_path,
+                    'supporting_document_original_name' => $item->supporting_document_original_name,
+                    'supporting_document_url' => $item->supporting_document_path
+                        ? route('procurement-ppmp.items.supporting-document', $item->id)
+                        : null,
+                    'remarks' => $item->remarks,
+                    'status' => $item->status,
+                ];
+            })
+            ->values();
+    }
+
+    protected function consolidated_item_details(Collection $item_details, array $pricing_overrides = []): Collection
+    {
+        $groups = collect();
+
+        foreach ($item_details as $item) {
+            $group_key = $this->consolidation_group_key($item);
+
+            if (! $groups->has($group_key)) {
+                $groups->put($group_key, [
+                    'id' => $item['id'],
+                    'source_item_ids' => [],
+                    'name' => $item['name'],
+                    'description' => $item['description'],
+                    'item_unit_type_id' => $item['item_unit_type_id'],
+                    'project_type' => $item['project_type'],
+                    'item_category_id' => $item['item_category_id'],
+                    'item_category' => $item['item_category'],
+                    'recommended_mode_of_procurement' => $item['recommended_mode_of_procurement'],
+                    'pre_procurement_conference' => $item['pre_procurement_conference'],
+                    'start_of_procurement_activity' => $item['start_of_procurement_activity'] ?? null,
+                    'end_of_procurement_activity' => $item['end_of_procurement_activity'],
+                    'expected_delivery_date' => $item['expected_delivery_date'],
+                    'quantity' => 0,
+                    'unit' => $item['unit'],
+                    'unit_prices' => [],
+                    'unit_price' => 0,
+                    'abc' => 0,
+                    'pr_nos' => [],
+                    'ppmp_nos' => [],
+                    'source_pr_nos' => [],
+                    'source_ppmp_nos' => [],
+                    'consolidated_count' => 0,
+                    'attached_supporting_documents' => $item['attached_supporting_documents'],
+                    'supporting_document_original_name' => $item['supporting_document_original_name'],
+                    'remarks' => $item['remarks'],
+                    'status' => $item['status'],
+                ]);
+            }
+
+            $group = $groups->get($group_key);
+            $quantity = (float) ($item['quantity'] ?? 0);
+            $abc = (float) ($item['abc'] ?? 0);
+
+            $group['source_item_ids'][] = $item['id'];
+            $group['quantity'] += $quantity;
+            $group['abc'] += $abc;
+            $group['consolidated_count'] += 1;
+
+            if (($item['unit_price'] ?? null) !== null) {
+                $group['unit_prices'][] = (float) $item['unit_price'];
+            }
+
+            foreach (explode(',', (string) ($item['pr_no'] ?? '')) as $pr_no) {
+                $pr_no = trim($pr_no);
+
+                if ($pr_no !== '') {
+                    $group['pr_nos'][$pr_no] = $pr_no;
+                }
+            }
+
+            foreach (explode(',', (string) ($item['ppmp_no'] ?? '')) as $ppmp_no) {
+                $ppmp_no = trim($ppmp_no);
+
+                if ($ppmp_no !== '') {
+                    $group['ppmp_nos'][$ppmp_no] = $ppmp_no;
+                }
+            }
+
+            $groups->put($group_key, $group);
+        }
+
+        return $groups
+            ->values()
+            ->map(function ($group, $index) use ($pricing_overrides) {
+                $quantity = (float) $group['quantity'];
+                $abc = (float) $group['abc'];
+                $weighted_unit_price = $quantity > 0
+                    ? $abc / $quantity
+                    : collect($group['unit_prices'])->avg();
+                $group_key = $this->consolidation_group_key($group);
+                $pricing = $pricing_overrides[$group_key] ?? [];
+                $method = $pricing['method'] ?? 'weighted';
+                $unit_price = match ($method) {
+                    'average' => collect($group['unit_prices'])->avg(),
+                    'manual' => (float) ($pricing['manual_unit_cost'] ?? $weighted_unit_price),
+                    default => $weighted_unit_price,
+                };
+                // For weighted method use accumulated sum directly (handles zero-quantity lump-sum items).
+                // For average/manual, quantity × price is intentional.
+                $final_abc = match ($method) {
+                    'average' => round($quantity * (float) (collect($group['unit_prices'])->avg() ?? 0), 2),
+                    'manual' => round($quantity * (float) ($pricing['manual_unit_cost'] ?? $weighted_unit_price), 2),
+                    default => round($abc, 2),
+                };
+                $pr_nos = $group['pr_nos'];
+                $ppmp_nos = $group['ppmp_nos'];
+
+                // Compute price variance stats across all source items' unit prices
+                $all_unit_prices = collect($group['unit_prices'])
+                    ->map(fn ($p) => round((float) $p, 2))
+                    ->filter(fn ($p) => $p > 0);
+                $distinct_prices = $all_unit_prices->unique()->values();
+                $min_unit_price = $distinct_prices->isNotEmpty() ? (float) $distinct_prices->min() : null;
+                $max_unit_price = $distinct_prices->isNotEmpty() ? (float) $distinct_prices->max() : null;
+                $price_spread_rate = ($min_unit_price !== null && $min_unit_price > 0)
+                    ? round((($max_unit_price - $min_unit_price) / $min_unit_price) * 100, 2)
+                    : null;
+                $has_price_variance = $price_spread_rate !== null && $price_spread_rate > 5.0;
+
+                unset($group['pr_nos'], $group['ppmp_nos'], $group['unit_prices']);
+
+                return array_merge($group, [
+                    'id' => 'consolidated-'.($index + 1),
+                    'item_no' => $index + 1,
+                    'quantity' => round($quantity, 2),
+                    'unit_price' => round((float) $unit_price, 2),
+                    'pricing_method' => $method,
+                    'abc' => $final_abc,
+                    'min_unit_price' => $min_unit_price !== null ? round($min_unit_price, 2) : null,
+                    'max_unit_price' => $max_unit_price !== null ? round($max_unit_price, 2) : null,
+                    'price_spread_rate' => $price_spread_rate,
+                    'has_price_variance' => $has_price_variance,
+                    'pr_no' => implode(', ', $pr_nos),
+                    'ppmp_no' => implode(', ', $ppmp_nos),
+                    'source_pr_nos' => array_values($pr_nos),
+                    'source_ppmp_nos' => array_values($ppmp_nos),
+                ]);
+            });
+    }
+
+    protected function consolidation_group_key(array $item): string
+    {
+        return implode('|', [
+            $item['item_category_id'] ?? '0',
+            $item['item_unit_type_id'] ?? '0',
+            $this->normalize_consolidation_text($item['project_type'] ?? ''),
+            $this->normalize_consolidation_text($item['name'] ?? ''),
+            $this->normalize_consolidation_text($item['description'] ?? ''),
+        ]);
+    }
+
+    protected function normalize_consolidation_text($value): string
+    {
+        // Double-decode handles HTML stored as double-encoded entities (e.g. &amp;lt; → &lt; → <)
+        $text = strip_tags(html_entity_decode(html_entity_decode(strtolower((string) $value))));
+        $text = preg_replace('/[^a-z0-9.\s-]+/', ' ', $text);
+        $text = preg_replace('/\s+/', ' ', (string) $text);
+
+        return trim((string) $text);
+    }
+
+    protected function consolidation_price_variance_groups(Collection $current_items, string $approval_status): array
+    {
+        if ($approval_status !== 'Submitted/For Consolidation' || $current_items->isEmpty()) {
+            return [];
+        }
+
+        $existing_items = $this->existing_consolidation_items();
+
+        return $current_items
+            ->map(fn ($item) => array_merge($item, ['source_type' => 'current']))
+            ->merge($existing_items->map(fn ($item) => array_merge($item, ['source_type' => 'existing'])))
+            ->groupBy(fn ($item) => $this->consolidation_group_key($item))
+            ->filter(function (Collection $items) {
+                $has_current_item = $items->contains(fn ($item) => ($item['source_type'] ?? null) === 'current');
+                $has_existing_item = $items->contains(fn ($item) => ($item['source_type'] ?? null) === 'existing');
+                $unit_prices = $items
+                    ->pluck('unit_price')
+                    ->map(fn ($price) => round((float) $price, 2))
+                    ->unique()
+                    ->values();
+
+                return $has_current_item && $has_existing_item && $unit_prices->count() > 1;
+            })
+            ->values()
+            ->map(function (Collection $items, int $index) {
+                $quantity = $items->sum(fn ($item) => (float) ($item['quantity'] ?? 0));
+                $abc = $items->sum(fn ($item) => (float) ($item['abc'] ?? 0));
+                $representative = $items->first();
+                $unit_prices = $items
+                    ->pluck('unit_price')
+                    ->map(fn ($price) => round((float) $price, 2))
+                    ->unique()
+                    ->values();
+                $minimum_unit_price = (float) ($unit_prices->min() ?? 0);
+                $maximum_unit_price = (float) ($unit_prices->max() ?? 0);
+                $price_spread_percentage = $minimum_unit_price > 0
+                    ? (($maximum_unit_price - $minimum_unit_price) / $minimum_unit_price) * 100
+                    : null;
+
+                return [
+                    'id' => $index + 1,
+                    'group_key' => $this->consolidation_group_key($representative),
+                    'name' => $representative['name'] ?? '-',
+                    'description' => $representative['description'] ?? null,
+                    'unit' => $representative['unit'] ?? null,
+                    'quantity' => round($quantity, 2),
+                    'computed_weighted_unit_cost' => $quantity > 0 ? round($abc / $quantity, 2) : 0,
+                    'average_unit_price' => round((float) ($unit_prices->avg() ?? 0), 2),
+                    'unit_price_spread' => $unit_prices->all(),
+                    'minimum_unit_price' => round($minimum_unit_price, 2),
+                    'maximum_unit_price' => round($maximum_unit_price, 2),
+                    'price_spread_percentage' => $price_spread_percentage !== null
+                        ? round($price_spread_percentage, 2)
+                        : null,
+                    'requires_price_review' => $price_spread_percentage === null || $price_spread_percentage > 10,
+                    'total_amount' => round($abc, 2),
+                    'items' => $items
+                        ->map(fn ($item) => [
+                            'source' => ($item['source_type'] ?? null) === 'current' ? 'This PPMP' : 'Existing APP/Approved PPMP',
+                            'name' => $item['name'] ?? null,
+                            'description' => $item['description'] ?? null,
+                            'ppmp_no' => $item['ppmp_no'] ?? null,
+                            'pr_no' => $item['pr_no'] ?? null,
+                            'quantity' => round((float) ($item['quantity'] ?? 0), 2),
+                            'unit_price' => round((float) ($item['unit_price'] ?? 0), 2),
+                            'abc' => round((float) ($item['abc'] ?? 0), 2),
+                        ])
+                        ->values()
+                        ->all(),
+                ];
+            })
+            ->all();
+    }
+
+    protected function consolidation_match_groups(Collection $current_items, string $approval_status): array
+    {
+        if ($approval_status !== 'Submitted/For Consolidation' || $current_items->isEmpty()) {
+            return [];
+        }
+
+        $existing_items = $this->existing_consolidation_items();
+
+        if ($existing_items->isEmpty()) {
+            return [];
+        }
+
+        return $current_items
+            ->map(function (array $current_item, int $index) use ($existing_items) {
+                $current_key = $this->consolidation_group_key($current_item);
+                $current_keywords = $this->consolidation_keywords($current_item);
+
+                $matches = $existing_items
+                    ->map(function (array $existing_item) use ($current_item, $current_key, $current_keywords) {
+                        $existing_key = $this->consolidation_group_key($existing_item);
+                        $shared_keywords = array_values(array_intersect(
+                            $current_keywords,
+                            $this->consolidation_keywords($existing_item)
+                        ));
+                        $same_specs = $current_key === $existing_key;
+
+                        if (! $same_specs && count($shared_keywords) < 2) {
+                            return null;
+                        }
+
+                        return [
+                            'id' => $existing_item['id'] ?? null,
+                            'name' => $existing_item['name'] ?? '-',
+                            'description' => $existing_item['description'] ?? null,
+                            'ppmp_no' => $existing_item['ppmp_no'] ?? null,
+                            'pr_no' => $existing_item['pr_no'] ?? null,
+                            'quantity' => round((float) ($existing_item['quantity'] ?? 0), 2),
+                            'unit' => $existing_item['unit'] ?? null,
+                            'unit_price' => round((float) ($existing_item['unit_price'] ?? 0), 2),
+                            'abc' => round((float) ($existing_item['abc'] ?? 0), 2),
+                            'match_type' => $same_specs ? 'exact' : 'suggested',
+                            'will_consolidate_automatically' => $same_specs,
+                            'match_reason' => $same_specs ? 'Same specs/description' : 'Shared description keywords',
+                            'matched_keywords' => $same_specs ? [] : array_slice($shared_keywords, 0, 8),
+                        ];
+                    })
+                    ->filter()
+                    ->values();
+
+                if ($matches->isEmpty()) {
+                    return null;
+                }
+
+                return [
+                    'id' => $current_item['id'] ?? $index + 1,
+                    'name' => $current_item['name'] ?? '-',
+                    'description' => $current_item['description'] ?? null,
+                    'ppmp_no' => $current_item['ppmp_no'] ?? null,
+                    'pr_no' => $current_item['pr_no'] ?? null,
+                    'quantity' => round((float) ($current_item['quantity'] ?? 0), 2),
+                    'unit' => $current_item['unit'] ?? null,
+                    'unit_price' => round((float) ($current_item['unit_price'] ?? 0), 2),
+                    'abc' => round((float) ($current_item['abc'] ?? 0), 2),
+                    'matches' => $matches->all(),
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    protected function existing_consolidation_items(): Collection
+    {
+        $approved_status_id = ListStatus::query()
+            ->where('classification', 'Procurement')
+            ->where('name', 'Approved')
+            ->value('id');
+
+        if (! $approved_status_id) {
+            return collect();
+        }
+
+        $year = $this->date
+            ? date('Y', strtotime((string) $this->date))
+            : date('Y', strtotime((string) $this->created_at));
+
+        $existing_procurements = ProcurementPpmp::query()
+            ->with(['items.procurement', 'items.item_unit_type', 'items.item_category', 'items.status', 'items.pr_items.procurement'])
+            ->whereKeyNot($this->id)
+            ->whereYear('date', $year)
+            ->where(function ($query) use ($approved_status_id) {
+                $query->where('status_id', $approved_status_id)
+                    ->orWhereHas('reference_app', fn ($reference_query) => $reference_query->where('name', 'Annual Procurement Plan'));
+            })
+            ->get();
+
+        return $this->item_details(
+            $existing_procurements
+                ->flatMap(fn ($procurement) => $procurement->items ?? collect())
+                ->values()
+        );
+    }
+
+    protected function consolidation_keywords(array $item): array
+    {
+        $text = $this->normalize_consolidation_text(
+            implode(' ', [
+                $item['name'] ?? '',
+                $item['description'] ?? '',
+            ])
+        );
+
+        $stop_words = [
+            'and', 'for', 'the', 'with', 'pcs', 'piece', 'pieces', 'unit', 'units',
+            'set', 'sets', 'lot', 'lots', 'each', 'item', 'items', 'supply', 'supplies',
+        ];
+
+        return collect(explode(' ', $text))
+            ->map(fn ($word) => trim($word, '.- '))
+            ->filter(fn ($word) => strlen($word) >= 3 && ! in_array($word, $stop_words, true))
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    protected function item_unit_label($item): ?string
+    {
+        $quantity = (float) ($item->item_quantity ?? 0);
+
+        if ($quantity > 1) {
+            return $item->item_unit_type?->name_long
+                ?? $item->item_unit_type?->name
+                ?? $item->item_unit_type?->name_short;
+        }
+
+        return $item->item_unit_type?->name_short
+            ?? $item->item_unit_type?->name
+            ?? $item->item_unit_type?->name_long;
+    }
+
+    protected function item_ppmp_no($item): ?string
+    {
+        $procurement = $item->procurement;
+
+        if (! $procurement) {
+            return null;
+        }
+
+        $year = $procurement->date
+            ? date('Y', strtotime($procurement->date))
+            : date('Y', strtotime((string) $procurement->created_at));
+
+        return $this->display_plan_number($procurement->code ?: 'PPMP-'.$year.'-'.str_pad((string) $procurement->id, 4, '0', STR_PAD_LEFT));
+    }
+
+    protected function display_plan_number(?string $number): ?string
+    {
+        if (! $number) {
+            return $number;
+        }
+
+        return preg_match('/-(\d{2})$/', $number, $matches)
+            ? $matches[1]
+            : $number;
+    }
+
+    protected function plan_type(?string $plan_name): string
+    {
+        return match ($plan_name) {
+            'Annual Procurement Plan' => 'annual',
+            'Supplemental Procurement Plan' => 'supplemental',
+            default => 'ppmp',
+        };
+    }
+
+    protected function ppmp_status(?string $plan_name): string
+    {
+        if ($plan_name === 'Annual Procurement Plan') {
+            return $this->ppmp_status_override ?: match ($this->status?->name) {
+                'Reviewed' => 'For Review',
+                'Approved' => 'Reviewed/For Submission',
+                default => 'Pending',
+            };
+        }
+
+        return $this->ppmp_status_override
+            ?: match ($this->status?->name) {
+                'For Review' => 'For Review',
+                'Reviewed' => 'Reviewed/For Submission',
+                'Approved' => $plan_name === 'Supplemental Procurement Plan'
+                    ? 'Submitted/For Consolidation'
+                    : ($plan_name ? 'Consolidated/Added to APP' : 'Submitted/For Consolidation'),
+                default => 'Pending',
+            };
+    }
+
+    protected function approval_status(?string $plan_name): string
+    {
+        if ($plan_name === 'Annual Procurement Plan') {
+            return $this->approval_status_override ?: match ($this->status?->name) {
+                'Reviewed' => 'For Review',
+                'Approved' => 'Reviewed/For Submission',
+                default => 'Pending',
+            };
+        }
+
+        return $this->approval_status_override ?: match ($this->status?->name) {
+            'For Review' => 'For Review',
+            'Reviewed' => 'Reviewed/For Submission',
+            'Approved' => $plan_name === 'Supplemental Procurement Plan'
+                ? 'Submitted/For Consolidation'
+                : ($plan_name ? 'Consolidated/Added to APP' : 'Submitted/For Consolidation'),
+            default => 'Pending',
+        };
+    }
+
+    protected function source_ppmps(): Collection
+    {
+        return collect($this->source_ppmps_override ?: [])
+            ->map(fn ($source) => [
+                'id' => data_get($source, 'id'),
+                'plan_type' => data_get($source, 'plan_type'),
+                'ppmp_no' => data_get($source, 'ppmp_no'),
+                'unit_id' => data_get($source, 'unit_id'),
+                'unit' => $this->source_label(data_get($source, 'unit')),
+                'division' => data_get($source, 'division'),
+                'pr_no' => data_get($source, 'pr_no'),
+                'items_count' => (int) data_get($source, 'items_count', 0),
+                'total_amount' => round((float) data_get($source, 'total_amount', 0), 2),
+                'approval_status' => data_get($source, 'approval_status', 'Consolidated/Added to APP/SPP'),
+            ])
+            ->values();
+    }
+
+    protected function source_label($value): ?string
+    {
+        if (! $value) {
+            return null;
+        }
+
+        if (is_string($value)) {
+            return $value;
+        }
+
+        $label = data_get($value, 'name')
+            ?? data_get($value, 'label')
+            ?? data_get($value, 'short')
+            ?? data_get($value, 'value');
+
+        return $label ? (string) $label : null;
+    }
+
+    protected function ppmpTypeLabel(string $plan_type): ?string
+    {
+        if (! in_array($plan_type, ['ppmp', 'supplemental'], true)) {
+            return null;
+        }
+
+        return match ($this->ppmp_type ?? 'indicative') {
+            'final'     => 'Final',
+            default     => 'Indicative',
+        };
+    }
+
+    protected function can_edit_ppmp(string $plan_type): bool
+    {
+        if ($plan_type !== 'ppmp') {
+            return false;
+        }
+
+        if ($this->reference_app_id) {
+            return false;
+        }
+
+        // Archived finals (superseded by a revision) are read-only, mirroring isLockedForItemChanges()
+        if (($this->ppmp_type ?? 'indicative') === 'final' && ! (bool) ($this->is_current ?? true)) {
+            return false;
+        }
+
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        $user_unit_id = $user->organization?->unit_id;
+        $same_unit = $user_unit_id && $this->unit_id && (int) $user_unit_id === (int) $this->unit_id;
+
+        return (int) $this->created_by_id === (int) $user->id
+            || $same_unit
+            || $user->hasRole('Procurement Staff')
+            || $user->hasRole('Procurement Officer');
+    }
+
+    protected function can_mark_as_final(?string $plan_name, string $plan_type, Collection $items): bool
+    {
+        if (! in_array($plan_type, ['ppmp', 'supplemental'], true)) {
+            return false;
+        }
+
+        if (($this->ppmp_type ?? 'indicative') !== 'indicative') {
+            return false;
+        }
+
+        $has_projects = collect($this->projects ?? [])->isNotEmpty();
+
+        if ($items->isEmpty() && ! $has_projects) {
+            return false;
+        }
+
+        $user = auth()->user();
+
+        if (! $user || ! ($user->hasRole('Administrator') || $user->hasRole('Procurement Officer'))) {
+            return false;
+        }
+
+        // Query last: it runs per row, so skip it entirely for users without the role
+        return ! ProcurementPpmp::where('source_ppmp_id', $this->id)->where('ppmp_type', 'final')->exists();
+    }
+
+    protected function can_create_revision(?string $plan_name, string $plan_type): bool
+    {
+        if (! in_array($plan_type, ['ppmp', 'supplemental'], true)) {
+            return false;
+        }
+
+        if (($this->ppmp_type ?? 'indicative') !== 'final') {
+            return false;
+        }
+
+        if (! (bool) ($this->is_current ?? false)) {
+            return false;
+        }
+
+        $user = auth()->user();
+
+        return $user && ($user->hasRole('Administrator') || $user->hasRole('Procurement Officer'));
+    }
+
+    protected function can_mark_final_ppmp(?string $plan_name, string $plan_type): bool
+    {
+        if ($plan_name === 'Annual Procurement Plan') {
+            return in_array($this->status?->name, ['Pending', 'For Review', 'Reviewed'], true);
+        }
+
+        if ($plan_name === 'Supplemental Procurement Plan') {
+            return in_array($this->status?->name, ['Pending', 'For Review', 'Reviewed'], true);
+        }
+
+        return ! $plan_name
+            && $plan_type === 'ppmp'
+            && in_array($this->status?->name, ['Pending', 'For Review', 'Reviewed'], true);
+    }
+
+    protected function can_approve_to_app(string $approval_status): bool
+    {
+        return $approval_status === 'Submitted/For Consolidation';
+    }
+
+    protected function can_revert_status(bool $is_consolidated): bool
+    {
+        $user = auth()->user();
+        if (! $user || $is_consolidated || ! ($user->hasRole('Administrator') || $user->hasRole('Procurement Officer'))) {
+            return false;
+        }
+
+        return in_array($this->status?->name, ['For Review', 'Reviewed', 'Approved'], true);
+    }
+
+    protected function is_final_ppmp(?string $plan_name): bool
+    {
+        return (bool) $plan_name
+            || $this->status?->name === 'Approved'
+            || $this->ppmp_type === 'final';
+    }
+
+    protected function has_completed_status(): bool
+    {
+        return in_array($this->status?->name, ['For Review', 'Reviewed', 'Approved'], true);
+    }
+
+}
