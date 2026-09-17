@@ -5,7 +5,7 @@
                 
                 <BCol lg="6" class="mt-1">
                     <InputLabel value="Level" :message="form.errors.level_id"/>
-                    <Multiselect :options="levels" :searchable="true" label="name" v-model="form.level_id" placeholder="Select Level" @input="handleInput('level_id')"/>
+                    <Multiselect :options="levels" :searchable="true" label="name" v-model="form.level_id" placeholder="Select Level" @input="onLevelChange"/>
                 </BCol>
                 <BCol lg="3" class="mt-1">
                     <InputLabel value="Attended From" :message="form.errors.attended_from"/>
@@ -28,7 +28,14 @@
                 </BCol>
                 <BCol lg="12" class="mt-2 mb-2" v-if="showCourse">
                     <InputLabel value="Basic Education / Degree / Course" :message="form.errors.course_id"/>
-                    <Multiselect :options="courses" v-model="form.course_id" @search-change="fetchCourse" label="name" @input="handleInput('course_id')" :searchable="true" placeholder="Search Course"/>
+                    <div class="d-flex">
+                        <div style="width: 100%;">
+                            <Multiselect :options="courses" v-model="form.course_id" @search-change="fetchCourse" label="name" @input="handleInput('course_id')" :searchable="true" placeholder="Search Course"/>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <b-button type="button" @click="openAddCourse" :disabled="!form.level_id" variant="light" class="waves-effect waves-light ms-1" v-b-tooltip.hover :title="form.level_id ? 'Course not in the list?' : 'Select a level first'"><i class="ri-add-line"></i></b-button>
+                        </div>
+                    </div>
                 </BCol>
                 <BCol lg="12"><hr class="text-muted mt-n1 mb-n4"/></BCol>
                 <BCol lg="12" style="margin-top: 13px; margin-bottom: -10px;">
@@ -78,6 +85,19 @@
             <b-button @click="addSchool" variant="primary" :disabled="!newSchoolName || addingSchool" block>Add</b-button>
         </template>
     </b-modal>
+
+    <b-modal v-model="showAddCourseModal" header-class="p-3 bg-light" title="Add Course" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+        <BRow class="g-3 mt-n1">
+            <BCol lg="12">
+                <InputLabel value="Course Name" :message="addCourseError"/>
+                <TextInput v-model="newCourseName" type="text" class="form-control" placeholder="Enter course name" :light="true" @input="addCourseError = null" />
+            </BCol>
+        </BRow>
+        <template v-slot:footer>
+            <b-button @click="cancelAddCourse" variant="light" block>Cancel</b-button>
+            <b-button @click="addCourse" variant="primary" :disabled="!newCourseName || addingCourse" block>Add</b-button>
+        </template>
+    </b-modal>
 </template>
 <script>
 import _ from 'lodash';
@@ -116,7 +136,11 @@ export default {
             showAddSchoolModal: false,
             newSchoolName: null,
             addingSchool: false,
-            addSchoolError: null
+            addSchoolError: null,
+            showAddCourseModal: false,
+            newCourseName: null,
+            addingCourse: false,
+            addCourseError: null
         }
     },
     computed: {
@@ -126,23 +150,25 @@ export default {
             return !['elementary', 'junior high school', 'secondary'].includes(name);
         }
     },
-    watch: {
-        'form.level_id'(){
+    methods: {
+        onLevelChange(){
             // Doctorate/Master's each have their own program list, so a course picked
-            // under one level no longer applies once the level changes.
+            // under one level no longer applies once the level changes. Handled here
+            // (user-driven selection) rather than a watcher, so restoring level_id
+            // programmatically in edit() doesn't also wipe the course being restored.
             this.form.course_id = null;
             this.courses = [];
             if (this.showCourse) {
                 this.fetchCourse('');
             }
-        }
-    },
-    methods: {
+            this.handleInput('level_id');
+        },
         show(){
             this.form.reset();
             this.form.is_ongoing = 0;
             this.editable = false;
             this.cancelAddSchool();
+            this.cancelAddCourse();
             this.showModal = true;
         },
         edit(data){
@@ -161,6 +187,7 @@ export default {
             this.courses = data.course ? [{ value: data.course_id, name: data.course.name }] : [];
             this.editable = true;
             this.cancelAddSchool();
+            this.cancelAddCourse();
             this.showModal = true;
         },
         submit(){
@@ -212,12 +239,41 @@ export default {
             this.newSchoolName = null;
             this.addSchoolError = null;
         },
+        openAddCourse(){
+            if (!this.form.level_id) return;
+            this.newCourseName = null;
+            this.addCourseError = null;
+            this.showAddCourseModal = true;
+        },
+        addCourse(){
+            if (!this.newCourseName || !this.form.level_id) return;
+            this.addingCourse = true;
+            this.addCourseError = null;
+            axios.post('/profile/pds/courses', { name: this.newCourseName, level_id: this.form.level_id })
+            .then(response => {
+                const course = response.data.data;
+                this.courses = [{ value: course.value, name: course.name }];
+                this.form.course_id = course.value;
+                this.handleInput('course_id');
+                this.cancelAddCourse();
+            })
+            .catch(err => {
+                this.addCourseError = err.response?.data?.errors?.name?.[0] || 'Unable to add course.';
+            })
+            .finally(() => { this.addingCourse = false; });
+        },
+        cancelAddCourse(){
+            this.showAddCourseModal = false;
+            this.newCourseName = null;
+            this.addCourseError = null;
+        },
         handleInput(field) {
             this.form.errors[field] = false;
         },
         hide(){
             this.editable = false;
             this.cancelAddSchool();
+            this.cancelAddCourse();
             this.showModal = false;
         }
     }

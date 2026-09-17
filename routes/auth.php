@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/updated', [ProfileController::class, 'update']);
     Route::get('/profile/security', [ProfileController::class, 'security']);
     Route::post('/profile/pds/schools', [ProfileController::class, 'storeSchool']);
+    Route::post('/profile/pds/courses', [ProfileController::class, 'storeCourse']);
     Route::post('/profile/pds', [ProfileController::class, 'pds']);
     Route::put('/profile/pds/{id}', [ProfileController::class, 'pds']);
     Route::delete('/profile/pds/{id}', [ProfileController::class, 'destroyPds']);

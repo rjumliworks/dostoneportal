@@ -171,6 +171,19 @@ class ProfileController extends Controller
         return response()->json($result);
     }
 
+    public function storeCourse(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'level_id' => 'required|exists:list_data,id',
+        ]);
+
+        $result = $this->handleTransaction(function () use ($request) {
+            return $this->save->storeCourse($request);
+        });
+
+        return response()->json($result);
+    }
+
     public function store(Request $request)
     {
         if($request->option == 'certificate'){

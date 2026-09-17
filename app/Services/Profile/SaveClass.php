@@ -145,6 +145,24 @@ class SaveClass
         ];
     }
 
+    public function storeCourse($request)
+    {
+        $course = \App\Models\ListAcademic::firstOrCreate(
+            ['name' => trim($request->name), 'type_id' => 174, 'level_id' => $request->level_id],
+            ['user_id' => \Auth::id()]
+        );
+
+        return [
+            'data' => [
+                'value' => $course->id,
+                'name' => $course->name,
+            ],
+            'status' => true,
+            'message' => 'Course added successfully.',
+            'info' => 'You can now select it from the list.',
+        ];
+    }
+
     public function pds($request)
     {
         $map = [
