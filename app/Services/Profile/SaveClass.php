@@ -158,13 +158,18 @@ class SaveClass
         $payload = $request->except(['option', 'id']);
         $payload['user_id'] = \Auth::id();
 
-        // Elementary and Junior High School don't have a degree/course — fall back to a
-        // "Not Available" list_academics record (type_id 174) instead of leaving it blank,
-        // since course_id is a required, non-nullable foreign key.
-        if ($request->option === 'academic' && in_array((int) ($payload['level_id'] ?? null), [218, 113], true) && empty($payload['course_id'])) {
-            $payload['course_id'] = \App\Models\ListAcademic::firstOrCreate(
-                ['name' => 'Not Available', 'type_id' => 174]
-            )->id;
+        // Elementary, Junior High School, and Secondary don't have a degree/course —
+        // fall back to a "Not Available" list_academics record (type_id 174) instead
+        // of leaving it blank, since course_id is a required, non-nullable foreign
+        // key. Matched by name, never a hardcoded list_data id — see PdsRequest.
+        if ($request->option === 'academic' && empty($payload['course_id'])) {
+            $levelName = \App\Models\ListData::find($payload['level_id'] ?? null)?->name ?? '';
+
+            if (in_array($levelName, ['Elementary', 'Junior High School', 'Secondary'], true)) {
+                $payload['course_id'] = \App\Models\ListAcademic::firstOrCreate(
+                    ['name' => 'Not Available', 'type_id' => 174]
+                )->id;
+            }
         }
 
         // exam_name is kept as a denormalized copy of the selected exam_id's label so

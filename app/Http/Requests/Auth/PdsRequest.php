@@ -15,9 +15,19 @@ class PdsRequest extends FormRequest
     {
         switch ($this->option) {
             case 'academic':
+                // Levels with no degree/course to speak of — matched by name, never a
+                // hardcoded list_data id, since those ids can differ between
+                // environments (this rule used to reference id 218, which on this
+                // environment is actually "Video" under a different list, not
+                // Elementary — course_id ended up wrongly required for Elementary).
+                $noCourseLevelIds = \App\Models\ListData::where('type', 'Level')
+                    ->whereIn('name', ['Elementary', 'Junior High School', 'Secondary'])
+                    ->pluck('id')
+                    ->implode(',');
+
                 return [
                     'school_id' => 'required',
-                    'course_id' => 'required_unless:level_id,218,113',
+                    'course_id' => 'required_unless:level_id,'.$noCourseLevelIds,
                     'level_id' => 'required',
                     'is_ongoing' => 'required|boolean',
                     'attended_from' => 'nullable|digits:4',

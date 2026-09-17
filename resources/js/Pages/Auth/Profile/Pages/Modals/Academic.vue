@@ -123,7 +123,7 @@ export default {
         showCourse(){
             const level = this.levels?.find(l => l.value === this.form.level_id);
             const name = level?.name?.trim().toLowerCase();
-            return name !== 'elementary' && name !== 'junior high school';
+            return !['elementary', 'junior high school', 'secondary'].includes(name);
         }
     },
     watch: {
