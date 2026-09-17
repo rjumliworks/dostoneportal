@@ -20,7 +20,11 @@
                 </BCol>
                 <BCol lg="6" class="mt-0">
                     <InputLabel value="Type of L&D" :message="form.errors.type"/>
-                    <TextInput v-model="form.type" type="text" class="form-control" placeholder="Managerial / Supervisory / Technical" @input="handleInput('type')" :light="true" />
+                    <Multiselect :options="typeOptions" :searchable="false" :can-clear="false" label="name" v-model="typeSelection" @input="handleInput('type')"/>
+                </BCol>
+                <BCol lg="12" class="mt-0" v-if="typeSelection === 'Others'">
+                    <InputLabel value="Please specify the type of L&D" :message="form.errors.type"/>
+                    <TextInput v-model="customType" type="text" class="form-control" placeholder="Type the L&D category" @input="handleInput('type')" :light="true" />
                 </BCol>
                 <BCol lg="12" class="mt-0">
                     <InputLabel value="Conducted / Sponsored By" :message="form.errors.sponsored_by"/>
@@ -36,10 +40,14 @@
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
+import Multiselect from "@vueform/multiselect";
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
+
+const FIXED_TYPES = ['Managerial', 'Supervisory', 'Technical'];
+
 export default {
-    components: { InputLabel, TextInput },
+    components: { InputLabel, TextInput, Multiselect },
     data(){
         return {
             form: useForm({
@@ -52,18 +60,35 @@ export default {
                 sponsored_by: null,
                 option: 'training'
             }),
+            typeOptions: [...FIXED_TYPES, 'Others'].map(name => ({ value: name, name })),
+            typeSelection: null,
+            customType: null,
             showModal: false,
             editable: false
+        }
+    },
+    watch: {
+        typeSelection(value){
+            this.form.type = value === 'Others' ? this.customType : value;
+        },
+        customType(value){
+            if (this.typeSelection === 'Others') {
+                this.form.type = value;
+            }
         }
     },
     methods: {
         show(){
             this.form.reset();
+            this.typeSelection = null;
+            this.customType = null;
             this.editable = false;
             this.showModal = true;
         },
         edit(data){
             this.form.reset();
+            this.typeSelection = FIXED_TYPES.includes(data.type) ? data.type : (data.type ? 'Others' : null);
+            this.customType = this.typeSelection === 'Others' ? data.type : null;
             Object.assign(this.form, {
                 id: data.id,
                 title: data.title,
