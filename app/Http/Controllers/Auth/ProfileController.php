@@ -155,6 +155,7 @@ class ProfileController extends Controller
 
         return back()->with([
             'message' => $result['message'],
+            'status' => $result['status'],
         ]);
     }
 

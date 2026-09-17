@@ -2,7 +2,7 @@
     <div>
         <h5 class="fs-14 text-primary mb-1">Declaration & Legal Questions</h5>
         <p class="text-muted fs-12 mb-3">Answer honestly. Any misrepresentation may cause the filing of an administrative/criminal case.</p>
-        <form class="customform">
+        <form class="customform" style="height: calc(100vh - 485px); overflow: auto; overflow-x: hidden;">
             <div v-for="(q, index) in questions" :key="q.field" class="card border shadow-none p-3 mb-3">
                 <div class="d-flex align-items-start">
                     <div class="flex-grow-1 fs-11 pe-1">{{ index+1 }}. {{ q.label }}</div>
@@ -25,8 +25,8 @@
             </div>
 
             <hr class="text-muted"/>
-            <h5 class="fs-14 text-primary mb-3">Government Issued ID</h5>
-            <BRow class="g-3">
+            <h5 class="fs-14 text-primary mb-0">Government Issued ID</h5>
+            <BRow class="g-3 p-2 mb-3">
                 <BCol lg="4">
                     <InputLabel value="Government Issued ID" :message="form.errors.government_id_type"/>
                     <TextInput v-model="form.government_id_type" type="text" class="form-control" placeholder="e.g. Passport, GSIS, SSS, PRC" :light="true" />

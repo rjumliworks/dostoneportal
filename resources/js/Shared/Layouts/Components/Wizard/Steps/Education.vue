@@ -4,7 +4,7 @@
             <h5 class="fs-14 text-primary mb-0">Educational Background</h5>
             <b-button class="mb-2" variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
         </div>
-        <div class="table-responsive table-card">
+        <div class="table-responsive table-card" style="height: calc(100vh - 465px); overflow: auto;">
             <table class="table align-middle table-striped table-centered mb-0">
                 <thead class="table-primary thead-fixed">
                     <tr class="fs-11">

@@ -33,7 +33,8 @@ class SaveClass
 
         return [
             'data' => [],
-            'message' => 'Profile picture updated successfully.', 
+            'status' => true,
+            'message' => 'Profile picture updated successfully.',
             'info' => "The user's profile image has been changed to the new photo."
         ];
     }
@@ -57,6 +58,7 @@ class SaveClass
         $data = User::find(\Auth::user()->id);
         return [
             'data' => $data,
+            'status' => true,
             'message' => 'User information updated successfully.',
             'info' => "All relevant fields have been refreshed with the latest data."
         ];
@@ -137,6 +139,7 @@ class SaveClass
                 'value' => $school->id,
                 'name' => $school->name,
             ],
+            'status' => true,
             'message' => 'School added successfully.',
             'info' => 'You can now select it from the list.',
         ];
@@ -194,6 +197,7 @@ class SaveClass
 
         return [
             'data' => $record,
+            'status' => true,
             'message' => 'Record saved successfully.',
             'info' => 'Your Personal Data Sheet has been updated.',
         ];
@@ -211,8 +215,9 @@ class SaveClass
 
         return [
             'data' => $record,
-            'message' => 'Declaration saved successfully.',
-            'info' => 'Your Personal Data Sheet has been updated.',
+            'status' => true,
+            'message' => 'Your Personal Data Sheet has been completed.',
+            'info' => 'This is now your official PDS record on file. Please keep it updated — it will be used to automatically generate your Personal Data Sheet (CS Form No. 212) whenever one is needed.',
         ];
     }
 
@@ -225,6 +230,7 @@ class SaveClass
 
         return [
             'data' => $record,
+            'status' => true,
             'message' => 'Government ID numbers saved successfully.',
             'info' => 'Your Personal Data Sheet has been updated.',
         ];
@@ -243,6 +249,7 @@ class SaveClass
 
         return [
             'data' => $record,
+            'status' => true,
             'message' => 'Family background saved successfully.',
             'info' => 'Your Personal Data Sheet has been updated.',
         ];
@@ -264,6 +271,7 @@ class SaveClass
         $model::where('id', $id)->where('user_id', \Auth::id())->delete();
 
         return [
+            'status' => true,
             'message' => 'Record removed successfully.',
         ];
     }

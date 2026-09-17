@@ -64,14 +64,15 @@ import EligibilityStep from './Steps/Eligibility.vue';
 import WorkExperienceStep from './Steps/WorkExperience.vue';
 import VoluntaryWorkStep from './Steps/VoluntaryWork.vue';
 import TrainingStep from './Steps/Training.vue';
-import OtherAndReferences from './Steps/OtherAndReferences.vue';
+import OtherInformationStep from './Steps/OtherInformation.vue';
+import ReferenceStep from './Steps/Reference.vue';
 import DeclarationStep from './Steps/Declaration.vue';
 
 export default {
     components: {
         PersonalInformation, AddressStep, GovernmentIds, FamilyBackground, Education,
         EligibilityStep, WorkExperienceStep, VoluntaryWorkStep, TrainingStep,
-        OtherAndReferences, DeclarationStep,
+        OtherInformationStep, ReferenceStep, DeclarationStep,
     },
     data(){
         return {
@@ -91,7 +92,8 @@ export default {
                 { label: 'Work Experience', component: 'WorkExperienceStep' },
                 { label: 'Voluntary Work', component: 'VoluntaryWorkStep' },
                 { label: 'Learning & Development', component: 'TrainingStep' },
-                { label: 'Other Information & References', component: 'OtherAndReferences' },
+                { label: 'Other Information', component: 'OtherInformationStep' },
+                { label: 'References', component: 'ReferenceStep' },
                 { label: 'Declaration & Legal Info', component: 'DeclarationStep' },
             ],
         }
@@ -122,8 +124,11 @@ export default {
         this.fetchAll();
     },
     beforeUnmount(){
+        // Note: intentionally NOT clearing $page.props.flash here — the wizard
+        // unmounts the instant "Finish" succeeds (showUpdateModal flips false),
+        // which is exactly when the global success modal in Main.vue needs that
+        // flash message to still be there to display.
         clearTimeout(this.flashTimeout);
-        this.$page.props.flash = {};
     },
     methods: {
         fetchAll(){

@@ -4,7 +4,7 @@
             <h5 class="fs-14 text-primary mb-0">Voluntary Work</h5>
             <b-button class="mb-2" variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
         </div>
-        <div class="table-responsive table-card">
+        <div class="table-responsive table-card" style="height: calc(100vh - 465px); overflow: auto;">
             <table class="table align-middle table-striped table-centered mb-0">
                 <thead class="table-primary thead-fixed">
                     <tr class="fs-11">
@@ -18,7 +18,7 @@
                 <tbody class="fs-12" v-if="rows.length > 0">
                     <tr v-for="row in rows" :key="row.id">
                         <td>{{ row.organization }}</td>
-                        <td class="text-center">{{ row.start_at }} - {{ row.end_at || '-' }}</td>
+                        <td class="text-center">{{ formatDateRange(row.start_at, row.end_at) }}</td>
                         <td class="text-center">{{ row.hours || '-' }}</td>
                         <td class="text-center">{{ row.position_nature || '-' }}</td>
                         <td class="text-end">
@@ -38,6 +38,7 @@
 <script>
 import { router } from '@inertiajs/vue3';
 import Modal from '@/Pages/Auth/Profile/Pages/Modals/VoluntaryWork.vue';
+import { formatDateRange } from '@/Shared/Utils/dateRange';
 export default {
     components: { Modal },
     props: ['data'],
@@ -45,6 +46,7 @@ export default {
         rows(){ return this.data.voluntaryWorks || []; }
     },
     methods: {
+        formatDateRange,
         remove(row){
             if (!confirm('Remove this voluntary work record?')) return;
             router.delete('/profile/pds/'+row.id, {

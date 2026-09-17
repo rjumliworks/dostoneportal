@@ -33,7 +33,7 @@
                 </thead>
                 <tbody class="fs-12" v-if="merged.length > 0">
                     <tr v-for="(list,index) in merged" v-bind:key="index">
-                        <td class="text-center">{{ list.start_at }} - {{ list.end_at || 'Present' }}</td>
+                        <td class="text-center">{{ formatDateRange(list.start_at, list.end_at, 'Present') }}</td>
                         <td>
                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{ list.position_title }}</h5>
                             <p class="fs-12 text-muted mb-0">{{ list.department_agency }}</p>
@@ -68,6 +68,7 @@
 <script>
 import { router } from '@inertiajs/vue3';
 import Modal from './Modals/WorkExperience.vue';
+import { formatDateRange } from '@/Shared/Utils/dateRange';
 export default {
     components: { Modal },
     props: ['lists','contracts'],
@@ -88,6 +89,7 @@ export default {
         }
     },
     methods: {
+        formatDateRange,
         openCreate(){
             this.$refs.modal.show();
         },

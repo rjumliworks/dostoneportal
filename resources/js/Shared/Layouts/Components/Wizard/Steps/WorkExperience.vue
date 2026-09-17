@@ -5,7 +5,7 @@
             <b-button class="mb-2" variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
         </div>
         
-        <div class="table-responsive table-card">
+        <div class="table-responsive table-card" style="height: calc(100vh - 465px); overflow: auto;">
             <table class="table align-middle table-striped table-centered mb-0">
                 <thead class="table-primary thead-fixed">
                     <tr class="fs-11">
@@ -21,7 +21,7 @@
                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{ row.position_title }}</h5>
                             <p class="fs-12 text-muted mb-0">{{ row.department_agency }}</p>
                         </td>
-                        <td class="text-center">{{ row.start_at }} - {{ row.end_at || 'Present' }}</td>
+                        <td class="text-center">{{ formatDateRange(row.start_at, row.end_at, 'Present') }}</td>
                         <td class="text-center">{{ row.is_government ? 'Yes' : 'No' }}</td>
                         <td class="text-end">
                             <b-button @click="$refs.modal.edit(row)" variant="soft-warning" size="sm" class="me-1" type="button"><i class="ri-pencil-fill align-bottom"></i></b-button>
@@ -40,6 +40,7 @@
 <script>
 import { router } from '@inertiajs/vue3';
 import Modal from '@/Pages/Auth/Profile/Pages/Modals/WorkExperience.vue';
+import { formatDateRange } from '@/Shared/Utils/dateRange';
 export default {
     components: { Modal },
     props: ['data'],
@@ -47,6 +48,7 @@ export default {
         rows(){ return this.data.workExperiences || []; }
     },
     methods: {
+        formatDateRange,
         remove(row){
             if (!confirm('Remove this work experience record?')) return;
             router.delete('/profile/pds/'+row.id, {

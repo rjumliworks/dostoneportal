@@ -4,14 +4,14 @@
             <h5 class="fs-14 text-primary mb-0">Learning & Development / Trainings</h5>
             <b-button class="mb-2" variant="primary" size="sm" type="button" @click="$refs.modal.show()"><i class="ri-add-circle-fill align-bottom me-1"></i> Add</b-button>
         </div>
-        <div class="table-responsive table-card">
+        <div class="table-responsive table-card" style="height: calc(100vh - 465px); overflow: auto;">
             <table class="table align-middle table-striped table-centered mb-0">
                 <thead class="table-primary thead-fixed">
                     <tr class="fs-11">
                         <th>Title</th>
-                        <th class="text-center">Period</th>
-                        <th class="text-center">Hours</th>
-                        <th class="text-center">Type</th>
+                        <th style="width: 25%;" class="text-center">Period</th>
+                        <th style="width: 5%;" class="text-center">Hours</th>
+                        <th style="width: 14%;" class="text-center">Type</th>
                         <th style="width: 8%;"></th>
                     </tr>
                 </thead>
@@ -21,7 +21,7 @@
                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{ row.title }}</h5>
                             <p class="fs-12 text-muted mb-0">{{ row.sponsored_by }}</p>
                         </td>
-                        <td class="text-center">{{ row.start_at }} - {{ row.end_at || '-' }}</td>
+                        <td class="text-center">{{ formatDateRange(row.start_at, row.end_at) }}</td>
                         <td class="text-center">{{ row.hours || '-' }}</td>
                         <td class="text-center">{{ row.type || '-' }}</td>
                         <td class="text-end">
@@ -41,6 +41,7 @@
 <script>
 import { router } from '@inertiajs/vue3';
 import Modal from '@/Pages/Auth/Profile/Pages/Modals/Training.vue';
+import { formatDateRange } from '@/Shared/Utils/dateRange';
 export default {
     components: { Modal },
     props: ['data'],
@@ -48,6 +49,7 @@ export default {
         rows(){ return this.data.trainings || []; }
     },
     methods: {
+        formatDateRange,
         remove(row){
             if (!confirm('Remove this training record?')) return;
             router.delete('/profile/pds/'+row.id, {

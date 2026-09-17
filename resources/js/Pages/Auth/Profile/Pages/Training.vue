@@ -34,7 +34,7 @@
                 <tbody class="fs-12" v-if="lists.length > 0">
                     <tr v-for="(list,index) in lists" v-bind:key="index">
                         <td>{{ list.title }}</td>
-                        <td class="text-center">{{ list.start_at }} - {{ list.end_at || '-' }}</td>
+                        <td class="text-center">{{ formatDateRange(list.start_at, list.end_at) }}</td>
                         <td class="text-center">{{ list.hours || '-' }}</td>
                         <td class="text-center">{{ list.type || '-' }}</td>
                         <td>{{ list.sponsored_by || '-' }}</td>
@@ -60,10 +60,12 @@
 <script>
 import { router } from '@inertiajs/vue3';
 import Modal from './Modals/Training.vue';
+import { formatDateRange } from '@/Shared/Utils/dateRange';
 export default {
     components: { Modal },
     props: ['lists'],
     methods: {
+        formatDateRange,
         openCreate(){
             this.$refs.modal.show();
         },
