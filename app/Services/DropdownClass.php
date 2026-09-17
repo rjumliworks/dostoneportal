@@ -209,14 +209,41 @@ class DropdownClass
         return $data;
     }
 
+    /**
+     * Fixed display order for the "Level" (education level) dropdown, per business
+     * request — sorted by name (never id, since these list_data rows are added
+     * ad-hoc via the admin UI and their ids can differ between environments).
+     * Anything not listed here (a newly added level) sorts after these.
+     */
+    private const LEVEL_SORT_ORDER = [
+        'Doctorate Degree',
+        'Master’s Degree',
+        'Bachelor’s Degree',
+        'Associate Degree',
+        'Senior High School',
+        'Junior High School',
+        'Secondary',
+        'Elementary',
+        'Vocational',
+        'Others',
+    ];
+
     public function datas($type){
-        $data = ListData::where('type',$type)->where('is_active',1)->get()->map(function ($item) {
+        $data = ListData::where('type',$type)->where('is_active',1)->get();
+
+        if ($type === 'Level') {
+            $data = $data->sortBy(function ($item) {
+                $position = array_search(trim($item->name), self::LEVEL_SORT_ORDER, true);
+                return $position === false ? count(self::LEVEL_SORT_ORDER) : $position;
+            })->values();
+        }
+
+        return $data->map(function ($item) {
             return [
                 'value' => $item->id,
                 'name' => $item->name
             ];
         });
-        return $data;
     }
 
     public function schools($keyword){

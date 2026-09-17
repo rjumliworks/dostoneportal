@@ -31,7 +31,8 @@ class SearchController extends Controller
                 'employment_statuses' => $this->dropdown->datas('Employment Status'),
                 'regions' => $this->dropdown->regions(),
                 'levels' => $this->dropdown->datas('Level'),
-                'eligibilities' => $this->dropdown->datas('Eligibility')
+                'eligibilities' => $this->dropdown->datas('Eligibility'),
+                'examTypes' => $this->dropdown->datas('Exam')
             ],
         ];
     }

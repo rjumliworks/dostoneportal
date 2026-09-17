@@ -8,6 +8,8 @@ class UserEligibility extends Model
 {
     protected $fillable = [
         'exam_name',
+        'exam_id',
+        'type_id',
         'rating',
         'exam_at',
         'exam_place',
@@ -19,5 +21,15 @@ class UserEligibility extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+
+    public function exam()
+    {
+        return $this->belongsTo('App\Models\ListData', 'exam_id', 'id');
+    }
+
+    public function type()
+    {
+        return $this->belongsTo('App\Models\ListData', 'type_id', 'id');
     }
 }

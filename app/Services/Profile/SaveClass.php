@@ -125,6 +125,23 @@ class SaveClass
         }
     }
 
+    public function storeSchool($request)
+    {
+        $school = \App\Models\ListAcademic::firstOrCreate(
+            ['name' => trim($request->name), 'type_id' => 173],
+            ['user_id' => \Auth::id()]
+        );
+
+        return [
+            'data' => [
+                'value' => $school->id,
+                'name' => $school->name,
+            ],
+            'message' => 'School added successfully.',
+            'info' => 'You can now select it from the list.',
+        ];
+    }
+
     public function pds($request)
     {
         $map = [
@@ -148,6 +165,19 @@ class SaveClass
             $payload['course_id'] = \App\Models\ListAcademic::firstOrCreate(
                 ['name' => 'Not Available', 'type_id' => 174]
             )->id;
+        }
+
+        // exam_name is kept as a denormalized copy of the selected exam_id's label so
+        // older reports/views reading that column keep working unchanged — except for
+        // the "Other Board / Bar Examination" catch-all, where it isn't in the list at
+        // all and exam_name instead holds whatever the user typed for it.
+        if ($request->option === 'eligibility') {
+            $typeName = !empty($payload['type_id']) ? \App\Models\ListData::find($payload['type_id'])?->name : null;
+            $isOtherBoard = $typeName && str_contains(strtolower($typeName), 'other board');
+
+            if (!$isOtherBoard || empty($payload['exam_name'])) {
+                $payload['exam_name'] = \App\Models\ListData::find($payload['exam_id'])?->name;
+            }
         }
 
         if ($request->filled('id')) {

@@ -17,7 +17,14 @@
                 </BCol>
                 <BCol lg="12" class="mt-1">
                     <InputLabel value="School" :message="form.errors.school_id"/>
-                    <Multiselect :options="schools" v-model="form.school_id" @search-change="fetchSchool" label="name" @input="handleInput('school_id')" :searchable="true" placeholder="Search School"/>
+                    <div class="d-flex">
+                        <div style="width: 100%;">
+                            <Multiselect :options="schools" v-model="form.school_id" @search-change="fetchSchool" label="name" @input="handleInput('school_id')" :searchable="true" placeholder="Search School"/>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <b-button type="button" @click="openAddSchool" variant="light" class="waves-effect waves-light ms-1" v-b-tooltip.hover title="School not in the list?"><i class="ri-add-line"></i></b-button>
+                        </div>
+                    </div>
                 </BCol>
                 <BCol lg="12" class="mt-2 mb-2" v-if="showCourse">
                     <InputLabel value="Basic Education / Degree / Course" :message="form.errors.course_id"/>
@@ -58,6 +65,19 @@
             <b-button @click="submit()" variant="primary" :disabled="form.processing" block>Submit</b-button>
         </template>
     </b-modal>
+
+    <b-modal v-model="showAddSchoolModal" header-class="p-3 bg-light" title="Add School" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+        <BRow class="g-3 mt-n1">
+            <BCol lg="12">
+                <InputLabel value="School Name" :message="addSchoolError"/>
+                <TextInput v-model="newSchoolName" type="text" class="form-control" placeholder="Enter school name" :light="true" @input="addSchoolError = null" />
+            </BCol>
+        </BRow>
+        <template v-slot:footer>
+            <b-button @click="cancelAddSchool" variant="light" block>Cancel</b-button>
+            <b-button @click="addSchool" variant="primary" :disabled="!newSchoolName || addingSchool" block>Add</b-button>
+        </template>
+    </b-modal>
 </template>
 <script>
 import _ from 'lodash';
@@ -92,7 +112,11 @@ export default {
             schools: [],
             courses: [],
             showModal: false,
-            editable: false
+            editable: false,
+            showAddSchoolModal: false,
+            newSchoolName: null,
+            addingSchool: false,
+            addSchoolError: null
         }
     },
     computed: {
@@ -115,6 +139,7 @@ export default {
             this.form.reset();
             this.form.is_ongoing = 0;
             this.editable = false;
+            this.cancelAddSchool();
             this.showModal = true;
         },
         edit(data){
@@ -132,6 +157,7 @@ export default {
             this.schools = data.school ? [{ value: data.school_id, name: data.school.name }] : [];
             this.courses = data.course ? [{ value: data.course_id, name: data.course.name }] : [];
             this.editable = true;
+            this.cancelAddSchool();
             this.showModal = true;
         },
         submit(){
@@ -156,11 +182,39 @@ export default {
             .then(response => { this.courses = response.data; })
             .catch(err => console.log(err));
         }, 300),
+        openAddSchool(){
+            this.newSchoolName = null;
+            this.addSchoolError = null;
+            this.showAddSchoolModal = true;
+        },
+        addSchool(){
+            if (!this.newSchoolName) return;
+            this.addingSchool = true;
+            this.addSchoolError = null;
+            axios.post('/profile/pds/schools', { name: this.newSchoolName })
+            .then(response => {
+                const school = response.data.data;
+                this.schools = [{ value: school.value, name: school.name }];
+                this.form.school_id = school.value;
+                this.handleInput('school_id');
+                this.cancelAddSchool();
+            })
+            .catch(err => {
+                this.addSchoolError = err.response?.data?.errors?.name?.[0] || 'Unable to add school.';
+            })
+            .finally(() => { this.addingSchool = false; });
+        },
+        cancelAddSchool(){
+            this.showAddSchoolModal = false;
+            this.newSchoolName = null;
+            this.addSchoolError = null;
+        },
         handleInput(field) {
             this.form.errors[field] = false;
         },
         hide(){
             this.editable = false;
+            this.cancelAddSchool();
             this.showModal = false;
         }
     }

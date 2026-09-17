@@ -19,6 +19,7 @@
                     <tr v-for="row in rows" :key="row.id">
                         <td>
                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{ row.exam_name }}</h5>
+                            <p v-if="row.type" class="fs-12 text-muted mb-0">{{ row.type.name }}</p>
                             <p class="fs-12 text-muted mb-0">{{ row.exam_place }}</p>
                         </td>
                         <td class="text-center">{{ row.rating || '-' }}</td>
@@ -35,7 +36,7 @@
                 </tbody>
             </table>
         </div>
-        <Modal :eligibility-types="dropdowns.eligibilities" ref="modal" @success="$emit('refresh')"/>
+        <Modal :eligibility-types="dropdowns.eligibilities" :exam-types="dropdowns.examTypes" ref="modal" @success="$emit('refresh')"/>
     </div>
 </template>
 <script>

@@ -32,7 +32,10 @@
                 </thead>
                 <tbody class="fs-12" v-if="lists.length > 0">
                     <tr v-for="(list,index) in lists" v-bind:key="index">
-                        <td>{{ list.exam_name }}</td>
+                        <td>
+                            {{ list.exam_name }}
+                            <div v-if="list.type" class="text-muted fs-11">{{ list.type.name }}</div>
+                        </td>
                         <td class="text-center">{{ list.rating || '-' }}</td>
                         <td class="text-center">{{ list.exam_at || '-' }}</td>
                         <td>{{ list.exam_place || '-' }}</td>
@@ -52,7 +55,7 @@
             </table>
         </div>
     </div>
-    <Modal :eligibility-types="eligibilityTypes" ref="modal" @success="refresh"/>
+    <Modal :eligibility-types="eligibilityTypes" :exam-types="examTypes" ref="modal" @success="refresh"/>
 </div>
 </template>
 <script>
@@ -60,7 +63,7 @@ import { router } from '@inertiajs/vue3';
 import Modal from './Modals/Eligibility.vue';
 export default {
     components: { Modal },
-    props: ['lists', 'eligibilityTypes'],
+    props: ['lists', 'eligibilityTypes', 'examTypes'],
     methods: {
         openCreate(){
             this.$refs.modal.show();

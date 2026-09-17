@@ -104,7 +104,7 @@ class ProfileController extends Controller
             ] : null,
             'addresses' => UserAddress::with('region','province','municipality','barangay')->where('user_id',$userId)->get(),
             'academics' => UserAcademic::with('school','course','level')->where('user_id',$userId)->orderByDesc('id')->get(),
-            'eligibilities' => UserEligibility::where('user_id',$userId)->orderByDesc('id')->get(),
+            'eligibilities' => UserEligibility::with('type')->where('user_id',$userId)->orderByDesc('id')->get(),
             'contracts' => UserContract::with('position','type')->where('user_id',$userId)->orderByDesc('start_at')->get(),
             'workExperiences' => UserWorkExperience::where('user_id',$userId)->orderByDesc('start_at')->get(),
             'voluntaryWorks' => UserVoluntaryWork::where('user_id',$userId)->orderByDesc('start_at')->get(),
@@ -116,6 +116,7 @@ class ProfileController extends Controller
             'dropdowns' => [
                 'levels' => $this->dropdown->datas('Level'),
                 'eligibilities' => $this->dropdown->datas('Eligibility'),
+                'examTypes' => $this->dropdown->datas('Exam'),
             ],
         ];
     }
@@ -155,6 +156,18 @@ class ProfileController extends Controller
         return back()->with([
             'message' => $result['message'],
         ]);
+    }
+
+    public function storeSchool(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $result = $this->handleTransaction(function () use ($request) {
+            return $this->save->storeSchool($request);
+        });
+
+        return response()->json($result);
     }
 
     public function store(Request $request)

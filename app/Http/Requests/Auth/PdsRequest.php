@@ -27,8 +27,20 @@ class PdsRequest extends FormRequest
                     'honors' => 'nullable|string|max:255',
                 ];
             case 'eligibility':
+                // The RA 1080 "Bar and Board Examination" entry, and its "Other Board /
+                // Bar Examination" catch-all board type, are matched by name rather than
+                // a hardcoded list_data id, since those ids can differ between
+                // environments.
+                $examName = \App\Models\ListData::find($this->exam_id)?->name ?? '';
+                $isBoardExam = str_contains(strtolower($examName), 'bar and board');
+
+                $typeName = \App\Models\ListData::find($this->type_id)?->name ?? '';
+                $isOtherBoard = str_contains(strtolower($typeName), 'other board');
+
                 return [
-                    'exam_name' => 'required|string|max:255',
+                    'exam_id' => 'required|exists:list_data,id',
+                    'type_id' => ($isBoardExam ? 'required' : 'nullable').'|exists:list_data,id',
+                    'exam_name' => ($isOtherBoard ? 'required' : 'nullable').'|string|max:255',
                     'rating' => 'nullable|string|max:20',
                     'exam_at' => 'nullable|date',
                     'exam_place' => 'nullable|string|max:255',
