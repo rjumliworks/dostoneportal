@@ -13,6 +13,9 @@
                 <h5 class="mb-0 fs-14"><span class="text-body">Family Background</span></h5>
                 <p class="text-muted text-truncate-two-lines fs-12">Spouse, parents, and children on file.</p>
             </div>
+            <div class="flex-shrink-0">
+                <b-button variant="primary" class="mb-2" size="sm" @click="openEdit()"><i class="ri-pencil-fill align-bottom me-1"></i> Edit</b-button>
+            </div>
         </div>
     </div>
     <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 291px); overflow: auto;">
@@ -73,10 +76,14 @@
             </div>
         </div>
     </div>
+    <Modal ref="modal" @success="refresh"/>
 </div>
 </template>
 <script>
+import { router } from '@inertiajs/vue3';
+import Modal from './Modals/Family.vue';
 export default {
+    components: { Modal },
     props: ['information'],
     computed: {
         backgrounds(){
@@ -99,6 +106,12 @@ export default {
         fullName(person){
             if (!person) return null;
             return [person.firstname, person.middlename, person.lastname, person.suffix].filter(Boolean).join(' ') || null;
+        },
+        openEdit(){
+            this.$refs.modal.show(this.backgrounds);
+        },
+        refresh(){
+            router.reload({ only: ['userInformation'], preserveScroll: true });
         }
     }
 }

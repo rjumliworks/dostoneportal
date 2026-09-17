@@ -68,7 +68,9 @@ export default {
     computed: {
         ...layoutComputed,
         message() {
-            return (this.$page.props.flash.message) ?  true : false;
+            // Suppressed while the PDS wizard is open — it shows its own inline
+            // success alert instead of this modal for its step-by-step saves.
+            return !!(this.$page.props.flash.message) && !this.showUpdateModal;
         },
         showUpdateModal() {
             return this.updateRequired === true;

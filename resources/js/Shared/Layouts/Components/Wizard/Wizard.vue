@@ -11,6 +11,11 @@
                         You can review and update any section later from your Profile page.
                     </p>
 
+                    <div v-if="flashMessage" class="alert material-shadow" :class="flashStatus ? 'alert-success' : 'alert-danger'" role="alert">
+                        <strong>{{ flashMessage }}</strong>
+                        <span v-if="flashInfo"> {{ flashInfo }}</span>
+                    </div>
+
                     <div v-if="loading" class="text-center py-5">
                         <span class="spinner-border text-primary"></span>
                     </div>
@@ -73,6 +78,7 @@ export default {
             loading: true,
             saving: false,
             currentStep: 1,
+            flashTimeout: null,
             dropdowns: {},
             pdsData: {},
             steps: [
@@ -93,10 +99,31 @@ export default {
     computed: {
         progressPercent(){
             return Math.round((this.currentStep / this.steps.length) * 100);
+        },
+        flashMessage(){
+            return this.$page.props.flash?.message || null;
+        },
+        flashInfo(){
+            return this.$page.props.flash?.info || null;
+        },
+        flashStatus(){
+            return this.$page.props.flash?.status;
+        }
+    },
+    watch: {
+        flashMessage(value){
+            clearTimeout(this.flashTimeout);
+            if (value) {
+                this.flashTimeout = setTimeout(() => { this.$page.props.flash = {}; }, 4000);
+            }
         }
     },
     mounted(){
         this.fetchAll();
+    },
+    beforeUnmount(){
+        clearTimeout(this.flashTimeout);
+        this.$page.props.flash = {};
     },
     methods: {
         fetchAll(){
