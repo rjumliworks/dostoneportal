@@ -46,6 +46,13 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
                 </Link>
             </li>
+            <li class="nav-item">
+                <Link href="/files" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Portal/Files') }">
+                <i class="ri-folder-5-fill"></i>
+                <span class="fw-semibold fs-14" data-key="t-dashboards">Files</span>
+                </Link>
+            </li>
             <template v-if="['Procurement Staff','Procurement Officer','Budget Officer'].some(role => $page.props.roles.includes(role))">
             <li class="menu-title">
                 <i class="ri-more-fill" aria-expanded="false"></i>

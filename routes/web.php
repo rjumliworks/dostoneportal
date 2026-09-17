@@ -93,6 +93,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/requests-travel-conflicts', [App\Http\Controllers\Portal\RequestController::class, 'checkTravelConflicts']);
     Route::resource('/whereabouts', App\Http\Controllers\Portal\WhereaboutController::class);
     Route::resource('/schedules', App\Http\Controllers\Portal\ScheduleController::class);
+    Route::resource('/files', App\Http\Controllers\Portal\FileController::class);
 
     Route::get('/posts/{post}', [App\Http\Controllers\PostController::class, 'show']);
     Route::get('/posts/{post}/print', [App\Http\Controllers\PostController::class, 'print']);
