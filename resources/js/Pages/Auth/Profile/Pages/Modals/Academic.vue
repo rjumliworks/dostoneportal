@@ -128,9 +128,12 @@ export default {
     },
     watch: {
         'form.level_id'(){
-            if (!this.showCourse) {
-                this.form.course_id = null;
-                this.courses = [];
+            // Doctorate/Master's each have their own program list, so a course picked
+            // under one level no longer applies once the level changes.
+            this.form.course_id = null;
+            this.courses = [];
+            if (this.showCourse) {
+                this.fetchCourse('');
             }
         }
     },
@@ -178,7 +181,7 @@ export default {
             .catch(err => console.log(err));
         }, 300),
         fetchCourse: _.debounce(function (code) {
-            axios.get('/search', { params: { option: 'courses', keyword: code } })
+            axios.get('/search', { params: { option: 'courses', keyword: code, level_id: this.form.level_id } })
             .then(response => { this.courses = response.data; })
             .catch(err => console.log(err));
         }, 300),

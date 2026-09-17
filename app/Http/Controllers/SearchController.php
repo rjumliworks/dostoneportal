@@ -68,7 +68,7 @@ class SearchController extends Controller
                 return $this->dropdown->schools($request->keyword);
             break;
             case 'courses':
-                return $this->dropdown->courses($request->keyword);
+                return $this->dropdown->courses($request->keyword, $request->level_id);
             break;
         }
     }

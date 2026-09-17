@@ -260,10 +260,19 @@ class DropdownClass
         return $data;
     }
 
-    public function courses($keyword){
+    public function courses($keyword, $levelId = null){
+        // Doctorate/Master's have their own dedicated program lists (level_id set);
+        // every other level shares the general, level-agnostic pool (level_id null).
+        $hasDedicatedList = $levelId && ListAcademic::where('type_id', 174)->where('level_id', $levelId)->exists();
+
         $data = ListAcademic::where('type_id', 174)
         ->when($keyword, function ($query) use ($keyword){
             $query->where('name', 'like', '%' . $keyword . '%');
+        })
+        ->when($hasDedicatedList, function ($query) use ($levelId){
+            $query->where('level_id', $levelId);
+        }, function ($query){
+            $query->whereNull('level_id');
         })
         ->limit(20)->get()->map(function ($item) {
             return [
