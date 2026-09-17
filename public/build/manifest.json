@@ -172,14 +172,6 @@
     "file": "assets/remixicon-DrAJSjvU.woff2",
     "src": "public/fonts/remixicon.woff2"
   },
-  "public/images/apps/calendar.png": {
-    "file": "assets/calendar-yfM8ZpJt.png",
-    "src": "public/images/apps/calendar.png"
-  },
-  "public/images/apps/customer.png": {
-    "file": "assets/customer-BnSpBMSv.png",
-    "src": "public/images/apps/customer.png"
-  },
   "public/images/auth/new-password.png": {
     "file": "assets/new-password-DFqpapdk.png",
     "src": "public/images/auth/new-password.png"
@@ -209,7 +201,7 @@
     "src": "public/images/logo-sm.png"
   },
   "resources/js/app.js": {
-    "file": "assets/app-CniAiIi9.js",
+    "file": "assets/app-G-cAtsDJ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -235,8 +227,6 @@
       "assets/bagongpilipinas-DcObCbJR.png",
       "assets/logo-dark-BTQwWYkM.png",
       "assets/logo-light-xO5Q2xFH.png",
-      "assets/customer-BnSpBMSv.png",
-      "assets/calendar-yfM8ZpJt.png",
       "assets/hkgrotesk-light-CFOlwwJU.eot",
       "assets/hkgrotesk-light-Bch7Jc8H.woff",
       "assets/hkgrotesk-regular-C5FQFgYW.eot",
