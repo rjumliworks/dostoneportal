@@ -24,7 +24,7 @@
         <div class="card-body border-bottom bg-white">
             <p class="mb-0 text-primary fs-12 fw-semibold">Storage Status : </p>
         </div>
-        <div class="card bg-white border-bottom shadow-none mb-0" style="height: calc(100vh - 300px); overflow-x: hidden;">
+        <div class="card bg-white border-bottom shadow-none mb-0" style="height: calc(100vh - 345px); overflow-x: hidden;">
             <div class="p-4 mb-n4">
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0"><i :class="progressIcon" class="fs-17"></i></div>
